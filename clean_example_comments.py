@@ -52,14 +52,15 @@ def clean_comment_blocks(file_path):
     if not header_lines:
         header_end = 0
     
-    # Also clean up the code throughout the file
+    # Prepare the full modified file
     modified_lines = []
     
-    # Keep title and description unchanged
-    modified_lines.extend(lines[:desc_block_end + 1])
+    # Add our clean header with no blank lines
+    if clean_header:
+        modified_lines.extend(clean_header)
     
     # Process the rest of the file
-    i = desc_block_end + 1
+    i = header_end
     while i < len(lines):
         line = lines[i]
         
