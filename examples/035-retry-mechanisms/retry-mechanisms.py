@@ -1,6 +1,6 @@
 # Retry Mechanisms
 
-# - Creating robust production applications
+# Build robust extraction pipelines with automatic retry mechanisms. Instructor provides tools for creating reliable production applications.
 
 # Instructor provides flexible retry mechanisms for handling validation failures. This helps create more robust applications that can recover from parsing errors or validation issues.
 import instructor

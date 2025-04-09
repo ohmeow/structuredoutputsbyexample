@@ -1,6 +1,6 @@
 # Task Planning
 
-# - Creating step-by-step solutions
+# Generate structured task plans from natural language prompts. Instructor helps create step-by-step solutions with dependencies and execution order.
 
 # Instructor can be used to create sophisticated task planning systems that break down complex problems into manageable subtasks. This example shows how to implement a task planner with dependencies and execute them in the correct order.
 import asyncio
@@ -28,10 +28,10 @@ class Task(BaseModel):
         description="IDs of subtasks that must be completed before this task"
     )
 
+# This method executes a single task and returns its result
+# In a real implementation, this would perform actual work rather than return a placeholder
     async def execute(self, with_results: TaskResults) -> TaskResult:
         """Execute this task and return the result."""
-        # In a real implementation, this would perform the actual task
-        # Here we just return a placeholder result
         return TaskResult(task_id=self.id, result=f"Result for task: {self.task}")
 
 # Define the TaskPlan model
@@ -46,16 +46,15 @@ class TaskPlan(BaseModel):
         dep_graph = {task.id: set(task.subtasks) for task in self.task_graph}
         result = []
 
+# Find and order tasks based on their dependencies
         while dep_graph:
-            # Find tasks with no remaining dependencies
-            available = {task_id for task_id, deps in dep_graph.items() if not deps}
+            available = {task_id for task_id, deps in dep_graph.items() if not deps}  # Tasks with no dependencies
             if not available:
                 raise ValueError("Circular dependency detected in tasks")
 
-            # Add them to the result
-            result.extend(sorted(available))
+            result.extend(sorted(available))  # Add to execution order
 
-            # Remove these tasks from the graph
+            # Update dependency graph by removing completed tasks
             dep_graph = {
                 task_id: (deps - available)
                 for task_id, deps in dep_graph.items()
@@ -70,8 +69,9 @@ class TaskPlan(BaseModel):
         tasks_by_id = {task.id: task for task in self.task_graph}
         results = {}
 
+# Execute tasks in dependency order, processing parallel tasks when possible
         while len(results) < len(self.task_graph):
-            # Find tasks ready to execute (all dependencies satisfied)
+            # Identify tasks whose dependencies are all satisfied
             ready_tasks = [
                 tasks_by_id[task_id]
                 for task_id in execution_order
@@ -79,7 +79,7 @@ class TaskPlan(BaseModel):
                 all(dep_id in results for dep_id in tasks_by_id[task_id].subtasks)
             ]
 
-            # Execute tasks in parallel
+            # Process all ready tasks concurrently
             new_results = await asyncio.gather(*[
                 task.execute(
                     with_results=TaskResults(
@@ -92,7 +92,7 @@ class TaskPlan(BaseModel):
                 for task in ready_tasks
             ])
 
-            # Store results
+            # Save results for dependent tasks to use
             for result in new_results:
                 results[result.task_id] = result
 

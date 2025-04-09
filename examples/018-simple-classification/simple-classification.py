@@ -1,7 +1,5 @@
 # Simple Classification
 
-# 
-
 # Perform single-label classification with Instructor and structured outputs.
 from pydantic import BaseModel, Field
 from typing import Literal

@@ -1,7 +1,5 @@
 # Cohere Integration
 
-# 
-
 # Use Instructor with Cohere's models for structured data extraction.
 # 
 # 

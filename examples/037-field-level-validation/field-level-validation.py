@@ -1,6 +1,6 @@
 # Field-level Validation
 
-# - Domain-specific rules for business logic
+# Apply field-level validation rules to enforce domain-specific business logic. Instructor allows fine-grained control over data validation.
 
 # Instructor supports detailed field-level validation to ensure that specific parts of the LLM output meet your requirements. This allows for fine-grained control over the extracted data.
 import instructor

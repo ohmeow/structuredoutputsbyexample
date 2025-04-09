@@ -36,17 +36,11 @@ Note: A more comprehensive version of this file / documentation is available at 
 
 - Simple Classification
 - Multi-label Classification
-- Sentiment Analysis
-- Entity Classification
-- Working with Confidence Scores
 
 ## Streaming
 
 - Streaming Basics
-- Streaming Partial Objects
 - Streaming Lists
-- Progressive Updates
-- Handling Stream Errors
 
 ## Advanced Structures
 
@@ -90,4 +84,4 @@ Note: A more comprehensive version of this file / documentation is available at 
 - [Instructor Documentation](https://instructor-ai.github.io/instructor/)
 - [Pydantic Documentation](https://docs.pydantic.dev/)
 
-Last updated: April 9, 2025
+Last updated: April 10, 2025

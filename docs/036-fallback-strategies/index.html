@@ -228,7 +228,7 @@ class BasicUserProfile(BaseModel):
     age: int = Field(description=&quot;User&#x27;s age&quot;, ge=0)
 def extract_user_with_fallback(text: str):
     try:
-return client.chat.completions.create(
+        return client.chat.completions.create(  # First attempt with detailed model
             model=&quot;gpt-3.5-turbo&quot;,
             messages=[
                 {
@@ -241,7 +241,7 @@ return client.chat.completions.create(
         )
     except InstructorRetryException:
         print(&quot;Detailed extraction failed, falling back to basic profile&quot;)
-return client.chat.completions.create(
+        return client.chat.completions.create(  # Fall back to simpler model
             model=&quot;gpt-3.5-turbo&quot;,
             messages=[
                 {
@@ -296,7 +296,7 @@ class ExtractionResult(BaseModel):
     error_message: str = &quot;&quot;
 def extract_with_robustness(text: str) -&gt; ExtractionResult:
     try:
-result = client.chat.completions.create(
+        result = client.chat.completions.create(  # Primary extraction attempt
             model=&quot;gpt-3.5-turbo&quot;,
             messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: f&quot;Extract contact info: {text}&quot;}],
             response_model=Contact,
@@ -306,11 +306,11 @@ result = client.chat.completions.create(
             status=ExtractionStatus.SUCCESS,
             data=result.model_dump()
         )
-    except InstructorRetryException as e:
-try:
+except InstructorRetryException as e:
+        try:
             partial_data = {}
-error_msg = e.messages[-1][&quot;content&quot;]
-text_lines = text.split(&#x27;\n&#x27;)
+            error_msg = e.messages[-1][&quot;content&quot;]  # Parse the error message
+            text_lines = text.split(&#x27;\n&#x27;)
             for line in text_lines:
                 if &quot;name:&quot; in line.lower():
                     partial_data[&quot;name&quot;] = line.split(&quot;name:&quot;)[1].strip()
@@ -397,17 +397,8 @@ from instructor.exceptions import InstructorRetryException</code></pre>
                 </div>
                 <div class="code">
                     <pre><code class="language-python">def extract_user_with_fallback(text: str):
-    try:</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>First attempt with detailed model</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">return client.chat.completions.create(
+    try:
+        return client.chat.completions.create(  # First attempt with detailed model
             model=&quot;gpt-3.5-turbo&quot;,
             messages=[
                 {
@@ -419,17 +410,8 @@ from instructor.exceptions import InstructorRetryException</code></pre>
             max_retries=2
         )
     except InstructorRetryException:
-        print(&quot;Detailed extraction failed, falling back to basic profile&quot;)</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Fall back to simpler model</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">return client.chat.completions.create(
+        print(&quot;Detailed extraction failed, falling back to basic profile&quot;)
+        return client.chat.completions.create(  # Fall back to simpler model
             model=&quot;gpt-3.5-turbo&quot;,
             messages=[
                 {
@@ -582,17 +564,8 @@ from enum import Enum</code></pre>
                 </div>
                 <div class="code">
                     <pre><code class="language-python">def extract_with_robustness(text: str) -&gt; ExtractionResult:
-    try:</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Primary extraction attempt</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">result = client.chat.completions.create(
+    try:
+        result = client.chat.completions.create(  # Primary extraction attempt
             model=&quot;gpt-3.5-turbo&quot;,
             messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: f&quot;Extract contact info: {text}&quot;}],
             response_model=Contact,
@@ -601,39 +574,21 @@ from enum import Enum</code></pre>
         return ExtractionResult(
             status=ExtractionStatus.SUCCESS,
             data=result.model_dump()
-        )
-    except InstructorRetryException as e:</code></pre>
+        )</code></pre>
                 </div>
             </div>
             <hr>
             <div class="row">
                 <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Attempt partial extraction</div>
+                    <div style='font-size: 0.9em; color: #666;'>Attempt to salvage partial data when extraction fails</div>
 
                 </div>
                 <div class="code">
-                    <pre><code class="language-python">try:
-            partial_data = {}</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Parse the error message</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">error_msg = e.messages[-1][&quot;content&quot;]</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Try to salvage whatever fields we can</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">text_lines = text.split(&#x27;\n&#x27;)
+                    <pre><code class="language-python">except InstructorRetryException as e:
+        try:
+            partial_data = {}
+            error_msg = e.messages[-1][&quot;content&quot;]  # Parse the error message
+            text_lines = text.split(&#x27;\n&#x27;)
             for line in text_lines:
                 if &quot;name:&quot; in line.lower():
                     partial_data[&quot;name&quot;] = line.split(&quot;name:&quot;)[1].strip()
@@ -708,7 +663,7 @@ from enum import Enum</code></pre>
             </div>
         </main>
         <footer>
-            <p>by <a href="https://github.com/jxnl/instructor">Instructor</a> | <a href="https://github.com/jxnl/instructor">GitHub</a> | <span style="color: #888; font-size: 0.9em;">Last updated: April 9, 2025</span></p>
+            <p>by <a href="https://github.com/jxnl/instructor">Instructor</a> | <a href="https://github.com/jxnl/instructor">GitHub</a> | <span style="color: #888; font-size: 0.9em;">Last updated: April 10, 2025</span></p>
         </footer>
     </div>
     <script>

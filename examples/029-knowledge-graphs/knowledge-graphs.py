@@ -1,6 +1,6 @@
 # Knowledge Graphs
 
-# - Visual representation of concepts
+# Extract interconnected knowledge graphs from text using Instructor. This approach helps visualize relationships between concepts and entities.
 
 # Instructor can be used to extract structured knowledge graphs from text. A knowledge graph represents entities and their relationships, making complex information easier to understand and visualize.
 import instructor

@@ -1,6 +1,6 @@
 # Batch Processing
 
-# - Structured output for easy data analysis
+# Implement batch processing for efficient data extraction. Instructor provides structured output for easier data analysis of large datasets.
 
 # Instructor supports batch processing for efficiently handling multiple requests, which is essential for large-scale data processing.
 import asyncio
@@ -36,12 +36,11 @@ async def analyze_sentiment(text: str) -> Tuple[str, SentimentAnalysis]:
         )
         return text, result
 
-# Process a batch of texts
+# Process a batch of texts efficiently with parallel processing
 async def process_batch(texts: List[str]):
-    # Create tasks for all texts
-    tasks = [analyze_sentiment(text) for text in texts]
+    tasks = [analyze_sentiment(text) for text in texts]  # Create tasks for all texts
 
-    # Process tasks as they complete
+    # Collect results as tasks complete (in any order)
     results = []
     for task in asyncio.as_completed(tasks):
         original_text, sentiment = await task
@@ -148,25 +147,25 @@ async def batch_process(items: List[str],
     processed = 0
     total = len(items)
 
-    # Process in chunks to avoid memory issues with very large datasets
+# Efficiently process data in manageable chunks to prevent memory issues
     for i in range(0, total, chunk_size):
         chunk = items[i:i+chunk_size]
 
-        # Create tasks with semaphore for rate limiting
+        # Create rate-limited processing function
         async def process_with_sem(item):
             async with sem:
                 return await process_item(item)
 
+        # Process current chunk of items
         tasks = [process_with_sem(item) for item in chunk]
-
-        # Process chunk and update progress
         chunk_results = await asyncio.gather(*tasks)
         results.extend(chunk_results)
 
+        # Track and display progress
         processed += len(chunk)
         print(f"Progress: {processed}/{total} ({processed/total*100:.1f}%)")
 
-        # Optionally save results to file incrementally
+        # Save intermediate results to prevent data loss
         if output_file:
             with open(output_file, "a") as f:
                 for result in chunk_results:
@@ -176,13 +175,13 @@ async def batch_process(items: List[str],
 
 # Example usage
 async def main():
-    # Sample feedback data
+    # Test with sample feedback data
     feedback_items = [
         "Your app crashes every time I try to upload a photo. Please fix this ASAP!",
         "I love the new dark mode feature. It makes the app much easier on the eyes.",
         "The checkout process is too complicated. I gave up trying to make a purchase.",
-        "Your customer service rep was very helpful in resolving my issue.",
-        # Add more items as needed
+        "Your customer service rep was very helpful in resolving my issue."
+        # Examples of different types of feedback
     ]
 
     results = await batch_process(
@@ -190,16 +189,16 @@ async def main():
         output_file="feedback_results.jsonl"
     )
 
-    # Analyze results
+# Generate summary statistics from processing results
     success_count = sum(1 for r in results if r["status"] == "success")
     print(f"Successfully processed: {success_count}/{len(results)}")
 
-    # Calculate average priority
+    # Analyze average priority of feedback items
     priorities = [r.get("priority", 0) for r in results if r["status"] == "success"]
     if priorities:
         print(f"Average priority: {sum(priorities)/len(priorities):.1f}")
 
-    # Count categories
+    # Generate distribution of feedback categories
     categories = {}
     for r in results:
         if r["status"] == "success":

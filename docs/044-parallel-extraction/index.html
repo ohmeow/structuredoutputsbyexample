@@ -235,7 +235,8 @@ def extract_parallel_info(user_query: str) -&gt; list[Union[Weather, SearchQuery
         ],
         response_model=Iterable[Weather | SearchQuery]
     )
-return list(function_calls)
+
+    return list(function_calls)  # Convert the iterable to a list
 results = extract_parallel_info(
     &quot;What&#x27;s the weather in New York and Tokyo? Also, find information about renewable energy.&quot;
 )
@@ -347,17 +348,9 @@ class SearchQuery(BaseModel):
             }
         ],
         response_model=Iterable[Weather | SearchQuery]
-    )</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Convert the iterable to a list</div>
+    )
 
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">return list(function_calls)</code></pre>
+    return list(function_calls)  # Convert the iterable to a list</code></pre>
                 </div>
             </div>
             <hr>
@@ -522,7 +515,7 @@ print(f&quot;Found {len(people)} people, {len(companies)} companies, and {len(lo
             </div>
         </main>
         <footer>
-            <p>by <a href="https://github.com/jxnl/instructor">Instructor</a> | <a href="https://github.com/jxnl/instructor">GitHub</a> | <span style="color: #888; font-size: 0.9em;">Last updated: April 9, 2025</span></p>
+            <p>by <a href="https://github.com/jxnl/instructor">Instructor</a> | <a href="https://github.com/jxnl/instructor">GitHub</a> | <span style="color: #888; font-size: 0.9em;">Last updated: April 10, 2025</span></p>
         </footer>
     </div>
     <script>

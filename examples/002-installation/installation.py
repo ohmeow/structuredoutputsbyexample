@@ -1,4 +1,4 @@
 # Installing Instructor
 
-# You can also set keys in your code, but environment variables are recommended for security.
+# Set up Instructor and configure API keys for different LLM providers. Best practices for secure API key management and environment setup.
 

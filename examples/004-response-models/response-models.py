@@ -1,7 +1,5 @@
 # Understanding Response Models
 
-# 
-
 # Instructor uses Pydantic models to define the structure of your LLM outputs. Here's how to create effective models.
 from pydantic import BaseModel
 

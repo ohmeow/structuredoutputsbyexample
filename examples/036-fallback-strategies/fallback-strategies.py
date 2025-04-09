@@ -1,6 +1,6 @@
 # Fallback Strategies
 
-# - Default values for missing information
+# Implement fallback strategies for handling missing or invalid information. Instructor helps provide default values when extraction is uncertain.
 
 # When working with LLMs, it's important to have fallback strategies for handling persistent failures or unexpected issues. Instructor provides several ways to implement robust fallback mechanisms.
 import instructor
@@ -27,8 +27,7 @@ class BasicUserProfile(BaseModel):
 # Try extraction with fallback strategy
 def extract_user_with_fallback(text: str):
     try:
-        # First attempt with detailed model
-        return client.chat.completions.create(
+        return client.chat.completions.create(  # First attempt with detailed model
             model="gpt-3.5-turbo",
             messages=[
                 {
@@ -41,8 +40,7 @@ def extract_user_with_fallback(text: str):
         )
     except InstructorRetryException:
         print("Detailed extraction failed, falling back to basic profile")
-        # Fall back to simpler model
-        return client.chat.completions.create(
+        return client.chat.completions.create(  # Fall back to simpler model
             model="gpt-3.5-turbo",
             messages=[
                 {
@@ -119,8 +117,7 @@ class ExtractionResult(BaseModel):
 # Robust extraction function with fallbacks
 def extract_with_robustness(text: str) -> ExtractionResult:
     try:
-        # Primary extraction attempt
-        result = client.chat.completions.create(
+        result = client.chat.completions.create(  # Primary extraction attempt
             model="gpt-3.5-turbo",
             messages=[{"role": "user", "content": f"Extract contact info: {text}"}],
             response_model=Contact,
@@ -130,14 +127,11 @@ def extract_with_robustness(text: str) -> ExtractionResult:
             status=ExtractionStatus.SUCCESS,
             data=result.model_dump()
         )
+# Attempt to salvage partial data when extraction fails
     except InstructorRetryException as e:
-        # Attempt partial extraction
         try:
             partial_data = {}
-            # Parse the error message
-            error_msg = e.messages[-1]["content"]
-
-            # Try to salvage whatever fields we can
+            error_msg = e.messages[-1]["content"]  # Parse the error message
             text_lines = text.split('\n')
             for line in text_lines:
                 if "name:" in line.lower():

@@ -237,7 +237,7 @@ async def analyze_sentiment(text: str) -&gt; Tuple[str, SentimentAnalysis]:
         )
         return text, result
 async def process_batch(texts: List[str]):
-tasks = [analyze_sentiment(text) for text in texts]
+    tasks = [analyze_sentiment(text) for text in texts]  # Create tasks for all texts
 results = []
     for task in asyncio.as_completed(tasks):
         original_text, sentiment = await task
@@ -334,12 +334,10 @@ for i in range(0, total, chunk_size):
 async def process_with_sem(item):
             async with sem:
                 return await process_item(item)
-
-        tasks = [process_with_sem(item) for item in chunk]
-chunk_results = await asyncio.gather(*tasks)
+tasks = [process_with_sem(item) for item in chunk]
+        chunk_results = await asyncio.gather(*tasks)
         results.extend(chunk_results)
-
-        processed += len(chunk)
+processed += len(chunk)
         print(f&quot;Progress: {processed}/{total} ({processed/total*100:.1f}%)&quot;)
 if output_file:
             with open(output_file, &quot;a&quot;) as f:
@@ -352,7 +350,7 @@ feedback_items = [
         &quot;Your app crashes every time I try to upload a photo. Please fix this ASAP!&quot;,
         &quot;I love the new dark mode feature. It makes the app much easier on the eyes.&quot;,
         &quot;The checkout process is too complicated. I gave up trying to make a purchase.&quot;,
-        &quot;Your customer service rep was very helpful in resolving my issue.&quot;,
+        &quot;Your customer service rep was very helpful in resolving my issue.&quot;
 ]
 
     results = await batch_process(
@@ -450,27 +448,18 @@ from typing import List, Tuple</code></pre>
             <hr>
             <div class="row">
                 <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Process a batch of texts</div>
+                    <div style='font-size: 0.9em; color: #666;'>Process a batch of texts efficiently with parallel processing</div>
 
                 </div>
                 <div class="code">
-                    <pre><code class="language-python">async def process_batch(texts: List[str]):</code></pre>
+                    <pre><code class="language-python">async def process_batch(texts: List[str]):
+    tasks = [analyze_sentiment(text) for text in texts]  # Create tasks for all texts</code></pre>
                 </div>
             </div>
             <hr>
             <div class="row">
                 <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Create tasks for all texts</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">tasks = [analyze_sentiment(text) for text in texts]</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Process tasks as they complete</div>
+                    <div style='font-size: 0.9em; color: #666;'>Collect results as tasks complete (in any order)</div>
 
                 </div>
                 <div class="code">
@@ -633,7 +622,7 @@ class FeedbackClassification(BaseModel):
             <hr>
             <div class="row">
                 <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Process in chunks to avoid memory issues with very large datasets</div>
+                    <div style='font-size: 0.9em; color: #666;'>Efficiently process data in manageable chunks to prevent memory issues</div>
 
                 </div>
                 <div class="code">
@@ -644,35 +633,42 @@ class FeedbackClassification(BaseModel):
             <hr>
             <div class="row">
                 <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Create tasks with semaphore for rate limiting</div>
+                    <div style='font-size: 0.9em; color: #666;'>Create rate-limited processing function</div>
 
                 </div>
                 <div class="code">
                     <pre><code class="language-python">async def process_with_sem(item):
             async with sem:
-                return await process_item(item)
-
-        tasks = [process_with_sem(item) for item in chunk]</code></pre>
+                return await process_item(item)</code></pre>
                 </div>
             </div>
             <hr>
             <div class="row">
                 <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Process chunk and update progress</div>
+                    <div style='font-size: 0.9em; color: #666;'>Process current chunk of items</div>
 
                 </div>
                 <div class="code">
-                    <pre><code class="language-python">chunk_results = await asyncio.gather(*tasks)
-        results.extend(chunk_results)
+                    <pre><code class="language-python">tasks = [process_with_sem(item) for item in chunk]
+        chunk_results = await asyncio.gather(*tasks)
+        results.extend(chunk_results)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Track and display progress</div>
 
-        processed += len(chunk)
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">processed += len(chunk)
         print(f&quot;Progress: {processed}/{total} ({processed/total*100:.1f}%)&quot;)</code></pre>
                 </div>
             </div>
             <hr>
             <div class="row">
                 <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Optionally save results to file incrementally</div>
+                    <div style='font-size: 0.9em; color: #666;'>Save intermediate results to prevent data loss</div>
 
                 </div>
                 <div class="code">
@@ -697,7 +693,7 @@ class FeedbackClassification(BaseModel):
             <hr>
             <div class="row">
                 <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Sample feedback data</div>
+                    <div style='font-size: 0.9em; color: #666;'>Test with sample feedback data</div>
 
                 </div>
                 <div class="code">
@@ -705,13 +701,13 @@ class FeedbackClassification(BaseModel):
         &quot;Your app crashes every time I try to upload a photo. Please fix this ASAP!&quot;,
         &quot;I love the new dark mode feature. It makes the app much easier on the eyes.&quot;,
         &quot;The checkout process is too complicated. I gave up trying to make a purchase.&quot;,
-        &quot;Your customer service rep was very helpful in resolving my issue.&quot;,</code></pre>
+        &quot;Your customer service rep was very helpful in resolving my issue.&quot;</code></pre>
                 </div>
             </div>
             <hr>
             <div class="row">
                 <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Add more items as needed</div>
+                    <div style='font-size: 0.9em; color: #666;'>Examples of different types of feedback</div>
 
                 </div>
                 <div class="code">
@@ -726,7 +722,7 @@ class FeedbackClassification(BaseModel):
             <hr>
             <div class="row">
                 <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Analyze results</div>
+                    <div style='font-size: 0.9em; color: #666;'>Generate summary statistics from processing results</div>
 
                 </div>
                 <div class="code">
@@ -737,7 +733,7 @@ class FeedbackClassification(BaseModel):
             <hr>
             <div class="row">
                 <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Calculate average priority</div>
+                    <div style='font-size: 0.9em; color: #666;'>Analyze average priority of feedback items</div>
 
                 </div>
                 <div class="code">
@@ -749,7 +745,7 @@ class FeedbackClassification(BaseModel):
             <hr>
             <div class="row">
                 <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Count categories</div>
+                    <div style='font-size: 0.9em; color: #666;'>Generate distribution of feedback categories</div>
 
                 </div>
                 <div class="code">
@@ -813,7 +809,7 @@ if __name__ == &quot;__main__&quot;:
             </div>
         </main>
         <footer>
-            <p>by <a href="https://github.com/jxnl/instructor">Instructor</a> | <a href="https://github.com/jxnl/instructor">GitHub</a> | <span style="color: #888; font-size: 0.9em;">Last updated: April 9, 2025</span></p>
+            <p>by <a href="https://github.com/jxnl/instructor">Instructor</a> | <a href="https://github.com/jxnl/instructor">GitHub</a> | <span style="color: #888; font-size: 0.9em;">Last updated: April 10, 2025</span></p>
         </footer>
     </div>
     <script>

@@ -230,10 +230,9 @@ class Task(BaseModel):
         default_factory=list,
         description=&quot;IDs of subtasks that must be completed before this task&quot;
     )
-
-    async def execute(self, with_results: TaskResults) -&gt; TaskResult:
+async def execute(self, with_results: TaskResults) -&gt; TaskResult:
         &quot;&quot;&quot;Execute this task and return the result.&quot;&quot;&quot;
-return TaskResult(task_id=self.id, result=f&quot;Result for task: {self.task}&quot;)
+        return TaskResult(task_id=self.id, result=f&quot;Result for task: {self.task}&quot;)
 class TaskPlan(BaseModel):
     task_graph: list[Task] = Field(
         ...,
@@ -244,12 +243,12 @@ class TaskPlan(BaseModel):
         &quot;&quot;&quot;Compute topological sort of tasks based on dependencies.&quot;&quot;&quot;
         dep_graph = {task.id: set(task.subtasks) for task in self.task_graph}
         result = []
-
-        while dep_graph:
-available = {task_id for task_id, deps in dep_graph.items() if not deps}
+while dep_graph:
+            available = {task_id for task_id, deps in dep_graph.items() if not deps}  # Tasks with no dependencies
             if not available:
                 raise ValueError(&quot;Circular dependency detected in tasks&quot;)
-result.extend(sorted(available))
+
+            result.extend(sorted(available))  # Add to execution order
 dep_graph = {
                 task_id: (deps - available)
                 for task_id, deps in dep_graph.items()
@@ -263,8 +262,7 @@ dep_graph = {
         execution_order = self._get_execution_order()
         tasks_by_id = {task.id: task for task in self.task_graph}
         results = {}
-
-        while len(results) &lt; len(self.task_graph):
+while len(results) &lt; len(self.task_graph):
 ready_tasks = [
                 tasks_by_id[task_id]
                 for task_id in execution_order
@@ -371,21 +369,20 @@ class TaskResults(BaseModel):
     subtasks: list[int] = Field(
         default_factory=list,
         description=&quot;IDs of subtasks that must be completed before this task&quot;
-    )
-
-    async def execute(self, with_results: TaskResults) -&gt; TaskResult:
-        &quot;&quot;&quot;Execute this task and return the result.&quot;&quot;&quot;</code></pre>
+    )</code></pre>
                 </div>
             </div>
             <hr>
             <div class="row">
                 <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>In a real implementation, this would perform the actual task
-Here we just return a placeholder result</div>
+                    <div style='font-size: 0.9em; color: #666;'>This method executes a single task and returns its result
+In a real implementation, this would perform actual work rather than return a placeholder</div>
 
                 </div>
                 <div class="code">
-                    <pre><code class="language-python">return TaskResult(task_id=self.id, result=f&quot;Result for task: {self.task}&quot;)</code></pre>
+                    <pre><code class="language-python">async def execute(self, with_results: TaskResults) -&gt; TaskResult:
+        &quot;&quot;&quot;Execute this task and return the result.&quot;&quot;&quot;
+        return TaskResult(task_id=self.id, result=f&quot;Result for task: {self.task}&quot;)</code></pre>
                 </div>
             </div>
             <hr>
@@ -404,37 +401,28 @@ Here we just return a placeholder result</div>
     def _get_execution_order(self) -&gt; list[int]:
         &quot;&quot;&quot;Compute topological sort of tasks based on dependencies.&quot;&quot;&quot;
         dep_graph = {task.id: set(task.subtasks) for task in self.task_graph}
-        result = []
-
-        while dep_graph:</code></pre>
+        result = []</code></pre>
                 </div>
             </div>
             <hr>
             <div class="row">
                 <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Find tasks with no remaining dependencies</div>
+                    <div style='font-size: 0.9em; color: #666;'>Find and order tasks based on their dependencies</div>
 
                 </div>
                 <div class="code">
-                    <pre><code class="language-python">available = {task_id for task_id, deps in dep_graph.items() if not deps}
+                    <pre><code class="language-python">while dep_graph:
+            available = {task_id for task_id, deps in dep_graph.items() if not deps}  # Tasks with no dependencies
             if not available:
-                raise ValueError(&quot;Circular dependency detected in tasks&quot;)</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Add them to the result</div>
+                raise ValueError(&quot;Circular dependency detected in tasks&quot;)
 
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">result.extend(sorted(available))</code></pre>
+            result.extend(sorted(available))  # Add to execution order</code></pre>
                 </div>
             </div>
             <hr>
             <div class="row">
                 <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Remove these tasks from the graph</div>
+                    <div style='font-size: 0.9em; color: #666;'>Update dependency graph by removing completed tasks</div>
 
                 </div>
                 <div class="code">
@@ -450,15 +438,23 @@ Here we just return a placeholder result</div>
         &quot;&quot;&quot;Execute all tasks in dependency order.&quot;&quot;&quot;
         execution_order = self._get_execution_order()
         tasks_by_id = {task.id: task for task in self.task_graph}
-        results = {}
-
-        while len(results) &lt; len(self.task_graph):</code></pre>
+        results = {}</code></pre>
                 </div>
             </div>
             <hr>
             <div class="row">
                 <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Find tasks ready to execute (all dependencies satisfied)</div>
+                    <div style='font-size: 0.9em; color: #666;'>Execute tasks in dependency order, processing parallel tasks when possible</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">while len(results) &lt; len(self.task_graph):</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Identify tasks whose dependencies are all satisfied</div>
 
                 </div>
                 <div class="code">
@@ -473,7 +469,7 @@ Here we just return a placeholder result</div>
             <hr>
             <div class="row">
                 <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Execute tasks in parallel</div>
+                    <div style='font-size: 0.9em; color: #666;'>Process all ready tasks concurrently</div>
 
                 </div>
                 <div class="code">
@@ -493,7 +489,7 @@ Here we just return a placeholder result</div>
             <hr>
             <div class="row">
                 <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Store results</div>
+                    <div style='font-size: 0.9em; color: #666;'>Save results for dependent tasks to use</div>
 
                 </div>
                 <div class="code">
@@ -608,7 +604,7 @@ Here we just return a placeholder result</div>
             </div>
         </main>
         <footer>
-            <p>by <a href="https://github.com/jxnl/instructor">Instructor</a> | <a href="https://github.com/jxnl/instructor">GitHub</a> | <span style="color: #888; font-size: 0.9em;">Last updated: April 9, 2025</span></p>
+            <p>by <a href="https://github.com/jxnl/instructor">Instructor</a> | <a href="https://github.com/jxnl/instructor">GitHub</a> | <span style="color: #888; font-size: 0.9em;">Last updated: April 10, 2025</span></p>
         </footer>
     </div>
     <script>

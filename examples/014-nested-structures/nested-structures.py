@@ -1,7 +1,5 @@
 # Nested Structures
 
-# 
-
 # Extract complex nested data structures from text using Instructor.
 from pydantic import BaseModel, Field
 from typing import List, Optional

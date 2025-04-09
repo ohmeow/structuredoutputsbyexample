@@ -1,8 +1,6 @@
 # Working with Enums
 
-# 
-
-# Use enumerated types in your data extraction for more consistent and validated results.
+# Use enumerated types with Instructor for consistent, validated extractions. Enums help enforce a fixed set of allowed values.
 from enum import Enum
 from pydantic import BaseModel
 import instructor

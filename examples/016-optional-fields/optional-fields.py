@@ -1,7 +1,5 @@
 # Optional Fields
 
-# 
-
 # Handle missing or optional data in your structured extractions with Instructor.
 from pydantic import BaseModel, Field
 from typing import Optional

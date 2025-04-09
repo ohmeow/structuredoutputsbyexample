@@ -1,7 +1,5 @@
 # Streaming Lists
 
-# 
-
 # Stream collections of objects one at a time with Instructor.
 from pydantic import BaseModel, Field
 from typing import List

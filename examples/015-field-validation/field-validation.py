@@ -1,7 +1,5 @@
 # Field Validation
 
-# 
-
 # Apply validation rules to ensure high-quality data extraction with Instructor.
 from pydantic import BaseModel, Field
 import instructor

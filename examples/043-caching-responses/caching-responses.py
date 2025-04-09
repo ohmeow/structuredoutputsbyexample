@@ -1,6 +1,6 @@
 # Caching Responses
 
-# - Redis caching: Works across multiple servers or processes
+# Implement caching strategies for LLM responses with Instructor. Supports Redis caching for distributed systems and performance optimization.
 
 # Caching LLM responses can significantly improve performance and reduce costs. Instructor supports several caching strategies to suit different needs.
 import functools

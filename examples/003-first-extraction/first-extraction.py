@@ -1,6 +1,6 @@
 # Your First Extraction
 
-# 5. The response is automatically validated and converted to our model
+# Create your first structured extraction with Instructor. Learn the step-by-step process from model definition to validated response.
 
 # Extract structured data from text using Instructor and a Pydantic model.
 from pydantic import BaseModel

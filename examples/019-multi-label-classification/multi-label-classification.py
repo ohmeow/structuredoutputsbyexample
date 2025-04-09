@@ -1,7 +1,5 @@
 # Multi-label Classification
 
-# 
-
 # Extract multiple labels from text using Instructor.
 from pydantic import BaseModel, Field
 from typing import List

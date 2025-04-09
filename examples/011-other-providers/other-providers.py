@@ -1,7 +1,5 @@
 # Other Provider Integrations
 
-# 
-
 # Instructor supports many LLM providers beyond the major ones. Here's a quick overview of some additional providers.
 import instructor
 from litellm import completion

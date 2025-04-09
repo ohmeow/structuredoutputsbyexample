@@ -1,6 +1,6 @@
 # Parallel Extraction
 
-# - More efficient use of context window for related extractions
+# Process multiple extractions in parallel with Instructor. Enables more efficient use of context window for related extractions.
 
 # Instructor supports parallel function calling, allowing you to extract multiple pieces of information simultaneously. This can significantly reduce latency in your applications.
 import instructor
@@ -33,8 +33,7 @@ def extract_parallel_info(user_query: str) -> list[Union[Weather, SearchQuery]]:
         response_model=Iterable[Weather | SearchQuery]
     )
 
-    # Convert the iterable to a list
-    return list(function_calls)
+    return list(function_calls)  # Convert the iterable to a list
 
 # Example usage
 results = extract_parallel_info(

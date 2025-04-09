@@ -1,6 +1,6 @@
 # Document Structure
 
-# - Document classification and organization
+# Extract document structure and organization using Instructor. Helps with document classification, section analysis, and content organization.
 
 # Instructor can extract structured representations of documents, such as articles, papers, or reports. This approach helps convert unstructured text into structured data that can be analyzed and processed.
 import instructor

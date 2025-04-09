@@ -1,6 +1,6 @@
 # Vision
 
-# - Providing automatic detection of image paths and URLs
+# Process and extract data from images with Instructor. Supports automatic detection of image paths and URLs for multimodal extraction.
 
 # Instructor provides simple, unified handling of vision inputs across different LLM providers through its `Image` class, which automatically handles the details of image formatting for each provider.
 import instructor
@@ -18,8 +18,8 @@ class ImageContent(BaseModel):
     colors: List[str] = Field(description="Dominant colors in the image")
 
 # Creating an Image object from a file path
+# Load images from local files for analysis
 def analyze_image_from_file(file_path: str) -> ImageContent:
-    # Load the image using Instructor's Image class
     image = instructor.Image.from_path(file_path)
 
     return client.chat.completions.create(
@@ -37,8 +37,8 @@ def analyze_image_from_file(file_path: str) -> ImageContent:
     )
 
 # Creating an Image object from a URL
+# Load images from URLs for analysis
 def analyze_image_from_url(image_url: str) -> ImageContent:
-    # Load the image from a URL
     image = instructor.Image.from_url(image_url)
 
     return client.chat.completions.create(

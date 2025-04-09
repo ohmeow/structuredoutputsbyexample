@@ -1,7 +1,5 @@
 # OpenAI Integration
 
-# 
-
 # Instructor works seamlessly with OpenAI models. Here's how to use it with different OpenAI features.
 import instructor
 from openai import OpenAI

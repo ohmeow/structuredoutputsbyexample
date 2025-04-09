@@ -1,6 +1,6 @@
 # Audio Extraction
 
-# - Handle multilingual audio content
+# Extract structured information from audio content using Instructor. Supports handling multilingual audio and transcription data.
 
 # Instructor supports extracting structured data from audio files using the `Audio` class, making it easy to process speech and audio content.
 import instructor

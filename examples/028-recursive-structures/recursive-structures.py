@@ -1,6 +1,6 @@
 # Recursive Structures
 
-# - Consider adding helper methods to traverse or manipulate the structure
+# Create and work with self-referential data structures using Instructor. Enables extraction of hierarchical data like organizational charts and family trees.
 
 # Instructor supports defining and extracting recursive data structures, where a model can reference itself in its definition. This is particularly useful for representing hierarchical data like file systems, org charts, or nested comments.
 import instructor

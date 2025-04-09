@@ -1,7 +1,5 @@
 # Mistral Integration
 
-# 
-
 # Use Instructor with Mistral AI models for structured data extraction.
 # 
 # 

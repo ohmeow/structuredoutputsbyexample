@@ -1,6 +1,6 @@
 # Validation Basics
 
-# 4. The process repeats until validation passes or max retries is reached
+# Learn the fundamentals of validation in Instructor. Understand the automatic validation and retry process for ensuring data quality.
 
 # Instructor leverages Pydantic's validation framework to ensure that outputs from LLMs match your expected schema. This is crucial for building reliable applications.
 import instructor

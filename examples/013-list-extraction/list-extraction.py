@@ -1,7 +1,5 @@
 # List Extraction
 
-# 
-
 # Extract multiple items in a list from text with Instructor.
 from pydantic import BaseModel
 

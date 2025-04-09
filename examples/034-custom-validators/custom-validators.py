@@ -1,6 +1,6 @@
 # Custom Validators
 
-# - Context-dependent validation
+# Implement custom validators for domain-specific validation rules with Instructor. Enables context-dependent validation for complex business logic.
 
 # Instructor allows you to create custom validators to enforce specific rules on LLM outputs. These can range from simple format checks to complex business logic.
 import instructor

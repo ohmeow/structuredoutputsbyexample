@@ -1,6 +1,6 @@
 # Image Extraction
 
-# - Integration with downstream processing pipelines
+# Convert image content into structured data with Instructor. Enables integration with downstream processing pipelines for visual data.
 
 # Instructor excels at transforming images into structured data, combining vision capabilities with Pydantic models for reliable extraction.
 import instructor

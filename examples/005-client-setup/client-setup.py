@@ -1,6 +1,6 @@
 # Client Setup
 
-# Choose the appropriate mode based on your provider and needs.
+# Configure Instructor clients for different LLM providers. Learn about extraction modes and client configuration options.
 
 # Set up Instructor with different LLM providers. Each provider requires slightly different setup.
 import instructor

@@ -1,7 +1,5 @@
 # Simple Object Extraction
 
-# 
-
 # Extract basic objects from text with Instructor.
 from pydantic import BaseModel
 

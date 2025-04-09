@@ -1,7 +1,5 @@
 # Gemini Integration
 
-# 
-
 # Use Instructor with Google's Gemini models for structured data extraction.
 # 
 # 

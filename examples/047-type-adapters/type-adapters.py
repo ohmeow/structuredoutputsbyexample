@@ -1,6 +1,6 @@
 # Type Adapters
 
-# - Better error messaging for validation failures
+# Leverage Pydantic Type Adapters with Instructor for advanced validation. Provides better error messaging and custom type conversion.
 
 # Pydantic's Type Adapter is a powerful feature that allows you to wrap arbitrary data parsing logic with Pydantic's validation. Instructor leverages this to provide flexible data conversion and validation.
 from typing import List, Dict, Any

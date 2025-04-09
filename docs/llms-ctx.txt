@@ -28,15 +28,9 @@ It's organized by sections, with each example's Python code and terminal command
 * Classification and Analysis
   * Simple Classification
   * Multi-label Classification
-  * Sentiment Analysis
-  * Entity Classification
-  * Working with Confidence Scores
 * Streaming
   * Streaming Basics
-  * Streaming Partial Objects
   * Streaming Lists
-  * Progressive Updates
-  * Handling Stream Errors
 * Advanced Structures
   * Recursive Structures
   * Knowledge Graphs
@@ -2227,637 +2221,6 @@ $ python multi-label-classification.py
 For more information, see the original documentation:
 - https://github.com/jxnl/instructor
 
-### Sentiment Analysis
-
-```python
-from pydantic import BaseModel, Field
-from typing import Literal
-import instructor
-from openai import OpenAI
-
-class Sentiment(BaseModel):
-    """Sentiment analysis result"""
-
-    sentiment: Literal["positive", "neutral", "negative"] = Field(
-        description="The overall sentiment of the text"
-    )
-client = instructor.from_openai(OpenAI())
-
-def analyze_sentiment(text: str) -> Sentiment:
-    return client.chat.completions.create(
-        model="gpt-3.5-turbo",
-        response_model=Sentiment,
-        messages=[
-            {"role": "system", "content": "Analyze the sentiment of the provided text."},
-            {"role": "user", "content": f"Text: {text}"}
-        ]
-    )
-examples = [
-    "I absolutely love this product! It exceeded all my expectations.",
-    "The service was okay. Nothing special but got the job done.",
-    "This is the worst experience I've ever had. Complete waste of money."
-]
-
-for text in examples:
-    result = analyze_sentiment(text)
-    print(f"Text: '{text}'")
-    print(f"Sentiment: {result.sentiment}\n")
-from pydantic import BaseModel, Field
-
-class SentimentWithScore(BaseModel):
-    """Sentiment analysis with numeric score"""
-
-    score: float = Field(
-        ge=-1.0, le=1.0,  # Between -1.0 and 1.0
-        description="Sentiment score from -1.0 (very negative) to 1.0 (very positive)"
-    )
-
-    @property
-    def sentiment(self) -> str:
-        if self.score > 0.3:
-            return "positive"
-        elif self.score < -0.3:
-            return "negative"
-        else:
-            return "neutral"
-
-def analyze_sentiment_with_score(text: str) -> SentimentWithScore:
-    return client.chat.completions.create(
-        model="gpt-3.5-turbo",
-        response_model=SentimentWithScore,
-        messages=[
-            {
-                "role": "system",
-                "content": "Analyze the sentiment of the text and provide a score from -1.0 (very negative) to 1.0 (very positive)."
-            },
-            {"role": "user", "content": f"Text: {text}"}
-        ]
-    )
-examples = [
-    "The movie was absolutely phenomenal. Best I've seen in years!",
-    "The new update is slightly better than the previous version.",
-    "I'm really disappointed with the customer service response time."
-]
-
-for text in examples:
-    result = analyze_sentiment_with_score(text)
-    print(f"Text: '{text}'")
-    print(f"Score: {result.score:.2f}")
-    print(f"Sentiment: {result.sentiment}\n")
-from pydantic import BaseModel, Field
-from typing import List, Literal, Optional
-
-class AspectSentiment(BaseModel):
-    aspect: str = Field(description="The specific aspect being evaluated")
-    sentiment: Literal["positive", "neutral", "negative"]
-    explanation: str = Field(description="Brief explanation of the sentiment")
-
-class DetailedSentiment(BaseModel):
-    overall_sentiment: Literal["positive", "neutral", "negative"] = Field(
-        description="The overall sentiment of the entire text"
-    )
-    aspects: List[AspectSentiment] = Field(
-        description="Sentiment breakdown by specific aspects mentioned in the text"
-    )
-    summary: str = Field(
-        description="A brief summary of the sentiment analysis"
-    )
-
-def analyze_detailed_sentiment(text: str) -> DetailedSentiment:
-    return client.chat.completions.create(
-        model="gpt-3.5-turbo",
-        response_model=DetailedSentiment,
-        messages=[
-            {
-                "role": "system",
-                "content": "Perform a detailed sentiment analysis, breaking down sentiment by aspects."
-            },
-            {"role": "user", "content": f"Text: {text}"}
-        ]
-    )
-review = """
-    I recently purchased the XYZ Bluetooth headphones. The sound quality is amazing and
-    battery life exceeds expectations - nearly 30 hours on a single charge! However,
-    they're a bit too tight on my head after a few hours, which gets uncomfortable.
-    The price was reasonable for the quality. Customer service was unhelpful when I asked
-    about adjustment options.
-"""
-
-result = analyze_detailed_sentiment(review)
-
-print(f"Overall Sentiment: {result.overall_sentiment}")
-print("\nAspect Breakdown:")
-for aspect in result.aspects:
-    print(f"- {aspect.aspect}: {aspect.sentiment}")
-    print(f"  {aspect.explanation}")
-
-print(f"\nSummary: {result.summary}")
-from pydantic import BaseModel, Field
-from typing import List, Literal, Optional
-from datetime import datetime
-
-class Emotion(BaseModel):
-    name: str
-    intensity: float = Field(ge=0, le=1)  # 0-1 scale
-
-class SocialMediaSentiment(BaseModel):
-    primary_sentiment: Literal["positive", "neutral", "negative"]
-    emotions: List[Emotion] = Field(description="Emotions detected in the text with intensity")
-    is_sarcastic: bool = Field(description="Whether the text appears to contain sarcasm")
-    topics: List[str] = Field(description="Key topics mentioned in the text")
-    action_items: Optional[List[str]] = Field(
-        default=None,
-        description="Suggested actions if this is a customer complaint or request"
-    )
-    urgency: int = Field(
-        ge=1, le=5,
-        description="Urgency level from 1 (not urgent) to 5 (extremely urgent)"
-    )
-
-def analyze_social_post(text: str) -> SocialMediaSentiment:
-    return client.chat.completions.create(
-        model="gpt-4",  # Using GPT-4 for more nuanced analysis
-        response_model=SocialMediaSentiment,
-        messages=[
-            {
-                "role": "system",
-                "content": "Analyze this social media post for sentiment, emotions, sarcasm, and topics."
-            },
-            {"role": "user", "content": f"Social Media Post: {text}"}
-        ]
-    )
-posts = [
-    "@AirlineX Your customer service is just AMAZING! 3 hours on hold and then hung up on. Can't wait to fly with you again... #sarcasm #badservice",
-    "Just tried the new coffee shop downtown and WOW! Best latte I've ever had, friendly staff, and great atmosphere. Definitely my new regular spot! #coffee #happy"
-]
-
-for post in posts:
-    result = analyze_social_post(post)
-    print(f"\nPost: '{post}'")
-    print(f"Primary Sentiment: {result.primary_sentiment}")
-    print(f"Sarcastic: {result.is_sarcastic}")
-
-    print("\nEmotions:")
-    for emotion in result.emotions:
-        print(f"- {emotion.name}: {emotion.intensity:.2f}")
-
-    print(f"\nTopics: {', '.join(result.topics)}")
-    print(f"Urgency: {result.urgency}/5")
-
-    if result.action_items:
-        print("\nSuggested Actions:")
-        for item in result.action_items:
-            print(f"- {item}")
-```
-
-```shell
-$ pip install instructor pydantic
-$ python sentiment-analysis.py
-```
-
-For more information, see the original documentation:
-- https://github.com/jxnl/instructor
-
-### Entity Classification
-
-```python
-from pydantic import BaseModel, Field
-from typing import List, Literal
-import instructor
-from openai import OpenAI
-
-class Entity(BaseModel):
-    text: str = Field(description="The entity text as it appears in the document")
-    type: Literal["PERSON", "ORGANIZATION", "LOCATION", "DATE", "PRODUCT"] = Field(
-        description="The category/type of the entity"
-    )
-    start_index: int = Field(description="The starting character position in text")
-    end_index: int = Field(description="The ending character position in text")
-
-class EntitiesExtraction(BaseModel):
-    entities: List[Entity] = Field(description="List of entities extracted from the text")
-client = instructor.from_openai(OpenAI())
-
-def extract_entities(text: str) -> EntitiesExtraction:
-    return client.chat.completions.create(
-        model="gpt-3.5-turbo",
-        response_model=EntitiesExtraction,
-        messages=[
-            {
-                "role": "system",
-                "content": "Extract named entities from the text with their types and positions."
-            },
-            {"role": "user", "content": text}
-        ]
-    )
-sample_text = """Apple Inc. is planning to open a new store in Berlin, Germany in July 2024.
-               CEO Tim Cook announced the expansion during a press conference yesterday."""
-
-result = extract_entities(sample_text)
-
-print(f"Text: '{sample_text}'")
-print("\nExtracted Entities:")
-for entity in result.entities:
-    print(f"- {entity.text} ({entity.type}) at positions {entity.start_index}-{entity.end_index}")
-from pydantic import BaseModel, Field
-from typing import List, Literal
-EntityType = Literal[
-    "COMPANY", "PERSON", "CITY", "COUNTRY", "PRODUCT", "TECHNOLOGY",
-    "JOB_TITLE", "EVENT", "CURRENCY", "DATE_TIME"
-]
-
-class CustomEntity(BaseModel):
-    text: str
-    type: EntityType
-    context: str = Field(description="Brief contextual information about this entity")
-
-class CustomEntitiesExtraction(BaseModel):
-    entities: List[CustomEntity]
-
-def extract_custom_entities(text: str) -> CustomEntitiesExtraction:
-    return client.chat.completions.create(
-        model="gpt-3.5-turbo",
-        response_model=CustomEntitiesExtraction,
-        messages=[
-            {
-                "role": "system",
-                "content": """Extract named entities from the text using only these types:
-                COMPANY, PERSON, CITY, COUNTRY, PRODUCT, TECHNOLOGY, JOB_TITLE, EVENT, CURRENCY, DATE_TIME.
-                Include brief contextual information about each entity."""
-            },
-            {"role": "user", "content": text}
-        ]
-    )
-tech_news = """Microsoft's CEO Satya Nadella revealed the new Surface Pro 10 at the Build 2024 conference in
-               Seattle last week. The device features Qualcomm's Snapdragon X processor and will sell for $1,299
-               in the United States starting June 15th."""
-
-result = extract_custom_entities(tech_news)
-
-print(f"Text: '{tech_news}'")
-print("\nExtracted Entities:")
-for entity in result.entities:
-    print(f"- {entity.text} ({entity.type})")
-    print(f"  Context: {entity.context}")
-from pydantic import BaseModel, Field
-from typing import List, Optional, Dict, Union, Literal
-
-class PersonEntity(BaseModel):
-    name: str
-    type: Literal["PERSON"] = "PERSON"
-    title: Optional[str] = None
-    organization: Optional[str] = None
-
-class OrganizationEntity(BaseModel):
-    name: str
-    type: Literal["ORGANIZATION"] = "ORGANIZATION"
-    industry: Optional[str] = None
-    location: Optional[str] = None
-
-class ProductEntity(BaseModel):
-    name: str
-    type: Literal["PRODUCT"] = "PRODUCT"
-    category: Optional[str] = None
-    manufacturer: Optional[str] = None
-    price: Optional[str] = None
-
-class LocationEntity(BaseModel):
-    name: str
-    type: Literal["LOCATION"] = "LOCATION"
-    location_type: Optional[str] = None  # city, country, address, etc.
-    region: Optional[str] = None
-
-class DateEntity(BaseModel):
-    text: str
-    type: Literal["DATE"] = "DATE"
-    is_range: bool = False
-    precision: Optional[str] = None  # day, month, year, etc.
-
-class EntitiesWithAttributes(BaseModel):
-    entities: List[Union[PersonEntity, OrganizationEntity, ProductEntity, LocationEntity, DateEntity]]
-
-def extract_entities_with_attributes(text: str) -> EntitiesWithAttributes:
-    return client.chat.completions.create(
-        model="gpt-4",  # More complex task, better with GPT-4
-        response_model=EntitiesWithAttributes,
-        messages=[
-            {
-                "role": "system",
-                "content": "Extract entities with their attributes. Each entity type has specific attributes."
-            },
-            {"role": "user", "content": text}
-        ]
-    )
-complex_text = """Tesla CEO Elon Musk announced the new Cybertruck will be available in Austin, Texas
-                 from December 2023. The electric vehicle starts at $39,900 and will be manufactured
-                 at Tesla's Gigafactory."""
-
-result = extract_entities_with_attributes(complex_text)
-
-print(f"Text: '{complex_text}'")
-print("\nExtracted Entities with Attributes:")
-for entity in result.entities:
-    print(f"\n- {entity.name if hasattr(entity, 'name') else entity.text} ({entity.type})")
-for key, value in entity.model_dump().items():
-        if key not in ['name', 'text', 'type'] and value is not None:
-            print(f"  {key}: {value}")
-
-from pydantic import BaseModel, Field
-from typing import List, Optional, Dict, Any
-
-class EntityWithId(BaseModel):
-    id: str = Field(description="Unique identifier for the entity")
-    text: str = Field(description="The entity text as found in the document")
-    type: str = Field(description="The entity type/category")
-    attributes: Dict[str, Any] = Field(default_factory=dict, description="Additional entity attributes")
-
-class Relationship(BaseModel):
-    source_id: str = Field(description="ID of the source entity")
-    target_id: str = Field(description="ID of the target entity")
-    relation_type: str = Field(description="Type of relationship between entities")
-    description: Optional[str] = None
-
-class EntityRelationExtraction(BaseModel):
-    entities: List[EntityWithId] = Field(description="List of entities with unique IDs")
-    relationships: List[Relationship] = Field(description="Relationships between entities")
-
-def extract_entity_relationships(text: str) -> EntityRelationExtraction:
-    return client.chat.completions.create(
-        model="gpt-4",  # Complex relationships need GPT-4
-        response_model=EntityRelationExtraction,
-        messages=[
-            {
-                "role": "system",
-                "content": """Extract entities and their relationships from the text.
-                Assign each entity a unique ID and identify relationships between entities.
-
-                Example relationship types: WORKS_FOR, LOCATED_IN, MANUFACTURES, OWNS, PART_OF, etc."""
-            },
-            {"role": "user", "content": text}
-        ]
-    )
-corporate_news = """
-    Amazon CEO Andy Jassy announced that the e-commerce giant is acquiring Anthropic,
-    an AI startup based in San Francisco. The deal, worth $4 billion, will help Amazon
-    compete with Microsoft, which has invested heavily in OpenAI. Anthropic's founder
-    Dario Amodei will continue to lead the company after the acquisition.
-"""
-
-result = extract_entity_relationships(corporate_news)
-
-print("Entities:")
-for entity in result.entities:
-    attrs = ", ".join([f"{k}: {v}" for k, v in entity.attributes.items()]) if entity.attributes else ""
-    print(f"- [{entity.id}] {entity.text} ({entity.type}) {attrs}")
-
-print("\nRelationships:")
-for rel in result.relationships:
-    source = next((e.text for e in result.entities if e.id == rel.source_id), "Unknown")
-    target = next((e.text for e in result.entities if e.id == rel.target_id), "Unknown")
-    print(f"- {source} {rel.relation_type} {target}")
-    if rel.description:
-        print(f"  Description: {rel.description}")
-```
-
-```shell
-$ pip install instructor pydantic
-$ python entity-classification.py
-```
-
-For more information, see the original documentation:
-- https://github.com/jxnl/instructor
-
-### Working with Confidence Scores
-
-```python
-from pydantic import BaseModel, Field
-import instructor
-from openai import OpenAI
-
-class PredictionWithConfidence(BaseModel):
-    prediction: str = Field(description="The predicted answer or category")
-    confidence: float = Field(
-        gt=0, le=1,  # Greater than 0, less than or equal to 1
-        description="Confidence score between 0 and 1 (higher = more confident)"
-    )
-client = instructor.from_openai(OpenAI())
-
-def predict_with_confidence(question: str, context: str) -> PredictionWithConfidence:
-    return client.chat.completions.create(
-        model="gpt-3.5-turbo",
-        response_model=PredictionWithConfidence,
-        messages=[
-            {
-                "role": "system",
-                "content": "Answer the question based on the provided context. Include a confidence score."
-            },
-            {
-                "role": "user",
-                "content": f"Context: {context}\n\nQuestion: {question}"
-            }
-        ]
-    )
-contexts = [
-"The Golden Gate Bridge was completed in 1937. It is located in San Francisco, California.",
-"The Golden Gate Bridge is a famous landmark in California. Many tourists visit it each year.",
-"California has many famous landmarks and tourist attractions that draw visitors from around the world."
-]
-
-question = "When was the Golden Gate Bridge completed?"
-
-for i, context in enumerate(contexts):
-    result = predict_with_confidence(question, context)
-    print(f"Example {i+1}:")
-    print(f"Context: '{context}'")
-    print(f"Question: '{question}'")
-    print(f"Prediction: {result.prediction}")
-    print(f"Confidence: {result.confidence:.2f}\n")
-from pydantic import BaseModel, Field
-from typing import Literal
-
-class ClassificationWithConfidence(BaseModel):
-    category: Literal["sports", "politics", "technology", "entertainment", "business"]
-    confidence: float = Field(
-        gt=0, le=1,
-        description="Confidence score between 0 and 1"
-    )
-
-    @property
-    def is_reliable(self) -> bool:
-        return self.confidence >= 0.7  # Threshold for reliability
-
-def classify_with_confidence(text: str) -> ClassificationWithConfidence:
-    return client.chat.completions.create(
-        model="gpt-3.5-turbo",
-        response_model=ClassificationWithConfidence,
-        messages=[
-            {
-                "role": "system",
-                "content": "Classify the text into one of these categories: sports, politics, technology, entertainment, business."
-            },
-            {"role": "user", "content": text}
-        ]
-    )
-examples = [
-    "Apple announced its new M3 chip with significantly improved performance.",  # Clear tech
-    "The game went into overtime after a last-minute equalizer.",  # Clear sports
-    "The gathering included discussion of market trends and artistic influences."  # Ambiguous
-]
-
-for text in examples:
-    result = classify_with_confidence(text)
-    print(f"Text: '{text}'")
-    print(f"Category: {result.category}")
-    print(f"Confidence: {result.confidence:.2f}")
-    print(f"Reliable: {result.is_reliable}\n")
-from pydantic import BaseModel, Field
-from typing import List
-
-class PredictionOption(BaseModel):
-    value: str
-    confidence: float = Field(gt=0, le=1)
-
-class MultipleOptions(BaseModel):
-    options: List[PredictionOption] = Field(
-        description="List of possible answers with confidence scores",
-        min_items=1
-    )
-
-    @property
-    def best_option(self) -> PredictionOption:
-        return max(self.options, key=lambda x: x.confidence)
-
-def generate_options(question: str) -> MultipleOptions:
-    return client.chat.completions.create(
-        model="gpt-3.5-turbo",
-        response_model=MultipleOptions,
-        messages=[
-            {
-                "role": "system",
-                "content": "Generate 2-4 possible answers to the question with confidence scores."
-            },
-            {"role": "user", "content": question}
-        ]
-    )
-question = "What year is considered the beginning of the modern internet?"
-
-result = generate_options(question)
-
-print(f"Question: '{question}'")
-print("Possible answers:")
-for option in sorted(result.options, key=lambda x: x.confidence, reverse=True):
-    print(f"- {option.value} (confidence: {option.confidence:.2f})")
-
-print(f"\nBest option: {result.best_option.value} (confidence: {result.best_option.confidence:.2f})")
-
-from pydantic import BaseModel, Field
-from typing import Dict, List
-
-class ConfidenceMatrix(BaseModel):
-    category_scores: Dict[str, float] = Field(
-        description="Confidence scores for each possible category"
-    )
-    most_likely_category: str = Field(
-        description="The category with the highest confidence score"
-    )
-    reliability: Literal["high", "medium", "low"] = Field(
-        description="Reliability assessment of the classification"
-    )
-
-def multi_category_confidence(text: str, categories: List[str]) -> ConfidenceMatrix:
-    categories_str = ", ".join(categories)
-    return client.chat.completions.create(
-        model="gpt-3.5-turbo",
-        response_model=ConfidenceMatrix,
-        messages=[
-            {
-                "role": "system",
-                "content": f"""Analyze the text and provide confidence scores for each possible category: {categories_str}.
-                Confidence scores should be between 0 and 1, sum to 1.0, and represent the probability of the text belonging to each category.
-                Also assess if the classification reliability is high (clear winner >0.7), medium (top score 0.4-0.7), or low (ambiguous, top score <0.4)."""
-            },
-            {"role": "user", "content": text}
-        ]
-    )
-categories = ["health", "finance", "technology", "travel", "education"]
-text = "The new smartwatch can track your heart rate, sleep patterns, and activity levels throughout the day."
-
-result = multi_category_confidence(text, categories)
-
-print(f"Text: '{text}'")
-print("\nConfidence Scores:")
-for category, score in sorted(result.category_scores.items(), key=lambda x: x[1], reverse=True):
-    print(f"- {category}: {score:.2f}")
-
-print(f"\nMost Likely Category: {result.most_likely_category}")
-print(f"Reliability: {result.reliability}")
-
-from pydantic import BaseModel, Field
-from typing import List, Optional, Union, Literal
-from enum import Enum
-
-class ConfidenceLevel(str, Enum):
-    HIGH = "high"
-    MEDIUM = "medium"
-    LOW = "low"
-
-class Extraction(BaseModel):
-    value: str
-    confidence: float = Field(gt=0, le=1)
-    confidence_level: ConfidenceLevel
-    requires_human_review: bool
-
-class ExtractionResult(BaseModel):
-    extracted_info: Extraction
-    alternative_values: Optional[List[str]] = None
-    extraction_notes: Optional[str] = None
-    suggested_action: Literal["accept", "review", "reject"] = Field(
-        description="Recommended action based on confidence: accept (high confidence), review (medium), reject (low)"
-    )
-
-def extract_with_decision(text: str, field_to_extract: str) -> ExtractionResult:
-    return client.chat.completions.create(
-        model="gpt-4",  # Better judgement with GPT-4
-        response_model=ExtractionResult,
-        messages=[
-            {
-                "role": "system",
-                "content": f"""Extract the {field_to_extract} from the text with a confidence score.
-                Assess confidence level (high: >0.8, medium: 0.5-0.8, low: <0.5) and determine if human review is needed.
-                Recommend an action (accept/review/reject) based on confidence."""
-            },
-            {"role": "user", "content": text}
-        ]
-    )
-examples = [
-    "Patient's DOB: 04/15/1985. Patient presented with symptoms of...",  # Clear
-    "The pt. was born in the mid-1980s (possibly '85) and first presented...",  # Uncertain
-    "Patient demographic information will be provided in a follow-up report."  # Missing
-]
-
-for text in examples:
-    result = extract_with_decision(text, "date of birth")
-    print(f"Text: '{text}'")
-    print(f"Extracted Value: {result.extracted_info.value}")
-    print(f"Confidence: {result.extracted_info.confidence:.2f} ({result.extracted_info.confidence_level})")
-    print(f"Requires Human Review: {result.extracted_info.requires_human_review}")
-    print(f"Suggested Action: {result.suggested_action}")
-
-    if result.alternative_values:
-        print(f"Alternative Values: {', '.join(result.alternative_values)}")
-    if result.extraction_notes:
-        print(f"Notes: {result.extraction_notes}")
-    print()
-```
-
-```shell
-$ pip install instructor pydantic
-$ python confidence-scores.py
-```
-
-For more information, see the original documentation:
-- https://github.com/jxnl/instructor
-
 ## Streaming
 
 Working with streaming responses
@@ -2874,9 +2237,8 @@ class User(BaseModel):
     age: int
     bio: str
 client = instructor.from_openai(OpenAI())
-
 def stream_user_info():
-stream = client.chat.completions.create(
+    stream = client.chat.completions.create(
         model="gpt-3.5-turbo",
         response_model=User,
         stream=True,  # Enable streaming
@@ -2885,16 +2247,15 @@ stream = client.chat.completions.create(
         ]
     )
 for chunk in stream:
-print(f"Received chunk: {chunk}")
+        print(f"Received chunk: {chunk}")
 return chunk
 
 user = stream_user_info()
 print(f"\nFinal result: {user}")
 
 from instructor import Partial
-
 def stream_user_with_partial():
-user_stream = client.chat.completions.create_partial(
+    user_stream = client.chat.completions.create_partial(
         model="gpt-3.5-turbo",
         response_model=User,
         messages=[
@@ -2910,8 +2271,7 @@ from typing import Dict, Any
 class ProgressTracker:
     def __init__(self):
         self.progress = {}
-
-    def update(self, partial_user: Partial[User]):
+def update(self, partial_user: Partial[User]):
 total_fields = len(User.model_fields)
         populated = sum(1 for v in [partial_user.name, partial_user.age, partial_user.bio] if v is not None)
         completion = int(populated / total_fields * 100)
@@ -2946,9 +2306,8 @@ def stream_with_progress():
         print(f"Progress: {progress['completion']} - Current data: {progress['data']}")
 import asyncio
 from openai import AsyncOpenAI
-
 async def stream_async():
-async_client = instructor.from_openai(AsyncOpenAI())
+    async_client = instructor.from_openai(AsyncOpenAI())
 user_stream = await async_client.chat.completions.create_partial(
         model="gpt-3.5-turbo",
         response_model=User,
@@ -2964,184 +2323,6 @@ asyncio.run(stream_async())
 ```shell
 $ pip install instructor pydantic
 $ python streaming-basics.py
-```
-
-For more information, see the original documentation:
-- https://github.com/jxnl/instructor
-
-### Streaming Partial Objects
-
-```python
-from pydantic import BaseModel, Field
-import instructor
-from openai import OpenAI
-from typing import Optional, List
-
-class Person(BaseModel):
-    name: str
-    age: int
-    occupation: str
-    skills: List[str] = Field(description="List of professional skills")
-    bio: Optional[str] = None
-client = instructor.from_openai(OpenAI())
-person_stream = client.chat.completions.create_partial(
-    model="gpt-3.5-turbo",
-    response_model=Person,
-    messages=[
-        {"role": "user", "content": "Generate profile: John Smith is a 35-year-old software engineer who knows Python, JavaScript, and SQL."}
-    ]
-)
-print("Receiving partial updates:")
-for person in person_stream:
-name = person.name if person.name is not None else "[pending]"
-    age = person.age if person.age is not None else "[pending]"
-    occupation = person.occupation if person.occupation is not None else "[pending]"
-    skills = ", ".join(person.skills) if person.skills else "[pending]"
-    bio = person.bio if person.bio is not None else "[pending]"
-print(f"\nCurrent state:")
-    print(f"Name: {name}")
-    print(f"Age: {age}")
-    print(f"Occupation: {occupation}")
-    print(f"Skills: {skills}")
-    print(f"Bio: {bio}")
-class FieldTracker:
-    def __init__(self, model_class):
-        self.field_names = list(model_class.model_fields.keys())
-        self.completed_fields = set()
-
-    def update(self, partial_obj):
-newly_completed = []
-
-        for field in self.field_names:
-            value = getattr(partial_obj, field)
-            if value is not None and field not in self.completed_fields:
-                self.completed_fields.add(field)
-                newly_completed.append(field)
-
-        return newly_completed
-person_stream = client.chat.completions.create_partial(
-    model="gpt-3.5-turbo",
-    response_model=Person,
-    messages=[
-        {"role": "user", "content": "Generate profile: Sarah Johnson is a 42-year-old marketing director skilled in SEO, content strategy, and social media."}
-    ]
-)
-tracker = FieldTracker(Person)
-
-for person in person_stream:
-    new_fields = tracker.update(person)
-
-    if new_fields:
-        print(f"Newly completed fields: {', '.join(new_fields)}")
-for field in new_fields:
-            value = getattr(person, field)
-            print(f"  {field}: {value}")
-import time
-
-class CompletionBar:
-    def __init__(self, model_class, width=40):
-        self.fields = list(model_class.model_fields.keys())
-        self.total_fields = len(self.fields)
-        self.width = width
-        self.last_progress = 0
-
-    def update(self, partial_obj):
-populated = sum(1 for field in self.fields if getattr(partial_obj, field) is not None)
-        progress = populated / self.total_fields
-if progress > self.last_progress:
-            self.last_progress = progress
-filled_width = int(self.width * progress)
-            empty_width = self.width - filled_width
-            bar = "█" * filled_width + "░" * empty_width
-            percent = int(progress * 100)
-print(f"\rProgress: [{bar}] {percent}% ({populated}/{self.total_fields} fields)", end="")
-            return True
-
-        return False
-
-def stream_with_progress_bar():
-bar = CompletionBar(Person)
-person_stream = client.chat.completions.create_partial(
-        model="gpt-3.5-turbo",
-        response_model=Person,
-        messages=[
-            {"role": "user", "content": "Generate profile: Michael Chen is a 39-year-old data scientist who knows Python, R, and machine learning techniques."}
-        ]
-    )
-for person in person_stream:
-        bar.update(person)
-        time.sleep(0.1)  # Slow down updates for visibility
-print("\n\nFinal result:")
-    print(f"Name: {person.name}")
-    print(f"Age: {person.age}")
-    print(f"Occupation: {person.occupation}")
-    print(f"Skills: {', '.join(person.skills)}")
-    if person.bio:
-        print(f"Bio: {person.bio}")
-from pydantic import BaseModel, Field
-from typing import List, Optional
-
-class Address(BaseModel):
-    street: str
-    city: str
-    country: str
-    postal_code: Optional[str] = None
-
-class Experience(BaseModel):
-    title: str
-    company: str
-    years: int
-    description: Optional[str] = None
-
-class ProfileWithNested(BaseModel):
-    name: str
-    age: int
-    addresses: List[Address] = Field(default_factory=list)
-    experience: List[Experience] = Field(default_factory=list)
-profile_stream = client.chat.completions.create_partial(
-    model="gpt-4",  # More complex model handles nested data better
-    response_model=ProfileWithNested,
-    messages=[
-        {"role": "user", "content": """
-            Generate a profile for Emma Wilson, a 45-year-old executive who has homes in:
-            - 123 Main St, New York, USA, 10001
-            - 45 Beach Road, Sydney, Australia, 2000
-
-            Work experience:
-            - CEO at TechCorp for 5 years
-            - VP of Operations at GlobalSystems for 8 years
-        """}
-    ]
-)
-for profile in profile_stream:
-    print("\nCurrent profile state:")
-    print(f"Name: {profile.name if profile.name else '[pending]'}")
-    print(f"Age: {profile.age if profile.age is not None else '[pending]'}")
-print("Addresses:")
-    if not profile.addresses:
-        print("  [pending]")
-    else:
-        for i, addr in enumerate(profile.addresses):
-            print(f"  Address {i+1}:")
-            print(f"    Street: {addr.street if addr.street else '[pending]'}")
-            print(f"    City: {addr.city if addr.city else '[pending]'}")
-            print(f"    Country: {addr.country if addr.country else '[pending]'}")
-            print(f"    Postal Code: {addr.postal_code if addr.postal_code else '[pending]'}")
-print("Experience:")
-    if not profile.experience:
-        print("  [pending]")
-    else:
-        for i, exp in enumerate(profile.experience):
-            print(f"  Job {i+1}:")
-            print(f"    Title: {exp.title if exp.title else '[pending]'}")
-            print(f"    Company: {exp.company if exp.company else '[pending]'}")
-            print(f"    Years: {exp.years if exp.years is not None else '[pending]'}")
-            print(f"    Description: {exp.description if exp.description else '[pending]'}")
-```
-
-```shell
-$ pip install instructor pydantic
-$ python partial-objects.py
 ```
 
 For more information, see the original documentation:
@@ -3324,640 +2505,6 @@ print("\nShowing only the first 3 headlines.")
 ```shell
 $ pip install instructor pydantic
 $ python streaming-lists.py
-```
-
-For more information, see the original documentation:
-- https://github.com/jxnl/instructor
-
-### Progressive Updates
-
-```python
-from pydantic import BaseModel, Field
-from typing import List, Dict, Optional
-import instructor
-from openai import OpenAI
-import time
-from enum import Enum
-from rich.console import Console
-from rich.panel import Panel
-from rich.progress import Progress, BarColumn, TextColumn, TaskProgressColumn
-from rich.table import Table
-from rich.layout import Layout
-from rich.live import Live
-from rich.text import Text
-console = Console()
-class WeatherForecast(BaseModel):
-    location: str
-    current_temp: float = Field(description="Current temperature in Celsius")
-    conditions: str = Field(description="Current weather conditions")
-    forecast: List[str] = Field(description="Weather forecast for the next few days")
-    humidity: Optional[float] = Field(None, description="Current humidity percentage")
-    wind_speed: Optional[float] = Field(None, description="Wind speed in km/h")
-client = instructor.from_openai(OpenAI())
-def update_ui(partial_forecast):
-weather_table = Table(show_header=False, expand=True)
-    weather_table.add_column("Label")
-    weather_table.add_column("Value")
-location = (
-        partial_forecast.location
-        if partial_forecast.location
-        else "Loading location..."
-    )
-    weather_table.add_row("📍 Location", location)
-temp = (
-        f"{partial_forecast.current_temp}°C"
-        if partial_forecast.current_temp is not None
-        else "--°C"
-    )
-    conditions = (
-        partial_forecast.conditions
-        if partial_forecast.conditions
-        else "Loading conditions..."
-    )
-    weather_table.add_row("🌡️ Temperature", temp)
-    weather_table.add_row("☁️ Conditions", conditions)
-humidity = (
-        f"{partial_forecast.humidity}%"
-        if partial_forecast.humidity is not None
-        else "--%"
-    )
-    wind = (
-        f"{partial_forecast.wind_speed} km/h"
-        if partial_forecast.wind_speed is not None
-        else "-- km/h"
-    )
-    weather_table.add_row("💧 Humidity", humidity)
-    weather_table.add_row("💨 Wind", wind)
-forecast_text = Text()
-    if not partial_forecast.forecast:
-        forecast_text.append("Loading forecast data...")
-    else:
-        for i, day in enumerate(partial_forecast.forecast):
-            forecast_text.append(
-                f"• {day}\n" if i < len(partial_forecast.forecast) - 1 else f"• {day}"
-            )
-fields = [
-        "location",
-        "current_temp",
-        "conditions",
-        "forecast",
-        "humidity",
-        "wind_speed",
-    ]
-    populated = sum(
-        1
-        for f in fields
-        if getattr(partial_forecast, f) is not None
-        and getattr(partial_forecast, f) != []
-    )
-    progress_value = populated / len(fields)
-
-    progress = Progress(
-        TextColumn("[bold blue]Loading:"),
-        BarColumn(),
-        TaskProgressColumn(),
-        expand=True,
-    )
-    task = progress.add_task("", total=1.0, completed=progress_value)
-layout = Layout()
-    layout.split(
-        Layout(Panel(weather_table, title="Weather Forecast"), name="weather"),
-        Layout(Panel(forecast_text, title="Forecast"), name="forecast"),
-        Layout(Panel(progress, title="Progress"), name="progress"),
-    )
-
-    console.clear()
-    console.print(layout)
-forecast_stream = client.chat.completions.create_partial(
-    model="gpt-3.5-turbo",
-    response_model=WeatherForecast,
-    messages=[
-        {
-            "role": "user",
-            "content": "Generate a fictional weather forecast for Tokyo, Japan.",
-        }
-    ],
-)
-for partial_forecast in forecast_stream:
-    update_ui(partial_forecast)
-    time.sleep(0.3)  # Slow down for demonstration
-
-console.print("[bold green]✅ Forecast fully loaded!")
-class SalesData(BaseModel):
-    total_revenue: float = Field(description="Total revenue in USD")
-    products_sold: int = Field(description="Total number of products sold")
-    by_category: Dict[str, float] = Field(
-        description="Revenue breakdown by product category"
-    )
-    top_products: List[str] = Field(description="List of top-selling products")
-    growth_rate: Optional[float] = Field(
-        None, description="Year-over-year growth rate percentage"
-    )
-def render_charts(data):
-    layout = Layout()
-header = Panel("Sales Dashboard", style="bold white on blue")
-stats_table = Table(expand=True)
-    stats_table.add_column("Metric", style="cyan")
-    stats_table.add_column("Value", style="green")
-
-    revenue = (
-        f"${data.total_revenue:,.2f}"
-        if data.total_revenue is not None
-        else "Loading..."
-    )
-    products = (
-        f"{data.products_sold:,}" if data.products_sold is not None else "Loading..."
-    )
-
-    stats_table.add_row("Revenue", revenue)
-    stats_table.add_row("Products Sold", products)
-growth_text = "Loading..."
-    if data.growth_rate is not None:
-        growth = f"{data.growth_rate:+.1f}%"
-        color = "green" if data.growth_rate > 0 else "red"
-        growth_text = Text(growth, style=color)
-    stats_table.add_row("Growth Rate", growth_text)
-category_table = Table(title="Revenue by Category", expand=True)
-    category_table.add_column("Category")
-    category_table.add_column("Amount")
-    category_table.add_column("Chart")
-
-    if not data.by_category:
-        category_table.add_row("Loading category data...", "", "")
-    else:
-        max_value = max(data.by_category.values()) if data.by_category else 0
-        for category, amount in data.by_category.items():
-            bar_length = int(20 * (amount / max_value)) if max_value > 0 else 0
-            bar = "█" * bar_length
-            category_table.add_row(category, f"${amount:,.2f}", bar)
-products_table = Table(title="Top Products", expand=True)
-    products_table.add_column("Rank")
-    products_table.add_column("Product")
-
-    if not data.top_products:
-        products_table.add_row("", "Loading top products...")
-    else:
-        for i, product in enumerate(data.top_products, 1):
-            products_table.add_row(f"{i}", product)
-layout.split(
-        Layout(header, size=3),
-        Layout(Panel(stats_table, title="Key Metrics"), name="stats", size=10),
-        Layout(Panel(category_table, title="Categories"), name="categories"),
-        Layout(Panel(products_table, title="Top Products"), name="products"),
-    )
-
-    console.clear()
-    console.print(layout)
-sales_stream = client.chat.completions.create_partial(
-    model="gpt-3.5-turbo",
-    response_model=SalesData,
-    messages=[
-        {
-            "role": "user",
-            "content": "Generate fictional quarterly sales data for an electronics company.",
-        }
-    ],
-)
-for partial_data in sales_stream:
-    render_charts(partial_data)
-    time.sleep(0.5)  # Slow down for demonstration
-
-console.print("[bold green]✅ Dashboard fully loaded!")
-
-
-class TaskStatus(str, Enum):
-    PENDING = "pending"
-    IN_PROGRESS = "in_progress"
-    COMPLETED = "completed"
-
-
-class SubTask(BaseModel):
-    name: str
-    status: TaskStatus = TaskStatus.PENDING
-    details: Optional[str] = None
-
-
-class AnalysisTask(BaseModel):
-    document_name: str
-    total_words: Optional[int] = None
-    subtasks: List[SubTask] = Field(default_factory=list)
-    key_findings: List[str] = Field(default_factory=list)
-    completion_percentage: Optional[float] = None
-analysis_stream = client.chat.completions.create_partial(
-    model="gpt-3.5-turbo",
-    response_model=AnalysisTask,
-    messages=[
-        {
-            "role": "user",
-            "content": """
-            Simulate a document analysis process for a research paper titled
-            'Advances in Renewable Energy Storage'. Include multiple subtasks
-            and key findings.
-        """,
-        }
-    ],
-)
-def render_progress_ui(task):
-    layout = Layout()
-doc_name = task.document_name if task.document_name else "Loading document..."
-    header = Panel(f"Analyzing: {doc_name}", style="bold white on blue")
-doc_info = Text()
-    if task.total_words is not None:
-        doc_info.append(f"Document length: {task.total_words:,} words")
-    else:
-        doc_info.append("Document length: Calculating...")
-tasks_table = Table(expand=True)
-    tasks_table.add_column("Status")
-    tasks_table.add_column("Task")
-    tasks_table.add_column("Details")
-
-    if not task.subtasks:
-        tasks_table.add_row("⏱️", "Preparing analysis tasks...", "")
-    else:
-        for subtask in task.subtasks:
-if subtask.status == TaskStatus.COMPLETED:
-                symbol = "✅"
-            elif subtask.status == TaskStatus.IN_PROGRESS:
-                symbol = "⏳"
-            else:
-                symbol = "⏱️"
-
-            details = subtask.details if subtask.details else ""
-            tasks_table.add_row(symbol, subtask.name, details)
-findings_text = Text()
-    if not task.key_findings:
-        findings_text.append("No findings yet...")
-    else:
-        for i, finding in enumerate(task.key_findings, 1):
-            findings_text.append(
-                f"{i}. {finding}\n" if i < len(task.key_findings) else f"{i}. {finding}"
-            )
-progress = Progress(
-        TextColumn("[bold blue]Overall Progress:"),
-        BarColumn(),
-        TaskProgressColumn(),
-        expand=True,
-    )
-    task_progress = progress.add_task(
-        "", total=1.0, completed=task.completion_percentage or 0
-    )
-layout.split(
-        Layout(header, size=3),
-        Layout(Panel(doc_info, title="Document Info"), size=5),
-        Layout(Panel(tasks_table, title="Analysis Progress"), name="tasks"),
-        Layout(Panel(findings_text, title="Key Findings"), name="findings"),
-        Layout(Panel(progress, title="Progress"), name="progress", size=5),
-    )
-
-    console.clear()
-    console.print(layout)
-for partial_analysis in analysis_stream:
-    render_progress_ui(partial_analysis)
-    time.sleep(0.3)  # Slow down for demonstration
-
-console.print("[bold green]✅ Analysis complete!")
-
-
-class DocumentSummary(BaseModel):
-    title: str
-    author: Optional[str] = None
-    publication_date: Optional[str] = None
-    word_count: Optional[int] = None
-    summary: str = Field(description="Complete summary of the document")
-    key_points: List[str] = Field(default_factory=list)
-    categories: List[str] = Field(default_factory=list)
-summary_stream = client.chat.completions.create_partial(
-    model="gpt-3.5-turbo",
-    response_model=DocumentSummary,
-    messages=[
-        {
-            "role": "user",
-            "content": """
-            Generate a summary for an academic paper titled:
-            "The Impact of Artificial Intelligence on Global Labor Markets:
-            A Comprehensive Analysis of Automation Trends from 2020-2023"
-        """,
-        }
-    ],
-)
-def render_document_summary(partial_summary):
-    layout = Layout()
-title = partial_summary.title if partial_summary.title else "Loading title..."
-    header = Panel(title, style="bold white on blue")
-meta_table = Table(expand=True, show_header=False)
-    meta_table.add_column("Field")
-    meta_table.add_column("Value")
-
-    author = partial_summary.author if partial_summary.author else "Unknown"
-    date = (
-        partial_summary.publication_date
-        if partial_summary.publication_date
-        else "Unknown"
-    )
-    word_count = (
-        f"{partial_summary.word_count:,} words"
-        if partial_summary.word_count is not None
-        else "Calculating..."
-    )
-
-    meta_table.add_row("👤 Author", author)
-    meta_table.add_row("📅 Published", date)
-    meta_table.add_row("📊 Word Count", word_count)
-categories_text = Text()
-    if not partial_summary.categories:
-        categories_text.append("Loading categories...")
-    else:
-        categories_text.append(", ".join(partial_summary.categories))
-points_text = Text()
-    if not partial_summary.key_points:
-        points_text.append("Extracting key points...")
-    else:
-        for i, point in enumerate(partial_summary.key_points, 1):
-            points_text.append(
-                f"{i}. {point}\n"
-                if i < len(partial_summary.key_points)
-                else f"{i}. {point}"
-            )
-summary_text = Text()
-    if not partial_summary.summary:
-        summary_text.append("Generating summary...")
-    else:
-        summary_text.append(partial_summary.summary)
-layout.split(
-        Layout(header, size=3),
-        Layout(Panel(meta_table, title="Document Metadata"), size=10),
-        Layout(Panel(categories_text, title="Categories"), size=5),
-        Layout(Panel(points_text, title="Key Points")),
-        Layout(Panel(summary_text, title="Summary")),
-    )
-
-    console.clear()
-    console.print(layout)
-for partial_summary in summary_stream:
-    render_document_summary(partial_summary)
-    time.sleep(0.3)  # Slow down for demonstration
-
-console.print("[bold green]✅ Document summary complete!")
-```
-
-For more information, see the original documentation:
-- https://github.com/jxnl/instructor
-
-### Handling Stream Errors
-
-```python
-from pydantic import BaseModel, Field
-import instructor
-from openai import OpenAI
-from typing import List, Optional
-class Person(BaseModel):
-    name: str
-    age: int = Field(gt=0, lt=150)  # Age validation constraint: must be between 1-149
-    occupation: str
-client = instructor.from_openai(OpenAI())
-def stream_with_error_handling():
-    try:
-person_stream = client.chat.completions.create_partial(
-            model="gpt-3.5-turbo",
-            response_model=Person,
-            messages=[
-                {"role": "user", "content": "Generate a profile for a fictional person who is 200 years old."}
-            ]
-        )
-for partial_person in person_stream:
-print(f"Current state: {partial_person}")
-print("\nFinal result:", partial_person)
-
-    except Exception as e:
-print(f"\nError occurred: {type(e).__name__}: {str(e)}")
-        print("Handling the error gracefully...")
-stream_with_error_handling()
-from pydantic import BaseModel, Field, ValidationError
-from typing import Optional, List, Any
-
-class Product(BaseModel):
-    name: str
-    price: float = Field(gt=0)  # Must be positive
-    quantity: int = Field(ge=0)  # Must be non-negative
-    category: str
-
-def safe_stream_processing():
-try:
-        product_stream = client.chat.completions.create_partial(
-            model="gpt-3.5-turbo",
-            response_model=Product,
-            messages=[
-                {"role": "user", "content": "Generate a product with negative price."},
-            ]
-        )
-last_valid_state = None
-
-        try:
-            for partial_product in product_stream:
-                print(f"Processing: {partial_product}")
-                last_valid_state = partial_product
-        except ValidationError as e:
-            print(f"\nValidation failed: {e}\n")
-
-            if last_valid_state:
-                print(f"Last valid state before error: {last_valid_state}")
-corrected_product = Product(
-                    name=last_valid_state.name or "Unknown Product",
-                    price=abs(last_valid_state.price) if last_valid_state.price is not None else 9.99,
-                    quantity=last_valid_state.quantity or 0,
-                    category=last_valid_state.category or "Uncategorized"
-                )
-
-                print(f"\nRecovered with corrected data: {corrected_product}")
-            else:
-                print("No valid state was received before the error")
-
-    except Exception as outer_e:
-        print(f"Outer exception: {outer_e}")
-safe_stream_processing()
-
-from pydantic import BaseModel, Field, ValidationError
-from typing import Optional, List, Dict, Union, Any
-
-class StockData(BaseModel):
-    symbol: str
-    price: float = Field(gt=0)
-    volume: int = Field(gt=0)
-    change_percent: float
-def safe_extract_from_chunk(chunk_data: Dict[str, Any], model_class) -> Optional[Any]:
-    try:
-return model_class.model_validate(chunk_data)
-    except ValidationError:
-return None
-def stream_with_manual_validation():
-stream = client.chat.completions.create(
-        model="gpt-3.5-turbo",
-        stream=True,  # Enable streaming
-        messages=[
-            {"role": "user", "content": "Generate stock data for ACME Corp with possible errors."}
-        ],
-        tools=[
-            {
-                "type": "function",
-                "function": {
-                    "name": "stock_data",
-                    "description": "Return stock data",
-                    "parameters": StockData.model_json_schema()
-                }
-            }
-        ],
-        tool_choice={"type": "function", "function": {"name": "stock_data"}}
-    )
-combined_data = {}
-    invalid_chunks = []
-
-    for chunk in stream:
-        if hasattr(chunk, 'choices') and chunk.choices and hasattr(chunk.choices[0], 'delta'):
-            delta = chunk.choices[0].delta
-if hasattr(delta, 'tool_calls') and delta.tool_calls:
-                for tool_call in delta.tool_calls:
-                    if hasattr(tool_call, 'function') and tool_call.function:
-                        if hasattr(tool_call.function, 'arguments') and tool_call.function.arguments:
-try:
-                                import json
-                                json_str = tool_call.function.arguments
-                                data = json.loads(json_str)
-combined_data.update(data)
-result = safe_extract_from_chunk(combined_data, StockData)
-
-                                if result:
-                                    print(f"Valid partial data: {result}")
-                                else:
-                                    print(f"Current data invalid: {combined_data}")
-                                    invalid_chunks.append(combined_data.copy())
-                            except json.JSONDecodeError:
-                                print(f"Invalid JSON: {tool_call.function.arguments}")
-try:
-        final_result = StockData.model_validate(combined_data)
-        print(f"\nFinal valid result: {final_result}")
-    except ValidationError as e:
-        print(f"\nFinal validation failed: {e}")
-        print("Invalid states encountered:", invalid_chunks)
-corrected_data = combined_data.copy()
-        if 'price' in corrected_data and corrected_data['price'] <= 0:
-            corrected_data['price'] = abs(corrected_data['price']) or 10.0
-        if 'volume' in corrected_data and corrected_data['volume'] <= 0:
-            corrected_data['volume'] = abs(corrected_data['volume']) or 1000
-
-        try:
-            recovered = StockData.model_validate(corrected_data)
-            print(f"Recovered result: {recovered}")
-        except ValidationError:
-            print("Could not recover valid data")
-stream_with_manual_validation()
-
-from pydantic import BaseModel, Field, ValidationError
-from typing import Optional, List, Any, Union
-class Address(BaseModel):
-    street: str
-    city: str
-    country: str
-    postal_code: str = Field(min_length=5)  # Validation that might fail
-
-class Person(BaseModel):
-    name: str
-    age: int = Field(gt=0, lt=150)
-    address: Address
-class SimpleAddress(BaseModel):
-    street: Optional[str] = None
-    city: Optional[str] = None
-    country: Optional[str] = None
-    postal_code: Optional[str] = None
-
-class SimplePerson(BaseModel):
-    name: Optional[str] = None
-    age: Optional[int] = None
-    address: Optional[SimpleAddress] = None
-def stream_with_fallbacks():
-person_stream = client.chat.completions.create_partial(
-        model="gpt-3.5-turbo",
-        response_model=Person,
-        max_retries=1,  # Limit retries
-        messages=[
-            {"role": "user", "content": "Generate a person with an invalid postal code."}
-        ]
-    )
-primary_stream_failed = False
-    try:
-        for partial_person in person_stream:
-            print(f"Primary model state: {partial_person}")
-    except ValidationError as e:
-        print(f"\nValidation error in primary model: {str(e)}\n")
-        primary_stream_failed = True
-if primary_stream_failed:
-        print("Falling back to simplified model...")
-fallback_stream = client.chat.completions.create_partial(
-            model="gpt-3.5-turbo",
-            response_model=SimplePerson,
-            messages=[
-                {"role": "user", "content": "Generate a person with an invalid postal code."}
-            ]
-        )
-
-        try:
-for partial_person in fallback_stream:
-                print(f"Fallback model state: {partial_person}")
-
-            print("\nCompleted with fallback model")
-        except Exception as fallback_error:
-            print(f"Even fallback model failed: {str(fallback_error)}")
-stream_with_fallbacks()
-
-from pydantic import BaseModel, Field, ValidationError
-from typing import Optional, List, Any
-
-class Review(BaseModel):
-    product_id: str
-    rating: int = Field(ge=1, le=5)
-    comment: str
-    reviewer_name: str
-def robust_stream_processing():
-    print("1. Testing partial stream with validation errors:\n")
-
-    try:
-review_stream = client.chat.completions.create_partial(
-            model="gpt-3.5-turbo",
-            response_model=Review,
-            messages=[
-                {"role": "user", "content": "Generate a product review with a rating of 10 stars."}
-            ]
-        )
-
-        for partial_review in review_stream:
-            print(f"Partial: {partial_review}")
-
-    except ValidationError as e:
-        print(f"\nPartial stream validation failed: {str(e)}\n")
-
-    print("\n2. Testing iterable stream with validation errors:\n")
-
-    try:
-reviews_iterable = client.chat.completions.create_iterable(
-            model="gpt-3.5-turbo",
-            response_model=Review,
-            messages=[
-                {"role": "user", "content": "Generate 3 product reviews, make one with an invalid rating of 0."}
-            ]
-        )
-for i, review in enumerate(reviews_iterable):
-            try:
-                print(f"Item {i+1}: {review}")
-            except ValidationError as item_error:
-                print(f"Item {i+1} validation failed: {str(item_error)}")
-
-    except Exception as outer_error:
-        print(f"Outer iterable error: {str(outer_error)}")
-robust_stream_processing()
-```
-
-```shell
-$ pip install instructor pydantic
-$ python handling-stream-errors.py
 ```
 
 For more information, see the original documentation:
@@ -4175,10 +2722,9 @@ class Task(BaseModel):
         default_factory=list,
         description="IDs of subtasks that must be completed before this task"
     )
-
-    async def execute(self, with_results: TaskResults) -> TaskResult:
+async def execute(self, with_results: TaskResults) -> TaskResult:
         """Execute this task and return the result."""
-return TaskResult(task_id=self.id, result=f"Result for task: {self.task}")
+        return TaskResult(task_id=self.id, result=f"Result for task: {self.task}")
 class TaskPlan(BaseModel):
     task_graph: list[Task] = Field(
         ...,
@@ -4189,12 +2735,12 @@ class TaskPlan(BaseModel):
         """Compute topological sort of tasks based on dependencies."""
         dep_graph = {task.id: set(task.subtasks) for task in self.task_graph}
         result = []
-
-        while dep_graph:
-available = {task_id for task_id, deps in dep_graph.items() if not deps}
+while dep_graph:
+            available = {task_id for task_id, deps in dep_graph.items() if not deps}  # Tasks with no dependencies
             if not available:
                 raise ValueError("Circular dependency detected in tasks")
-result.extend(sorted(available))
+
+            result.extend(sorted(available))  # Add to execution order
 dep_graph = {
                 task_id: (deps - available)
                 for task_id, deps in dep_graph.items()
@@ -4208,8 +2754,7 @@ dep_graph = {
         execution_order = self._get_execution_order()
         tasks_by_id = {task.id: task for task in self.task_graph}
         results = {}
-
-        while len(results) < len(self.task_graph):
+while len(results) < len(self.task_graph):
 ready_tasks = [
                 tasks_by_id[task_id]
                 for task_id in execution_order
@@ -4610,7 +3155,7 @@ class BasicUserProfile(BaseModel):
     age: int = Field(description="User's age", ge=0)
 def extract_user_with_fallback(text: str):
     try:
-return client.chat.completions.create(
+        return client.chat.completions.create(  # First attempt with detailed model
             model="gpt-3.5-turbo",
             messages=[
                 {
@@ -4623,7 +3168,7 @@ return client.chat.completions.create(
         )
     except InstructorRetryException:
         print("Detailed extraction failed, falling back to basic profile")
-return client.chat.completions.create(
+        return client.chat.completions.create(  # Fall back to simpler model
             model="gpt-3.5-turbo",
             messages=[
                 {
@@ -4678,7 +3223,7 @@ class ExtractionResult(BaseModel):
     error_message: str = ""
 def extract_with_robustness(text: str) -> ExtractionResult:
     try:
-result = client.chat.completions.create(
+        result = client.chat.completions.create(  # Primary extraction attempt
             model="gpt-3.5-turbo",
             messages=[{"role": "user", "content": f"Extract contact info: {text}"}],
             response_model=Contact,
@@ -4688,11 +3233,11 @@ result = client.chat.completions.create(
             status=ExtractionStatus.SUCCESS,
             data=result.model_dump()
         )
-    except InstructorRetryException as e:
-try:
+except InstructorRetryException as e:
+        try:
             partial_data = {}
-error_msg = e.messages[-1]["content"]
-text_lines = text.split('\n')
+            error_msg = e.messages[-1]["content"]  # Parse the error message
+            text_lines = text.split('\n')
             for line in text_lines:
                 if "name:" in line.lower():
                     partial_data["name"] = line.split("name:")[1].strip()
@@ -4865,7 +3410,7 @@ class ImageContent(BaseModel):
     objects: List[str] = Field(description="List of main objects in the image")
     colors: List[str] = Field(description="Dominant colors in the image")
 def analyze_image_from_file(file_path: str) -> ImageContent:
-image = instructor.Image.from_path(file_path)
+    image = instructor.Image.from_path(file_path)
 
     return client.chat.completions.create(
         model="gpt-4-vision-preview",
@@ -4881,7 +3426,7 @@ image = instructor.Image.from_path(file_path)
         ]
     )
 def analyze_image_from_url(image_url: str) -> ImageContent:
-image = instructor.Image.from_url(image_url)
+    image = instructor.Image.from_url(image_url)
 
     return client.chat.completions.create(
         model="gpt-4-vision-preview",
@@ -5509,7 +4054,8 @@ def extract_parallel_info(user_query: str) -> list[Union[Weather, SearchQuery]]:
         ],
         response_model=Iterable[Weather | SearchQuery]
     )
-return list(function_calls)
+
+    return list(function_calls)  # Convert the iterable to a list
 results = extract_parallel_info(
     "What's the weather in New York and Tokyo? Also, find information about renewable energy."
 )
@@ -5601,7 +4147,7 @@ async def analyze_sentiment(text: str) -> Tuple[str, SentimentAnalysis]:
         )
         return text, result
 async def process_batch(texts: List[str]):
-tasks = [analyze_sentiment(text) for text in texts]
+    tasks = [analyze_sentiment(text) for text in texts]  # Create tasks for all texts
 results = []
     for task in asyncio.as_completed(tasks):
         original_text, sentiment = await task
@@ -5698,12 +4244,10 @@ for i in range(0, total, chunk_size):
 async def process_with_sem(item):
             async with sem:
                 return await process_item(item)
-
-        tasks = [process_with_sem(item) for item in chunk]
-chunk_results = await asyncio.gather(*tasks)
+tasks = [process_with_sem(item) for item in chunk]
+        chunk_results = await asyncio.gather(*tasks)
         results.extend(chunk_results)
-
-        processed += len(chunk)
+processed += len(chunk)
         print(f"Progress: {processed}/{total} ({processed/total*100:.1f}%)")
 if output_file:
             with open(output_file, "a") as f:
@@ -5716,7 +4260,7 @@ feedback_items = [
         "Your app crashes every time I try to upload a photo. Please fix this ASAP!",
         "I love the new dark mode feature. It makes the app much easier on the eyes.",
         "The checkout process is too complicated. I gave up trying to make a purchase.",
-        "Your customer service rep was very helpful in resolving my issue.",
+        "Your customer service rep was very helpful in resolving my issue."
 ]
 
     results = await batch_process(

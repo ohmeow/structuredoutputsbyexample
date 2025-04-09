@@ -221,9 +221,8 @@ class User(BaseModel):
     age: int
     bio: str
 client = instructor.from_openai(OpenAI())
-
 def stream_user_info():
-stream = client.chat.completions.create(
+    stream = client.chat.completions.create(
         model=&quot;gpt-3.5-turbo&quot;,
         response_model=User,
         stream=True,  # Enable streaming
@@ -232,16 +231,15 @@ stream = client.chat.completions.create(
         ]
     )
 for chunk in stream:
-print(f&quot;Received chunk: {chunk}&quot;)
+        print(f&quot;Received chunk: {chunk}&quot;)
 return chunk
 
 user = stream_user_info()
 print(f&quot;\nFinal result: {user}&quot;)
 
 from instructor import Partial
-
 def stream_user_with_partial():
-user_stream = client.chat.completions.create_partial(
+    user_stream = client.chat.completions.create_partial(
         model=&quot;gpt-3.5-turbo&quot;,
         response_model=User,
         messages=[
@@ -257,8 +255,7 @@ from typing import Dict, Any
 class ProgressTracker:
     def __init__(self):
         self.progress = {}
-
-    def update(self, partial_user: Partial[User]):
+def update(self, partial_user: Partial[User]):
 total_fields = len(User.model_fields)
         populated = sum(1 for v in [partial_user.name, partial_user.age, partial_user.bio] if v is not None)
         completion = int(populated / total_fields * 100)
@@ -293,9 +290,8 @@ def stream_with_progress():
         print(f&quot;Progress: {progress[&#x27;completion&#x27;]} - Current data: {progress[&#x27;data&#x27;]}&quot;)
 import asyncio
 from openai import AsyncOpenAI
-
 async def stream_async():
-async_client = instructor.from_openai(AsyncOpenAI())
+    async_client = instructor.from_openai(AsyncOpenAI())
 user_stream = await async_client.chat.completions.create_partial(
         model=&quot;gpt-3.5-turbo&quot;,
         response_model=User,
@@ -339,19 +335,18 @@ class User(BaseModel):
 
                 </div>
                 <div class="code">
-                    <pre><code class="language-python">client = instructor.from_openai(OpenAI())
-
-def stream_user_info():</code></pre>
+                    <pre><code class="language-python">client = instructor.from_openai(OpenAI())</code></pre>
                 </div>
             </div>
             <hr>
             <div class="row">
                 <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Create a streaming response</div>
+                    <div style='font-size: 0.9em; color: #666;'>Create a basic streaming response and process the chunks</div>
 
                 </div>
                 <div class="code">
-                    <pre><code class="language-python">stream = client.chat.completions.create(
+                    <pre><code class="language-python">def stream_user_info():
+    stream = client.chat.completions.create(
         model=&quot;gpt-3.5-turbo&quot;,
         response_model=User,
         stream=True,  # Enable streaming
@@ -364,27 +359,18 @@ def stream_user_info():</code></pre>
             <hr>
             <div class="row">
                 <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Process the stream</div>
+                    <div style='font-size: 0.9em; color: #666;'>Each chunk contains the partial model constructed so far</div>
 
                 </div>
                 <div class="code">
-                    <pre><code class="language-python">for chunk in stream:</code></pre>
+                    <pre><code class="language-python">for chunk in stream:
+        print(f&quot;Received chunk: {chunk}&quot;)</code></pre>
                 </div>
             </div>
             <hr>
             <div class="row">
                 <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>The chunk contains a partial response so far</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">print(f&quot;Received chunk: {chunk}&quot;)</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>The last chunk is the complete response</div>
+                    <div style='font-size: 0.9em; color: #666;'>Return the final complete object</div>
 
                 </div>
                 <div class="code">
@@ -393,19 +379,18 @@ def stream_user_info():</code></pre>
 user = stream_user_info()
 print(f&quot;\nFinal result: {user}&quot;)
 
-from instructor import Partial
-
-def stream_user_with_partial():</code></pre>
+from instructor import Partial</code></pre>
                 </div>
             </div>
             <hr>
             <div class="row">
                 <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Create a streaming response using create_partial</div>
+                    <div style='font-size: 0.9em; color: #666;'>Stream with Partial objects for field-by-field progress tracking</div>
 
                 </div>
                 <div class="code">
-                    <pre><code class="language-python">user_stream = client.chat.completions.create_partial(
+                    <pre><code class="language-python">def stream_user_with_partial():
+    user_stream = client.chat.completions.create_partial(
         model=&quot;gpt-3.5-turbo&quot;,
         response_model=User,
         messages=[
@@ -417,7 +402,7 @@ def stream_user_with_partial():</code></pre>
             <hr>
             <div class="row">
                 <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Process the stream of Partial[User] objects</div>
+                    <div style='font-size: 0.9em; color: #666;'>Show progress as each field gets filled in</div>
 
                 </div>
                 <div class="code">
@@ -429,7 +414,7 @@ def stream_user_with_partial():</code></pre>
             <hr>
             <div class="row">
                 <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>As new fields are populated, they show up in the partial_user</div>
+                    <div style='font-size: 0.9em; color: #666;'>Fields appear as they're generated by the model</div>
 
                 </div>
                 <div class="code">
@@ -451,15 +436,23 @@ Current state: name='Bob', age=35, bio='Software developer with 10 years of expe
 
 class ProgressTracker:
     def __init__(self):
-        self.progress = {}
-
-    def update(self, partial_user: Partial[User]):</code></pre>
+        self.progress = {}</code></pre>
                 </div>
             </div>
             <hr>
             <div class="row">
                 <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Calculate percentage of fields that are populated</div>
+                    <div style='font-size: 0.9em; color: #666;'>Monitor completion percentage and track field updates</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">def update(self, partial_user: Partial[User]):</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Calculate what percentage of fields are now populated</div>
 
                 </div>
                 <div class="code">
@@ -471,7 +464,7 @@ class ProgressTracker:
             <hr>
             <div class="row">
                 <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Track changes</div>
+                    <div style='font-size: 0.9em; color: #666;'>Build a dictionary of only the fields that have values</div>
 
                 </div>
                 <div class="code">
@@ -517,25 +510,24 @@ Progress: 100% - Current data: {'name': 'Carol', 'age': 42, 'bio': 'Carol is a p
                 </div>
                 <div class="code">
                     <pre><code class="language-python">import asyncio
-from openai import AsyncOpenAI
-
-async def stream_async():</code></pre>
+from openai import AsyncOpenAI</code></pre>
                 </div>
             </div>
             <hr>
             <div class="row">
                 <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Create async client</div>
+                    <div style='font-size: 0.9em; color: #666;'>Demonstrate async streaming with await syntax</div>
 
                 </div>
                 <div class="code">
-                    <pre><code class="language-python">async_client = instructor.from_openai(AsyncOpenAI())</code></pre>
+                    <pre><code class="language-python">async def stream_async():
+    async_client = instructor.from_openai(AsyncOpenAI())</code></pre>
                 </div>
             </div>
             <hr>
             <div class="row">
                 <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Create an async streaming response</div>
+                    <div style='font-size: 0.9em; color: #666;'>Use async/await pattern for non-blocking streaming</div>
 
                 </div>
                 <div class="code">
@@ -551,7 +543,7 @@ async def stream_async():</code></pre>
             <hr>
             <div class="row">
                 <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Process the stream</div>
+                    <div style='font-size: 0.9em; color: #666;'>Process stream with async for loop</div>
 
                 </div>
                 <div class="code">
@@ -607,15 +599,15 @@ async def stream_async():</code></pre>
             </ul>
             <div class="navigation">
                 <p class="prev">
-                    <span>← Previous:</span> <a href="../022-confidence-scores/">Working with Confidence Scores</a>
+                    <span>← Previous:</span> <a href="../019-multi-label-classification/">Multi-label Classification</a>
                 </p>
                 <p class="next">
-                    <span>Next:</span> <a href="../024-partial-objects/">Streaming Partial Objects</a> →
+                    <span>Next:</span> <a href="../025-streaming-lists/">Streaming Lists</a> →
                 </p>
             </div>
         </main>
         <footer>
-            <p>by <a href="https://github.com/jxnl/instructor">Instructor</a> | <a href="https://github.com/jxnl/instructor">GitHub</a> | <span style="color: #888; font-size: 0.9em;">Last updated: April 9, 2025</span></p>
+            <p>by <a href="https://github.com/jxnl/instructor">Instructor</a> | <a href="https://github.com/jxnl/instructor">GitHub</a> | <span style="color: #888; font-size: 0.9em;">Last updated: April 10, 2025</span></p>
         </footer>
     </div>
     <script>

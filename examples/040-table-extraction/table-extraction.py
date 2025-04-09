@@ -1,6 +1,6 @@
 # Table Extraction
 
-# Add descriptive metadata like captions to tables
+# Extract structured tabular data from text using Instructor. Add descriptive metadata like captions to enhance table representation.
 
 # Instructor makes it easy to extract structured tables from images and convert them to pandas dataframes for analysis.
 import instructor

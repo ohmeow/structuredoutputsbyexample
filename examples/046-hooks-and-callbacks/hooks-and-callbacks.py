@@ -1,6 +1,6 @@
 # Hooks and Callbacks
 
-# - Testing and mocking
+# Use hooks and callbacks to extend Instructor's functionality. Enables custom behavior for testing, mocking, logging, and error handling.
 
 # Instructor provides a powerful hooks system that allows you to intercept and handle events during the completion and parsing process. Hooks can be used for logging, error handling, and custom behaviors.
 import instructor

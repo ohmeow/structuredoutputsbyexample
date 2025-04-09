@@ -1,6 +1,6 @@
 # PDF Extraction
 
-# - Integrate PDF processing into data pipelines
+# Extract structured data from PDF documents with Instructor. Enables integration of PDF processing into data extraction pipelines.
 
 # Instructor provides support for working with PDF documents through a combination of vision capabilities and structured extraction.
 import instructor

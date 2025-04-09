@@ -1,6 +1,6 @@
 # Dependency Trees
 
-# - Identifying bottlenecks in processes
+# Model hierarchical dependencies using Instructor. This technique helps identify bottlenecks and critical paths in processes and systems.
 
 # Dependency trees represent relationships where some items depend on others. Instructor can extract these structures for tasks like workflow management, build systems, or data processing pipelines.
 import instructor
