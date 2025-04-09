@@ -8,7 +8,7 @@ Note: A more comprehensive version of this file / documentation is available at 
 
 ## Getting Started
 
-- Getting Started with Structured Outputs
+- Getting Started with Structured Outputs: Learn the basics of structured LLM outputs with Instructor.
 - Installing Instructor
 - Your First Extraction
 - Understanding Response Models

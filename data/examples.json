@@ -3,7 +3,7 @@
     {
       "id": "001-getting-started",
       "title": "Getting Started with Structured Outputs",
-      "description": "",
+      "description": "Learn the basics of structured LLM outputs with Instructor. This guide demonstrates how to extract consistent, validated data from language models.\nLarge language models are powerful, but extracting structured data can be challenging.\nStructured outputs solve this by having LLMs return data in consistent, machine-readable formats.",
       "order": 1,
       "code_segments": [
         {
@@ -11,62 +11,10 @@
           "display_code": "\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 2,
-          "line_range": [
-            2,
-            2
-          ]
-        },
-        {
-          "code": "# Learn the basics of structured LLM outputs with Instructor. This guide demonstrates how to extract consistent, validated data from language models.\n",
-          "display_code": "",
-          "annotation": "Learn the basics of structured LLM outputs with Instructor. This guide demonstrates how to extract consistent, validated data from language models.",
-          "is_comment": true,
-          "start_line": 3,
-          "line_range": [
-            3,
-            3
-          ],
-          "target_line_range": [
-            4,
-            4
-          ]
-        },
-        {
-          "code": "\n",
-          "display_code": "\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 4,
-          "line_range": [
-            4,
-            4
-          ]
-        },
-        {
-          "code": "# Large language models are powerful, but extracting structured data can be challenging.\n# Structured outputs solve this by having LLMs return data in consistent, machine-readable formats.\n",
-          "display_code": "",
-          "annotation": "Large language models are powerful, but extracting structured data can be challenging.\nStructured outputs solve this by having LLMs return data in consistent, machine-readable formats.",
-          "is_comment": true,
           "start_line": 5,
           "line_range": [
             5,
-            6
-          ],
-          "target_line_range": [
-            7,
-            7
-          ]
-        },
-        {
-          "code": "\n",
-          "display_code": "\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 7,
-          "line_range": [
-            7,
-            7
+            5
           ]
         },
         {
@@ -74,14 +22,14 @@
           "display_code": "",
           "annotation": "Using a standard OpenAI client for unstructured output",
           "is_comment": true,
-          "start_line": 8,
+          "start_line": 6,
           "line_range": [
-            8,
-            8
+            6,
+            6
           ],
           "target_line_range": [
-            9,
-            12
+            7,
+            10
           ]
         },
         {
@@ -89,10 +37,10 @@
           "display_code": "from openai import OpenAI\n\nclient = OpenAI()\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 9,
+          "start_line": 7,
           "line_range": [
-            9,
-            12
+            7,
+            10
           ]
         },
         {
@@ -100,14 +48,14 @@
           "display_code": "",
           "annotation": "Ask for customer information in free text",
           "is_comment": true,
-          "start_line": 13,
+          "start_line": 11,
           "line_range": [
-            13,
-            13
+            11,
+            11
           ],
           "target_line_range": [
-            14,
-            25
+            12,
+            23
           ]
         },
         {
@@ -115,10 +63,10 @@
           "display_code": "response = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    messages=[\n        {\n            \"role\": \"user\",\n            \"content\": \"Extract customer: John Doe, age 35, email: john@example.com\",\n        }\n    ],\n)\n\nprint(response.choices[0].message.content)\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 14,
+          "start_line": 12,
           "line_range": [
-            14,
-            25
+            12,
+            23
           ]
         },
         {
@@ -126,14 +74,14 @@
           "display_code": "",
           "annotation": "Instructor solves these problems by combining LLMs with Pydantic validation:",
           "is_comment": true,
-          "start_line": 26,
+          "start_line": 24,
           "line_range": [
-            26,
-            26
+            24,
+            24
           ],
           "target_line_range": [
-            27,
-            31
+            25,
+            29
           ]
         },
         {
@@ -141,10 +89,10 @@
           "display_code": "import instructor\nfrom openai import OpenAI\nfrom pydantic import BaseModel, Field, EmailStr\n\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 27,
+          "start_line": 25,
           "line_range": [
-            27,
-            31
+            25,
+            29
           ]
         },
         {
@@ -152,14 +100,14 @@
           "display_code": "",
           "annotation": "Define a structured data model",
           "is_comment": true,
-          "start_line": 32,
+          "start_line": 30,
           "line_range": [
-            32,
-            32
+            30,
+            30
           ],
           "target_line_range": [
-            33,
-            38
+            31,
+            36
           ]
         },
         {
@@ -167,10 +115,10 @@
           "display_code": "class Customer(BaseModel):\n    name: str = Field(description=\"Customer's full name\")\n    age: int = Field(description=\"Customer's age in years\", ge=0, le=120)\n    email: EmailStr = Field(description=\"Customer's email address\")\n\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 33,
+          "start_line": 31,
           "line_range": [
-            33,
-            38
+            31,
+            36
           ]
         },
         {
@@ -178,14 +126,14 @@
           "display_code": "",
           "annotation": "Patch the OpenAI client with Instructor",
           "is_comment": true,
-          "start_line": 39,
+          "start_line": 37,
           "line_range": [
-            39,
-            39
+            37,
+            37
           ],
           "target_line_range": [
-            40,
-            41
+            38,
+            39
           ]
         },
         {
@@ -193,10 +141,10 @@
           "display_code": "client = instructor.from_openai(OpenAI())\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 40,
+          "start_line": 38,
           "line_range": [
-            40,
-            41
+            38,
+            39
           ]
         },
         {
@@ -204,14 +152,14 @@
           "display_code": "",
           "annotation": "Extract structured customer data",
           "is_comment": true,
-          "start_line": 42,
+          "start_line": 40,
           "line_range": [
-            42,
-            42
+            40,
+            40
           ],
           "target_line_range": [
-            43,
-            56
+            41,
+            54
           ]
         },
         {
@@ -219,16 +167,42 @@
           "display_code": "customer = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    messages=[\n        {\n            \"role\": \"user\",\n            \"content\": \"Extract customer: John Doe, age 35, email: john@example.com\",\n        }\n    ],\n    response_model=Customer,  # This is the key part\n)\n\nprint(customer)  # Customer(name='John Doe', age=35, email='john@example.com')\nprint(f\"Name: {customer.name}, Age: {customer.age}, Email: {customer.email}\")\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 43,
+          "start_line": 41,
           "line_range": [
-            43,
-            56
+            41,
+            54
           ]
         },
         {
           "code": "# Benefits:# - Type Safety: Properly typed Python objects instead of raw strings# - Validation: Automatic validation with detailed error messages# - Self-documenting: Models clearly define the expected data structure# - Consistent Results: Reliable data format across requests# - Error Handling: Automatic retry with informative feedback\n",
           "display_code": "",
           "annotation": "Benefits:# - Type Safety: Properly typed Python objects instead of raw strings# - Validation: Automatic validation with detailed error messages# - Self-documenting: Models clearly define the expected data structure# - Consistent Results: Reliable data format across requests# - Error Handling: Automatic retry with informative feedback",
+          "is_comment": true,
+          "start_line": 55,
+          "line_range": [
+            55,
+            55
+          ],
+          "target_line_range": [
+            56,
+            56
+          ]
+        },
+        {
+          "code": "\n",
+          "display_code": "\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 56,
+          "line_range": [
+            56,
+            56
+          ]
+        },
+        {
+          "code": "# Instructor workflow:# 1. Define your data structure as a Pydantic model# 2. Instruct the LLM to return data in a specific format# 3. Validate the response against your model# 4. Automatically retry if validation fails# 5. Return a properly typed Python object\n",
+          "display_code": "",
+          "annotation": "Instructor workflow:# 1. Define your data structure as a Pydantic model# 2. Instruct the LLM to return data in a specific format# 3. Validate the response against your model# 4. Automatically retry if validation fails# 5. Return a properly typed Python object",
           "is_comment": true,
           "start_line": 57,
           "line_range": [
@@ -252,9 +226,9 @@
           ]
         },
         {
-          "code": "# Instructor workflow:# 1. Define your data structure as a Pydantic model# 2. Instruct the LLM to return data in a specific format# 3. Validate the response against your model# 4. Automatically retry if validation fails# 5. Return a properly typed Python object\n",
+          "code": "# Complex data example:\n",
           "display_code": "",
-          "annotation": "Instructor workflow:# 1. Define your data structure as a Pydantic model# 2. Instruct the LLM to return data in a specific format# 3. Validate the response against your model# 4. Automatically retry if validation fails# 5. Return a properly typed Python object",
+          "annotation": "Complex data example:",
           "is_comment": true,
           "start_line": 59,
           "line_range": [
@@ -263,33 +237,7 @@
           ],
           "target_line_range": [
             60,
-            60
-          ]
-        },
-        {
-          "code": "\n",
-          "display_code": "\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 60,
-          "line_range": [
-            60,
-            60
-          ]
-        },
-        {
-          "code": "# Complex data example:\n",
-          "display_code": "",
-          "annotation": "Complex data example:",
-          "is_comment": true,
-          "start_line": 61,
-          "line_range": [
-            61,
-            61
-          ],
-          "target_line_range": [
-            62,
-            66
+            64
           ]
         },
         {
@@ -297,10 +245,10 @@
           "display_code": "from typing import List, Optional\nfrom pydantic import BaseModel, Field\nimport instructor\nfrom openai import OpenAI\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 62,
+          "start_line": 60,
           "line_range": [
-            62,
-            66
+            60,
+            64
           ]
         },
         {
@@ -308,14 +256,14 @@
           "display_code": "",
           "annotation": "Initialize the client with instructor",
           "is_comment": true,
-          "start_line": 67,
+          "start_line": 65,
           "line_range": [
-            67,
-            67
+            65,
+            65
           ],
           "target_line_range": [
-            68,
-            70
+            66,
+            68
           ]
         },
         {
@@ -323,10 +271,10 @@
           "display_code": "client = instructor.from_openai(OpenAI())\n\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 68,
+          "start_line": 66,
           "line_range": [
-            68,
-            70
+            66,
+            68
           ]
         },
         {
@@ -334,14 +282,14 @@
           "display_code": "",
           "annotation": "Define a complex, nested data structure",
           "is_comment": true,
-          "start_line": 71,
+          "start_line": 69,
           "line_range": [
-            71,
-            71
+            69,
+            69
           ],
           "target_line_range": [
-            72,
-            92
+            70,
+            90
           ]
         },
         {
@@ -349,10 +297,10 @@
           "display_code": "class Address(BaseModel):\n    street: str\n    city: str\n    state: str\n    zip_code: str\n\n\nclass Contact(BaseModel):\n    email: Optional[str] = None\n    phone: Optional[str] = None\n\n\nclass Person(BaseModel):\n    name: str\n    age: int\n    occupation: str\n    address: Address\n    contact: Contact\n    skills: List[str] = Field(description=\"List of professional skills\")\n\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 72,
+          "start_line": 70,
           "line_range": [
-            72,
-            92
+            70,
+            90
           ]
         },
         {
@@ -360,14 +308,14 @@
           "display_code": "",
           "annotation": "Extract structured data",
           "is_comment": true,
-          "start_line": 93,
+          "start_line": 91,
           "line_range": [
-            93,
-            93
+            91,
+            91
           ],
           "target_line_range": [
-            94,
-            109
+            92,
+            107
           ]
         },
         {
@@ -375,10 +323,10 @@
           "display_code": "person = client.chat.completions.create(\n    model=\"gpt-4\",\n    messages=[\n        {\n            \"role\": \"user\",\n            \"content\": \"\"\"\n        Extract detailed information for this person:\n        John Smith is a 42-year-old software engineer living at 123 Main St, San Francisco, CA 94105.\n        His email is john.smith@example.com and phone is 555-123-4567.\n        John is skilled in Python, JavaScript, and cloud architecture.\n        \"\"\",\n        }\n    ],\n    response_model=Person,\n)\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 94,
+          "start_line": 92,
           "line_range": [
-            94,
-            109
+            92,
+            107
           ]
         },
         {
@@ -386,14 +334,14 @@
           "display_code": "",
           "annotation": "Now you have a fully structured object",
           "is_comment": true,
-          "start_line": 110,
+          "start_line": 108,
           "line_range": [
-            110,
-            110
+            108,
+            108
           ],
           "target_line_range": [
-            111,
-            113
+            109,
+            111
           ]
         },
         {
@@ -401,10 +349,10 @@
           "display_code": "print(f\"Name: {person.name}\")\nprint(f\"Location: {person.address.city}, {person.address.state}\")\nprint(f\"Skills: {', '.join(person.skills)}\")\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 111,
+          "start_line": 109,
           "line_range": [
-            111,
-            113
+            109,
+            111
           ]
         }
       ],
