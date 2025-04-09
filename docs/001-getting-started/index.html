@@ -205,20 +205,30 @@
                     </div>
                     <h1 style="margin: 0; margin-bottom: 10px;">Getting Started with Structured Outputs</h1>
                 </div>
-                <div style="position: relative; margin-top: 10px;">
+                <div style="position: relative; margin-top: 10px; display: flex; gap: 8px;">
                     <button id="copy-all-python" style="background-color: #f1f8ff; border: 1px solid #c8e1ff; border-radius: 6px; padding: 6px 12px; font-size: 14px; color: #0066CC; cursor: pointer; display: flex; align-items: center; gap: 6px;">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M16 1H4C2.9 1 2 1.9 2 3V17H4V3H16V1ZM19 5H8C6.9 5 6 5.9 6 7V21C6 22.1 6.9 23 8 23H19C20.1 23 21 22.1 21 21V7C21 5.9 20.1 5 19 5ZM19 21H8V7H19V21Z" fill="currentColor"/>
                         </svg>
                         Copy All Python
                     </button>
+                    <a href="https://github.com/jxnl/structuredoutputsbyexample/edit/main/examples/001-getting-started/getting-started.py" target="_blank" style="background-color: #e6f0ea; border: 1px solid #cce1d4; border-radius: 6px; padding: 6px 12px; font-size: 14px; color: #0A7D33; text-decoration: none; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="currentColor"/>
+                        </svg>
+                        Edit
+                    </a>
                     <div id="all-python-code" style="display: none;">from openai import OpenAI
+
 client = OpenAI()
 response = client.chat.completions.create(
     model=&quot;gpt-3.5-turbo&quot;,
     messages=[
-        {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Extract customer: John Doe, age 35, email: john@example.com&quot;}
-    ]
+        {
+            &quot;role&quot;: &quot;user&quot;,
+            &quot;content&quot;: &quot;Extract customer: John Doe, age 35, email: john@example.com&quot;,
+        }
+    ],
 )
 
 print(response.choices[0].message.content)
@@ -233,9 +243,12 @@ client = instructor.from_openai(OpenAI())
 customer = client.chat.completions.create(
     model=&quot;gpt-3.5-turbo&quot;,
     messages=[
-        {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Extract customer: John Doe, age 35, email: john@example.com&quot;}
+        {
+            &quot;role&quot;: &quot;user&quot;,
+            &quot;content&quot;: &quot;Extract customer: John Doe, age 35, email: john@example.com&quot;,
+        }
     ],
-    response_model=Customer  # This is the key part
+    response_model=Customer,  # This is the key part
 )
 
 print(customer)  # Customer(name=&#x27;John Doe&#x27;, age=35, email=&#x27;john@example.com&#x27;)
@@ -251,9 +264,11 @@ class Address(BaseModel):
     state: str
     zip_code: str
 
+
 class Contact(BaseModel):
     email: Optional[str] = None
     phone: Optional[str] = None
+
 
 class Person(BaseModel):
     name: str
@@ -265,14 +280,17 @@ class Person(BaseModel):
 person = client.chat.completions.create(
     model=&quot;gpt-4&quot;,
     messages=[
-        {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;&quot;&quot;
+        {
+            &quot;role&quot;: &quot;user&quot;,
+            &quot;content&quot;: &quot;&quot;&quot;
         Extract detailed information for this person:
         John Smith is a 42-year-old software engineer living at 123 Main St, San Francisco, CA 94105.
         His email is john.smith@example.com and phone is 555-123-4567.
         John is skilled in Python, JavaScript, and cloud architecture.
-        &quot;&quot;&quot;}
+        &quot;&quot;&quot;,
+        }
     ],
-    response_model=Person
+    response_model=Person,
 )
 print(f&quot;Name: {person.name}&quot;)
 print(f&quot;Location: {person.address.city}, {person.address.state}&quot;)
@@ -280,17 +298,15 @@ print(f&quot;Skills: {&#x27;, &#x27;.join(person.skills)}&quot;)
 </div>
                 </div>            </div>
             <hr>
+            <hr>
             <div class="row">
                 <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Large language models are powerful, but extracting structured data can be challenging.
-Structured outputs solve this by having LLMs return data in consistent, machine-readable formats.
-
-Problems with unstructured responses:
-Using a standard OpenAI client for unstructured output</div>
+                    <div style='font-size: 0.9em; color: #666;'>Using a standard OpenAI client for unstructured output</div>
 
                 </div>
                 <div class="code">
                     <pre><code class="language-python">from openai import OpenAI
+
 client = OpenAI()</code></pre>
                 </div>
             </div>
@@ -304,15 +320,16 @@ client = OpenAI()</code></pre>
                     <pre><code class="language-python">response = client.chat.completions.create(
     model=&quot;gpt-3.5-turbo&quot;,
     messages=[
-        {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Extract customer: John Doe, age 35, email: john@example.com&quot;}
-    ]
+        {
+            &quot;role&quot;: &quot;user&quot;,
+            &quot;content&quot;: &quot;Extract customer: John Doe, age 35, email: john@example.com&quot;,
+        }
+    ],
 )
 
 print(response.choices[0].message.content)</code></pre>
                 </div>
             </div>
-            <hr>
-            <hr>
             <hr>
             <div class="row">
                 <div class="docs">
@@ -358,9 +375,12 @@ from pydantic import BaseModel, Field, EmailStr</code></pre>
                     <pre><code class="language-python">customer = client.chat.completions.create(
     model=&quot;gpt-3.5-turbo&quot;,
     messages=[
-        {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Extract customer: John Doe, age 35, email: john@example.com&quot;}
+        {
+            &quot;role&quot;: &quot;user&quot;,
+            &quot;content&quot;: &quot;Extract customer: John Doe, age 35, email: john@example.com&quot;,
+        }
     ],
-    response_model=Customer  # This is the key part
+    response_model=Customer,  # This is the key part
 )
 
 print(customer)  # Customer(name=&#x27;John Doe&#x27;, age=35, email=&#x27;john@example.com&#x27;)
@@ -405,9 +425,11 @@ from openai import OpenAI</code></pre>
     state: str
     zip_code: str
 
+
 class Contact(BaseModel):
     email: Optional[str] = None
     phone: Optional[str] = None
+
 
 class Person(BaseModel):
     name: str
@@ -428,14 +450,17 @@ class Person(BaseModel):
                     <pre><code class="language-python">person = client.chat.completions.create(
     model=&quot;gpt-4&quot;,
     messages=[
-        {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;&quot;&quot;
+        {
+            &quot;role&quot;: &quot;user&quot;,
+            &quot;content&quot;: &quot;&quot;&quot;
         Extract detailed information for this person:
         John Smith is a 42-year-old software engineer living at 123 Main St, San Francisco, CA 94105.
         His email is john.smith@example.com and phone is 555-123-4567.
         John is skilled in Python, JavaScript, and cloud architecture.
-        &quot;&quot;&quot;}
+        &quot;&quot;&quot;,
+        }
     ],
-    response_model=Person
+    response_model=Person,
 )</code></pre>
                 </div>
             </div>
