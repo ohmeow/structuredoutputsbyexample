@@ -3,5 +3,11 @@
   "compatibility_date": "2025-04-09",
   "assets": {
     "directory": "./docs"
-  }
+  },
+  "routes": [
+    {
+      "pattern": "structuredoutputsbyexamples.com/*",
+      "zone_name": "structuredoutputsbyexamples.com"
+    }
+  ]
 } 
