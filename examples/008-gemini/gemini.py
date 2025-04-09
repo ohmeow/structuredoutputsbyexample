@@ -1,13 +1,7 @@
 # Gemini Integration
 
 # Use Instructor with Google's Gemini models for structured data extraction.
-# 
-# 
-# 
-# 
-# 
-# pip install instructor google-generativeai jsonref
-# 
+## pip install instructor google-generativeai jsonref#
 import instructor
 import google.generativeai as genai
 from pydantic import BaseModel

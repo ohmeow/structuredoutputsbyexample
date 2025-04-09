@@ -142,11 +142,7 @@ print("Labels with confidence:")
 for label in result.labels:
     print(f"- {label.label}: {label.confidence:.2f}")
 
-# Example Output:
-# Labels with confidence:
-# - Technology: 0.95
-# - Health: 0.85
-# - Sports: 0.62
+# Example Output:# Labels with confidence:# - Technology: 0.95# - Health: 0.85# - Sports: 0.62
 
 from pydantic import BaseModel, Field
 from typing import List, Optional
@@ -202,13 +198,5 @@ for category in result.categories:
     for subcategory in category.subcategories:
         print(f"  - {subcategory.name} ({subcategory.confidence:.2f})")
 
-# Example Output:
-# Classification:
-# - Technology (0.90)
-#   - AI (0.95)
-#   - Software (0.80)
-# - Health (0.85)
-#   - Medical (0.90)
-# - Science (0.75)
-#   - Biology (0.70)
+# Example Output:# Classification:# - Technology (0.90)#   - AI (0.95)#   - Software (0.80)# - Health (0.85)#   - Medical (0.90)# - Science (0.75)#   - Biology (0.70)
 

@@ -1,13 +1,7 @@
 # Mistral Integration
 
 # Use Instructor with Mistral AI models for structured data extraction.
-# 
-# 
-# 
-# 
-# 
-# pip install instructor mistralai
-# 
+## pip install instructor mistralai#
 import instructor
 from mistralai.client import MistralClient
 from pydantic import BaseModel

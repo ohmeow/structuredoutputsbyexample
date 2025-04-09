@@ -123,10 +123,7 @@ def analyze_table_data(image_path: str):
     return None
 
 
-# This would be called as:
-# df = analyze_table_data("path/to/table_image.jpg")
-# After this, you can use pandas operations on the dataframe
-# For multiple tables in a single image, you can use the iterable response:
+# This would be called as:# df = analyze_table_data("path/to/table_image.jpg")# After this, you can use pandas operations on the dataframe# For multiple tables in a single image, you can use the iterable response:
 def extract_multiple_tables(image_path_or_url: str) -> list[Table]:
     """Extract all tables from an image."""
     if image_path_or_url.startswith(("http://", "https://")):

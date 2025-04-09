@@ -32,10 +32,7 @@ people = client.chat.completions.create(
 for person in people:
     print(f"{person.name} is {person.age} years old")
 
-# Output:
-# John is 30 years old
-# Mary is 25 years old
-# Bob is 45 years old
+# Output:# John is 30 years old# Mary is 25 years old# Bob is 45 years old
 
 people = client.chat.completions.create(
     model="gpt-3.5-turbo",
@@ -52,10 +49,7 @@ people = client.chat.completions.create(
 for i, person in enumerate(people, 1):
     print(f"Person {i}: {person.name}, {person.age}")
 
-# Output:
-# Person 1: John Smith, 32
-# Person 2: Sarah Johnson, 28
-# Person 3: Michael Chen, 35
+# Output:# Person 1: John Smith, 32# Person 2: Sarah Johnson, 28# Person 3: Michael Chen, 35
 
 from pydantic import BaseModel, Field
 from typing import List, Optional
@@ -127,8 +121,5 @@ people_stream = client.chat.completions.create_iterable(
 for person in people_stream:
     print(f"Received: {person.name} is {person.age} years old")
 
-# Output will appear one at a time as each is completed:
-# Received: John is 30 years old
-# Received: Mary is 25 years old
-# Received: Bob is 45 years old
+# Output will appear one at a time as each is completed:# Received: John is 30 years old# Received: Mary is 25 years old# Received: Bob is 45 years old
 

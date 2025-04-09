@@ -66,12 +66,16 @@ Introduction to structured outputs with Instructor and setting up your environme
 
 ```python
 from openai import OpenAI
+
 client = OpenAI()
 response = client.chat.completions.create(
     model="gpt-3.5-turbo",
     messages=[
-        {"role": "user", "content": "Extract customer: John Doe, age 35, email: john@example.com"}
-    ]
+        {
+            "role": "user",
+            "content": "Extract customer: John Doe, age 35, email: john@example.com",
+        }
+    ],
 )
 
 print(response.choices[0].message.content)
@@ -86,9 +90,12 @@ client = instructor.from_openai(OpenAI())
 customer = client.chat.completions.create(
     model="gpt-3.5-turbo",
     messages=[
-        {"role": "user", "content": "Extract customer: John Doe, age 35, email: john@example.com"}
+        {
+            "role": "user",
+            "content": "Extract customer: John Doe, age 35, email: john@example.com",
+        }
     ],
-    response_model=Customer  # This is the key part
+    response_model=Customer,  # This is the key part
 )
 
 print(customer)  # Customer(name='John Doe', age=35, email='john@example.com')
@@ -104,9 +111,11 @@ class Address(BaseModel):
     state: str
     zip_code: str
 
+
 class Contact(BaseModel):
     email: Optional[str] = None
     phone: Optional[str] = None
+
 
 class Person(BaseModel):
     name: str
@@ -118,14 +127,17 @@ class Person(BaseModel):
 person = client.chat.completions.create(
     model="gpt-4",
     messages=[
-        {"role": "user", "content": """
+        {
+            "role": "user",
+            "content": """
         Extract detailed information for this person:
         John Smith is a 42-year-old software engineer living at 123 Main St, San Francisco, CA 94105.
         His email is john.smith@example.com and phone is 555-123-4567.
         John is skilled in Python, JavaScript, and cloud architecture.
-        """}
+        """,
+        }
     ],
-    response_model=Person
+    response_model=Person,
 )
 print(f"Name: {person.name}")
 print(f"Location: {person.address.city}, {person.address.state}")

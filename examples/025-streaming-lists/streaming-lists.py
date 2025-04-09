@@ -37,23 +37,7 @@ for i, person in enumerate(people_stream, 1):
     print(f"Occupation: {person.occupation}")
     # Note: Each person is fully complete when received
 
-# Example output:
-# Receiving people one at a time:
-#
-# Person 1:
-# Name: Michael Chen
-# Age: 34
-# Occupation: software engineer
-#
-# Person 2:
-# Name: Sarah Johnson
-# Age: 42
-# Occupation: teacher
-#
-# Person 3:
-# Name: Robert Garcia
-# Age: 56
-# Occupation: doctor
+# Example output:# Receiving people one at a time:## Person 1:# Name: Michael Chen# Age: 34# Occupation: software engineer## Person 2:# Name: Sarah Johnson# Age: 42# Occupation: teacher## Person 3:# Name: Robert Garcia# Age: 56# Occupation: doctor
 
 from pydantic import BaseModel, Field
 from typing import List, Optional

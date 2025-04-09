@@ -150,13 +150,5 @@ for i, (text, result) in enumerate(zip(texts, results)):
     print(f"Text {i+1}: '{text}'")
     print(f"Classification: {result.label}\n")
 
-# Output:
-# Text 1: 'Your application has been approved. Sign the documents at your earliest convenience.'
-# Classification: NOT_SPAM
-#
-# Text 2: 'WINNER! You've been selected to receive $1000! Send your bank details now!'
-# Classification: SPAM
-#
-# Text 3: 'Meeting rescheduled to 3PM tomorrow. Same Zoom link.'
-# Classification: NOT_SPAM
+# Output:# Text 1: 'Your application has been approved. Sign the documents at your earliest convenience.'# Classification: NOT_SPAM## Text 2: 'WINNER! You've been selected to receive $1000! Send your bank details now!'# Classification: SPAM## Text 3: 'Meeting rescheduled to 3PM tomorrow. Same Zoom link.'# Classification: NOT_SPAM
 

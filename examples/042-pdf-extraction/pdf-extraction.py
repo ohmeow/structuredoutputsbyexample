@@ -76,12 +76,7 @@ def process_pdf_document(pdf_path: str, max_pages: int = 5) -> List[Document]:
 
     return results
 
-# Example usage
-# documents = process_pdf_document("path/to/document.pdf", max_pages=3)
-# for i, doc in enumerate(documents):
-#     print(f"Page {i+1}: {doc.title} by {doc.author}")
-#     print(f"Summary: {doc.summary}")
-#     print(f"Sections: {len(doc.sections)}")
+# Example usage# documents = process_pdf_document("path/to/document.pdf", max_pages=3)# for i, doc in enumerate(documents):#     print(f"Page {i+1}: {doc.title} by {doc.author}")#     print(f"Summary: {doc.summary}")#     print(f"Sections: {len(doc.sections)}")
 
 # For more specific document types, you can create specialized models:
 from typing import List, Optional
@@ -144,12 +139,5 @@ def extract_invoice(pdf_path: str) -> Invoice:
         ]
     )
 
-# Example usage
-# invoice = extract_invoice("path/to/invoice.pdf")
-# print(f"Invoice #{invoice.invoice_number} from {invoice.vendor}")
-# print(f"Date: {invoice.date}")
-# print(f"Total: ${invoice.total:.2f}")
-# print("Line items:")
-# for item in invoice.items:
-#     print(f"- {item.description}: {item.quantity} x ${item.unit_price:.2f} = ${item.amount:.2f}")
+# Example usage# invoice = extract_invoice("path/to/invoice.pdf")# print(f"Invoice #{invoice.invoice_number} from {invoice.vendor}")# print(f"Date: {invoice.date}")# print(f"Total: ${invoice.total:.2f}")# print("Line items:")# for item in invoice.items:#     print(f"- {item.description}: {item.quantity} x ${item.unit_price:.2f} = ${item.amount:.2f}")
 

@@ -1,7 +1,5 @@
 # Getting Started with Structured Outputs
-
 # Learn the basics of structured LLM outputs with Instructor. This guide demonstrates how to extract consistent, validated data from language models.
-
 # Large language models are powerful, but extracting structured data can be challenging.
 # Structured outputs solve this by having LLMs return data in consistent, machine-readable formats.
 

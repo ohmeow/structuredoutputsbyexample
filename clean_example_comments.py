@@ -14,7 +14,7 @@ from pathlib import Path
 def clean_comment_blocks(file_path):
     """
     Clean up verbose comment blocks in a file.
-    Preserves the title and description comments.
+    Preserves the title and description comments WITH NO BLANK LINES BETWEEN THEM.
     """
     with open(file_path, 'r') as f:
         lines = f.readlines()
@@ -23,30 +23,34 @@ def clean_comment_blocks(file_path):
     if not lines:
         return False
     
-    # First two comment blocks are title and description - keep them unchanged
-    title_block_end = 0
-    desc_block_end = 0
+    # Identify the header comments - title is first line, subsequent consecutive comment lines are description
+    header_lines = []
     
-    # Find end of title block (should be first line)
+    # Find all consecutive comment lines at the start of the file
     for i, line in enumerate(lines):
         if line.strip().startswith('#'):
-            title_block_end = i
+            header_lines.append(line)
         else:
+            # Found first non-comment line
             break
     
-    # Find end of description block (should be after a blank line)
-    desc_started = False
-    for i in range(title_block_end + 1, len(lines)):
-        line = lines[i]
-        if not desc_started and line.strip().startswith('#'):
-            desc_started = True
-            desc_block_end = i
-        elif desc_started and not line.strip().startswith('#') and line.strip():
-            # First non-comment non-empty line after description
-            break
+    # Remove blank lines between comments in header
+    clean_header = []
+    if header_lines:
+        # Always keep the first line (title)
+        clean_header.append(header_lines[0])
+        
+        # Add the rest of the header comments with no blank lines
+        for line in header_lines[1:]:
+            if line.strip() != '#':  # Skip completely empty comment lines
+                clean_header.append(line)
     
-    if desc_block_end <= title_block_end:
-        desc_block_end = title_block_end
+    # Replace the original header with our clean one
+    header_end = len(header_lines)
+    
+    # If the original header was empty, we didn't do anything
+    if not header_lines:
+        header_end = 0
     
     # Also clean up the code throughout the file
     modified_lines = []

@@ -1,13 +1,7 @@
 # Cohere Integration
 
 # Use Instructor with Cohere's models for structured data extraction.
-# 
-# 
-# 
-# 
-# 
-# pip install instructor cohere
-# 
+## pip install instructor cohere#
 import instructor
 import cohere
 from pydantic import BaseModel

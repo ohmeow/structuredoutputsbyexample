@@ -44,70 +44,18 @@
           ]
         },
         {
-          "code": "# Large language models (LLMs) are powerful tools for generating text, but extracting specific structured information from their outputs can be challenging. **Structured outputs** solve this problem by having LLMs return data in consistent, machine-readable formats rather than free-form text.\n# \n# \n# \n# When working with LLMs, there are several issues with unstructured responses:\n# Using a standard OpenAI client for unstructured output\n",
+          "code": "# Large language models are powerful, but extracting structured data can be challenging.\n# Structured outputs solve this by having LLMs return data in consistent, machine-readable formats.\n",
           "display_code": "",
-          "annotation": "Large language models (LLMs) are powerful tools for generating text, but extracting specific structured information from their outputs can be challenging. **Structured outputs** solve this problem by having LLMs return data in consistent, machine-readable formats rather than free-form text.\n\n\n\nWhen working with LLMs, there are several issues with unstructured responses:\nUsing a standard OpenAI client for unstructured output",
+          "annotation": "Large language models are powerful, but extracting structured data can be challenging.\nStructured outputs solve this by having LLMs return data in consistent, machine-readable formats.",
           "is_comment": true,
           "start_line": 5,
           "line_range": [
             5,
-            10
+            6
           ],
           "target_line_range": [
-            11,
-            13
-          ]
-        },
-        {
-          "code": "from openai import OpenAI\nclient = OpenAI()\n\n",
-          "display_code": "from openai import OpenAI\nclient = OpenAI()\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 11,
-          "line_range": [
-            11,
-            13
-          ]
-        },
-        {
-          "code": "# Ask for customer information in free text\n",
-          "display_code": "",
-          "annotation": "Ask for customer information in free text",
-          "is_comment": true,
-          "start_line": 14,
-          "line_range": [
-            14,
-            14
-          ],
-          "target_line_range": [
-            15,
-            22
-          ]
-        },
-        {
-          "code": "response = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    messages=[\n        {\"role\": \"user\", \"content\": \"Extract customer: John Doe, age 35, email: john@example.com\"}\n    ]\n)\n\nprint(response.choices[0].message.content)\n",
-          "display_code": "response = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    messages=[\n        {\"role\": \"user\", \"content\": \"Extract customer: John Doe, age 35, email: john@example.com\"}\n    ]\n)\n\nprint(response.choices[0].message.content)\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 15,
-          "line_range": [
-            15,
-            22
-          ]
-        },
-        {
-          "code": "# Output might be:\n# \"Customer information:\n# Name: John Doe\n# Age: 35\n# Email: john@example.com\"\n",
-          "display_code": "",
-          "annotation": "Output might be:\n\"Customer information:\nName: John Doe\nAge: 35\nEmail: john@example.com\"",
-          "is_comment": true,
-          "start_line": 23,
-          "line_range": [
-            23,
-            27
-          ],
-          "target_line_range": [
-            28,
-            28
+            7,
+            7
           ]
         },
         {
@@ -115,36 +63,88 @@
           "display_code": "\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 28,
+          "start_line": 7,
           "line_range": [
-            28,
-            28
+            7,
+            7
           ]
         },
         {
-          "code": "# This approach has several problems:\n# \n# - **Inconsistent formats**: The LLM might return data in different formats each time\n# - **Parsing challenges**: You need custom code to extract specific fields\n# - **No validation**: There's no verification that the data is complete or correctly formatted\n# - **Error handling**: Missing or invalid data is difficult to detect and manage\n# \n# \n# \n# Instructor solves these problems by combining the power of LLMs with structured data validation through Pydantic:\n",
+          "code": "# Using a standard OpenAI client for unstructured output\n",
           "display_code": "",
-          "annotation": "This approach has several problems:\n\n- **Inconsistent formats**: The LLM might return data in different formats each time\n- **Parsing challenges**: You need custom code to extract specific fields\n- **No validation**: There's no verification that the data is complete or correctly formatted\n- **Error handling**: Missing or invalid data is difficult to detect and manage\n\n\n\nInstructor solves these problems by combining the power of LLMs with structured data validation through Pydantic:",
+          "annotation": "Using a standard OpenAI client for unstructured output",
           "is_comment": true,
-          "start_line": 29,
+          "start_line": 8,
           "line_range": [
-            29,
-            38
+            8,
+            8
           ],
           "target_line_range": [
-            39,
-            42
+            9,
+            12
           ]
         },
         {
-          "code": "import instructor\nfrom openai import OpenAI\nfrom pydantic import BaseModel, Field, EmailStr\n\n",
-          "display_code": "import instructor\nfrom openai import OpenAI\nfrom pydantic import BaseModel, Field, EmailStr\n\n",
+          "code": "from openai import OpenAI\n\nclient = OpenAI()\n\n",
+          "display_code": "from openai import OpenAI\n\nclient = OpenAI()\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 39,
+          "start_line": 9,
           "line_range": [
-            39,
-            42
+            9,
+            12
+          ]
+        },
+        {
+          "code": "# Ask for customer information in free text\n",
+          "display_code": "",
+          "annotation": "Ask for customer information in free text",
+          "is_comment": true,
+          "start_line": 13,
+          "line_range": [
+            13,
+            13
+          ],
+          "target_line_range": [
+            14,
+            25
+          ]
+        },
+        {
+          "code": "response = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    messages=[\n        {\n            \"role\": \"user\",\n            \"content\": \"Extract customer: John Doe, age 35, email: john@example.com\",\n        }\n    ],\n)\n\nprint(response.choices[0].message.content)\n\n",
+          "display_code": "response = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    messages=[\n        {\n            \"role\": \"user\",\n            \"content\": \"Extract customer: John Doe, age 35, email: john@example.com\",\n        }\n    ],\n)\n\nprint(response.choices[0].message.content)\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 14,
+          "line_range": [
+            14,
+            25
+          ]
+        },
+        {
+          "code": "# Instructor solves these problems by combining LLMs with Pydantic validation:\n",
+          "display_code": "",
+          "annotation": "Instructor solves these problems by combining LLMs with Pydantic validation:",
+          "is_comment": true,
+          "start_line": 26,
+          "line_range": [
+            26,
+            26
+          ],
+          "target_line_range": [
+            27,
+            31
+          ]
+        },
+        {
+          "code": "import instructor\nfrom openai import OpenAI\nfrom pydantic import BaseModel, Field, EmailStr\n\n\n",
+          "display_code": "import instructor\nfrom openai import OpenAI\nfrom pydantic import BaseModel, Field, EmailStr\n\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 27,
+          "line_range": [
+            27,
+            31
           ]
         },
         {
@@ -152,25 +152,25 @@
           "display_code": "",
           "annotation": "Define a structured data model",
           "is_comment": true,
-          "start_line": 43,
+          "start_line": 32,
           "line_range": [
-            43,
-            43
+            32,
+            32
           ],
           "target_line_range": [
-            44,
-            48
+            33,
+            38
           ]
         },
         {
-          "code": "class Customer(BaseModel):\n    name: str = Field(description=\"Customer's full name\")\n    age: int = Field(description=\"Customer's age in years\", ge=0, le=120)\n    email: EmailStr = Field(description=\"Customer's email address\")\n\n",
-          "display_code": "class Customer(BaseModel):\n    name: str = Field(description=\"Customer's full name\")\n    age: int = Field(description=\"Customer's age in years\", ge=0, le=120)\n    email: EmailStr = Field(description=\"Customer's email address\")\n\n",
+          "code": "class Customer(BaseModel):\n    name: str = Field(description=\"Customer's full name\")\n    age: int = Field(description=\"Customer's age in years\", ge=0, le=120)\n    email: EmailStr = Field(description=\"Customer's email address\")\n\n\n",
+          "display_code": "class Customer(BaseModel):\n    name: str = Field(description=\"Customer's full name\")\n    age: int = Field(description=\"Customer's age in years\", ge=0, le=120)\n    email: EmailStr = Field(description=\"Customer's email address\")\n\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 44,
+          "start_line": 33,
           "line_range": [
-            44,
-            48
+            33,
+            38
           ]
         },
         {
@@ -178,14 +178,14 @@
           "display_code": "",
           "annotation": "Patch the OpenAI client with Instructor",
           "is_comment": true,
-          "start_line": 49,
+          "start_line": 39,
           "line_range": [
-            49,
-            49
+            39,
+            39
           ],
           "target_line_range": [
-            50,
-            51
+            40,
+            41
           ]
         },
         {
@@ -193,10 +193,10 @@
           "display_code": "client = instructor.from_openai(OpenAI())\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 50,
+          "start_line": 40,
           "line_range": [
-            50,
-            51
+            40,
+            41
           ]
         },
         {
@@ -204,40 +204,92 @@
           "display_code": "",
           "annotation": "Extract structured customer data",
           "is_comment": true,
-          "start_line": 52,
+          "start_line": 42,
           "line_range": [
-            52,
-            52
+            42,
+            42
           ],
           "target_line_range": [
-            53,
-            63
+            43,
+            56
           ]
         },
         {
-          "code": "customer = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    messages=[\n        {\"role\": \"user\", \"content\": \"Extract customer: John Doe, age 35, email: john@example.com\"}\n    ],\n    response_model=Customer  # This is the key part\n)\n\nprint(customer)  # Customer(name='John Doe', age=35, email='john@example.com')\nprint(f\"Name: {customer.name}, Age: {customer.age}, Email: {customer.email}\")\n\n",
-          "display_code": "customer = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    messages=[\n        {\"role\": \"user\", \"content\": \"Extract customer: John Doe, age 35, email: john@example.com\"}\n    ],\n    response_model=Customer  # This is the key part\n)\n\nprint(customer)  # Customer(name='John Doe', age=35, email='john@example.com')\nprint(f\"Name: {customer.name}, Age: {customer.age}, Email: {customer.email}\")\n\n",
+          "code": "customer = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    messages=[\n        {\n            \"role\": \"user\",\n            \"content\": \"Extract customer: John Doe, age 35, email: john@example.com\",\n        }\n    ],\n    response_model=Customer,  # This is the key part\n)\n\nprint(customer)  # Customer(name='John Doe', age=35, email='john@example.com')\nprint(f\"Name: {customer.name}, Age: {customer.age}, Email: {customer.email}\")\n\n",
+          "display_code": "customer = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    messages=[\n        {\n            \"role\": \"user\",\n            \"content\": \"Extract customer: John Doe, age 35, email: john@example.com\",\n        }\n    ],\n    response_model=Customer,  # This is the key part\n)\n\nprint(customer)  # Customer(name='John Doe', age=35, email='john@example.com')\nprint(f\"Name: {customer.name}, Age: {customer.age}, Email: {customer.email}\")\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 53,
+          "start_line": 43,
           "line_range": [
-            53,
-            63
+            43,
+            56
           ]
         },
         {
-          "code": "# 1. **Type Safety**: Get properly typed Python objects instead of raw strings\n# 2. **Validation**: Automatic validation with detailed error messages\n# 3. **Self-documenting**: Models clearly define the expected data structure\n# 4. **Consistent Results**: Reliable, consistent data format across requests\n# 5. **Error Handling**: Automatic retry with informative feedback when validation fails\n# 6. **IDE Support**: Full autocomplete and type checking in your code editor\n# \n# \n# \n# Instructor works by:\n# \n# 1. Defining your expected data structure as a Pydantic model\n# 2. Instructing the LLM to return data in a specific format (JSON, function calls, etc.)\n# 3. Validating the response against your model\n# 4. Automatically retrying if validation fails, providing the error to the LLM\n# 5. Returning a properly typed Python object\n# \n# \n# \n# Structured outputs shine for complex data:\n",
+          "code": "# Benefits:# - Type Safety: Properly typed Python objects instead of raw strings# - Validation: Automatic validation with detailed error messages# - Self-documenting: Models clearly define the expected data structure# - Consistent Results: Reliable data format across requests# - Error Handling: Automatic retry with informative feedback\n",
           "display_code": "",
-          "annotation": "1. **Type Safety**: Get properly typed Python objects instead of raw strings\n2. **Validation**: Automatic validation with detailed error messages\n3. **Self-documenting**: Models clearly define the expected data structure\n4. **Consistent Results**: Reliable, consistent data format across requests\n5. **Error Handling**: Automatic retry with informative feedback when validation fails\n6. **IDE Support**: Full autocomplete and type checking in your code editor\n\n\n\nInstructor works by:\n\n1. Defining your expected data structure as a Pydantic model\n2. Instructing the LLM to return data in a specific format (JSON, function calls, etc.)\n3. Validating the response against your model\n4. Automatically retrying if validation fails, providing the error to the LLM\n5. Returning a properly typed Python object\n\n\n\nStructured outputs shine for complex data:",
+          "annotation": "Benefits:# - Type Safety: Properly typed Python objects instead of raw strings# - Validation: Automatic validation with detailed error messages# - Self-documenting: Models clearly define the expected data structure# - Consistent Results: Reliable data format across requests# - Error Handling: Automatic retry with informative feedback",
           "is_comment": true,
-          "start_line": 64,
+          "start_line": 57,
           "line_range": [
-            64,
-            83
+            57,
+            57
           ],
           "target_line_range": [
-            84,
-            88
+            58,
+            58
+          ]
+        },
+        {
+          "code": "\n",
+          "display_code": "\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 58,
+          "line_range": [
+            58,
+            58
+          ]
+        },
+        {
+          "code": "# Instructor workflow:# 1. Define your data structure as a Pydantic model# 2. Instruct the LLM to return data in a specific format# 3. Validate the response against your model# 4. Automatically retry if validation fails# 5. Return a properly typed Python object\n",
+          "display_code": "",
+          "annotation": "Instructor workflow:# 1. Define your data structure as a Pydantic model# 2. Instruct the LLM to return data in a specific format# 3. Validate the response against your model# 4. Automatically retry if validation fails# 5. Return a properly typed Python object",
+          "is_comment": true,
+          "start_line": 59,
+          "line_range": [
+            59,
+            59
+          ],
+          "target_line_range": [
+            60,
+            60
+          ]
+        },
+        {
+          "code": "\n",
+          "display_code": "\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 60,
+          "line_range": [
+            60,
+            60
+          ]
+        },
+        {
+          "code": "# Complex data example:\n",
+          "display_code": "",
+          "annotation": "Complex data example:",
+          "is_comment": true,
+          "start_line": 61,
+          "line_range": [
+            61,
+            61
+          ],
+          "target_line_range": [
+            62,
+            66
           ]
         },
         {
@@ -245,10 +297,10 @@
           "display_code": "from typing import List, Optional\nfrom pydantic import BaseModel, Field\nimport instructor\nfrom openai import OpenAI\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 84,
+          "start_line": 62,
           "line_range": [
-            84,
-            88
+            62,
+            66
           ]
         },
         {
@@ -256,25 +308,25 @@
           "display_code": "",
           "annotation": "Initialize the client with instructor",
           "is_comment": true,
-          "start_line": 89,
+          "start_line": 67,
           "line_range": [
-            89,
-            89
+            67,
+            67
           ],
           "target_line_range": [
-            90,
-            91
+            68,
+            70
           ]
         },
         {
-          "code": "client = instructor.from_openai(OpenAI())\n\n",
-          "display_code": "client = instructor.from_openai(OpenAI())\n\n",
+          "code": "client = instructor.from_openai(OpenAI())\n\n\n",
+          "display_code": "client = instructor.from_openai(OpenAI())\n\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 90,
+          "start_line": 68,
           "line_range": [
-            90,
-            91
+            68,
+            70
           ]
         },
         {
@@ -282,25 +334,25 @@
           "display_code": "",
           "annotation": "Define a complex, nested data structure",
           "is_comment": true,
-          "start_line": 92,
+          "start_line": 71,
           "line_range": [
-            92,
-            92
+            71,
+            71
           ],
           "target_line_range": [
-            93,
-            110
+            72,
+            92
           ]
         },
         {
-          "code": "class Address(BaseModel):\n    street: str\n    city: str\n    state: str\n    zip_code: str\n\nclass Contact(BaseModel):\n    email: Optional[str] = None\n    phone: Optional[str] = None\n\nclass Person(BaseModel):\n    name: str\n    age: int\n    occupation: str\n    address: Address\n    contact: Contact\n    skills: List[str] = Field(description=\"List of professional skills\")\n\n",
-          "display_code": "class Address(BaseModel):\n    street: str\n    city: str\n    state: str\n    zip_code: str\n\nclass Contact(BaseModel):\n    email: Optional[str] = None\n    phone: Optional[str] = None\n\nclass Person(BaseModel):\n    name: str\n    age: int\n    occupation: str\n    address: Address\n    contact: Contact\n    skills: List[str] = Field(description=\"List of professional skills\")\n\n",
+          "code": "class Address(BaseModel):\n    street: str\n    city: str\n    state: str\n    zip_code: str\n\n\nclass Contact(BaseModel):\n    email: Optional[str] = None\n    phone: Optional[str] = None\n\n\nclass Person(BaseModel):\n    name: str\n    age: int\n    occupation: str\n    address: Address\n    contact: Contact\n    skills: List[str] = Field(description=\"List of professional skills\")\n\n\n",
+          "display_code": "class Address(BaseModel):\n    street: str\n    city: str\n    state: str\n    zip_code: str\n\n\nclass Contact(BaseModel):\n    email: Optional[str] = None\n    phone: Optional[str] = None\n\n\nclass Person(BaseModel):\n    name: str\n    age: int\n    occupation: str\n    address: Address\n    contact: Contact\n    skills: List[str] = Field(description=\"List of professional skills\")\n\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 93,
+          "start_line": 72,
           "line_range": [
-            93,
-            110
+            72,
+            92
           ]
         },
         {
@@ -308,25 +360,25 @@
           "display_code": "",
           "annotation": "Extract structured data",
           "is_comment": true,
-          "start_line": 111,
+          "start_line": 93,
           "line_range": [
-            111,
-            111
+            93,
+            93
           ],
           "target_line_range": [
-            112,
-            124
+            94,
+            109
           ]
         },
         {
-          "code": "person = client.chat.completions.create(\n    model=\"gpt-4\",\n    messages=[\n        {\"role\": \"user\", \"content\": \"\"\"\n        Extract detailed information for this person:\n        John Smith is a 42-year-old software engineer living at 123 Main St, San Francisco, CA 94105.\n        His email is john.smith@example.com and phone is 555-123-4567.\n        John is skilled in Python, JavaScript, and cloud architecture.\n        \"\"\"}\n    ],\n    response_model=Person\n)\n\n",
-          "display_code": "person = client.chat.completions.create(\n    model=\"gpt-4\",\n    messages=[\n        {\"role\": \"user\", \"content\": \"\"\"\n        Extract detailed information for this person:\n        John Smith is a 42-year-old software engineer living at 123 Main St, San Francisco, CA 94105.\n        His email is john.smith@example.com and phone is 555-123-4567.\n        John is skilled in Python, JavaScript, and cloud architecture.\n        \"\"\"}\n    ],\n    response_model=Person\n)\n\n",
+          "code": "person = client.chat.completions.create(\n    model=\"gpt-4\",\n    messages=[\n        {\n            \"role\": \"user\",\n            \"content\": \"\"\"\n        Extract detailed information for this person:\n        John Smith is a 42-year-old software engineer living at 123 Main St, San Francisco, CA 94105.\n        His email is john.smith@example.com and phone is 555-123-4567.\n        John is skilled in Python, JavaScript, and cloud architecture.\n        \"\"\",\n        }\n    ],\n    response_model=Person,\n)\n\n",
+          "display_code": "person = client.chat.completions.create(\n    model=\"gpt-4\",\n    messages=[\n        {\n            \"role\": \"user\",\n            \"content\": \"\"\"\n        Extract detailed information for this person:\n        John Smith is a 42-year-old software engineer living at 123 Main St, San Francisco, CA 94105.\n        His email is john.smith@example.com and phone is 555-123-4567.\n        John is skilled in Python, JavaScript, and cloud architecture.\n        \"\"\",\n        }\n    ],\n    response_model=Person,\n)\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 112,
+          "start_line": 94,
           "line_range": [
-            112,
-            124
+            94,
+            109
           ]
         },
         {
@@ -334,25 +386,25 @@
           "display_code": "",
           "annotation": "Now you have a fully structured object",
           "is_comment": true,
-          "start_line": 125,
+          "start_line": 110,
           "line_range": [
-            125,
-            125
+            110,
+            110
           ],
           "target_line_range": [
-            126,
-            129
+            111,
+            113
           ]
         },
         {
-          "code": "print(f\"Name: {person.name}\")\nprint(f\"Location: {person.address.city}, {person.address.state}\")\nprint(f\"Skills: {', '.join(person.skills)}\")\n\n",
-          "display_code": "print(f\"Name: {person.name}\")\nprint(f\"Location: {person.address.city}, {person.address.state}\")\nprint(f\"Skills: {', '.join(person.skills)}\")\n\n",
+          "code": "print(f\"Name: {person.name}\")\nprint(f\"Location: {person.address.city}, {person.address.state}\")\nprint(f\"Skills: {', '.join(person.skills)}\")\n",
+          "display_code": "print(f\"Name: {person.name}\")\nprint(f\"Location: {person.address.city}, {person.address.state}\")\nprint(f\"Skills: {', '.join(person.skills)}\")\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 126,
+          "start_line": 111,
           "line_range": [
-            126,
-            129
+            111,
+            113
           ]
         }
       ],
@@ -1530,18 +1582,18 @@
           ]
         },
         {
-          "code": "# Use Instructor with Google's Gemini models for structured data extraction.\n# \n# \n# \n# \n# \n# pip install instructor google-generativeai jsonref\n# \n",
+          "code": "# Use Instructor with Google's Gemini models for structured data extraction.\n## pip install instructor google-generativeai jsonref#\n",
           "display_code": "",
-          "annotation": "Use Instructor with Google's Gemini models for structured data extraction.\n\n\n\n\n\npip install instructor google-generativeai jsonref\n",
+          "annotation": "Use Instructor with Google's Gemini models for structured data extraction.\npip install instructor google-generativeai jsonref#",
           "is_comment": true,
           "start_line": 3,
           "line_range": [
             3,
-            10
+            4
           ],
           "target_line_range": [
-            11,
-            14
+            5,
+            8
           ]
         },
         {
@@ -1549,10 +1601,10 @@
           "display_code": "import instructor\nimport google.generativeai as genai\nfrom pydantic import BaseModel\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 11,
+          "start_line": 5,
           "line_range": [
-            11,
-            14
+            5,
+            8
           ]
         },
         {
@@ -1560,14 +1612,14 @@
           "display_code": "",
           "annotation": "Configure API key",
           "is_comment": true,
-          "start_line": 15,
+          "start_line": 9,
           "line_range": [
-            15,
-            15
+            9,
+            9
           ],
           "target_line_range": [
-            16,
-            21
+            10,
+            15
           ]
         },
         {
@@ -1575,10 +1627,10 @@
           "display_code": "genai.configure(api_key=\"YOUR_API_KEY\")\n\nclass User(BaseModel):\n    name: str\n    age: int\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 16,
+          "start_line": 10,
           "line_range": [
-            16,
-            21
+            10,
+            15
           ]
         },
         {
@@ -1586,14 +1638,14 @@
           "display_code": "",
           "annotation": "Create Gemini model",
           "is_comment": true,
-          "start_line": 22,
+          "start_line": 16,
           "line_range": [
-            22,
-            22
+            16,
+            16
           ],
           "target_line_range": [
-            23,
-            24
+            17,
+            18
           ]
         },
         {
@@ -1601,16 +1653,42 @@
           "display_code": "model = genai.GenerativeModel(\"gemini-1.5-flash\")\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 23,
+          "start_line": 17,
           "line_range": [
-            23,
-            24
+            17,
+            18
           ]
         },
         {
           "code": "# Patch with instructor (require specific mode)\n",
           "display_code": "",
           "annotation": "Patch with instructor (require specific mode)",
+          "is_comment": true,
+          "start_line": 19,
+          "line_range": [
+            19,
+            19
+          ],
+          "target_line_range": [
+            20,
+            24
+          ]
+        },
+        {
+          "code": "client = instructor.from_gemini(\n    model,\n    mode=instructor.Mode.GEMINI_TOOLS  # or GEMINI_JSON\n)\n\n",
+          "display_code": "client = instructor.from_gemini(\n    model,\n    mode=instructor.Mode.GEMINI_TOOLS  # or GEMINI_JSON\n)\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 20,
+          "line_range": [
+            20,
+            24
+          ]
+        },
+        {
+          "code": "# Using generate_content method\n",
+          "display_code": "",
+          "annotation": "Using generate_content method",
           "is_comment": true,
           "start_line": 25,
           "line_range": [
@@ -1619,33 +1697,7 @@
           ],
           "target_line_range": [
             26,
-            30
-          ]
-        },
-        {
-          "code": "client = instructor.from_gemini(\n    model,\n    mode=instructor.Mode.GEMINI_TOOLS  # or GEMINI_JSON\n)\n\n",
-          "display_code": "client = instructor.from_gemini(\n    model,\n    mode=instructor.Mode.GEMINI_TOOLS  # or GEMINI_JSON\n)\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 26,
-          "line_range": [
-            26,
-            30
-          ]
-        },
-        {
-          "code": "# Using generate_content method\n",
-          "display_code": "",
-          "annotation": "Using generate_content method",
-          "is_comment": true,
-          "start_line": 31,
-          "line_range": [
-            31,
             31
-          ],
-          "target_line_range": [
-            32,
-            37
           ]
         },
         {
@@ -1653,10 +1705,10 @@
           "display_code": "user = client.generate_content(\n    response_model=User,\n    contents=\"Extract: John is 25 years old.\"\n)\n\nprint(f\"Name: {user.name}, Age: {user.age}\")\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 32,
+          "start_line": 26,
           "line_range": [
-            32,
-            37
+            26,
+            31
           ]
         },
         {
@@ -1664,14 +1716,14 @@
           "display_code": "",
           "annotation": "Output: Name: John, Age: 25",
           "is_comment": true,
-          "start_line": 38,
+          "start_line": 32,
           "line_range": [
-            38,
-            38
+            32,
+            32
           ],
           "target_line_range": [
-            39,
-            39
+            33,
+            33
           ]
         },
         {
@@ -1679,10 +1731,10 @@
           "display_code": "\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 39,
+          "start_line": 33,
           "line_range": [
-            39,
-            39
+            33,
+            33
           ]
         },
         {
@@ -1690,14 +1742,14 @@
           "display_code": "",
           "annotation": "Gemini 1.5 Flash (faster)",
           "is_comment": true,
-          "start_line": 40,
+          "start_line": 34,
           "line_range": [
-            40,
-            40
+            34,
+            34
           ],
           "target_line_range": [
-            41,
-            46
+            35,
+            40
           ]
         },
         {
@@ -1705,10 +1757,10 @@
           "display_code": "flash_model = genai.GenerativeModel(\"gemini-1.5-flash\")\nflash_client = instructor.from_gemini(\n    flash_model,\n    mode=instructor.Mode.GEMINI_TOOLS\n)\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 41,
+          "start_line": 35,
           "line_range": [
-            41,
-            46
+            35,
+            40
           ]
         },
         {
@@ -1716,14 +1768,14 @@
           "display_code": "",
           "annotation": "Gemini 1.5 Pro (more capable)",
           "is_comment": true,
-          "start_line": 47,
+          "start_line": 41,
           "line_range": [
-            47,
-            47
+            41,
+            41
           ],
           "target_line_range": [
-            48,
-            83
+            42,
+            77
           ]
         },
         {
@@ -1731,10 +1783,10 @@
           "display_code": "pro_model = genai.GenerativeModel(\"gemini-1.5-pro\")\npro_client = instructor.from_gemini(\n    pro_model,\n    mode=instructor.Mode.GEMINI_TOOLS\n)\n\nuser = client.generate_content(\n    response_model=User,\n    contents=\"Extract: John is 25 years old.\",\n    generation_config={\n        \"system_instruction\": \"You are an expert at extracting structured data.\"\n    }\n)\n\nuser = client.generate_content(\n    response_model=User,\n    contents=[\n        {\"role\": \"user\", \"parts\": [\"Extract: John is 25 years old.\"]}\n    ]\n)\n\njson_client = instructor.from_gemini(\n    genai.GenerativeModel(\"gemini-1.5-flash\"),\n    mode=instructor.Mode.GEMINI_JSON\n)\n\nuser = json_client.generate_content(\n    response_model=User,\n    contents=\"Extract: John is 25 years old.\"\n)\n\nimport google.auth\nimport google.auth.transport.requests\nimport instructor\nfrom openai import OpenAI\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 48,
+          "start_line": 42,
           "line_range": [
-            48,
-            83
+            42,
+            77
           ]
         },
         {
@@ -1742,14 +1794,14 @@
           "display_code": "",
           "annotation": "Get Google auth credentials",
           "is_comment": true,
-          "start_line": 84,
+          "start_line": 78,
           "line_range": [
-            84,
-            84
+            78,
+            78
           ],
           "target_line_range": [
-            85,
-            88
+            79,
+            82
           ]
         },
         {
@@ -1757,10 +1809,10 @@
           "display_code": "creds, project = google.auth.default()\nauth_req = google.auth.transport.requests.Request()\ncreds.refresh(auth_req)\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 85,
+          "start_line": 79,
           "line_range": [
-            85,
-            88
+            79,
+            82
           ]
         },
         {
@@ -1768,14 +1820,14 @@
           "display_code": "",
           "annotation": "Configure Vertex AI endpoint",
           "is_comment": true,
-          "start_line": 89,
+          "start_line": 83,
           "line_range": [
-            89,
-            89
+            83,
+            83
           ],
           "target_line_range": [
-            90,
-            93
+            84,
+            87
           ]
         },
         {
@@ -1783,16 +1835,42 @@
           "display_code": "PROJECT = 'your-project-id'\nLOCATION = 'us-central1'  # or your preferred region\nendpoint = f'https://{LOCATION}-aiplatform.googleapis.com/v1beta1/projects/{PROJECT}/locations/{LOCATION}/endpoints/openapi'\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 90,
+          "start_line": 84,
           "line_range": [
-            90,
-            93
+            84,
+            87
           ]
         },
         {
           "code": "# Create patched OpenAI client pointing to Vertex AI\n",
           "display_code": "",
           "annotation": "Create patched OpenAI client pointing to Vertex AI",
+          "is_comment": true,
+          "start_line": 88,
+          "line_range": [
+            88,
+            88
+          ],
+          "target_line_range": [
+            89,
+            93
+          ]
+        },
+        {
+          "code": "client = instructor.from_openai(\n    OpenAI(base_url=endpoint, api_key=creds.token),\n    mode=instructor.Mode.JSON  # JSON mode required\n)\n\n",
+          "display_code": "client = instructor.from_openai(\n    OpenAI(base_url=endpoint, api_key=creds.token),\n    mode=instructor.Mode.JSON  # JSON mode required\n)\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 89,
+          "line_range": [
+            89,
+            93
+          ]
+        },
+        {
+          "code": "# Use OpenAI-style interface\n",
+          "display_code": "",
+          "annotation": "Use OpenAI-style interface",
           "is_comment": true,
           "start_line": 94,
           "line_range": [
@@ -1801,33 +1879,7 @@
           ],
           "target_line_range": [
             95,
-            99
-          ]
-        },
-        {
-          "code": "client = instructor.from_openai(\n    OpenAI(base_url=endpoint, api_key=creds.token),\n    mode=instructor.Mode.JSON  # JSON mode required\n)\n\n",
-          "display_code": "client = instructor.from_openai(\n    OpenAI(base_url=endpoint, api_key=creds.token),\n    mode=instructor.Mode.JSON  # JSON mode required\n)\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 95,
-          "line_range": [
-            95,
-            99
-          ]
-        },
-        {
-          "code": "# Use OpenAI-style interface\n",
-          "display_code": "",
-          "annotation": "Use OpenAI-style interface",
-          "is_comment": true,
-          "start_line": 100,
-          "line_range": [
-            100,
-            100
-          ],
-          "target_line_range": [
-            101,
-            108
+            102
           ]
         },
         {
@@ -1835,10 +1887,10 @@
           "display_code": "user = client.chat.completions.create(\n    model=\"google/gemini-1.5-flash\",\n    response_model=User,\n    messages=[\n        {\"role\": \"user\", \"content\": \"Extract: John is 25 years old.\"}\n    ]\n)\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 101,
+          "start_line": 95,
           "line_range": [
-            101,
-            108
+            95,
+            102
           ]
         }
       ],
@@ -1874,18 +1926,18 @@
           ]
         },
         {
-          "code": "# Use Instructor with Cohere's models for structured data extraction.\n# \n# \n# \n# \n# \n# pip install instructor cohere\n# \n",
+          "code": "# Use Instructor with Cohere's models for structured data extraction.\n## pip install instructor cohere#\n",
           "display_code": "",
-          "annotation": "Use Instructor with Cohere's models for structured data extraction.\n\n\n\n\n\npip install instructor cohere\n",
+          "annotation": "Use Instructor with Cohere's models for structured data extraction.\npip install instructor cohere#",
           "is_comment": true,
           "start_line": 3,
           "line_range": [
             3,
-            10
+            4
           ],
           "target_line_range": [
-            11,
-            18
+            5,
+            12
           ]
         },
         {
@@ -1893,16 +1945,68 @@
           "display_code": "import instructor\nimport cohere\nfrom pydantic import BaseModel\n\nclass User(BaseModel):\n    name: str\n    age: int\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 11,
+          "start_line": 5,
           "line_range": [
-            11,
-            18
+            5,
+            12
           ]
         },
         {
           "code": "# Create Cohere client\n",
           "display_code": "",
           "annotation": "Create Cohere client",
+          "is_comment": true,
+          "start_line": 13,
+          "line_range": [
+            13,
+            13
+          ],
+          "target_line_range": [
+            14,
+            15
+          ]
+        },
+        {
+          "code": "co = cohere.Client(\"YOUR_API_KEY\")  # or set CO_API_KEY env variable\n\n",
+          "display_code": "co = cohere.Client(\"YOUR_API_KEY\")  # or set CO_API_KEY env variable\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 14,
+          "line_range": [
+            14,
+            15
+          ]
+        },
+        {
+          "code": "# Patch with instructor\n",
+          "display_code": "",
+          "annotation": "Patch with instructor",
+          "is_comment": true,
+          "start_line": 16,
+          "line_range": [
+            16,
+            16
+          ],
+          "target_line_range": [
+            17,
+            18
+          ]
+        },
+        {
+          "code": "client = instructor.from_cohere(co)\n\n",
+          "display_code": "client = instructor.from_cohere(co)\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 17,
+          "line_range": [
+            17,
+            18
+          ]
+        },
+        {
+          "code": "# Using chat method\n",
+          "display_code": "",
+          "annotation": "Using chat method",
           "is_comment": true,
           "start_line": 19,
           "line_range": [
@@ -1911,59 +2015,7 @@
           ],
           "target_line_range": [
             20,
-            21
-          ]
-        },
-        {
-          "code": "co = cohere.Client(\"YOUR_API_KEY\")  # or set CO_API_KEY env variable\n\n",
-          "display_code": "co = cohere.Client(\"YOUR_API_KEY\")  # or set CO_API_KEY env variable\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 20,
-          "line_range": [
-            20,
-            21
-          ]
-        },
-        {
-          "code": "# Patch with instructor\n",
-          "display_code": "",
-          "annotation": "Patch with instructor",
-          "is_comment": true,
-          "start_line": 22,
-          "line_range": [
-            22,
-            22
-          ],
-          "target_line_range": [
-            23,
-            24
-          ]
-        },
-        {
-          "code": "client = instructor.from_cohere(co)\n\n",
-          "display_code": "client = instructor.from_cohere(co)\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 23,
-          "line_range": [
-            23,
-            24
-          ]
-        },
-        {
-          "code": "# Using chat method\n",
-          "display_code": "",
-          "annotation": "Using chat method",
-          "is_comment": true,
-          "start_line": 25,
-          "line_range": [
-            25,
-            25
-          ],
-          "target_line_range": [
-            26,
-            34
+            28
           ]
         },
         {
@@ -1971,10 +2023,10 @@
           "display_code": "user = client.chat.completions.create(\n    model=\"command-r-plus\",  # or other Cohere models\n    response_model=User,\n    messages=[\n        {\"role\": \"user\", \"content\": \"Extract: John is 25 years old.\"}\n    ]\n)\n\nprint(f\"Name: {user.name}, Age: {user.age}\")\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 26,
+          "start_line": 20,
           "line_range": [
-            26,
-            34
+            20,
+            28
           ]
         },
         {
@@ -1982,14 +2034,14 @@
           "display_code": "",
           "annotation": "Output: Name: John, Age: 25",
           "is_comment": true,
-          "start_line": 35,
+          "start_line": 29,
           "line_range": [
-            35,
-            35
+            29,
+            29
           ],
           "target_line_range": [
-            36,
-            36
+            30,
+            30
           ]
         },
         {
@@ -1997,10 +2049,10 @@
           "display_code": "\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 36,
+          "start_line": 30,
           "line_range": [
-            36,
-            36
+            30,
+            30
           ]
         },
         {
@@ -2008,14 +2060,14 @@
           "display_code": "",
           "annotation": "Command model",
           "is_comment": true,
-          "start_line": 37,
+          "start_line": 31,
           "line_range": [
-            37,
-            37
+            31,
+            31
           ],
           "target_line_range": [
-            38,
-            45
+            32,
+            39
           ]
         },
         {
@@ -2023,10 +2075,10 @@
           "display_code": "user = client.chat.completions.create(\n    model=\"command\",\n    response_model=User,\n    messages=[\n        {\"role\": \"user\", \"content\": \"Extract: John is 25 years old.\"}\n    ]\n)\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 38,
+          "start_line": 32,
           "line_range": [
-            38,
-            45
+            32,
+            39
           ]
         },
         {
@@ -2034,14 +2086,14 @@
           "display_code": "",
           "annotation": "Command R model",
           "is_comment": true,
-          "start_line": 46,
+          "start_line": 40,
           "line_range": [
-            46,
-            46
+            40,
+            40
           ],
           "target_line_range": [
-            47,
-            54
+            41,
+            48
           ]
         },
         {
@@ -2049,10 +2101,10 @@
           "display_code": "user = client.chat.completions.create(\n    model=\"command-r\",\n    response_model=User,\n    messages=[\n        {\"role\": \"user\", \"content\": \"Extract: John is 25 years old.\"}\n    ]\n)\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 47,
+          "start_line": 41,
           "line_range": [
-            47,
-            54
+            41,
+            48
           ]
         },
         {
@@ -2060,14 +2112,14 @@
           "display_code": "",
           "annotation": "Command R+ model (most capable)",
           "is_comment": true,
-          "start_line": 55,
+          "start_line": 49,
           "line_range": [
-            55,
-            55
+            49,
+            49
           ],
           "target_line_range": [
-            56,
-            91
+            50,
+            85
           ]
         },
         {
@@ -2075,10 +2127,10 @@
           "display_code": "user = client.chat.completions.create(\n    model=\"command-r-plus\",\n    response_model=User,\n    messages=[\n        {\"role\": \"user\", \"content\": \"Extract: John is 25 years old.\"}\n    ]\n)\n\nuser = client.chat.completions.create(\n    model=\"command-r-plus\",\n    temperature=0.2,  # Lower for more consistent results\n    response_model=User,\n    messages=[\n        {\"role\": \"user\", \"content\": \"Extract: John is 25 years old.\"}\n    ]\n)\n\nuser = client.chat.completions.create(\n    model=\"command-r-plus\",\n    response_model=User,\n    preamble=\"You are an expert at extracting structured information.\",\n    messages=[\n        {\"role\": \"user\", \"content\": \"Extract: John is 25 years old.\"}\n    ]\n)\n\nuser = client.chat.completions.create(\n    model=\"command-r-plus\",\n    response_model=User,\n    messages=[\n        {\"role\": \"user\", \"content\": \"Hi, I'd like to discuss John who is 25 years old.\"},\n        {\"role\": \"assistant\", \"content\": \"Hello! I'd be happy to discuss John with you.\"},\n        {\"role\": \"user\", \"content\": \"Can you extract his information in a structured format?\"}\n    ]\n)\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 56,
+          "start_line": 50,
           "line_range": [
-            56,
-            91
+            50,
+            85
           ]
         },
         {
@@ -2086,14 +2138,14 @@
           "display_code": "",
           "annotation": "Default JSON mode",
           "is_comment": true,
-          "start_line": 92,
+          "start_line": 86,
           "line_range": [
-            92,
-            92
+            86,
+            86
           ],
           "target_line_range": [
-            93,
-            94
+            87,
+            88
           ]
         },
         {
@@ -2101,10 +2153,10 @@
           "display_code": "client = instructor.from_cohere(co)\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 93,
+          "start_line": 87,
           "line_range": [
-            93,
-            94
+            87,
+            88
           ]
         },
         {
@@ -2112,14 +2164,14 @@
           "display_code": "",
           "annotation": "Explicit JSON mode",
           "is_comment": true,
-          "start_line": 95,
+          "start_line": 89,
           "line_range": [
-            95,
-            95
+            89,
+            89
           ],
           "target_line_range": [
-            96,
-            100
+            90,
+            94
           ]
         },
         {
@@ -2127,10 +2179,10 @@
           "display_code": "client = instructor.from_cohere(\n    co,\n    mode=instructor.Mode.JSON\n)\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 96,
+          "start_line": 90,
           "line_range": [
-            96,
-            100
+            90,
+            94
           ]
         }
       ],
@@ -2166,18 +2218,18 @@
           ]
         },
         {
-          "code": "# Use Instructor with Mistral AI models for structured data extraction.\n# \n# \n# \n# \n# \n# pip install instructor mistralai\n# \n",
+          "code": "# Use Instructor with Mistral AI models for structured data extraction.\n## pip install instructor mistralai#\n",
           "display_code": "",
-          "annotation": "Use Instructor with Mistral AI models for structured data extraction.\n\n\n\n\n\npip install instructor mistralai\n",
+          "annotation": "Use Instructor with Mistral AI models for structured data extraction.\npip install instructor mistralai#",
           "is_comment": true,
           "start_line": 3,
           "line_range": [
             3,
-            10
+            4
           ],
           "target_line_range": [
-            11,
-            18
+            5,
+            12
           ]
         },
         {
@@ -2185,16 +2237,68 @@
           "display_code": "import instructor\nfrom mistralai.client import MistralClient\nfrom pydantic import BaseModel\n\nclass User(BaseModel):\n    name: str\n    age: int\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 11,
+          "start_line": 5,
           "line_range": [
-            11,
-            18
+            5,
+            12
           ]
         },
         {
           "code": "# Create Mistral client\n",
           "display_code": "",
           "annotation": "Create Mistral client",
+          "is_comment": true,
+          "start_line": 13,
+          "line_range": [
+            13,
+            13
+          ],
+          "target_line_range": [
+            14,
+            15
+          ]
+        },
+        {
+          "code": "mistral_client = MistralClient(api_key=\"YOUR_API_KEY\")\n\n",
+          "display_code": "mistral_client = MistralClient(api_key=\"YOUR_API_KEY\")\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 14,
+          "line_range": [
+            14,
+            15
+          ]
+        },
+        {
+          "code": "# Patch with instructor\n",
+          "display_code": "",
+          "annotation": "Patch with instructor",
+          "is_comment": true,
+          "start_line": 16,
+          "line_range": [
+            16,
+            16
+          ],
+          "target_line_range": [
+            17,
+            18
+          ]
+        },
+        {
+          "code": "client = instructor.from_mistral(mistral_client)\n\n",
+          "display_code": "client = instructor.from_mistral(mistral_client)\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 17,
+          "line_range": [
+            17,
+            18
+          ]
+        },
+        {
+          "code": "# Using chat method\n",
+          "display_code": "",
+          "annotation": "Using chat method",
           "is_comment": true,
           "start_line": 19,
           "line_range": [
@@ -2203,59 +2307,7 @@
           ],
           "target_line_range": [
             20,
-            21
-          ]
-        },
-        {
-          "code": "mistral_client = MistralClient(api_key=\"YOUR_API_KEY\")\n\n",
-          "display_code": "mistral_client = MistralClient(api_key=\"YOUR_API_KEY\")\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 20,
-          "line_range": [
-            20,
-            21
-          ]
-        },
-        {
-          "code": "# Patch with instructor\n",
-          "display_code": "",
-          "annotation": "Patch with instructor",
-          "is_comment": true,
-          "start_line": 22,
-          "line_range": [
-            22,
-            22
-          ],
-          "target_line_range": [
-            23,
-            24
-          ]
-        },
-        {
-          "code": "client = instructor.from_mistral(mistral_client)\n\n",
-          "display_code": "client = instructor.from_mistral(mistral_client)\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 23,
-          "line_range": [
-            23,
-            24
-          ]
-        },
-        {
-          "code": "# Using chat method\n",
-          "display_code": "",
-          "annotation": "Using chat method",
-          "is_comment": true,
-          "start_line": 25,
-          "line_range": [
-            25,
-            25
-          ],
-          "target_line_range": [
-            26,
-            34
+            28
           ]
         },
         {
@@ -2263,10 +2315,10 @@
           "display_code": "user = client.chat.completions.create(\n    model=\"mistral-large-latest\",\n    response_model=User,\n    messages=[\n        {\"role\": \"user\", \"content\": \"Extract: John is 25 years old.\"}\n    ]\n)\n\nprint(f\"Name: {user.name}, Age: {user.age}\")\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 26,
+          "start_line": 20,
           "line_range": [
-            26,
-            34
+            20,
+            28
           ]
         },
         {
@@ -2274,14 +2326,14 @@
           "display_code": "",
           "annotation": "Output: Name: John, Age: 25",
           "is_comment": true,
-          "start_line": 35,
+          "start_line": 29,
           "line_range": [
-            35,
-            35
+            29,
+            29
           ],
           "target_line_range": [
-            36,
-            36
+            30,
+            30
           ]
         },
         {
@@ -2289,10 +2341,10 @@
           "display_code": "\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 36,
+          "start_line": 30,
           "line_range": [
-            36,
-            36
+            30,
+            30
           ]
         },
         {
@@ -2300,14 +2352,14 @@
           "display_code": "",
           "annotation": "Mistral Small",
           "is_comment": true,
-          "start_line": 37,
+          "start_line": 31,
           "line_range": [
-            37,
-            37
+            31,
+            31
           ],
           "target_line_range": [
-            38,
-            45
+            32,
+            39
           ]
         },
         {
@@ -2315,10 +2367,10 @@
           "display_code": "user = client.chat.completions.create(\n    model=\"mistral-small-latest\",\n    response_model=User,\n    messages=[\n        {\"role\": \"user\", \"content\": \"Extract: John is 25 years old.\"}\n    ]\n)\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 38,
+          "start_line": 32,
           "line_range": [
-            38,
-            45
+            32,
+            39
           ]
         },
         {
@@ -2326,14 +2378,14 @@
           "display_code": "",
           "annotation": "Mistral Medium",
           "is_comment": true,
-          "start_line": 46,
+          "start_line": 40,
           "line_range": [
-            46,
-            46
+            40,
+            40
           ],
           "target_line_range": [
-            47,
-            54
+            41,
+            48
           ]
         },
         {
@@ -2341,10 +2393,10 @@
           "display_code": "user = client.chat.completions.create(\n    model=\"mistral-medium-latest\",\n    response_model=User,\n    messages=[\n        {\"role\": \"user\", \"content\": \"Extract: John is 25 years old.\"}\n    ]\n)\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 47,
+          "start_line": 41,
           "line_range": [
-            47,
-            54
+            41,
+            48
           ]
         },
         {
@@ -2352,14 +2404,14 @@
           "display_code": "",
           "annotation": "Mistral Large (most capable)",
           "is_comment": true,
-          "start_line": 55,
+          "start_line": 49,
           "line_range": [
-            55,
-            55
+            49,
+            49
           ],
           "target_line_range": [
-            56,
-            91
+            50,
+            85
           ]
         },
         {
@@ -2367,10 +2419,10 @@
           "display_code": "user = client.chat.completions.create(\n    model=\"mistral-large-latest\",\n    response_model=User,\n    messages=[\n        {\"role\": \"user\", \"content\": \"Extract: John is 25 years old.\"}\n    ]\n)\n\nuser = client.chat.completions.create(\n    model=\"mistral-large-latest\",\n    response_model=User,\n    messages=[\n        {\"role\": \"system\", \"content\": \"You are an expert at data extraction.\"},\n        {\"role\": \"user\", \"content\": \"Extract: John is 25 years old.\"}\n    ]\n)\n\nuser = client.chat.completions.create(\n    model=\"mistral-large-latest\",\n    temperature=0.2,  # Lower for more consistent results\n    response_model=User,\n    messages=[\n        {\"role\": \"user\", \"content\": \"Extract: John is 25 years old.\"}\n    ]\n)\n\nuser = client.chat.completions.create(\n    model=\"mistral-large-latest\",\n    response_model=User,\n    messages=[\n        {\"role\": \"user\", \"content\": \"Hi, I'd like to discuss John who is 25 years old.\"},\n        {\"role\": \"assistant\", \"content\": \"Hello! I'd be happy to discuss John with you.\"},\n        {\"role\": \"user\", \"content\": \"Can you extract his information in a structured format?\"}\n    ]\n)\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 56,
+          "start_line": 50,
           "line_range": [
-            56,
-            91
+            50,
+            85
           ]
         },
         {
@@ -2378,14 +2430,14 @@
           "display_code": "",
           "annotation": "Default JSON mode",
           "is_comment": true,
-          "start_line": 92,
+          "start_line": 86,
           "line_range": [
-            92,
-            92
+            86,
+            86
           ],
           "target_line_range": [
-            93,
-            94
+            87,
+            88
           ]
         },
         {
@@ -2393,16 +2445,42 @@
           "display_code": "client = instructor.from_mistral(mistral_client)\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 93,
+          "start_line": 87,
           "line_range": [
-            93,
-            94
+            87,
+            88
           ]
         },
         {
           "code": "# Explicit JSON mode\n",
           "display_code": "",
           "annotation": "Explicit JSON mode",
+          "is_comment": true,
+          "start_line": 89,
+          "line_range": [
+            89,
+            89
+          ],
+          "target_line_range": [
+            90,
+            94
+          ]
+        },
+        {
+          "code": "client = instructor.from_mistral(\n    mistral_client,\n    mode=instructor.Mode.JSON\n)\n\n",
+          "display_code": "client = instructor.from_mistral(\n    mistral_client,\n    mode=instructor.Mode.JSON\n)\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 90,
+          "line_range": [
+            90,
+            94
+          ]
+        },
+        {
+          "code": "# Using MD_JSON mode\n",
+          "display_code": "",
+          "annotation": "Using MD_JSON mode",
           "is_comment": true,
           "start_line": 95,
           "line_range": [
@@ -2411,33 +2489,7 @@
           ],
           "target_line_range": [
             96,
-            100
-          ]
-        },
-        {
-          "code": "client = instructor.from_mistral(\n    mistral_client,\n    mode=instructor.Mode.JSON\n)\n\n",
-          "display_code": "client = instructor.from_mistral(\n    mistral_client,\n    mode=instructor.Mode.JSON\n)\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 96,
-          "line_range": [
-            96,
-            100
-          ]
-        },
-        {
-          "code": "# Using MD_JSON mode\n",
-          "display_code": "",
-          "annotation": "Using MD_JSON mode",
-          "is_comment": true,
-          "start_line": 101,
-          "line_range": [
-            101,
-            101
-          ],
-          "target_line_range": [
-            102,
-            124
+            118
           ]
         },
         {
@@ -2445,10 +2497,10 @@
           "display_code": "client = instructor.from_mistral(\n    mistral_client,\n    mode=instructor.Mode.MD_JSON\n)\n\nimport asyncio\nfrom mistralai.async_client import MistralAsyncClient\n\nasync_client = instructor.from_mistral(\n    MistralAsyncClient(api_key=\"YOUR_API_KEY\")\n)\n\nasync def extract_user():\n    return await async_client.chat.completions.create(\n        model=\"mistral-large-latest\",\n        response_model=User,\n        messages=[\n            {\"role\": \"user\", \"content\": \"Extract: John is 25 years old.\"}\n        ]\n    )\n\nuser = asyncio.run(extract_user())\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 102,
+          "start_line": 96,
           "line_range": [
-            102,
-            124
+            96,
+            118
           ]
         }
       ],
@@ -3015,18 +3067,18 @@
           ]
         },
         {
-          "code": "# Output:\n# Name: John Doe\n# Age: 30\n# Occupation: software engineer\n",
+          "code": "# Output:# Name: John Doe# Age: 30# Occupation: software engineer\n",
           "display_code": "",
-          "annotation": "Output:\nName: John Doe\nAge: 30\nOccupation: software engineer",
+          "annotation": "Output:# Name: John Doe# Age: 30# Occupation: software engineer",
           "is_comment": true,
           "start_line": 30,
           "line_range": [
             30,
-            33
+            30
           ],
           "target_line_range": [
-            34,
-            50
+            31,
+            47
           ]
         },
         {
@@ -3034,25 +3086,25 @@
           "display_code": "\nextracted = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    response_model=Person,\n    messages=[\n        {\"role\": \"user\", \"content\": \"\"\"\n        In our company blog post, we want to highlight one of our newest team members.\n        John Smith joined us last month. He's 34 years old and works as a data scientist.\n        John previously worked at TechCorp for 5 years.\n        \"\"\"}\n    ]\n)\n\nprint(f\"Name: {extracted.name}\")\nprint(f\"Age: {extracted.age}\")\nprint(f\"Occupation: {extracted.occupation}\")\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 34,
+          "start_line": 31,
           "line_range": [
-            34,
-            50
+            31,
+            47
           ]
         },
         {
-          "code": "# Output:\n# Name: John Smith\n# Age: 34\n# Occupation: data scientist\n",
+          "code": "# Output:# Name: John Smith# Age: 34# Occupation: data scientist\n",
           "display_code": "",
-          "annotation": "Output:\nName: John Smith\nAge: 34\nOccupation: data scientist",
+          "annotation": "Output:# Name: John Smith# Age: 34# Occupation: data scientist",
           "is_comment": true,
-          "start_line": 51,
+          "start_line": 48,
           "line_range": [
-            51,
-            54
+            48,
+            48
           ],
           "target_line_range": [
-            55,
-            78
+            49,
+            72
           ]
         },
         {
@@ -3060,25 +3112,25 @@
           "display_code": "\nfrom pydantic import BaseModel, Field\n\nclass Person(BaseModel):\n    name: str = Field(description=\"The person's full name\")\n    age: int = Field(description=\"The person's age in years\")\n    occupation: str = Field(description=\"The person's current job title or role\")\n\nextracted = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    response_model=Person,\n    messages=[\n        {\"role\": \"user\", \"content\": \"\"\"\n        Meet Sarah Johnson, one of our senior architects.\n        She's been with the firm since she was 28, and now at 42,\n        she leads our sustainable design initiatives.\n        \"\"\"}\n    ]\n)\n\nprint(f\"Name: {extracted.name}\")\nprint(f\"Age: {extracted.age}\")\nprint(f\"Occupation: {extracted.occupation}\")\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 55,
+          "start_line": 49,
           "line_range": [
-            55,
-            78
+            49,
+            72
           ]
         },
         {
-          "code": "# Output:\n# Name: Sarah Johnson\n# Age: 42\n# Occupation: senior architect\n",
+          "code": "# Output:# Name: Sarah Johnson# Age: 42# Occupation: senior architect\n",
           "display_code": "",
-          "annotation": "Output:\nName: Sarah Johnson\nAge: 42\nOccupation: senior architect",
+          "annotation": "Output:# Name: Sarah Johnson# Age: 42# Occupation: senior architect",
           "is_comment": true,
-          "start_line": 79,
+          "start_line": 73,
           "line_range": [
-            79,
-            82
+            73,
+            73
           ],
           "target_line_range": [
-            83,
-            106
+            74,
+            97
           ]
         },
         {
@@ -3086,25 +3138,25 @@
           "display_code": "\nclass Employee(BaseModel):\n    \"\"\"Extract employee information from the provided text.\"\"\"\n\n    name: str\n    age: int\n    department: str\n    years_of_service: int\n\nextracted = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    response_model=Employee,\n    messages=[\n        {\"role\": \"user\", \"content\": \"\"\"\n        Employee Profile: Michael Chen has been in our Marketing department for 7 years.\n        He's 36 years old and has led multiple successful campaigns.\n        \"\"\"}\n    ]\n)\n\nprint(f\"Name: {extracted.name}\")\nprint(f\"Department: {extracted.department}\")\nprint(f\"Years of Service: {extracted.years_of_service}\")\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 83,
+          "start_line": 74,
           "line_range": [
-            83,
-            106
+            74,
+            97
           ]
         },
         {
-          "code": "# Output:\n# Name: Michael Chen\n# Department: Marketing\n# Years of Service: 7\n",
+          "code": "# Output:# Name: Michael Chen# Department: Marketing# Years of Service: 7\n",
           "display_code": "",
-          "annotation": "Output:\nName: Michael Chen\nDepartment: Marketing\nYears of Service: 7",
+          "annotation": "Output:# Name: Michael Chen# Department: Marketing# Years of Service: 7",
           "is_comment": true,
-          "start_line": 107,
+          "start_line": 98,
           "line_range": [
-            107,
-            110
+            98,
+            98
           ],
           "target_line_range": [
-            111,
-            111
+            99,
+            99
           ]
         },
         {
@@ -3112,10 +3164,10 @@
           "display_code": "\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 111,
+          "start_line": 99,
           "line_range": [
-            111,
-            111
+            99,
+            99
           ]
         }
       ],
@@ -3260,18 +3312,18 @@
           ]
         },
         {
-          "code": "# Output:\n# John is 30 years old\n# Mary is 25 years old\n# Bob is 45 years old\n",
+          "code": "# Output:# John is 30 years old# Mary is 25 years old# Bob is 45 years old\n",
           "display_code": "",
-          "annotation": "Output:\nJohn is 30 years old\nMary is 25 years old\nBob is 45 years old",
+          "annotation": "Output:# John is 30 years old# Mary is 25 years old# Bob is 45 years old",
           "is_comment": true,
           "start_line": 35,
           "line_range": [
             35,
-            38
+            35
           ],
           "target_line_range": [
-            39,
-            54
+            36,
+            51
           ]
         },
         {
@@ -3279,25 +3331,25 @@
           "display_code": "\npeople = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    response_model=List[Person],\n    messages=[\n        {\"role\": \"user\", \"content\": \"\"\"\n        Our team has grown significantly this year. John Smith, who is 32, joined our\n        engineering department. We also welcomed Sarah Johnson, 28, to our design team.\n        The most recent addition is Michael Chen, who is 35 and brings valuable experience.\n        \"\"\"}\n    ]\n)\n\nfor i, person in enumerate(people, 1):\n    print(f\"Person {i}: {person.name}, {person.age}\")\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 39,
+          "start_line": 36,
           "line_range": [
-            39,
-            54
+            36,
+            51
           ]
         },
         {
-          "code": "# Output:\n# Person 1: John Smith, 32\n# Person 2: Sarah Johnson, 28\n# Person 3: Michael Chen, 35\n",
+          "code": "# Output:# Person 1: John Smith, 32# Person 2: Sarah Johnson, 28# Person 3: Michael Chen, 35\n",
           "display_code": "",
-          "annotation": "Output:\nPerson 1: John Smith, 32\nPerson 2: Sarah Johnson, 28\nPerson 3: Michael Chen, 35",
+          "annotation": "Output:# Person 1: John Smith, 32# Person 2: Sarah Johnson, 28# Person 3: Michael Chen, 35",
           "is_comment": true,
-          "start_line": 55,
+          "start_line": 52,
           "line_range": [
-            55,
-            58
+            52,
+            52
           ],
           "target_line_range": [
-            59,
-            108
+            53,
+            102
           ]
         },
         {
@@ -3305,10 +3357,10 @@
           "display_code": "\nfrom pydantic import BaseModel, Field\nfrom typing import List, Optional\n\nclass Address(BaseModel):\n    street: str\n    city: str\n    state: Optional[str] = None\n    country: str\n\nclass Person(BaseModel):\n    name: str\n    age: int\n    occupation: str = Field(description=\"The person's job or profession\")\n    addresses: List[Address] = Field(description=\"List of addresses associated with this person\")\n\npeople = client.chat.completions.create(\n    model=\"gpt-4\",  # More complex extraction works better with more capable models\n    response_model=List[Person],\n    messages=[\n        {\"role\": \"user\", \"content\": \"\"\"\n        Our company employees include:\n\n        1. John Smith is a 34-year-old software developer who lives at 123 Main St, Boston, USA\n           and has a vacation home at 456 Beach Road, Miami, USA.\n\n        2. Maria Garcia is 29 and works as a marketing specialist. She lives at\n           78 Park Avenue, New York, USA.\n\n        3. Ahmed Hassan, 41, is our senior data scientist who recently moved from\n           555 River St, Cairo, Egypt to 890 Tech Blvd, San Francisco, USA.\n        \"\"\"}\n    ]\n)\n\nfor person in people:\n    print(f\"{person.name}, {person.age} - {person.occupation}\")\n    for i, addr in enumerate(person.addresses, 1):\n        print(f\"  Address {i}: {addr.street}, {addr.city}, {addr.country}\")\n    print()\n\nimport instructor\nfrom openai import OpenAI\nfrom typing import List\nfrom pydantic import BaseModel\n\nclass Person(BaseModel):\n    name: str\n    age: int\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 59,
+          "start_line": 53,
           "line_range": [
-            59,
-            108
+            53,
+            102
           ]
         },
         {
@@ -3316,14 +3368,14 @@
           "display_code": "",
           "annotation": "Patch the client",
           "is_comment": true,
-          "start_line": 109,
+          "start_line": 103,
           "line_range": [
-            109,
-            109
+            103,
+            103
           ],
           "target_line_range": [
-            110,
-            111
+            104,
+            105
           ]
         },
         {
@@ -3331,10 +3383,10 @@
           "display_code": "client = instructor.from_openai(OpenAI())\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 110,
+          "start_line": 104,
           "line_range": [
-            110,
-            111
+            104,
+            105
           ]
         },
         {
@@ -3342,14 +3394,14 @@
           "display_code": "",
           "annotation": "Extract with streaming using create_iterable",
           "is_comment": true,
-          "start_line": 112,
+          "start_line": 106,
           "line_range": [
-            112,
-            112
+            106,
+            106
           ],
           "target_line_range": [
-            113,
-            125
+            107,
+            119
           ]
         },
         {
@@ -3357,10 +3409,10 @@
           "display_code": "people_stream = client.chat.completions.create_iterable(\n    model=\"gpt-3.5-turbo\",\n    response_model=Person,  # Note: no List wrapper here\n    messages=[\n        {\"role\": \"user\", \"content\": \"\"\"\n        Extract all people mentioned in this text:\n        - John is 30 years old\n        - Mary is 25 years old\n        - Bob is 45 years old\n        \"\"\"}\n    ]\n)\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 113,
+          "start_line": 107,
           "line_range": [
-            113,
-            125
+            107,
+            119
           ]
         },
         {
@@ -3368,14 +3420,14 @@
           "display_code": "",
           "annotation": "Process each item as it's completed",
           "is_comment": true,
-          "start_line": 126,
+          "start_line": 120,
           "line_range": [
-            126,
-            126
+            120,
+            120
           ],
           "target_line_range": [
-            127,
-            129
+            121,
+            123
           ]
         },
         {
@@ -3383,25 +3435,25 @@
           "display_code": "for person in people_stream:\n    print(f\"Received: {person.name} is {person.age} years old\")\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 127,
+          "start_line": 121,
           "line_range": [
-            127,
-            129
+            121,
+            123
           ]
         },
         {
-          "code": "# Output will appear one at a time as each is completed:\n# Received: John is 30 years old\n# Received: Mary is 25 years old\n# Received: Bob is 45 years old\n",
+          "code": "# Output will appear one at a time as each is completed:# Received: John is 30 years old# Received: Mary is 25 years old# Received: Bob is 45 years old\n",
           "display_code": "",
-          "annotation": "Output will appear one at a time as each is completed:\nReceived: John is 30 years old\nReceived: Mary is 25 years old\nReceived: Bob is 45 years old",
+          "annotation": "Output will appear one at a time as each is completed:# Received: John is 30 years old# Received: Mary is 25 years old# Received: Bob is 45 years old",
           "is_comment": true,
-          "start_line": 130,
+          "start_line": 124,
           "line_range": [
-            130,
-            133
+            124,
+            124
           ],
           "target_line_range": [
-            134,
-            134
+            125,
+            125
           ]
         },
         {
@@ -3409,10 +3461,10 @@
           "display_code": "\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 134,
+          "start_line": 125,
           "line_range": [
-            134,
-            134
+            125,
+            125
           ]
         }
       ],
@@ -5005,18 +5057,18 @@
           ]
         },
         {
-          "code": "# Output:\n# Text 1: 'Your application has been approved. Sign the documents at your earliest convenience.'\n# Classification: NOT_SPAM\n#\n# Text 2: 'WINNER! You've been selected to receive $1000! Send your bank details now!'\n# Classification: SPAM\n#\n# Text 3: 'Meeting rescheduled to 3PM tomorrow. Same Zoom link.'\n# Classification: NOT_SPAM\n",
+          "code": "# Output:# Text 1: 'Your application has been approved. Sign the documents at your earliest convenience.'# Classification: NOT_SPAM## Text 2: 'WINNER! You've been selected to receive $1000! Send your bank details now!'# Classification: SPAM## Text 3: 'Meeting rescheduled to 3PM tomorrow. Same Zoom link.'# Classification: NOT_SPAM\n",
           "display_code": "",
-          "annotation": "Output:\nText 1: 'Your application has been approved. Sign the documents at your earliest convenience.'\nClassification: NOT_SPAM\n\nText 2: 'WINNER! You've been selected to receive $1000! Send your bank details now!'\nClassification: SPAM\n\nText 3: 'Meeting rescheduled to 3PM tomorrow. Same Zoom link.'\nClassification: NOT_SPAM",
+          "annotation": "Output:# Text 1: 'Your application has been approved. Sign the documents at your earliest convenience.'# Classification: NOT_SPAM## Text 2: 'WINNER! You've been selected to receive $1000! Send your bank details now!'# Classification: SPAM## Text 3: 'Meeting rescheduled to 3PM tomorrow. Same Zoom link.'# Classification: NOT_SPAM",
           "is_comment": true,
           "start_line": 153,
           "line_range": [
             153,
-            161
+            153
           ],
           "target_line_range": [
-            162,
-            162
+            154,
+            154
           ]
         },
         {
@@ -5024,10 +5076,10 @@
           "display_code": "\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 162,
+          "start_line": 154,
           "line_range": [
-            162,
-            162
+            154,
+            154
           ]
         }
       ],
@@ -5224,18 +5276,18 @@
           ]
         },
         {
-          "code": "# Example Output:\n# Labels with confidence:\n# - Technology: 0.95\n# - Health: 0.85\n# - Sports: 0.62\n",
+          "code": "# Example Output:# Labels with confidence:# - Technology: 0.95# - Health: 0.85# - Sports: 0.62\n",
           "display_code": "",
-          "annotation": "Example Output:\nLabels with confidence:\n- Technology: 0.95\n- Health: 0.85\n- Sports: 0.62",
+          "annotation": "Example Output:# Labels with confidence:# - Technology: 0.95# - Health: 0.85# - Sports: 0.62",
           "is_comment": true,
           "start_line": 145,
           "line_range": [
             145,
-            149
+            145
           ],
           "target_line_range": [
-            150,
-            204
+            146,
+            200
           ]
         },
         {
@@ -5243,25 +5295,25 @@
           "display_code": "\nfrom pydantic import BaseModel, Field\nfrom typing import List, Optional\n\nclass SubCategory(BaseModel):\n    name: str\n    confidence: float = Field(gt=0, le=1)\n\nclass MainCategory(BaseModel):\n    name: str\n    confidence: float = Field(gt=0, le=1)\n    subcategories: List[SubCategory] = []\n\nclass HierarchicalClassification(BaseModel):\n    categories: List[MainCategory] = Field(\n        description=\"Hierarchical categories with confidence scores\"\n    )\n\ndef classify_hierarchical(text: str) -> HierarchicalClassification:\n    return client.chat.completions.create(\n        model=\"gpt-4\",  # More complex tasks work better with GPT-4\n        response_model=HierarchicalClassification,\n        messages=[\n            {\n                \"role\": \"system\",\n                \"content\": \"\"\"\n                Classify the text into main categories and subcategories:\n\n                Main categories:\n                - Technology (subcategories: Hardware, Software, AI, Internet)\n                - Science (subcategories: Physics, Biology, Chemistry, Astronomy)\n                - Health (subcategories: Fitness, Nutrition, Medical, Mental Health)\n\n                Return only relevant categories with confidence scores.\n                \"\"\"\n            },\n            {\"role\": \"user\", \"content\": f\"Text for classification: {text}\"}\n        ]\n    )\n\narticle = \"\"\"\n    Researchers have developed a new AI algorithm that can detect early signs of\n    Alzheimer's disease from brain scans with 94% accuracy. The deep learning software\n    could help doctors diagnose patients years earlier than current methods.\n\"\"\"\n\nresult = classify_hierarchical(article)\n\nprint(f\"Text: '{article}'\")\nprint(\"Classification:\")\nfor category in result.categories:\n    print(f\"- {category.name} ({category.confidence:.2f})\")\n    for subcategory in category.subcategories:\n        print(f\"  - {subcategory.name} ({subcategory.confidence:.2f})\")\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 150,
+          "start_line": 146,
           "line_range": [
-            150,
-            204
+            146,
+            200
           ]
         },
         {
-          "code": "# Example Output:\n# Classification:\n# - Technology (0.90)\n#   - AI (0.95)\n#   - Software (0.80)\n# - Health (0.85)\n#   - Medical (0.90)\n# - Science (0.75)\n#   - Biology (0.70)\n",
+          "code": "# Example Output:# Classification:# - Technology (0.90)#   - AI (0.95)#   - Software (0.80)# - Health (0.85)#   - Medical (0.90)# - Science (0.75)#   - Biology (0.70)\n",
           "display_code": "",
-          "annotation": "Example Output:\nClassification:\n- Technology (0.90)\n- AI (0.95)\n- Software (0.80)\n- Health (0.85)\n- Medical (0.90)\n- Science (0.75)\n- Biology (0.70)",
+          "annotation": "Example Output:# Classification:# - Technology (0.90)#   - AI (0.95)#   - Software (0.80)# - Health (0.85)#   - Medical (0.90)# - Science (0.75)#   - Biology (0.70)",
           "is_comment": true,
-          "start_line": 205,
+          "start_line": 201,
           "line_range": [
-            205,
-            213
+            201,
+            201
           ],
           "target_line_range": [
-            214,
-            214
+            202,
+            202
           ]
         },
         {
@@ -5269,10 +5321,10 @@
           "display_code": "\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 214,
+          "start_line": 202,
           "line_range": [
-            214,
-            214
+            202,
+            202
           ]
         }
       ],
@@ -5313,18 +5365,18 @@
           ]
         },
         {
-          "code": "# Get started with streaming responses in Instructor for real-time processing.\n# \n# Streaming allows you to receive partial responses from LLMs as they're being generated, \n# rather than waiting for the complete response.\n#\n# Instructor offers two main ways to stream structured data:\n# \n# 1. Partial: Stream a single object as it's being populated field by field\n# 2. Iterable: Stream multiple complete objects one at a time\n",
+          "code": "# Get started with streaming responses in Instructor for real-time processing.\n## Streaming allows you to receive partial responses from LLMs as they're being generated,# rather than waiting for the complete response.## Instructor offers two main ways to stream structured data:## 1. Partial: Stream a single object as it's being populated field by field# 2. Iterable: Stream multiple complete objects one at a time\n",
           "display_code": "",
-          "annotation": "Get started with streaming responses in Instructor for real-time processing.\n\nStreaming allows you to receive partial responses from LLMs as they're being generated,\nrather than waiting for the complete response.\n\nInstructor offers two main ways to stream structured data:\n\n1. Partial: Stream a single object as it's being populated field by field\n2. Iterable: Stream multiple complete objects one at a time",
+          "annotation": "Get started with streaming responses in Instructor for real-time processing.\nStreaming allows you to receive partial responses from LLMs as they're being generated,# rather than waiting for the complete response.## Instructor offers two main ways to stream structured data:## 1. Partial: Stream a single object as it's being populated field by field# 2. Iterable: Stream multiple complete objects one at a time",
           "is_comment": true,
           "start_line": 3,
           "line_range": [
             3,
-            11
+            4
           ],
           "target_line_range": [
-            12,
-            20
+            5,
+            13
           ]
         },
         {
@@ -5332,10 +5384,10 @@
           "display_code": "import instructor\nfrom openai import OpenAI\nfrom pydantic import BaseModel\n\nclass User(BaseModel):\n    name: str\n    age: int\n    bio: str\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 12,
+          "start_line": 5,
           "line_range": [
-            12,
-            20
+            5,
+            13
           ]
         },
         {
@@ -5343,14 +5395,14 @@
           "display_code": "",
           "annotation": "Patch the OpenAI client",
           "is_comment": true,
-          "start_line": 21,
+          "start_line": 14,
           "line_range": [
-            21,
-            21
+            14,
+            14
           ],
           "target_line_range": [
-            22,
-            23
+            15,
+            16
           ]
         },
         {
@@ -5358,10 +5410,10 @@
           "display_code": "client = instructor.from_openai(OpenAI())\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 22,
+          "start_line": 15,
           "line_range": [
-            22,
-            23
+            15,
+            16
           ]
         },
         {
@@ -5369,14 +5421,14 @@
           "display_code": "",
           "annotation": "Create a basic streaming response and process the chunks",
           "is_comment": true,
-          "start_line": 24,
+          "start_line": 17,
           "line_range": [
-            24,
-            24
+            17,
+            17
           ],
           "target_line_range": [
-            25,
-            34
+            18,
+            27
           ]
         },
         {
@@ -5384,10 +5436,10 @@
           "display_code": "def stream_user_info():\n    stream = client.chat.completions.create(\n        model=\"gpt-3.5-turbo\",\n        response_model=User,\n        stream=True,  # Enable streaming\n        messages=[\n            {\"role\": \"user\", \"content\": \"Generate a profile for a fictional user named Alice who is 28 years old.\"}\n        ]\n    )\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 25,
+          "start_line": 18,
           "line_range": [
-            25,
-            34
+            18,
+            27
           ]
         },
         {
@@ -5395,14 +5447,14 @@
           "display_code": "",
           "annotation": "Each chunk contains the partial model constructed so far",
           "is_comment": true,
-          "start_line": 35,
+          "start_line": 28,
           "line_range": [
-            35,
-            35
+            28,
+            28
           ],
           "target_line_range": [
-            36,
-            38
+            29,
+            31
           ]
         },
         {
@@ -5410,10 +5462,10 @@
           "display_code": "    for chunk in stream:\n        print(f\"Received chunk: {chunk}\")\n        \n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 36,
+          "start_line": 29,
           "line_range": [
-            36,
-            38
+            29,
+            31
           ]
         },
         {
@@ -5421,14 +5473,14 @@
           "display_code": "",
           "annotation": "Return the final complete object",
           "is_comment": true,
-          "start_line": 39,
+          "start_line": 32,
           "line_range": [
-            39,
-            39
+            32,
+            32
           ],
           "target_line_range": [
-            40,
-            46
+            33,
+            39
           ]
         },
         {
@@ -5436,10 +5488,10 @@
           "display_code": "    return chunk\n\nuser = stream_user_info()\nprint(f\"\\nFinal result: {user}\")\n\nfrom instructor import Partial\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 40,
+          "start_line": 33,
           "line_range": [
-            40,
-            46
+            33,
+            39
           ]
         },
         {
@@ -5447,14 +5499,14 @@
           "display_code": "",
           "annotation": "Stream with Partial objects for field-by-field progress tracking",
           "is_comment": true,
-          "start_line": 47,
+          "start_line": 40,
           "line_range": [
-            47,
-            47
+            40,
+            40
           ],
           "target_line_range": [
-            48,
-            56
+            41,
+            49
           ]
         },
         {
@@ -5462,16 +5514,68 @@
           "display_code": "def stream_user_with_partial():\n    user_stream = client.chat.completions.create_partial(\n        model=\"gpt-3.5-turbo\",\n        response_model=User,\n        messages=[\n            {\"role\": \"user\", \"content\": \"Generate a profile for a fictional user named Bob who is 35 years old and works as a software developer.\"}\n        ]\n    )\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 48,
+          "start_line": 41,
           "line_range": [
-            48,
-            56
+            41,
+            49
           ]
         },
         {
           "code": "    # Show progress as each field gets filled in\n",
           "display_code": "",
           "annotation": "Show progress as each field gets filled in",
+          "is_comment": true,
+          "start_line": 50,
+          "line_range": [
+            50,
+            50
+          ],
+          "target_line_range": [
+            51,
+            53
+          ]
+        },
+        {
+          "code": "    print(\"Streaming user data:\")\n\n    for partial_user in user_stream:\n",
+          "display_code": "    print(\"Streaming user data:\")\n\n    for partial_user in user_stream:\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 51,
+          "line_range": [
+            51,
+            53
+          ]
+        },
+        {
+          "code": "        # Fields appear as they're generated by the model\n",
+          "display_code": "",
+          "annotation": "Fields appear as they're generated by the model",
+          "is_comment": true,
+          "start_line": 54,
+          "line_range": [
+            54,
+            54
+          ],
+          "target_line_range": [
+            55,
+            56
+          ]
+        },
+        {
+          "code": "        print(f\"Current state: name={partial_user.name}, age={partial_user.age}, bio={partial_user.bio!r}\")\n\n",
+          "display_code": "        print(f\"Current state: name={partial_user.name}, age={partial_user.age}, bio={partial_user.bio!r}\")\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 55,
+          "line_range": [
+            55,
+            56
+          ]
+        },
+        {
+          "code": "# Example output:# Current state: name=None, age=None, bio=None# Current state: name='Bob', age=None, bio=None# Current state: name='Bob', age=35, bio=None# Current state: name='Bob', age=35, bio='Software developer with 10 years of experience...'\n",
+          "display_code": "",
+          "annotation": "Example output:# Current state: name=None, age=None, bio=None# Current state: name='Bob', age=None, bio=None# Current state: name='Bob', age=35, bio=None# Current state: name='Bob', age=35, bio='Software developer with 10 years of experience...'",
           "is_comment": true,
           "start_line": 57,
           "line_range": [
@@ -5480,59 +5584,7 @@
           ],
           "target_line_range": [
             58,
-            60
-          ]
-        },
-        {
-          "code": "    print(\"Streaming user data:\")\n\n    for partial_user in user_stream:\n",
-          "display_code": "    print(\"Streaming user data:\")\n\n    for partial_user in user_stream:\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 58,
-          "line_range": [
-            58,
-            60
-          ]
-        },
-        {
-          "code": "        # Fields appear as they're generated by the model\n",
-          "display_code": "",
-          "annotation": "Fields appear as they're generated by the model",
-          "is_comment": true,
-          "start_line": 61,
-          "line_range": [
-            61,
-            61
-          ],
-          "target_line_range": [
-            62,
-            63
-          ]
-        },
-        {
-          "code": "        print(f\"Current state: name={partial_user.name}, age={partial_user.age}, bio={partial_user.bio!r}\")\n\n",
-          "display_code": "        print(f\"Current state: name={partial_user.name}, age={partial_user.age}, bio={partial_user.bio!r}\")\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 62,
-          "line_range": [
-            62,
-            63
-          ]
-        },
-        {
-          "code": "# Example output:\n# Current state: name=None, age=None, bio=None\n# Current state: name='Bob', age=None, bio=None\n# Current state: name='Bob', age=35, bio=None\n# Current state: name='Bob', age=35, bio='Software developer with 10 years of experience...'\n",
-          "display_code": "",
-          "annotation": "Example output:\nCurrent state: name=None, age=None, bio=None\nCurrent state: name='Bob', age=None, bio=None\nCurrent state: name='Bob', age=35, bio=None\nCurrent state: name='Bob', age=35, bio='Software developer with 10 years of experience...'",
-          "is_comment": true,
-          "start_line": 64,
-          "line_range": [
-            64,
-            68
-          ],
-          "target_line_range": [
-            69,
-            75
+            64
           ]
         },
         {
@@ -5540,10 +5592,10 @@
           "display_code": "\nfrom typing import Dict, Any\n\nclass ProgressTracker:\n    def __init__(self):\n        self.progress = {}\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 69,
+          "start_line": 58,
           "line_range": [
-            69,
-            75
+            58,
+            64
           ]
         },
         {
@@ -5551,14 +5603,14 @@
           "display_code": "",
           "annotation": "Monitor completion percentage and track field updates",
           "is_comment": true,
-          "start_line": 76,
+          "start_line": 65,
           "line_range": [
-            76,
-            76
+            65,
+            65
           ],
           "target_line_range": [
-            77,
-            77
+            66,
+            66
           ]
         },
         {
@@ -5566,10 +5618,10 @@
           "display_code": "    def update(self, partial_user: Partial[User]):\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 77,
+          "start_line": 66,
           "line_range": [
-            77,
-            77
+            66,
+            66
           ]
         },
         {
@@ -5577,14 +5629,14 @@
           "display_code": "",
           "annotation": "Calculate what percentage of fields are now populated",
           "is_comment": true,
-          "start_line": 78,
+          "start_line": 67,
           "line_range": [
-            78,
-            78
+            67,
+            67
           ],
           "target_line_range": [
-            79,
-            82
+            68,
+            71
           ]
         },
         {
@@ -5592,10 +5644,10 @@
           "display_code": "        total_fields = len(User.model_fields)\n        populated = sum(1 for v in [partial_user.name, partial_user.age, partial_user.bio] if v is not None)\n        completion = int(populated / total_fields * 100)\n        \n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 79,
+          "start_line": 68,
           "line_range": [
-            79,
-            82
+            68,
+            71
           ]
         },
         {
@@ -5603,14 +5655,14 @@
           "display_code": "",
           "annotation": "Build a dictionary of only the fields that have values",
           "is_comment": true,
-          "start_line": 83,
+          "start_line": 72,
           "line_range": [
-            83,
-            83
+            72,
+            72
           ],
           "target_line_range": [
-            84,
-            113
+            73,
+            102
           ]
         },
         {
@@ -5618,25 +5670,25 @@
           "display_code": "        data = {}\n        if partial_user.name is not None:\n            data[\"name\"] = partial_user.name\n        if partial_user.age is not None:\n            data[\"age\"] = partial_user.age\n        if partial_user.bio is not None:\n            data[\"bio\"] = partial_user.bio\n\n        self.progress = {\n            \"completion\": f\"{completion}%\",\n            \"data\": data\n        }\n\n        return self.progress\n\ndef stream_with_progress():\n    tracker = ProgressTracker()\n\n    user_stream = client.chat.completions.create_partial(\n        model=\"gpt-3.5-turbo\",\n        response_model=User,\n        messages=[\n            {\"role\": \"user\", \"content\": \"Generate a profile for a fictional user named Carol who is 42 years old.\"}\n        ]\n    )\n\n    for partial_user in user_stream:\n        progress = tracker.update(partial_user)\n        print(f\"Progress: {progress['completion']} - Current data: {progress['data']}\")\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 84,
+          "start_line": 73,
           "line_range": [
-            84,
-            113
+            73,
+            102
           ]
         },
         {
-          "code": "# Example output:\n# Progress: 33% - Current data: {'name': 'Carol'}\n# Progress: 66% - Current data: {'name': 'Carol', 'age': 42}\n# Progress: 100% - Current data: {'name': 'Carol', 'age': 42, 'bio': 'Carol is a passionate...'}\n",
+          "code": "# Example output:# Progress: 33% - Current data: {'name': 'Carol'}# Progress: 66% - Current data: {'name': 'Carol', 'age': 42}# Progress: 100% - Current data: {'name': 'Carol', 'age': 42, 'bio': 'Carol is a passionate...'}\n",
           "display_code": "",
-          "annotation": "Example output:\nProgress: 33% - Current data: {'name': 'Carol'}\nProgress: 66% - Current data: {'name': 'Carol', 'age': 42}\nProgress: 100% - Current data: {'name': 'Carol', 'age': 42, 'bio': 'Carol is a passionate...'}",
+          "annotation": "Example output:# Progress: 33% - Current data: {'name': 'Carol'}# Progress: 66% - Current data: {'name': 'Carol', 'age': 42}# Progress: 100% - Current data: {'name': 'Carol', 'age': 42, 'bio': 'Carol is a passionate...'}",
           "is_comment": true,
-          "start_line": 114,
+          "start_line": 103,
           "line_range": [
-            114,
-            117
+            103,
+            103
           ],
           "target_line_range": [
-            118,
-            121
+            104,
+            107
           ]
         },
         {
@@ -5644,10 +5696,10 @@
           "display_code": "\nimport asyncio\nfrom openai import AsyncOpenAI\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 118,
+          "start_line": 104,
           "line_range": [
-            118,
-            121
+            104,
+            107
           ]
         },
         {
@@ -5655,14 +5707,14 @@
           "display_code": "",
           "annotation": "Demonstrate async streaming with await syntax",
           "is_comment": true,
-          "start_line": 122,
+          "start_line": 108,
           "line_range": [
-            122,
-            122
+            108,
+            108
           ],
           "target_line_range": [
-            123,
-            125
+            109,
+            111
           ]
         },
         {
@@ -5670,10 +5722,10 @@
           "display_code": "async def stream_async():\n    async_client = instructor.from_openai(AsyncOpenAI())\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 123,
+          "start_line": 109,
           "line_range": [
-            123,
-            125
+            109,
+            111
           ]
         },
         {
@@ -5681,14 +5733,14 @@
           "display_code": "",
           "annotation": "Use async/await pattern for non-blocking streaming",
           "is_comment": true,
-          "start_line": 126,
+          "start_line": 112,
           "line_range": [
-            126,
-            126
+            112,
+            112
           ],
           "target_line_range": [
-            127,
-            134
+            113,
+            120
           ]
         },
         {
@@ -5696,10 +5748,10 @@
           "display_code": "    user_stream = await async_client.chat.completions.create_partial(\n        model=\"gpt-3.5-turbo\",\n        response_model=User,\n        messages=[\n            {\"role\": \"user\", \"content\": \"Generate a profile for a fictional user named Dave who is 31 years old.\"}\n        ]\n    )\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 127,
+          "start_line": 113,
           "line_range": [
-            127,
-            134
+            113,
+            120
           ]
         },
         {
@@ -5707,14 +5759,14 @@
           "display_code": "",
           "annotation": "Process stream with async for loop",
           "is_comment": true,
-          "start_line": 135,
+          "start_line": 121,
           "line_range": [
-            135,
-            135
+            121,
+            121
           ],
           "target_line_range": [
-            136,
-            138
+            122,
+            124
           ]
         },
         {
@@ -5722,10 +5774,10 @@
           "display_code": "    async for partial_user in user_stream:\n        print(f\"Async stream update: {partial_user}\")\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 136,
+          "start_line": 122,
           "line_range": [
-            136,
-            138
+            122,
+            124
           ]
         },
         {
@@ -5733,14 +5785,14 @@
           "display_code": "",
           "annotation": "Run the async function",
           "is_comment": true,
-          "start_line": 139,
+          "start_line": 125,
           "line_range": [
-            139,
-            139
+            125,
+            125
           ],
           "target_line_range": [
-            140,
-            141
+            126,
+            127
           ]
         },
         {
@@ -5748,10 +5800,10 @@
           "display_code": "asyncio.run(stream_async())\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 140,
+          "start_line": 126,
           "line_range": [
-            140,
-            141
+            126,
+            127
           ]
         }
       ],
@@ -5922,18 +5974,18 @@
           ]
         },
         {
-          "code": "# Example output:\n# Receiving people one at a time:\n#\n# Person 1:\n# Name: Michael Chen\n# Age: 34\n# Occupation: software engineer\n#\n# Person 2:\n# Name: Sarah Johnson\n# Age: 42\n# Occupation: teacher\n#\n# Person 3:\n# Name: Robert Garcia\n# Age: 56\n# Occupation: doctor\n",
+          "code": "# Example output:# Receiving people one at a time:## Person 1:# Name: Michael Chen# Age: 34# Occupation: software engineer## Person 2:# Name: Sarah Johnson# Age: 42# Occupation: teacher## Person 3:# Name: Robert Garcia# Age: 56# Occupation: doctor\n",
           "display_code": "",
-          "annotation": "Example output:\nReceiving people one at a time:\n\nPerson 1:\nName: Michael Chen\nAge: 34\nOccupation: software engineer\n\nPerson 2:\nName: Sarah Johnson\nAge: 42\nOccupation: teacher\n\nPerson 3:\nName: Robert Garcia\nAge: 56\nOccupation: doctor",
+          "annotation": "Example output:# Receiving people one at a time:## Person 1:# Name: Michael Chen# Age: 34# Occupation: software engineer## Person 2:# Name: Sarah Johnson# Age: 42# Occupation: teacher## Person 3:# Name: Robert Garcia# Age: 56# Occupation: doctor",
           "is_comment": true,
           "start_line": 40,
           "line_range": [
             40,
-            56
+            40
           ],
           "target_line_range": [
-            57,
-            68
+            41,
+            52
           ]
         },
         {
@@ -5941,10 +5993,10 @@
           "display_code": "\nfrom pydantic import BaseModel, Field\nfrom typing import List, Optional\n\nclass Book(BaseModel):\n    title: str\n    author: str\n    year: int\n    genre: str\n    summary: str = Field(description=\"Brief summary of the book's plot\")\n    rating: Optional[float] = Field(None, ge=0, le=5, description=\"Rating from 0-5 stars\")\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 57,
+          "start_line": 41,
           "line_range": [
-            57,
-            68
+            41,
+            52
           ]
         },
         {
@@ -5952,14 +6004,14 @@
           "display_code": "",
           "annotation": "Create a streaming iterable for complex objects",
           "is_comment": true,
-          "start_line": 69,
+          "start_line": 53,
           "line_range": [
-            69,
-            69
+            53,
+            53
           ],
           "target_line_range": [
-            70,
-            81
+            54,
+            65
           ]
         },
         {
@@ -5967,10 +6019,10 @@
           "display_code": "books_stream = client.chat.completions.create_iterable(\n    model=\"gpt-3.5-turbo\",\n    response_model=Book,\n    messages=[\n        {\"role\": \"system\", \"content\": \"Generate detailed book entries with accurate information.\"},\n        {\"role\": \"user\", \"content\": \"\"\"\n            Generate entries for three classic science fiction books.\n            Include their titles, authors, publication years, and summaries.\n        \"\"\"}\n    ]\n)\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 70,
+          "start_line": 54,
           "line_range": [
-            70,
-            81
+            54,
+            65
           ]
         },
         {
@@ -5978,14 +6030,14 @@
           "display_code": "",
           "annotation": "Process each book as it's generated",
           "is_comment": true,
-          "start_line": 82,
+          "start_line": 66,
           "line_range": [
-            82,
-            82
+            66,
+            66
           ],
           "target_line_range": [
-            83,
-            99
+            67,
+            83
           ]
         },
         {
@@ -5993,10 +6045,10 @@
           "display_code": "print(\"Streaming book data:\")\nfor i, book in enumerate(books_stream, 1):\n    print(f\"\\nBook {i}: {book.title} ({book.year})\")\n    print(f\"Author: {book.author}\")\n    print(f\"Genre: {book.genre}\")\n    print(f\"Rating: {book.rating if book.rating is not None else 'Not rated'}\")\n    print(f\"Summary: {book.summary}\")\n\nfrom typing import List, Dict, Any\nimport time\n\nclass Task(BaseModel):\n    title: str\n    priority: str\n    estimated_hours: float\n    assigned_to: Optional[str] = None\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 83,
+          "start_line": 67,
           "line_range": [
-            83,
-            99
+            67,
+            83
           ]
         },
         {
@@ -6004,14 +6056,14 @@
           "display_code": "",
           "annotation": "Setup for real-time processing",
           "is_comment": true,
-          "start_line": 100,
+          "start_line": 84,
           "line_range": [
-            100,
-            100
+            84,
+            84
           ],
           "target_line_range": [
-            101,
-            105
+            85,
+            89
           ]
         },
         {
@@ -6019,10 +6071,10 @@
           "display_code": "all_tasks = []\ntotal_hours = 0\nby_priority = {\"high\": 0, \"medium\": 0, \"low\": 0}\nby_assignee = {}\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 101,
+          "start_line": 85,
           "line_range": [
-            101,
-            105
+            85,
+            89
           ]
         },
         {
@@ -6030,14 +6082,14 @@
           "display_code": "",
           "annotation": "Create a streaming iterable",
           "is_comment": true,
-          "start_line": 106,
+          "start_line": 90,
           "line_range": [
-            106,
-            106
+            90,
+            90
           ],
           "target_line_range": [
-            107,
-            118
+            91,
+            102
           ]
         },
         {
@@ -6045,10 +6097,10 @@
           "display_code": "tasks_stream = client.chat.completions.create_iterable(\n    model=\"gpt-3.5-turbo\",\n    response_model=Task,\n    messages=[\n        {\"role\": \"user\", \"content\": \"\"\"\n            Generate 5 tasks for a software development sprint.\n            Include high, medium, and low priority tasks.\n            Assign team members: Alex, Jamie, Taylor, and Morgan.\n        \"\"\"}\n    ]\n)\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 107,
+          "start_line": 91,
           "line_range": [
-            107,
-            118
+            91,
+            102
           ]
         },
         {
@@ -6056,14 +6108,14 @@
           "display_code": "",
           "annotation": "Process tasks in real-time",
           "is_comment": true,
-          "start_line": 119,
+          "start_line": 103,
           "line_range": [
-            119,
-            119
+            103,
+            103
           ],
           "target_line_range": [
-            120,
-            123
+            104,
+            107
           ]
         },
         {
@@ -6071,10 +6123,10 @@
           "display_code": "print(\"Project task planning:\")\nprint(\"---------------------\")\n\nfor task in tasks_stream:\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 120,
+          "start_line": 104,
           "line_range": [
-            120,
-            123
+            104,
+            107
           ]
         },
         {
@@ -6082,14 +6134,14 @@
           "display_code": "",
           "annotation": "Update statistics",
           "is_comment": true,
-          "start_line": 124,
+          "start_line": 108,
           "line_range": [
-            124,
-            124
+            108,
+            108
           ],
           "target_line_range": [
-            125,
-            131
+            109,
+            115
           ]
         },
         {
@@ -6097,10 +6149,10 @@
           "display_code": "    all_tasks.append(task)\n    total_hours += task.estimated_hours\n    by_priority[task.priority.lower()] += 1\n\n    if task.assigned_to:\n        by_assignee[task.assigned_to] = by_assignee.get(task.assigned_to, 0) + 1\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 125,
+          "start_line": 109,
           "line_range": [
-            125,
-            131
+            109,
+            115
           ]
         },
         {
@@ -6108,14 +6160,14 @@
           "display_code": "",
           "annotation": "Print the task",
           "is_comment": true,
-          "start_line": 132,
+          "start_line": 116,
           "line_range": [
-            132,
-            132
+            116,
+            116
           ],
           "target_line_range": [
-            133,
-            137
+            117,
+            121
           ]
         },
         {
@@ -6123,10 +6175,10 @@
           "display_code": "    print(f\"\\nNew Task: {task.title}\")\n    print(f\"Priority: {task.priority}\")\n    print(f\"Estimate: {task.estimated_hours} hours\")\n    print(f\"Assigned to: {task.assigned_to or 'Unassigned'}\")\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 133,
+          "start_line": 117,
           "line_range": [
-            133,
-            137
+            117,
+            121
           ]
         },
         {
@@ -6134,14 +6186,14 @@
           "display_code": "",
           "annotation": "Print current statistics",
           "is_comment": true,
-          "start_line": 138,
+          "start_line": 122,
           "line_range": [
-            138,
-            138
+            122,
+            122
           ],
           "target_line_range": [
-            139,
-            144
+            123,
+            128
           ]
         },
         {
@@ -6149,10 +6201,10 @@
           "display_code": "    print(\"\\nCurrent Sprint Stats:\")\n    print(f\"Tasks planned: {len(all_tasks)}\")\n    print(f\"Total hours: {total_hours:.1f}\")\n    print(f\"By priority: {by_priority}\")\n    print(f\"By assignee: {by_assignee}\")\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 139,
+          "start_line": 123,
           "line_range": [
-            139,
-            144
+            123,
+            128
           ]
         },
         {
@@ -6160,14 +6212,14 @@
           "display_code": "",
           "annotation": "Simulate a pause for real-time updates",
           "is_comment": true,
-          "start_line": 145,
+          "start_line": 129,
           "line_range": [
-            145,
-            145
+            129,
+            129
           ],
           "target_line_range": [
-            146,
-            167
+            130,
+            151
           ]
         },
         {
@@ -6175,10 +6227,10 @@
           "display_code": "    time.sleep(0.5)\n\nprint(\"\\nSprint planning complete!\")\n\nfrom typing import Dict, List, Any, Generator, TypeVar, Generic\n\nT = TypeVar('T')\n\ndef combine_streams(streams: Dict[str, Generator[T, None, None]]) -> Generator[Dict[str, T], None, None]:\n    \"\"\"Combine multiple iterables with identification.\"\"\"\n    active_streams = streams.copy()\n    results = {key: None for key in streams}\n\n    while active_streams:\n        for key, stream in list(active_streams.items()):\n            try:\n                value = next(stream)\n                results[key] = value\n                yield results.copy()\n            except StopIteration:\n                del active_streams[key]\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 146,
+          "start_line": 130,
           "line_range": [
-            146,
-            167
+            130,
+            151
           ]
         },
         {
@@ -6186,14 +6238,14 @@
           "display_code": "",
           "annotation": "Create multiple document iterables",
           "is_comment": true,
-          "start_line": 168,
+          "start_line": 152,
           "line_range": [
-            168,
-            168
+            152,
+            152
           ],
           "target_line_range": [
-            169,
-            174
+            153,
+            158
           ]
         },
         {
@@ -6201,16 +6253,68 @@
           "display_code": "class DocumentSummary(BaseModel):\n    title: str\n    content_type: str\n    key_points: List[str]\n    word_count: int\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 169,
+          "start_line": 153,
           "line_range": [
-            169,
-            174
+            153,
+            158
           ]
         },
         {
           "code": "# Generate different types of documents\n",
           "display_code": "",
           "annotation": "Generate different types of documents",
+          "is_comment": true,
+          "start_line": 159,
+          "line_range": [
+            159,
+            159
+          ],
+          "target_line_range": [
+            160,
+            165
+          ]
+        },
+        {
+          "code": "prompts = {\n    \"emails\": \"Generate summaries for 3 important emails about project deadlines\",\n    \"reports\": \"Generate summaries for 2 financial reports about quarterly earnings\",\n    \"articles\": \"Generate summaries for 2 news articles about technology trends\"\n}\n\n",
+          "display_code": "prompts = {\n    \"emails\": \"Generate summaries for 3 important emails about project deadlines\",\n    \"reports\": \"Generate summaries for 2 financial reports about quarterly earnings\",\n    \"articles\": \"Generate summaries for 2 news articles about technology trends\"\n}\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 160,
+          "line_range": [
+            160,
+            165
+          ]
+        },
+        {
+          "code": "# Create multiple streams\n",
+          "display_code": "",
+          "annotation": "Create multiple streams",
+          "is_comment": true,
+          "start_line": 166,
+          "line_range": [
+            166,
+            166
+          ],
+          "target_line_range": [
+            167,
+            174
+          ]
+        },
+        {
+          "code": "streams = {}\nfor category, prompt in prompts.items():\n    streams[category] = client.chat.completions.create_iterable(\n        model=\"gpt-3.5-turbo\",\n        response_model=DocumentSummary,\n        messages=[{\"role\": \"user\", \"content\": prompt}]\n    )\n\n",
+          "display_code": "streams = {}\nfor category, prompt in prompts.items():\n    streams[category] = client.chat.completions.create_iterable(\n        model=\"gpt-3.5-turbo\",\n        response_model=DocumentSummary,\n        messages=[{\"role\": \"user\", \"content\": prompt}]\n    )\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 167,
+          "line_range": [
+            167,
+            174
+          ]
+        },
+        {
+          "code": "# Process combined streams as they arrive\n",
+          "display_code": "",
+          "annotation": "Process combined streams as they arrive",
           "is_comment": true,
           "start_line": 175,
           "line_range": [
@@ -6219,59 +6323,7 @@
           ],
           "target_line_range": [
             176,
-            181
-          ]
-        },
-        {
-          "code": "prompts = {\n    \"emails\": \"Generate summaries for 3 important emails about project deadlines\",\n    \"reports\": \"Generate summaries for 2 financial reports about quarterly earnings\",\n    \"articles\": \"Generate summaries for 2 news articles about technology trends\"\n}\n\n",
-          "display_code": "prompts = {\n    \"emails\": \"Generate summaries for 3 important emails about project deadlines\",\n    \"reports\": \"Generate summaries for 2 financial reports about quarterly earnings\",\n    \"articles\": \"Generate summaries for 2 news articles about technology trends\"\n}\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 176,
-          "line_range": [
-            176,
-            181
-          ]
-        },
-        {
-          "code": "# Create multiple streams\n",
-          "display_code": "",
-          "annotation": "Create multiple streams",
-          "is_comment": true,
-          "start_line": 182,
-          "line_range": [
-            182,
-            182
-          ],
-          "target_line_range": [
-            183,
-            190
-          ]
-        },
-        {
-          "code": "streams = {}\nfor category, prompt in prompts.items():\n    streams[category] = client.chat.completions.create_iterable(\n        model=\"gpt-3.5-turbo\",\n        response_model=DocumentSummary,\n        messages=[{\"role\": \"user\", \"content\": prompt}]\n    )\n\n",
-          "display_code": "streams = {}\nfor category, prompt in prompts.items():\n    streams[category] = client.chat.completions.create_iterable(\n        model=\"gpt-3.5-turbo\",\n        response_model=DocumentSummary,\n        messages=[{\"role\": \"user\", \"content\": prompt}]\n    )\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 183,
-          "line_range": [
-            183,
-            190
-          ]
-        },
-        {
-          "code": "# Process combined streams as they arrive\n",
-          "display_code": "",
-          "annotation": "Process combined streams as they arrive",
-          "is_comment": true,
-          "start_line": 191,
-          "line_range": [
-            191,
-            191
-          ],
-          "target_line_range": [
-            192,
-            209
+            193
           ]
         },
         {
@@ -6279,10 +6331,10 @@
           "display_code": "for i, result in enumerate(combine_streams(streams), 1):\n    print(f\"\\nUpdate {i}:\")\n    for category, doc in result.items():\n        if doc:\n            print(f\"  {category.upper()}: {doc.title}\")\n        else:\n            print(f\"  {category.upper()}: No documents yet\")\n\nfrom typing import List, Optional, Iterator\nimport itertools\n\nclass NewsHeadline(BaseModel):\n    title: str\n    source: str\n    category: str\n    publish_date: str\n    summary: str\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 192,
+          "start_line": 176,
           "line_range": [
-            192,
-            209
+            176,
+            193
           ]
         },
         {
@@ -6290,14 +6342,14 @@
           "display_code": "",
           "annotation": "Generate a potentially large stream of headlines",
           "is_comment": true,
-          "start_line": 210,
+          "start_line": 194,
           "line_range": [
-            210,
-            210
+            194,
+            194
           ],
           "target_line_range": [
-            211,
-            218
+            195,
+            202
           ]
         },
         {
@@ -6305,10 +6357,10 @@
           "display_code": "headlines_stream = client.chat.completions.create_iterable(\n    model=\"gpt-3.5-turbo\",\n    response_model=NewsHeadline,\n    messages=[\n        {\"role\": \"user\", \"content\": \"Generate 10 fictional technology news headlines from the past week.\"}\n    ]\n)\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 211,
+          "start_line": 195,
           "line_range": [
-            211,
-            218
+            195,
+            202
           ]
         },
         {
@@ -6316,14 +6368,14 @@
           "display_code": "",
           "annotation": "Get only the first 3 headlines",
           "is_comment": true,
-          "start_line": 219,
+          "start_line": 203,
           "line_range": [
-            219,
-            219
+            203,
+            203
           ],
           "target_line_range": [
-            220,
-            227
+            204,
+            211
           ]
         },
         {
@@ -6331,10 +6383,10 @@
           "display_code": "print(\"Top Headlines:\")\nfor i, headline in enumerate(itertools.islice(headlines_stream, 3)):\n    print(f\"\\nHeadline {i+1}: {headline.title}\")\n    print(f\"Source: {headline.source}\")\n    print(f\"Category: {headline.category}\")\n    print(f\"Date: {headline.publish_date}\")\n    print(f\"Summary: {headline.summary}\")\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 220,
+          "start_line": 204,
           "line_range": [
-            220,
-            227
+            204,
+            211
           ]
         },
         {
@@ -6342,14 +6394,14 @@
           "display_code": "",
           "annotation": "Note: The rest of the stream is not processed, which saves tokens",
           "is_comment": true,
-          "start_line": 228,
+          "start_line": 212,
           "line_range": [
-            228,
-            228
+            212,
+            212
           ],
           "target_line_range": [
-            229,
-            230
+            213,
+            214
           ]
         },
         {
@@ -6357,10 +6409,10 @@
           "display_code": "print(\"\\nShowing only the first 3 headlines.\")\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 229,
+          "start_line": 213,
           "line_range": [
-            229,
-            230
+            213,
+            214
           ]
         }
       ],
@@ -11161,18 +11213,18 @@
           ]
         },
         {
-          "code": "# This would be called as:\n# df = analyze_table_data(\"path/to/table_image.jpg\")\n# After this, you can use pandas operations on the dataframe\n# For multiple tables in a single image, you can use the iterable response:\n",
+          "code": "# This would be called as:# df = analyze_table_data(\"path/to/table_image.jpg\")# After this, you can use pandas operations on the dataframe# For multiple tables in a single image, you can use the iterable response:\n",
           "display_code": "",
-          "annotation": "This would be called as:\ndf = analyze_table_data(\"path/to/table_image.jpg\")\nAfter this, you can use pandas operations on the dataframe\nFor multiple tables in a single image, you can use the iterable response:",
+          "annotation": "This would be called as:# df = analyze_table_data(\"path/to/table_image.jpg\")# After this, you can use pandas operations on the dataframe# For multiple tables in a single image, you can use the iterable response:",
           "is_comment": true,
           "start_line": 126,
           "line_range": [
             126,
-            129
+            126
           ],
           "target_line_range": [
-            130,
-            157
+            127,
+            154
           ]
         },
         {
@@ -11180,10 +11232,10 @@
           "display_code": "def extract_multiple_tables(image_path_or_url: str) -> list[Table]:\n    \"\"\"Extract all tables from an image.\"\"\"\n    if image_path_or_url.startswith((\"http://\", \"https://\")):\n        image = instructor.Image.from_url(image_path_or_url)\n    else:\n        image = instructor.Image.from_path(image_path_or_url)\n\n    tables = client.chat.completions.create_iterable(\n        model=\"gpt-4-vision-preview\",\n        response_model=Table,\n        max_tokens=1800,\n        messages=[\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    {\n                        \"type\": \"text\",\n                        \"text\": \"Extract all tables from this image. Each table should be separate and have its own caption.\",\n                    },\n                    image,\n                ],\n            }\n        ],\n    )\n\n    return list(tables)\n\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 130,
+          "start_line": 127,
           "line_range": [
-            130,
-            157
+            127,
+            154
           ]
         },
         {
@@ -11191,14 +11243,14 @@
           "display_code": "",
           "annotation": "Process multiple tables from one image\nConvert to dataframe and return list of dataframes",
           "is_comment": true,
-          "start_line": 158,
+          "start_line": 155,
           "line_range": [
-            158,
-            159
+            155,
+            156
           ],
           "target_line_range": [
-            160,
-            171
+            157,
+            168
           ]
         },
         {
@@ -11206,10 +11258,10 @@
           "display_code": "def analyze_multiple_tables(image_path: str):\n    \"\"\"Extract and analyze all tables from an image.\"\"\"\n    tables = extract_multiple_tables(image_path)\n\n    print(f\"Found {len(tables)} tables in the image.\")\n\n    for i, table in enumerate(tables):\n        print(f\"\\n--- Table {i+1}: {table.caption} ---\")\n        print(table.dataframe)\n\n        if isinstance(table.dataframe, pd.DataFrame):\n            yield table.dataframe\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 160,
+          "start_line": 157,
           "line_range": [
-            160,
-            171
+            157,
+            168
           ]
         }
       ],
@@ -11406,18 +11458,18 @@
           ]
         },
         {
-          "code": "# Example usage\n# transcript = transcribe_audio(\"path/to/audio.wav\")\n# print(f\"Transcript: {transcript.text}\")\n# print(f\"Speaker: {transcript.speaker}\")\n# print(f\"Language: {transcript.language}\")\n# print(f\"Confidence: {transcript.confidence:.2f}\")\n",
+          "code": "# Example usage# transcript = transcribe_audio(\"path/to/audio.wav\")# print(f\"Transcript: {transcript.text}\")# print(f\"Speaker: {transcript.speaker}\")# print(f\"Language: {transcript.language}\")# print(f\"Confidence: {transcript.confidence:.2f}\")\n",
           "display_code": "",
-          "annotation": "Example usage\ntranscript = transcribe_audio(\"path/to/audio.wav\")\nprint(f\"Transcript: {transcript.text}\")\nprint(f\"Speaker: {transcript.speaker}\")\nprint(f\"Language: {transcript.language}\")\nprint(f\"Confidence: {transcript.confidence:.2f}\")",
+          "annotation": "Example usage# transcript = transcribe_audio(\"path/to/audio.wav\")# print(f\"Transcript: {transcript.text}\")# print(f\"Speaker: {transcript.speaker}\")# print(f\"Language: {transcript.language}\")# print(f\"Confidence: {transcript.confidence:.2f}\")",
           "is_comment": true,
           "start_line": 41,
           "line_range": [
             41,
-            46
+            41
           ],
           "target_line_range": [
-            47,
-            47
+            42,
+            42
           ]
         },
         {
@@ -11425,10 +11477,10 @@
           "display_code": "\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 47,
+          "start_line": 42,
           "line_range": [
-            47,
-            47
+            42,
+            42
           ]
         },
         {
@@ -11436,14 +11488,14 @@
           "display_code": "",
           "annotation": "For more specific information extraction from audio:",
           "is_comment": true,
-          "start_line": 48,
+          "start_line": 43,
           "line_range": [
-            48,
-            48
+            43,
+            43
           ],
           "target_line_range": [
-            49,
-            54
+            44,
+            49
           ]
         },
         {
@@ -11451,10 +11503,10 @@
           "display_code": "from typing import List, Optional\nfrom pydantic import BaseModel, Field\nimport instructor\nfrom openai import OpenAI\nfrom instructor.multimodal import Audio\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 49,
+          "start_line": 44,
           "line_range": [
-            49,
-            54
+            44,
+            49
           ]
         },
         {
@@ -11462,14 +11514,14 @@
           "display_code": "",
           "annotation": "Initialize the client with instructor",
           "is_comment": true,
-          "start_line": 55,
+          "start_line": 50,
           "line_range": [
-            55,
-            55
+            50,
+            50
           ],
           "target_line_range": [
-            56,
-            57
+            51,
+            52
           ]
         },
         {
@@ -11477,10 +11529,10 @@
           "display_code": "client = instructor.from_openai(OpenAI())\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 56,
+          "start_line": 51,
           "line_range": [
-            56,
-            57
+            51,
+            52
           ]
         },
         {
@@ -11488,14 +11540,14 @@
           "display_code": "",
           "annotation": "Define a model for person information",
           "is_comment": true,
-          "start_line": 58,
+          "start_line": 53,
           "line_range": [
-            58,
-            58
+            53,
+            53
           ],
           "target_line_range": [
-            59,
-            63
+            54,
+            58
           ]
         },
         {
@@ -11503,10 +11555,10 @@
           "display_code": "class Person(BaseModel):\n    name: str = Field(description=\"Person's full name\")\n    age: int = Field(description=\"Person's age in years\")\n    occupation: Optional[str] = Field(None, description=\"Person's job or profession if mentioned\")\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 59,
+          "start_line": 54,
           "line_range": [
-            59,
-            63
+            54,
+            58
           ]
         },
         {
@@ -11514,14 +11566,14 @@
           "display_code": "",
           "annotation": "Define a model for meeting information",
           "is_comment": true,
-          "start_line": 64,
+          "start_line": 59,
           "line_range": [
-            64,
-            64
+            59,
+            59
           ],
           "target_line_range": [
-            65,
-            76
+            60,
+            71
           ]
         },
         {
@@ -11529,10 +11581,10 @@
           "display_code": "class MeetingPoint(BaseModel):\n    topic: str = Field(description=\"Topic discussed\")\n    decision: Optional[str] = Field(None, description=\"Decision made on this topic\")\n    action_items: List[str] = Field(default_factory=list, description=\"Action items related to this topic\")\n\nclass Meeting(BaseModel):\n    title: str = Field(description=\"Meeting title or purpose\")\n    date: Optional[str] = Field(None, description=\"Meeting date if mentioned\")\n    participants: List[str] = Field(description=\"Names of meeting participants\")\n    key_points: List[MeetingPoint] = Field(description=\"Key discussion points and decisions\")\n    summary: str = Field(description=\"Brief summary of the meeting\")\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 65,
+          "start_line": 60,
           "line_range": [
-            65,
-            76
+            60,
+            71
           ]
         },
         {
@@ -11540,14 +11592,14 @@
           "display_code": "",
           "annotation": "Extract structured information from audio",
           "is_comment": true,
-          "start_line": 77,
+          "start_line": 72,
           "line_range": [
-            77,
-            77
+            72,
+            72
           ],
           "target_line_range": [
-            78,
-            99
+            73,
+            94
           ]
         },
         {
@@ -11555,10 +11607,10 @@
           "display_code": "def extract_meeting_info(audio_path: str) -> Meeting:\n    \"\"\"Extract structured meeting information from audio recording.\"\"\"\n    audio = Audio.from_path(audio_path)\n\n    return client.chat.completions.create(\n        model=\"gpt-4o-audio-preview\",\n        response_model=Meeting,\n        messages=[\n            {\n                \"role\": \"system\",\n                \"content\": \"Extract detailed meeting information from this audio recording.\"\n            },\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    \"Extract the complete meeting details from this recording:\",\n                    audio\n                ]\n            }\n        ]\n    )\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 78,
+          "start_line": 73,
           "line_range": [
-            78,
-            99
+            73,
+            94
           ]
         },
         {
@@ -11566,14 +11618,14 @@
           "display_code": "",
           "annotation": "Extract person information",
           "is_comment": true,
-          "start_line": 100,
+          "start_line": 95,
           "line_range": [
-            100,
-            100
+            95,
+            95
           ],
           "target_line_range": [
-            101,
-            118
+            96,
+            113
           ]
         },
         {
@@ -11581,25 +11633,25 @@
           "display_code": "def extract_person_from_audio(audio_path: str) -> Person:\n    \"\"\"Extract structured person information from audio.\"\"\"\n    audio = Audio.from_path(audio_path)\n\n    return client.chat.completions.create(\n        model=\"gpt-4o-audio-preview\",\n        response_model=Person,\n        messages=[\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    \"Extract the person's name, age, and occupation from this audio:\",\n                    audio\n                ]\n            }\n        ]\n    )\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 101,
+          "start_line": 96,
           "line_range": [
-            101,
-            118
+            96,
+            113
           ]
         },
         {
-          "code": "# Example usage\n# person = extract_person_from_audio(\"path/to/introduction.wav\")\n# print(f\"Name: {person.name}, Age: {person.age}\")\n# if person.occupation:\n#     print(f\"Occupation: {person.occupation}\")\n",
+          "code": "# Example usage# person = extract_person_from_audio(\"path/to/introduction.wav\")# print(f\"Name: {person.name}, Age: {person.age}\")# if person.occupation:#     print(f\"Occupation: {person.occupation}\")\n",
           "display_code": "",
-          "annotation": "Example usage\nperson = extract_person_from_audio(\"path/to/introduction.wav\")\nprint(f\"Name: {person.name}, Age: {person.age}\")\nif person.occupation:\nprint(f\"Occupation: {person.occupation}\")",
+          "annotation": "Example usage# person = extract_person_from_audio(\"path/to/introduction.wav\")# print(f\"Name: {person.name}, Age: {person.age}\")# if person.occupation:#     print(f\"Occupation: {person.occupation}\")",
           "is_comment": true,
-          "start_line": 119,
+          "start_line": 114,
           "line_range": [
-            119,
-            123
+            114,
+            114
           ],
           "target_line_range": [
-            124,
-            124
+            115,
+            115
           ]
         },
         {
@@ -11607,10 +11659,10 @@
           "display_code": "\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 124,
+          "start_line": 115,
           "line_range": [
-            124,
-            124
+            115,
+            115
           ]
         }
       ],
@@ -11963,18 +12015,18 @@
           ]
         },
         {
-          "code": "# Example usage\n# documents = process_pdf_document(\"path/to/document.pdf\", max_pages=3)\n# for i, doc in enumerate(documents):\n#     print(f\"Page {i+1}: {doc.title} by {doc.author}\")\n#     print(f\"Summary: {doc.summary}\")\n#     print(f\"Sections: {len(doc.sections)}\")\n",
+          "code": "# Example usage# documents = process_pdf_document(\"path/to/document.pdf\", max_pages=3)# for i, doc in enumerate(documents):#     print(f\"Page {i+1}: {doc.title} by {doc.author}\")#     print(f\"Summary: {doc.summary}\")#     print(f\"Sections: {len(doc.sections)}\")\n",
           "display_code": "",
-          "annotation": "Example usage\ndocuments = process_pdf_document(\"path/to/document.pdf\", max_pages=3)\nfor i, doc in enumerate(documents):\nprint(f\"Page {i+1}: {doc.title} by {doc.author}\")\nprint(f\"Summary: {doc.summary}\")\nprint(f\"Sections: {len(doc.sections)}\")",
+          "annotation": "Example usage# documents = process_pdf_document(\"path/to/document.pdf\", max_pages=3)# for i, doc in enumerate(documents):#     print(f\"Page {i+1}: {doc.title} by {doc.author}\")#     print(f\"Summary: {doc.summary}\")#     print(f\"Sections: {len(doc.sections)}\")",
           "is_comment": true,
           "start_line": 79,
           "line_range": [
             79,
-            84
+            79
           ],
           "target_line_range": [
-            85,
-            85
+            80,
+            80
           ]
         },
         {
@@ -11982,10 +12034,10 @@
           "display_code": "\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 85,
+          "start_line": 80,
           "line_range": [
-            85,
-            85
+            80,
+            80
           ]
         },
         {
@@ -11993,14 +12045,14 @@
           "display_code": "",
           "annotation": "For more specific document types, you can create specialized models:",
           "is_comment": true,
-          "start_line": 86,
+          "start_line": 81,
           "line_range": [
-            86,
-            86
+            81,
+            81
           ],
           "target_line_range": [
-            87,
-            93
+            82,
+            88
           ]
         },
         {
@@ -12008,10 +12060,10 @@
           "display_code": "from typing import List, Optional\nfrom pydantic import BaseModel, Field\nimport instructor\nfrom openai import OpenAI\nfrom pdf2image import convert_from_path\nimport tempfile\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 87,
+          "start_line": 82,
           "line_range": [
-            87,
-            93
+            82,
+            88
           ]
         },
         {
@@ -12019,14 +12071,14 @@
           "display_code": "",
           "annotation": "Initialize the client",
           "is_comment": true,
-          "start_line": 94,
+          "start_line": 89,
           "line_range": [
-            94,
-            94
+            89,
+            89
           ],
           "target_line_range": [
-            95,
-            96
+            90,
+            91
           ]
         },
         {
@@ -12034,10 +12086,10 @@
           "display_code": "client = instructor.from_openai(OpenAI())\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 95,
+          "start_line": 90,
           "line_range": [
-            95,
-            96
+            90,
+            91
           ]
         },
         {
@@ -12045,14 +12097,14 @@
           "display_code": "",
           "annotation": "Define a model for invoice extraction",
           "is_comment": true,
-          "start_line": 97,
+          "start_line": 92,
           "line_range": [
-            97,
-            97
+            92,
+            92
           ],
           "target_line_range": [
-            98,
-            113
+            93,
+            108
           ]
         },
         {
@@ -12060,10 +12112,10 @@
           "display_code": "class LineItem(BaseModel):\n    description: str = Field(description=\"Description of the item or service\")\n    quantity: float = Field(description=\"Quantity of the item\")\n    unit_price: float = Field(description=\"Price per unit\")\n    amount: float = Field(description=\"Total amount for this line\")\n\nclass Invoice(BaseModel):\n    invoice_number: str = Field(description=\"Invoice identifier\")\n    date: str = Field(description=\"Invoice date\")\n    vendor: str = Field(description=\"Name of the vendor/seller\")\n    customer: str = Field(description=\"Name of the customer/buyer\")\n    items: List[LineItem] = Field(description=\"Line items in the invoice\")\n    subtotal: float = Field(description=\"Sum of all items before tax\")\n    tax: Optional[float] = Field(None, description=\"Tax amount\")\n    total: float = Field(description=\"Total invoice amount\")\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 98,
+          "start_line": 93,
           "line_range": [
-            98,
-            113
+            93,
+            108
           ]
         },
         {
@@ -12071,14 +12123,14 @@
           "display_code": "",
           "annotation": "Extract invoice from PDF",
           "is_comment": true,
-          "start_line": 114,
+          "start_line": 109,
           "line_range": [
-            114,
-            114
+            109,
+            109
           ],
           "target_line_range": [
-            115,
-            116
+            110,
+            111
           ]
         },
         {
@@ -12086,10 +12138,10 @@
           "display_code": "def extract_invoice(pdf_path: str) -> Invoice:\n    \"\"\"Extract structured invoice data from a PDF.\"\"\"\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 115,
+          "start_line": 110,
           "line_range": [
-            115,
-            116
+            110,
+            111
           ]
         },
         {
@@ -12097,14 +12149,14 @@
           "display_code": "",
           "annotation": "Convert first page to image",
           "is_comment": true,
-          "start_line": 117,
+          "start_line": 112,
           "line_range": [
-            117,
-            117
+            112,
+            112
           ],
           "target_line_range": [
-            118,
-            119
+            113,
+            114
           ]
         },
         {
@@ -12112,16 +12164,42 @@
           "display_code": "    images = convert_from_path(pdf_path, first_page=1, last_page=1)\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 118,
+          "start_line": 113,
           "line_range": [
-            118,
-            119
+            113,
+            114
           ]
         },
         {
           "code": "    # Save to temp file\n",
           "display_code": "",
           "annotation": "Save to temp file",
+          "is_comment": true,
+          "start_line": 115,
+          "line_range": [
+            115,
+            115
+          ],
+          "target_line_range": [
+            116,
+            119
+          ]
+        },
+        {
+          "code": "    with tempfile.NamedTemporaryFile(suffix='.jpg', delete=False) as temp:\n        temp_path = temp.name\n        images[0].save(temp_path, 'JPEG')\n\n",
+          "display_code": "    with tempfile.NamedTemporaryFile(suffix='.jpg', delete=False) as temp:\n        temp_path = temp.name\n        images[0].save(temp_path, 'JPEG')\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 116,
+          "line_range": [
+            116,
+            119
+          ]
+        },
+        {
+          "code": "    # Create image object\n",
+          "display_code": "",
+          "annotation": "Create image object",
           "is_comment": true,
           "start_line": 120,
           "line_range": [
@@ -12130,33 +12208,7 @@
           ],
           "target_line_range": [
             121,
-            124
-          ]
-        },
-        {
-          "code": "    with tempfile.NamedTemporaryFile(suffix='.jpg', delete=False) as temp:\n        temp_path = temp.name\n        images[0].save(temp_path, 'JPEG')\n\n",
-          "display_code": "    with tempfile.NamedTemporaryFile(suffix='.jpg', delete=False) as temp:\n        temp_path = temp.name\n        images[0].save(temp_path, 'JPEG')\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 121,
-          "line_range": [
-            121,
-            124
-          ]
-        },
-        {
-          "code": "    # Create image object\n",
-          "display_code": "",
-          "annotation": "Create image object",
-          "is_comment": true,
-          "start_line": 125,
-          "line_range": [
-            125,
-            125
-          ],
-          "target_line_range": [
-            126,
-            127
+            122
           ]
         },
         {
@@ -12164,10 +12216,10 @@
           "display_code": "    image = instructor.Image.from_path(temp_path)\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 126,
+          "start_line": 121,
           "line_range": [
-            126,
-            127
+            121,
+            122
           ]
         },
         {
@@ -12175,14 +12227,14 @@
           "display_code": "",
           "annotation": "Extract invoice data",
           "is_comment": true,
-          "start_line": 128,
+          "start_line": 123,
           "line_range": [
-            128,
-            128
+            123,
+            123
           ],
           "target_line_range": [
-            129,
-            146
+            124,
+            141
           ]
         },
         {
@@ -12190,25 +12242,25 @@
           "display_code": "    return client.chat.completions.create(\n        model=\"gpt-4-vision-preview\",\n        response_model=Invoice,\n        messages=[\n            {\n                \"role\": \"system\",\n                \"content\": \"You are an invoice processing assistant that extracts structured data from invoice images.\"\n            },\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    \"Extract complete invoice details from this document:\",\n                    image\n                ]\n            }\n        ]\n    )\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 129,
+          "start_line": 124,
           "line_range": [
-            129,
-            146
+            124,
+            141
           ]
         },
         {
-          "code": "# Example usage\n# invoice = extract_invoice(\"path/to/invoice.pdf\")\n# print(f\"Invoice #{invoice.invoice_number} from {invoice.vendor}\")\n# print(f\"Date: {invoice.date}\")\n# print(f\"Total: ${invoice.total:.2f}\")\n# print(\"Line items:\")\n# for item in invoice.items:\n#     print(f\"- {item.description}: {item.quantity} x ${item.unit_price:.2f} = ${item.amount:.2f}\")\n",
+          "code": "# Example usage# invoice = extract_invoice(\"path/to/invoice.pdf\")# print(f\"Invoice #{invoice.invoice_number} from {invoice.vendor}\")# print(f\"Date: {invoice.date}\")# print(f\"Total: ${invoice.total:.2f}\")# print(\"Line items:\")# for item in invoice.items:#     print(f\"- {item.description}: {item.quantity} x ${item.unit_price:.2f} = ${item.amount:.2f}\")\n",
           "display_code": "",
-          "annotation": "Example usage\ninvoice = extract_invoice(\"path/to/invoice.pdf\")\nprint(f\"Invoice #{invoice.invoice_number} from {invoice.vendor}\")\nprint(f\"Date: {invoice.date}\")\nprint(f\"Total: ${invoice.total:.2f}\")\nprint(\"Line items:\")\nfor item in invoice.items:\nprint(f\"- {item.description}: {item.quantity} x ${item.unit_price:.2f} = ${item.amount:.2f}\")",
+          "annotation": "Example usage# invoice = extract_invoice(\"path/to/invoice.pdf\")# print(f\"Invoice #{invoice.invoice_number} from {invoice.vendor}\")# print(f\"Date: {invoice.date}\")# print(f\"Total: ${invoice.total:.2f}\")# print(\"Line items:\")# for item in invoice.items:#     print(f\"- {item.description}: {item.quantity} x ${item.unit_price:.2f} = ${item.amount:.2f}\")",
           "is_comment": true,
-          "start_line": 147,
+          "start_line": 142,
           "line_range": [
-            147,
-            154
+            142,
+            142
           ],
           "target_line_range": [
-            155,
-            155
+            143,
+            143
           ]
         },
         {
@@ -12216,10 +12268,10 @@
           "display_code": "\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 155,
+          "start_line": 143,
           "line_range": [
-            155,
-            155
+            143,
+            143
           ]
         }
       ],

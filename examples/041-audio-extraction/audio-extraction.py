@@ -38,12 +38,7 @@ def transcribe_audio(audio_path: str) -> AudioTranscription:
         ]
     )
 
-# Example usage
-# transcript = transcribe_audio("path/to/audio.wav")
-# print(f"Transcript: {transcript.text}")
-# print(f"Speaker: {transcript.speaker}")
-# print(f"Language: {transcript.language}")
-# print(f"Confidence: {transcript.confidence:.2f}")
+# Example usage# transcript = transcribe_audio("path/to/audio.wav")# print(f"Transcript: {transcript.text}")# print(f"Speaker: {transcript.speaker}")# print(f"Language: {transcript.language}")# print(f"Confidence: {transcript.confidence:.2f}")
 
 # For more specific information extraction from audio:
 from typing import List, Optional
@@ -116,9 +111,5 @@ def extract_person_from_audio(audio_path: str) -> Person:
         ]
     )
 
-# Example usage
-# person = extract_person_from_audio("path/to/introduction.wav")
-# print(f"Name: {person.name}, Age: {person.age}")
-# if person.occupation:
-#     print(f"Occupation: {person.occupation}")
+# Example usage# person = extract_person_from_audio("path/to/introduction.wav")# print(f"Name: {person.name}, Age: {person.age}")# if person.occupation:#     print(f"Occupation: {person.occupation}")
 

@@ -27,10 +27,7 @@ print(f"Name: {person.name}")
 print(f"Age: {person.age}")
 print(f"Occupation: {person.occupation}")
 
-# Output:
-# Name: John Doe
-# Age: 30
-# Occupation: software engineer
+# Output:# Name: John Doe# Age: 30# Occupation: software engineer
 
 extracted = client.chat.completions.create(
     model="gpt-3.5-turbo",
@@ -48,10 +45,7 @@ print(f"Name: {extracted.name}")
 print(f"Age: {extracted.age}")
 print(f"Occupation: {extracted.occupation}")
 
-# Output:
-# Name: John Smith
-# Age: 34
-# Occupation: data scientist
+# Output:# Name: John Smith# Age: 34# Occupation: data scientist
 
 from pydantic import BaseModel, Field
 
@@ -76,10 +70,7 @@ print(f"Name: {extracted.name}")
 print(f"Age: {extracted.age}")
 print(f"Occupation: {extracted.occupation}")
 
-# Output:
-# Name: Sarah Johnson
-# Age: 42
-# Occupation: senior architect
+# Output:# Name: Sarah Johnson# Age: 42# Occupation: senior architect
 
 class Employee(BaseModel):
     """Extract employee information from the provided text."""
@@ -104,8 +95,5 @@ print(f"Name: {extracted.name}")
 print(f"Department: {extracted.department}")
 print(f"Years of Service: {extracted.years_of_service}")
 
-# Output:
-# Name: Michael Chen
-# Department: Marketing
-# Years of Service: 7
+# Output:# Name: Michael Chen# Department: Marketing# Years of Service: 7
 
