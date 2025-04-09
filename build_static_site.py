@@ -480,7 +480,8 @@ def generate_index_html(
         f.write(generate_html_head(SITE_TITLE, base_url="."))
 
         # Page content
-        f.write(f"""
+        f.write(
+            f"""
             <p style="margin: 20px 0; color: #444; line-height: 1.6;">
                 Structured Outputs by Example is a hands-on introduction to working with structured data extraction from LLMs.
                 The site showcases how to use libraries like <a href="https://github.com/jxnl/instructor" target="_blank">Instructor</a> 
@@ -504,7 +505,8 @@ def generate_index_html(
                 </p>
             </div>
             <div style="margin-top: 20px;">
-""")
+"""
+        )
 
         # If we have sections defined, group examples by section
         if sections:
@@ -523,27 +525,35 @@ def generate_index_html(
                     continue
 
                 # Section header
-                f.write(f"""                <h3 style="margin-top: 25px; margin-bottom: 10px; color: #333; font-size: 1.3em;">{section["title"]}</h3>
-""")
+                f.write(
+                    f"""                <h3 style="margin-top: 25px; margin-bottom: 10px; color: #333; font-size: 1.3em;">{section["title"]}</h3>
+"""
+                )
                 # Only include description paragraph if it's not empty
                 description = section.get("description", "")
                 if description:
-                    f.write(f"""                <p style="margin: 0 0 10px 0; color: #555; font-size: 0.9em;">{description}</p>
-""")
+                    f.write(
+                        f"""                <p style="margin: 0 0 10px 0; color: #555; font-size: 0.9em;">{description}</p>
+"""
+                    )
 
                 # Example links for this section
                 for example in sorted(section_examples, key=lambda e: e["order"]):
-                    f.write(f"""                <div class="example-link">
+                    f.write(
+                        f"""                <div class="example-link">
                         <a href="{example["id"]}/">{example["title"]}</a>
                     </div>
-""")
+"""
+                    )
         else:
             # Fallback to flat list if no sections
             for example in examples:
-                f.write(f"""                <div class="example-link">
+                f.write(
+                    f"""                <div class="example-link">
                         <a href="{example["id"]}/">{example["title"]}</a>
                     </div>
-""")
+"""
+                )
 
         f.write("            </div>\n")
         f.write(generate_html_footer())
@@ -622,47 +632,74 @@ def generate_example_html(
         section_title = example.get("section_title", "")
 
         # Header container with flexbox to position title and button
-        f.write("""            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
+        f.write(
+            """            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
                 <div>
-""")
+"""
+        )
 
         # Title part
         if section_title:
-            f.write(f"""                    <div style="margin-bottom: 10px; color: #666; font-size: 0.9em;">
+            f.write(
+                f"""                    <div style="margin-bottom: 10px; color: #666; font-size: 0.9em;">
                         <a href="../" style="text-decoration: none; color: #666;">{section_title}</a>
                     </div>
                     <h1 style="margin: 0; margin-bottom: 10px;">{example["title"]}</h1>
-""")
+"""
+            )
         else:
-            f.write(f"""                    <h1 style="margin: 0; margin-bottom: 10px;">{example["title"]}</h1>
-""")
+            f.write(
+                f"""                    <h1 style="margin: 0; margin-bottom: 10px;">{example["title"]}</h1>
+"""
+            )
 
-        f.write("""                </div>
-""")
+        f.write(
+            """                </div>
+"""
+        )
 
         # Button part (if we have Python code)
         if all_python_code:
-            f.write("""                <div style="position: relative; margin-top: 10px;">
+            # GitHub edit URL - extract the base name from the example ID (after the dash)
+            example_id_parts = example["id"].split("-", 1)
+            python_filename = (
+                example_id_parts[1] if len(example_id_parts) > 1 else example["id"]
+            )
+            github_edit_url = f"https://github.com/jxnl/structuredoutputsbyexample/edit/main/examples/{example['id']}/{python_filename}.py"
+
+            f.write(
+                """                <div style="position: relative; margin-top: 10px; display: flex; gap: 8px;">
                     <button id="copy-all-python" style="background-color: #f1f8ff; border: 1px solid #c8e1ff; border-radius: 6px; padding: 6px 12px; font-size: 14px; color: #0066CC; cursor: pointer; display: flex; align-items: center; gap: 6px;">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M16 1H4C2.9 1 2 1.9 2 3V17H4V3H16V1ZM19 5H8C6.9 5 6 5.9 6 7V21C6 22.1 6.9 23 8 23H19C20.1 23 21 22.1 21 21V7C21 5.9 20.1 5 19 5ZM19 21H8V7H19V21Z" fill="currentColor"/>
                         </svg>
                         Copy All Python
                     </button>"""
-                    + f"""
+                + f"""
+                    <a href="{github_edit_url}" target="_blank" style="background-color: #f6f1ff; border: 1px solid #d8c9f7; border-radius: 6px; padding: 6px 12px; font-size: 14px; color: #6f42c1; text-decoration: none; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="currentColor"/>
+                        </svg>
+                        Edit
+                    </a>
                     <div id="all-python-code" style="display: none;">{escape(all_python_code)}</div>
-                </div>""")
+                </div>"""
+            )
 
         # Close header container
-        f.write("""            </div>
-""")
+        f.write(
+            """            </div>
+"""
+        )
 
         # Description if available
         if example.get("description"):
-            f.write(f"""            <p style="margin: 20px 0 40px 0; color: #444; line-height: 1.6; font-size: 1.1em;">
+            f.write(
+                f"""            <p style="margin: 20px 0 40px 0; color: #444; line-height: 1.6; font-size: 1.1em;">
                 {example["description"]}
             </p>
-""")
+"""
+            )
 
         # Group segments by section headers
         sections = []
@@ -700,8 +737,10 @@ def generate_example_html(
         for i, section in enumerate(sections):
             # Add divider if not first section
             if i > 0:
-                f.write("""            <hr>
-""")
+                f.write(
+                    """            <hr>
+"""
+                )
 
             # Process segments in this section
             for segment in section["segments"]:
@@ -720,51 +759,66 @@ def generate_example_html(
                     continue
 
                 # Start row
-                f.write("""            <div class="row">
-""")
+                f.write(
+                    """            <div class="row">
+"""
+                )
 
                 # Left column (annotation)
                 if combined_annotation:
-                    f.write(f"""                <div class="docs">
+                    f.write(
+                        f"""                <div class="docs">
                     {combined_annotation}
                 </div>
-""")
+"""
+                    )
 
                 # Right column (code) - without individual copy buttons
                 if code_text:
-                    f.write(f"""                <div class="code">
+                    f.write(
+                        f"""                <div class="code">
                     <pre><code class="language-python">{escape(code_text)}</code></pre>
                 </div>
-""")
+"""
+                    )
 
                 # End row
-                f.write("""            </div>
-""")
+                f.write(
+                    """            </div>
+"""
+                )
 
         # Shell segments if available
         shell_segments = example.get("shell_segments", [])
         if shell_segments:
-            f.write("""            <hr>
+            f.write(
+                """            <hr>
             <h2>Running the Example</h2>
-""")
+"""
+            )
 
             for segment in shell_segments:
                 explanation = segment.get("explanation", "")
                 command = segment.get("command", "")
                 output = segment.get("output", "")
 
-                f.write("""            <div class="row">
-""")
+                f.write(
+                    """            <div class="row">
+"""
+                )
 
                 # Left column (explanation)
                 if explanation:
-                    f.write(f"""                <div class="docs" style='font-size: 0.9em; color: #666;'>
+                    f.write(
+                        f"""                <div class="docs" style='font-size: 0.9em; color: #666;'>
                     {escape(explanation)}
                 </div>
-""")
+"""
+                    )
 
                 # Right column (command + output)
-                f.write(f"""                <div class="code">
+                f.write(
+                    f"""                <div class="code">
                     <div class="buttons">
                         <svg class="copy" title="Copy command" onclick="copyCode(this)" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M16 1H4C2.9 1 2 1.9 2 3V17H4V3H16V1ZM19 5H8C6.9 5 6 5.9 6 7V21C6 22.1 6.9 23 8 23H19C20.1 23 21 22.1 21 21V7C21 5.9 20.1 5 19 5ZM19 21H8V7H19V21Z" fill="currentColor"/>
@@ -773,22 +827,28 @@ def generate_example_html(
                     <pre><code class="language-shell"><span><span class="command-prompt">$ </span><span class="command-text">{escape(command)}</span></span>
 {escape(output)}</code></pre>
                 </div>
-""")
+"""
+                )
 
-                f.write("""            </div>
-""")
+                f.write(
+                    """            </div>
+"""
+                )
 
         # Images section if available
         image_data = example.get("image_data", [])
         if image_data:
-            f.write("""            <hr>
-""")
+            f.write(
+                """            <hr>
+"""
+            )
 
             for image in image_data:
                 filename = image.get("filename", "")
 
                 # Create a figure with the image
-                f.write(f"""            <div style="margin: 30px 0; text-align: center;">
+                f.write(
+                    f"""            <div style="margin: 30px 0; text-align: center;">
                 <figure>
                     <img src="images/{filename}" alt="An illustration or output
                     from the example code" style="max-width: 100%; border: 1px solid #eee;
@@ -796,42 +856,57 @@ def generate_example_html(
                     <figcaption style="margin-top: 10px; color: #666; font-style: italic;"></figcaption>
                 </figure>
             </div>
-""")
+"""
+                )
 
         # Documentation links section if available
         documentation_links = example.get("documentation_links", [])
         if documentation_links:
-            f.write("""            <hr>
+            f.write(
+                """            <hr>
             <h4>Further Information</h4>
             <ul style="font-size: 0.9em;">
-""")
+"""
+            )
             for i, link in enumerate(documentation_links, 1):
-                f.write(f"""                <li><a href="{link}"
+                f.write(
+                    f"""                <li><a href="{link}"
                          target="_blank">Documentation link {i}</a></li>
-""")
-            f.write("""            </ul>
-""")
+"""
+                )
+            f.write(
+                """            </ul>
+"""
+            )
 
         # Navigation links
-        f.write("""            <div class="navigation">
-""")
+        f.write(
+            """            <div class="navigation">
+"""
+        )
 
         # Previous example link
         if prev_example:
-            f.write(f"""                <p class="prev">
+            f.write(
+                f"""                <p class="prev">
                     <span>← Previous:</span> <a href="../{prev_example["id"]}/">{prev_example["title"]}</a>
                 </p>
-""")
+"""
+            )
 
         # Next example link
         if next_example:
-            f.write(f"""                <p class="next">
+            f.write(
+                f"""                <p class="next">
                     <span>Next:</span> <a href="../{next_example["id"]}/">{next_example["title"]}</a> →
                 </p>
-""")
+"""
+            )
 
-        f.write("""            </div>
-""")
+        f.write(
+            """            </div>
+"""
+        )
 
         f.write(generate_html_footer())
 
@@ -1014,9 +1089,7 @@ def generate_llms_txt(
 
             # Each example in the section as a bullet point
             for example in sorted(section_examples, key=lambda e: e["order"]):
-                f.write(
-                    f"- {example['title']}"
-                )
+                f.write(f"- {example['title']}")
                 if example.get("description"):
                     # Clean description - replace newlines with spaces and get first sentence
                     clean_desc = (
@@ -1030,14 +1103,17 @@ def generate_llms_txt(
                     f.write(f": {desc}")
                 f.write("\n")
             f.write("\n")
-            
+
         # Add footer information
         from datetime import datetime
+
         current_date = datetime.now().strftime("%B %-d, %Y")
-        
+
         f.write("## Resources\n\n")
         f.write("- [Instructor GitHub](https://github.com/jxnl/instructor)\n")
-        f.write("- [Instructor Documentation](https://instructor-ai.github.io/instructor/)\n")
+        f.write(
+            "- [Instructor Documentation](https://instructor-ai.github.io/instructor/)\n"
+        )
         f.write("- [Pydantic Documentation](https://docs.pydantic.dev/)\n\n")
         f.write(f"Last updated: {current_date}\n")
 
@@ -1063,9 +1139,7 @@ def clean_docs_directory(output_dir: Path) -> None:
     }
 
     # Directories to preserve (never delete these)
-    preserve_dirs = {
-        "static"  # Static assets directory
-    }
+    preserve_dirs = {"static"}  # Static assets directory
 
     # Remove index.html
     index_file = output_dir / "index.html"
@@ -1148,6 +1222,7 @@ if __name__ == "__main__":
     # Import and run the main function from build_examples
     try:
         from build_examples import main as build_examples_main
+
         build_examples_main()
     except Exception as e:
         logger.error(f"Error running build_examples: {e}")
