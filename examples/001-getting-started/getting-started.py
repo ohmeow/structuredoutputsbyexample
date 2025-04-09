@@ -2,11 +2,10 @@
 
 # Learn the basics of structured LLM outputs with Instructor. This guide demonstrates how to extract consistent, validated data from language models.
 
-# Large language models (LLMs) are powerful tools for generating text, but extracting specific structured information from their outputs can be challenging. **Structured outputs** solve this problem by having LLMs return data in consistent, machine-readable formats rather than free-form text.
+# Large language models are powerful, but extracting structured data can be challenging.
+# Structured outputs solve this by having LLMs return data in consistent, machine-readable formats.
 # 
-# 
-# 
-# When working with LLMs, there are several issues with unstructured responses:
+# Problems with unstructured responses:
 # Using a standard OpenAI client for unstructured output
 from openai import OpenAI
 client = OpenAI()
@@ -27,15 +26,12 @@ print(response.choices[0].message.content)
 # Email: john@example.com"
 
 # This approach has several problems:
-# 
-# - **Inconsistent formats**: The LLM might return data in different formats each time
-# - **Parsing challenges**: You need custom code to extract specific fields
-# - **No validation**: There's no verification that the data is complete or correctly formatted
-# - **Error handling**: Missing or invalid data is difficult to detect and manage
-# 
-# 
-# 
-# Instructor solves these problems by combining the power of LLMs with structured data validation through Pydantic:
+# - Inconsistent formats: Returns data in different formats each time
+# - Parsing challenges: Requires custom extraction code
+# - No validation: No verification of data completeness or format
+# - Error handling: Difficult to detect missing or invalid data
+
+# Instructor solves these problems by combining LLMs with Pydantic validation:
 import instructor
 from openai import OpenAI
 from pydantic import BaseModel, Field, EmailStr
@@ -61,26 +57,21 @@ customer = client.chat.completions.create(
 print(customer)  # Customer(name='John Doe', age=35, email='john@example.com')
 print(f"Name: {customer.name}, Age: {customer.age}, Email: {customer.email}")
 
-# 1. **Type Safety**: Get properly typed Python objects instead of raw strings
-# 2. **Validation**: Automatic validation with detailed error messages
-# 3. **Self-documenting**: Models clearly define the expected data structure
-# 4. **Consistent Results**: Reliable, consistent data format across requests
-# 5. **Error Handling**: Automatic retry with informative feedback when validation fails
-# 6. **IDE Support**: Full autocomplete and type checking in your code editor
-# 
-# 
-# 
-# Instructor works by:
-# 
-# 1. Defining your expected data structure as a Pydantic model
-# 2. Instructing the LLM to return data in a specific format (JSON, function calls, etc.)
-# 3. Validating the response against your model
-# 4. Automatically retrying if validation fails, providing the error to the LLM
-# 5. Returning a properly typed Python object
-# 
-# 
-# 
-# Structured outputs shine for complex data:
+# Benefits:
+# - Type Safety: Properly typed Python objects instead of raw strings
+# - Validation: Automatic validation with detailed error messages
+# - Self-documenting: Models clearly define the expected data structure
+# - Consistent Results: Reliable data format across requests
+# - Error Handling: Automatic retry with informative feedback
+
+# Instructor workflow:
+# 1. Define your data structure as a Pydantic model
+# 2. Instruct the LLM to return data in a specific format
+# 3. Validate the response against your model
+# 4. Automatically retry if validation fails
+# 5. Return a properly typed Python object
+
+# Complex data example:
 from typing import List, Optional
 from pydantic import BaseModel, Field
 import instructor
