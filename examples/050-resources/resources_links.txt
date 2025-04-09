@@ -1,0 +1,16 @@
+https://github.com/instructor-ai/instructor
+https://python.useinstructor.com/
+https://discord.gg/bD9YE9JArw
+https://twitter.com/jxnlco
+https://python.useinstructor.com/blog
+https://github.com/instructor-ai/instructor/tree/main/examples
+https://python.useinstructor.com/
+https://github.com/instructor-ai/instructor/issues
+https://discord.gg/bD9YE9JArw
+https://github.com/instructor-ai/instructor/issues/new
+https://github.com/instructor-ai/instructor
+https://discord.gg/bD9YE9JArw
+https://python.useinstructor.com/blog
+https://github.com/instructor-ai/instructor/blob/main/CONTRIBUTING.md
+https://github.com/instructor-ai/instructor/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22
+https://docs.pydantic.dev/

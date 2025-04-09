@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Streaming Lists - Structured Outputs by Example</title>
+    <meta name="description" content="Learn to work with structured outputs through annotated examples">
+    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css'>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js'></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/firacode@6.2.0/distr/fira_code.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap');
+        
+        code, pre code, .hljs {
+            font-family: 'Fira Code', 'JetBrains Mono', monospace;
+            font-feature-settings: "liga" 1;
+        }
+        
+        @supports (font-variation-settings: normal) {
+            code, pre code, .hljs {
+                font-family: 'Fira Code VF', 'JetBrains Mono', monospace;
+            }
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            hljs.highlightAll();
+        });
+    </script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            line-height: 1.5;
+            color: #222;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        header {
+            border-bottom: 1px solid #eee;
+            padding: 15px 0;
+            margin-bottom: 20px;
+        }
+        .site-title {
+            text-decoration: none;
+            color: #0066CC;
+            font-weight: 500;
+            font-size: 20px;
+        }
+        main {
+            padding-bottom: 40px;
+        }
+        footer {
+            border-top: 1px solid #eee;
+            padding: 15px 0;
+            margin-top: 20px;
+            color: #666;
+            font-size: 0.9em;
+        }
+        h1 {
+            font-size: 36px;
+            font-weight: 500;
+            margin: 0 0 25px 0;
+            color: #333;
+        }
+        p {
+            margin: 20px 0;
+            color: #444;
+            line-height: 1.6;
+        }
+        a {
+            color: #0066CC;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .example-link {
+            margin: 4px 0;
+            line-height: 1.3;
+        }
+        .row {
+            display: flex;
+            width: 100%;
+            margin-bottom: 30px;
+            gap: 40px;
+        }
+        .docs {
+            flex: 0.75;
+            min-width: 0;
+            color: #444;
+            line-height: 1.6;
+            font-size: 1em;
+        }
+        .code {
+            flex: 2.25;
+            min-width: 0;
+            position: relative;
+        }
+        pre {
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f8f8;
+            border-radius: 5px;
+            overflow-x: auto;
+            line-height: 1.5;
+        }
+        /* Prevent double styling from highlight.js */
+        pre code.hljs, pre code {
+            background-color: transparent;
+            padding: 0;
+            margin: 0;
+            border: none;
+        }
+        .leading {
+            margin-bottom: 5px;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid #eee;
+            margin: 20px 0;
+        }
+        .buttons {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            z-index: 10;
+        }
+        .copy {
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+            opacity: 0.6;
+            color: #666;
+            background-color: #f8f8f8;
+            border-radius: 3px;
+            padding: 3px;
+        }
+        .copy:hover {
+            opacity: 1;
+            color: #0066CC;
+        }
+        .tooltip {
+            position: absolute;
+            background: #333;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            top: -25px;
+            right: 0;
+        }
+        .command-prompt {
+            color: #888;
+        }
+        .command-text {
+            font-weight: bold;
+        }
+        .navigation {
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        .prev, .next {
+            margin: 5px 0;
+            font-weight: 500;
+        }
+        .prev {
+            margin-right: auto;
+        }
+        .next {
+            margin-left: auto;
+        }
+        .prev span, .next span {
+            color: #666;
+            font-weight: normal;
+        }
+        @media (max-width: 900px) {
+            .row {
+                flex-direction: column;
+            }
+            .docs, .code {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="../" class="site-title">Structured Outputs by Example</a>
+        </header>
+        <main>
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
+                <div>
+                    <div style="margin-bottom: 10px; color: #666; font-size: 0.9em;">
+                        <a href="../" style="text-decoration: none; color: #666;">Streaming</a>
+                    </div>
+                    <h1 style="margin: 0; margin-bottom: 10px;">Streaming Lists</h1>
+                </div>
+                <div style="position: relative; margin-top: 10px;">
+                    <button id="copy-all-python" style="background-color: #f1f8ff; border: 1px solid #c8e1ff; border-radius: 6px; padding: 6px 12px; font-size: 14px; color: #0066CC; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16 1H4C2.9 1 2 1.9 2 3V17H4V3H16V1ZM19 5H8C6.9 5 6 5.9 6 7V21C6 22.1 6.9 23 8 23H19C20.1 23 21 22.1 21 21V7C21 5.9 20.1 5 19 5ZM19 21H8V7H19V21Z" fill="currentColor"/>
+                        </svg>
+                        Copy All Python
+                    </button>
+                    <div id="all-python-code" style="display: none;">from pydantic import BaseModel, Field
+from typing import List
+import instructor
+from openai import OpenAI
+
+class Person(BaseModel):
+    name: str
+    age: int
+    occupation: str
+client = instructor.from_openai(OpenAI())
+people_stream = client.chat.completions.create_iterable(
+    model=&quot;gpt-3.5-turbo&quot;,
+    response_model=Person,  # Note: no List[] wrapper needed here
+    messages=[
+        {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;&quot;&quot;
+            Generate profiles for three different people:
+            1. A software engineer in their 30s
+            2. A teacher in their 40s
+            3. A doctor in their 50s
+        &quot;&quot;&quot;}
+    ]
+)
+print(&quot;Receiving people one at a time:&quot;)
+for i, person in enumerate(people_stream, 1):
+    print(f&quot;\nPerson {i}:&quot;)
+    print(f&quot;Name: {person.name}&quot;)
+    print(f&quot;Age: {person.age}&quot;)
+    print(f&quot;Occupation: {person.occupation}&quot;)
+from pydantic import BaseModel, Field
+from typing import List, Optional
+
+class Book(BaseModel):
+    title: str
+    author: str
+    year: int
+    genre: str
+    summary: str = Field(description=&quot;Brief summary of the book&#x27;s plot&quot;)
+    rating: Optional[float] = Field(None, ge=0, le=5, description=&quot;Rating from 0-5 stars&quot;)
+books_stream = client.chat.completions.create_iterable(
+    model=&quot;gpt-3.5-turbo&quot;,
+    response_model=Book,
+    messages=[
+        {&quot;role&quot;: &quot;system&quot;, &quot;content&quot;: &quot;Generate detailed book entries with accurate information.&quot;},
+        {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;&quot;&quot;
+            Generate entries for three classic science fiction books.
+            Include their titles, authors, publication years, and summaries.
+        &quot;&quot;&quot;}
+    ]
+)
+print(&quot;Streaming book data:&quot;)
+for i, book in enumerate(books_stream, 1):
+    print(f&quot;\nBook {i}: {book.title} ({book.year})&quot;)
+    print(f&quot;Author: {book.author}&quot;)
+    print(f&quot;Genre: {book.genre}&quot;)
+    print(f&quot;Rating: {book.rating if book.rating is not None else &#x27;Not rated&#x27;}&quot;)
+    print(f&quot;Summary: {book.summary}&quot;)
+
+from typing import List, Dict, Any
+import time
+
+class Task(BaseModel):
+    title: str
+    priority: str
+    estimated_hours: float
+    assigned_to: Optional[str] = None
+all_tasks = []
+total_hours = 0
+by_priority = {&quot;high&quot;: 0, &quot;medium&quot;: 0, &quot;low&quot;: 0}
+by_assignee = {}
+tasks_stream = client.chat.completions.create_iterable(
+    model=&quot;gpt-3.5-turbo&quot;,
+    response_model=Task,
+    messages=[
+        {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;&quot;&quot;
+            Generate 5 tasks for a software development sprint.
+            Include high, medium, and low priority tasks.
+            Assign team members: Alex, Jamie, Taylor, and Morgan.
+        &quot;&quot;&quot;}
+    ]
+)
+print(&quot;Project task planning:&quot;)
+print(&quot;---------------------&quot;)
+
+for task in tasks_stream:
+all_tasks.append(task)
+    total_hours += task.estimated_hours
+    by_priority[task.priority.lower()] += 1
+
+    if task.assigned_to:
+        by_assignee[task.assigned_to] = by_assignee.get(task.assigned_to, 0) + 1
+print(f&quot;\nNew Task: {task.title}&quot;)
+    print(f&quot;Priority: {task.priority}&quot;)
+    print(f&quot;Estimate: {task.estimated_hours} hours&quot;)
+    print(f&quot;Assigned to: {task.assigned_to or &#x27;Unassigned&#x27;}&quot;)
+print(&quot;\nCurrent Sprint Stats:&quot;)
+    print(f&quot;Tasks planned: {len(all_tasks)}&quot;)
+    print(f&quot;Total hours: {total_hours:.1f}&quot;)
+    print(f&quot;By priority: {by_priority}&quot;)
+    print(f&quot;By assignee: {by_assignee}&quot;)
+time.sleep(0.5)
+
+print(&quot;\nSprint planning complete!&quot;)
+
+from typing import Dict, List, Any, Generator, TypeVar, Generic
+
+T = TypeVar(&#x27;T&#x27;)
+
+def combine_streams(streams: Dict[str, Generator[T, None, None]]) -&gt; Generator[Dict[str, T], None, None]:
+    &quot;&quot;&quot;Combine multiple iterables with identification.&quot;&quot;&quot;
+    active_streams = streams.copy()
+    results = {key: None for key in streams}
+
+    while active_streams:
+        for key, stream in list(active_streams.items()):
+            try:
+                value = next(stream)
+                results[key] = value
+                yield results.copy()
+            except StopIteration:
+                del active_streams[key]
+class DocumentSummary(BaseModel):
+    title: str
+    content_type: str
+    key_points: List[str]
+    word_count: int
+prompts = {
+    &quot;emails&quot;: &quot;Generate summaries for 3 important emails about project deadlines&quot;,
+    &quot;reports&quot;: &quot;Generate summaries for 2 financial reports about quarterly earnings&quot;,
+    &quot;articles&quot;: &quot;Generate summaries for 2 news articles about technology trends&quot;
+}
+streams = {}
+for category, prompt in prompts.items():
+    streams[category] = client.chat.completions.create_iterable(
+        model=&quot;gpt-3.5-turbo&quot;,
+        response_model=DocumentSummary,
+        messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: prompt}]
+    )
+for i, result in enumerate(combine_streams(streams), 1):
+    print(f&quot;\nUpdate {i}:&quot;)
+    for category, doc in result.items():
+        if doc:
+            print(f&quot;  {category.upper()}: {doc.title}&quot;)
+        else:
+            print(f&quot;  {category.upper()}: No documents yet&quot;)
+
+from typing import List, Optional, Iterator
+import itertools
+
+class NewsHeadline(BaseModel):
+    title: str
+    source: str
+    category: str
+    publish_date: str
+    summary: str
+headlines_stream = client.chat.completions.create_iterable(
+    model=&quot;gpt-3.5-turbo&quot;,
+    response_model=NewsHeadline,
+    messages=[
+        {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Generate 10 fictional technology news headlines from the past week.&quot;}
+    ]
+)
+print(&quot;Top Headlines:&quot;)
+for i, headline in enumerate(itertools.islice(headlines_stream, 3)):
+    print(f&quot;\nHeadline {i+1}: {headline.title}&quot;)
+    print(f&quot;Source: {headline.source}&quot;)
+    print(f&quot;Category: {headline.category}&quot;)
+    print(f&quot;Date: {headline.publish_date}&quot;)
+    print(f&quot;Summary: {headline.summary}&quot;)
+print(&quot;\nShowing only the first 3 headlines.&quot;)
+</div>
+                </div>            </div>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Stream collections of objects one at a time with Instructor.</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">from pydantic import BaseModel, Field
+from typing import List
+import instructor
+from openai import OpenAI
+
+class Person(BaseModel):
+    name: str
+    age: int
+    occupation: str</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Patch the client</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">client = instructor.from_openai(OpenAI())</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Create a streaming iterable</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">people_stream = client.chat.completions.create_iterable(
+    model=&quot;gpt-3.5-turbo&quot;,
+    response_model=Person,  # Note: no List[] wrapper needed here
+    messages=[
+        {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;&quot;&quot;
+            Generate profiles for three different people:
+            1. A software engineer in their 30s
+            2. A teacher in their 40s
+            3. A doctor in their 50s
+        &quot;&quot;&quot;}
+    ]
+)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Process each person as they are completed</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">print(&quot;Receiving people one at a time:&quot;)
+for i, person in enumerate(people_stream, 1):
+    print(f&quot;\nPerson {i}:&quot;)
+    print(f&quot;Name: {person.name}&quot;)
+    print(f&quot;Age: {person.age}&quot;)
+    print(f&quot;Occupation: {person.occupation}&quot;)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Example output:
+Receiving people one at a time:
+
+Person 1:
+Name: Michael Chen
+Age: 34
+Occupation: software engineer
+
+Person 2:
+Name: Sarah Johnson
+Age: 42
+Occupation: teacher
+
+Person 3:
+Name: Robert Garcia
+Age: 56
+Occupation: doctor</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">from pydantic import BaseModel, Field
+from typing import List, Optional
+
+class Book(BaseModel):
+    title: str
+    author: str
+    year: int
+    genre: str
+    summary: str = Field(description=&quot;Brief summary of the book&#x27;s plot&quot;)
+    rating: Optional[float] = Field(None, ge=0, le=5, description=&quot;Rating from 0-5 stars&quot;)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Create a streaming iterable for complex objects</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">books_stream = client.chat.completions.create_iterable(
+    model=&quot;gpt-3.5-turbo&quot;,
+    response_model=Book,
+    messages=[
+        {&quot;role&quot;: &quot;system&quot;, &quot;content&quot;: &quot;Generate detailed book entries with accurate information.&quot;},
+        {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;&quot;&quot;
+            Generate entries for three classic science fiction books.
+            Include their titles, authors, publication years, and summaries.
+        &quot;&quot;&quot;}
+    ]
+)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Process each book as it's generated</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">print(&quot;Streaming book data:&quot;)
+for i, book in enumerate(books_stream, 1):
+    print(f&quot;\nBook {i}: {book.title} ({book.year})&quot;)
+    print(f&quot;Author: {book.author}&quot;)
+    print(f&quot;Genre: {book.genre}&quot;)
+    print(f&quot;Rating: {book.rating if book.rating is not None else &#x27;Not rated&#x27;}&quot;)
+    print(f&quot;Summary: {book.summary}&quot;)
+
+from typing import List, Dict, Any
+import time
+
+class Task(BaseModel):
+    title: str
+    priority: str
+    estimated_hours: float
+    assigned_to: Optional[str] = None</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Setup for real-time processing</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">all_tasks = []
+total_hours = 0
+by_priority = {&quot;high&quot;: 0, &quot;medium&quot;: 0, &quot;low&quot;: 0}
+by_assignee = {}</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Create a streaming iterable</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">tasks_stream = client.chat.completions.create_iterable(
+    model=&quot;gpt-3.5-turbo&quot;,
+    response_model=Task,
+    messages=[
+        {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;&quot;&quot;
+            Generate 5 tasks for a software development sprint.
+            Include high, medium, and low priority tasks.
+            Assign team members: Alex, Jamie, Taylor, and Morgan.
+        &quot;&quot;&quot;}
+    ]
+)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Process tasks in real-time</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">print(&quot;Project task planning:&quot;)
+print(&quot;---------------------&quot;)
+
+for task in tasks_stream:</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Update statistics</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">all_tasks.append(task)
+    total_hours += task.estimated_hours
+    by_priority[task.priority.lower()] += 1
+
+    if task.assigned_to:
+        by_assignee[task.assigned_to] = by_assignee.get(task.assigned_to, 0) + 1</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Print the task</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">print(f&quot;\nNew Task: {task.title}&quot;)
+    print(f&quot;Priority: {task.priority}&quot;)
+    print(f&quot;Estimate: {task.estimated_hours} hours&quot;)
+    print(f&quot;Assigned to: {task.assigned_to or &#x27;Unassigned&#x27;}&quot;)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Print current statistics</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">print(&quot;\nCurrent Sprint Stats:&quot;)
+    print(f&quot;Tasks planned: {len(all_tasks)}&quot;)
+    print(f&quot;Total hours: {total_hours:.1f}&quot;)
+    print(f&quot;By priority: {by_priority}&quot;)
+    print(f&quot;By assignee: {by_assignee}&quot;)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Simulate a pause for real-time updates</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">time.sleep(0.5)
+
+print(&quot;\nSprint planning complete!&quot;)
+
+from typing import Dict, List, Any, Generator, TypeVar, Generic
+
+T = TypeVar(&#x27;T&#x27;)
+
+def combine_streams(streams: Dict[str, Generator[T, None, None]]) -&gt; Generator[Dict[str, T], None, None]:
+    &quot;&quot;&quot;Combine multiple iterables with identification.&quot;&quot;&quot;
+    active_streams = streams.copy()
+    results = {key: None for key in streams}
+
+    while active_streams:
+        for key, stream in list(active_streams.items()):
+            try:
+                value = next(stream)
+                results[key] = value
+                yield results.copy()
+            except StopIteration:
+                del active_streams[key]</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Create multiple document iterables</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">class DocumentSummary(BaseModel):
+    title: str
+    content_type: str
+    key_points: List[str]
+    word_count: int</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Generate different types of documents</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">prompts = {
+    &quot;emails&quot;: &quot;Generate summaries for 3 important emails about project deadlines&quot;,
+    &quot;reports&quot;: &quot;Generate summaries for 2 financial reports about quarterly earnings&quot;,
+    &quot;articles&quot;: &quot;Generate summaries for 2 news articles about technology trends&quot;
+}</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Create multiple streams</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">streams = {}
+for category, prompt in prompts.items():
+    streams[category] = client.chat.completions.create_iterable(
+        model=&quot;gpt-3.5-turbo&quot;,
+        response_model=DocumentSummary,
+        messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: prompt}]
+    )</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Process combined streams as they arrive</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">for i, result in enumerate(combine_streams(streams), 1):
+    print(f&quot;\nUpdate {i}:&quot;)
+    for category, doc in result.items():
+        if doc:
+            print(f&quot;  {category.upper()}: {doc.title}&quot;)
+        else:
+            print(f&quot;  {category.upper()}: No documents yet&quot;)
+
+from typing import List, Optional, Iterator
+import itertools
+
+class NewsHeadline(BaseModel):
+    title: str
+    source: str
+    category: str
+    publish_date: str
+    summary: str</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Generate a potentially large stream of headlines</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">headlines_stream = client.chat.completions.create_iterable(
+    model=&quot;gpt-3.5-turbo&quot;,
+    response_model=NewsHeadline,
+    messages=[
+        {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Generate 10 fictional technology news headlines from the past week.&quot;}
+    ]
+)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Get only the first 3 headlines</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">print(&quot;Top Headlines:&quot;)
+for i, headline in enumerate(itertools.islice(headlines_stream, 3)):
+    print(f&quot;\nHeadline {i+1}: {headline.title}&quot;)
+    print(f&quot;Source: {headline.source}&quot;)
+    print(f&quot;Category: {headline.category}&quot;)
+    print(f&quot;Date: {headline.publish_date}&quot;)
+    print(f&quot;Summary: {headline.summary}&quot;)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Note: The rest of the stream is not processed, which saves tokens</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">print(&quot;\nShowing only the first 3 headlines.&quot;)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <h2>Running the Example</h2>
+            <div class="row">
+                <div class="docs" style='font-size: 0.9em; color: #666;'>
+                    First, install Instructor and any dependencies
+                </div>
+                <div class="code">
+                    <div class="buttons">
+                        <svg class="copy" title="Copy command" onclick="copyCode(this)" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16 1H4C2.9 1 2 1.9 2 3V17H4V3H16V1ZM19 5H8C6.9 5 6 5.9 6 7V21C6 22.1 6.9 23 8 23H19C20.1 23 21 22.1 21 21V7C21 5.9 20.1 5 19 5ZM19 21H8V7H19V21Z" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <pre><code class="language-shell"><span><span class="command-prompt">$ </span><span class="command-text">pip install instructor pydantic</span></span>
+</code></pre>
+                </div>
+            </div>
+            <div class="row">
+                <div class="docs" style='font-size: 0.9em; color: #666;'>
+                    Run the Python script
+                </div>
+                <div class="code">
+                    <div class="buttons">
+                        <svg class="copy" title="Copy command" onclick="copyCode(this)" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16 1H4C2.9 1 2 1.9 2 3V17H4V3H16V1ZM19 5H8C6.9 5 6 5.9 6 7V21C6 22.1 6.9 23 8 23H19C20.1 23 21 22.1 21 21V7C21 5.9 20.1 5 19 5ZM19 21H8V7H19V21Z" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <pre><code class="language-shell"><span><span class="command-prompt">$ </span><span class="command-text">python streaming-lists.py</span></span>
+</code></pre>
+                </div>
+            </div>
+            <hr>
+            <h4>Further Information</h4>
+            <ul style="font-size: 0.9em;">
+                <li><a href="https://github.com/jxnl/instructor"
+                         target="_blank">Documentation link 1</a></li>
+            </ul>
+            <div class="navigation">
+                <p class="prev">
+                    <span>← Previous:</span> <a href="../024-partial-objects/">Streaming Partial Objects</a>
+                </p>
+                <p class="next">
+                    <span>Next:</span> <a href="../026-progressive-updates/">Progressive Updates</a> →
+                </p>
+            </div>
+        </main>
+        <footer>
+            <p>by <a href="https://github.com/jxnl/instructor">Instructor</a> | <a href="https://github.com/jxnl/instructor">GitHub</a> | <span style="color: #888; font-size: 0.9em;">Last updated: April 9, 2025</span></p>
+        </footer>
+    </div>
+    <script>
+        // Function to copy code to clipboard
+        function copyCode(button) {
+            const codeBlock = button.closest('.code').querySelector('pre');
+            const code = codeBlock.textContent;
+            copyToClipboard(code, button);
+        }
+        
+        // Function to copy all Python code
+        document.addEventListener('DOMContentLoaded', function() {
+            const copyAllButton = document.getElementById('copy-all-python');
+            if (copyAllButton) {
+                copyAllButton.addEventListener('click', function() {
+                    const allCodeElement = document.getElementById('all-python-code');
+                    const code = allCodeElement.textContent;
+                    copyToClipboard(code, copyAllButton);
+                });
+            }
+        });
+        
+        // Shared function to copy text and show tooltip
+        function copyToClipboard(text, element) {
+            // For older browsers, fallback to textarea method
+            if (!navigator.clipboard) {
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                textArea.style.position = 'fixed';  // Avoid scrolling to bottom
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                
+                try {
+                    document.execCommand('copy');
+                    showTooltip(element, 'Copied!');
+                } catch (err) {
+                    console.error('Failed to copy text: ', err);
+                    showTooltip(element, 'Error!');
+                }
+                
+                document.body.removeChild(textArea);
+                return;
+            }
+            
+            // Use clipboard API if available
+            navigator.clipboard.writeText(text).then(() => {
+                showTooltip(element, 'Copied!');
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+                showTooltip(element, 'Error!');
+            });
+        }
+        
+        // Helper to show tooltip
+        function showTooltip(element, message) {
+            // Check if there's already a tooltip
+            let tooltip = element.parentElement.querySelector('.tooltip');
+            if (tooltip) {
+                tooltip.textContent = message;
+            } else {
+                // Create and append new tooltip
+                tooltip = document.createElement('span');
+                tooltip.textContent = message;
+                tooltip.className = 'tooltip';
+                tooltip.style.position = 'absolute';
+                tooltip.style.background = '#333';
+                tooltip.style.color = 'white';
+                tooltip.style.padding = '2px 8px';
+                tooltip.style.borderRadius = '4px';
+                tooltip.style.fontSize = '12px';
+                tooltip.style.top = '-25px';
+                tooltip.style.right = '0';
+                
+                // Make sure the parent has position relative for tooltip positioning
+                if (getComputedStyle(element.parentElement).position === 'static') {
+                    element.parentElement.style.position = 'relative';
+                }
+                
+                element.parentElement.appendChild(tooltip);
+            }
+            
+            // Remove tooltip after 1.5 seconds
+            setTimeout(() => tooltip.remove(), 1500);
+        }
+
+        // Enable keyboard navigation between examples
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey || e.altKey || e.shiftKey || e.metaKey) {
+                return;
+            }
+            
+            if (e.key === 'ArrowRight') {
+                const nextLink = document.querySelector('.next a');
+                if (nextLink) {
+                    window.location.href = nextLink.getAttribute('href');
+                }
+            }
+            
+            if (e.key === 'ArrowLeft') {
+                const prevLink = document.querySelector('.prev a');
+                if (prevLink) {
+                    window.location.href = prevLink.getAttribute('href');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

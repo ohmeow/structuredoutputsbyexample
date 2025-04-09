@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dependency Trees - Structured Outputs by Example</title>
+    <meta name="description" content="Learn to work with structured outputs through annotated examples">
+    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css'>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js'></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/firacode@6.2.0/distr/fira_code.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap');
+        
+        code, pre code, .hljs {
+            font-family: 'Fira Code', 'JetBrains Mono', monospace;
+            font-feature-settings: "liga" 1;
+        }
+        
+        @supports (font-variation-settings: normal) {
+            code, pre code, .hljs {
+                font-family: 'Fira Code VF', 'JetBrains Mono', monospace;
+            }
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            hljs.highlightAll();
+        });
+    </script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            line-height: 1.5;
+            color: #222;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        header {
+            border-bottom: 1px solid #eee;
+            padding: 15px 0;
+            margin-bottom: 20px;
+        }
+        .site-title {
+            text-decoration: none;
+            color: #0066CC;
+            font-weight: 500;
+            font-size: 20px;
+        }
+        main {
+            padding-bottom: 40px;
+        }
+        footer {
+            border-top: 1px solid #eee;
+            padding: 15px 0;
+            margin-top: 20px;
+            color: #666;
+            font-size: 0.9em;
+        }
+        h1 {
+            font-size: 36px;
+            font-weight: 500;
+            margin: 0 0 25px 0;
+            color: #333;
+        }
+        p {
+            margin: 20px 0;
+            color: #444;
+            line-height: 1.6;
+        }
+        a {
+            color: #0066CC;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .example-link {
+            margin: 4px 0;
+            line-height: 1.3;
+        }
+        .row {
+            display: flex;
+            width: 100%;
+            margin-bottom: 30px;
+            gap: 40px;
+        }
+        .docs {
+            flex: 0.75;
+            min-width: 0;
+            color: #444;
+            line-height: 1.6;
+            font-size: 1em;
+        }
+        .code {
+            flex: 2.25;
+            min-width: 0;
+            position: relative;
+        }
+        pre {
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f8f8;
+            border-radius: 5px;
+            overflow-x: auto;
+            line-height: 1.5;
+        }
+        /* Prevent double styling from highlight.js */
+        pre code.hljs, pre code {
+            background-color: transparent;
+            padding: 0;
+            margin: 0;
+            border: none;
+        }
+        .leading {
+            margin-bottom: 5px;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid #eee;
+            margin: 20px 0;
+        }
+        .buttons {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            z-index: 10;
+        }
+        .copy {
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+            opacity: 0.6;
+            color: #666;
+            background-color: #f8f8f8;
+            border-radius: 3px;
+            padding: 3px;
+        }
+        .copy:hover {
+            opacity: 1;
+            color: #0066CC;
+        }
+        .tooltip {
+            position: absolute;
+            background: #333;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            top: -25px;
+            right: 0;
+        }
+        .command-prompt {
+            color: #888;
+        }
+        .command-text {
+            font-weight: bold;
+        }
+        .navigation {
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        .prev, .next {
+            margin: 5px 0;
+            font-weight: 500;
+        }
+        .prev {
+            margin-right: auto;
+        }
+        .next {
+            margin-left: auto;
+        }
+        .prev span, .next span {
+            color: #666;
+            font-weight: normal;
+        }
+        @media (max-width: 900px) {
+            .row {
+                flex-direction: column;
+            }
+            .docs, .code {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="../" class="site-title">Structured Outputs by Example</a>
+        </header>
+        <main>
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
+                <div>
+                    <div style="margin-bottom: 10px; color: #666; font-size: 0.9em;">
+                        <a href="../" style="text-decoration: none; color: #666;">Advanced Structures</a>
+                    </div>
+                    <h1 style="margin: 0; margin-bottom: 10px;">Dependency Trees</h1>
+                </div>
+                <div style="position: relative; margin-top: 10px;">
+                    <button id="copy-all-python" style="background-color: #f1f8ff; border: 1px solid #c8e1ff; border-radius: 6px; padding: 6px 12px; font-size: 14px; color: #0066CC; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16 1H4C2.9 1 2 1.9 2 3V17H4V3H16V1ZM19 5H8C6.9 5 6 5.9 6 7V21C6 22.1 6.9 23 8 23H19C20.1 23 21 22.1 21 21V7C21 5.9 20.1 5 19 5ZM19 21H8V7H19V21Z" fill="currentColor"/>
+                        </svg>
+                        Copy All Python
+                    </button>
+                    <div id="all-python-code" style="display: none;">import instructor
+from openai import OpenAI
+from pydantic import BaseModel, Field
+client = instructor.from_openai(OpenAI())
+class DependencyNode(BaseModel):
+    id: str
+    description: str
+    dependencies: list[str] = Field(default_factory=list,
+                                   description=&quot;IDs of nodes this node depends on&quot;)
+class DependencyTree(BaseModel):
+    nodes: list[DependencyNode]
+
+    def get_execution_order(self) -&gt; list[str]:
+        &quot;&quot;&quot;Returns topologically sorted execution order.&quot;&quot;&quot;
+dep_graph = {node.id: set(node.dependencies) for node in self.nodes}
+        result = []
+while dep_graph:
+roots = {node for node, deps in dep_graph.items() if not deps}
+            if not roots:
+                raise ValueError(&quot;Circular dependency detected&quot;)
+result.extend(sorted(roots))
+dep_graph = {
+                node: (deps - roots)
+                for node, deps in dep_graph.items()
+                if node not in roots
+            }
+
+        return result
+def extract_dependencies(project_description: str) -&gt; DependencyTree:
+    return client.chat.completions.create(
+        model=&quot;gpt-3.5-turbo&quot;,
+        messages=[
+            {
+                &quot;role&quot;: &quot;system&quot;,
+                &quot;content&quot;: &quot;Extract the dependencies between tasks in this project.&quot;
+            },
+            {
+                &quot;role&quot;: &quot;user&quot;,
+                &quot;content&quot;: project_description
+            }
+        ],
+        response_model=DependencyTree
+    )
+project = &quot;&quot;&quot;
+Building a web application requires:
+1. Setup development environment
+2. Design database schema (after setup)
+3. Create API endpoints (after database schema)
+4. Build frontend UI (after API design)
+5. Write tests (after API and UI)
+6. Deploy application (after tests pass)
+&quot;&quot;&quot;
+
+dependencies = extract_dependencies(project)
+execution_order = dependencies.get_execution_order()
+print(&quot;Execution order:&quot;, execution_order)
+</div>
+                </div>            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Dependency trees represent relationships where some items depend on others. Instructor can extract these structures for tasks like workflow management, build systems, or data processing pipelines.</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">import instructor
+from openai import OpenAI
+from pydantic import BaseModel, Field</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Initialize the client with instructor</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">client = instructor.from_openai(OpenAI())</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Define a dependency node</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">class DependencyNode(BaseModel):
+    id: str
+    description: str
+    dependencies: list[str] = Field(default_factory=list,
+                                   description=&quot;IDs of nodes this node depends on&quot;)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Define the dependency tree</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">class DependencyTree(BaseModel):
+    nodes: list[DependencyNode]
+
+    def get_execution_order(self) -&gt; list[str]:
+        &quot;&quot;&quot;Returns topologically sorted execution order.&quot;&quot;&quot;</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Build dependency graph</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">dep_graph = {node.id: set(node.dependencies) for node in self.nodes}
+        result = []</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Find nodes with no dependencies</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">while dep_graph:</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Find nodes with no dependencies</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">roots = {node for node, deps in dep_graph.items() if not deps}
+            if not roots:
+                raise ValueError(&quot;Circular dependency detected&quot;)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Add these nodes to the result</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">result.extend(sorted(roots))</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Remove these nodes from the graph</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">dep_graph = {
+                node: (deps - roots)
+                for node, deps in dep_graph.items()
+                if node not in roots
+            }
+
+        return result</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Extract dependencies from a project description</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">def extract_dependencies(project_description: str) -&gt; DependencyTree:
+    return client.chat.completions.create(
+        model=&quot;gpt-3.5-turbo&quot;,
+        messages=[
+            {
+                &quot;role&quot;: &quot;system&quot;,
+                &quot;content&quot;: &quot;Extract the dependencies between tasks in this project.&quot;
+            },
+            {
+                &quot;role&quot;: &quot;user&quot;,
+                &quot;content&quot;: project_description
+            }
+        ],
+        response_model=DependencyTree
+    )</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Example usage</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">project = &quot;&quot;&quot;
+Building a web application requires:
+1. Setup development environment
+2. Design database schema (after setup)
+3. Create API endpoints (after database schema)
+4. Build frontend UI (after API design)
+5. Write tests (after API and UI)
+6. Deploy application (after tests pass)
+&quot;&quot;&quot;
+
+dependencies = extract_dependencies(project)
+execution_order = dependencies.get_execution_order()
+print(&quot;Execution order:&quot;, execution_order)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <h2>Running the Example</h2>
+            <div class="row">
+                <div class="docs" style='font-size: 0.9em; color: #666;'>
+                    First, install Instructor and any dependencies
+                </div>
+                <div class="code">
+                    <div class="buttons">
+                        <svg class="copy" title="Copy command" onclick="copyCode(this)" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16 1H4C2.9 1 2 1.9 2 3V17H4V3H16V1ZM19 5H8C6.9 5 6 5.9 6 7V21C6 22.1 6.9 23 8 23H19C20.1 23 21 22.1 21 21V7C21 5.9 20.1 5 19 5ZM19 21H8V7H19V21Z" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <pre><code class="language-shell"><span><span class="command-prompt">$ </span><span class="command-text">pip install instructor pydantic</span></span>
+</code></pre>
+                </div>
+            </div>
+            <div class="row">
+                <div class="docs" style='font-size: 0.9em; color: #666;'>
+                    Run the Python script
+                </div>
+                <div class="code">
+                    <div class="buttons">
+                        <svg class="copy" title="Copy command" onclick="copyCode(this)" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16 1H4C2.9 1 2 1.9 2 3V17H4V3H16V1ZM19 5H8C6.9 5 6 5.9 6 7V21C6 22.1 6.9 23 8 23H19C20.1 23 21 22.1 21 21V7C21 5.9 20.1 5 19 5ZM19 21H8V7H19V21Z" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <pre><code class="language-shell"><span><span class="command-prompt">$ </span><span class="command-text">python dependency-trees.py</span></span>
+</code></pre>
+                </div>
+            </div>
+            <hr>
+            <h4>Further Information</h4>
+            <ul style="font-size: 0.9em;">
+                <li><a href="https://github.com/jxnl/instructor"
+                         target="_blank">Documentation link 1</a></li>
+            </ul>
+            <div class="navigation">
+                <p class="prev">
+                    <span>← Previous:</span> <a href="../029-knowledge-graphs/">Knowledge Graphs</a>
+                </p>
+                <p class="next">
+                    <span>Next:</span> <a href="../031-task-planning/">Task Planning</a> →
+                </p>
+            </div>
+        </main>
+        <footer>
+            <p>by <a href="https://github.com/jxnl/instructor">Instructor</a> | <a href="https://github.com/jxnl/instructor">GitHub</a> | <span style="color: #888; font-size: 0.9em;">Last updated: April 9, 2025</span></p>
+        </footer>
+    </div>
+    <script>
+        // Function to copy code to clipboard
+        function copyCode(button) {
+            const codeBlock = button.closest('.code').querySelector('pre');
+            const code = codeBlock.textContent;
+            copyToClipboard(code, button);
+        }
+        
+        // Function to copy all Python code
+        document.addEventListener('DOMContentLoaded', function() {
+            const copyAllButton = document.getElementById('copy-all-python');
+            if (copyAllButton) {
+                copyAllButton.addEventListener('click', function() {
+                    const allCodeElement = document.getElementById('all-python-code');
+                    const code = allCodeElement.textContent;
+                    copyToClipboard(code, copyAllButton);
+                });
+            }
+        });
+        
+        // Shared function to copy text and show tooltip
+        function copyToClipboard(text, element) {
+            // For older browsers, fallback to textarea method
+            if (!navigator.clipboard) {
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                textArea.style.position = 'fixed';  // Avoid scrolling to bottom
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                
+                try {
+                    document.execCommand('copy');
+                    showTooltip(element, 'Copied!');
+                } catch (err) {
+                    console.error('Failed to copy text: ', err);
+                    showTooltip(element, 'Error!');
+                }
+                
+                document.body.removeChild(textArea);
+                return;
+            }
+            
+            // Use clipboard API if available
+            navigator.clipboard.writeText(text).then(() => {
+                showTooltip(element, 'Copied!');
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+                showTooltip(element, 'Error!');
+            });
+        }
+        
+        // Helper to show tooltip
+        function showTooltip(element, message) {
+            // Check if there's already a tooltip
+            let tooltip = element.parentElement.querySelector('.tooltip');
+            if (tooltip) {
+                tooltip.textContent = message;
+            } else {
+                // Create and append new tooltip
+                tooltip = document.createElement('span');
+                tooltip.textContent = message;
+                tooltip.className = 'tooltip';
+                tooltip.style.position = 'absolute';
+                tooltip.style.background = '#333';
+                tooltip.style.color = 'white';
+                tooltip.style.padding = '2px 8px';
+                tooltip.style.borderRadius = '4px';
+                tooltip.style.fontSize = '12px';
+                tooltip.style.top = '-25px';
+                tooltip.style.right = '0';
+                
+                // Make sure the parent has position relative for tooltip positioning
+                if (getComputedStyle(element.parentElement).position === 'static') {
+                    element.parentElement.style.position = 'relative';
+                }
+                
+                element.parentElement.appendChild(tooltip);
+            }
+            
+            // Remove tooltip after 1.5 seconds
+            setTimeout(() => tooltip.remove(), 1500);
+        }
+
+        // Enable keyboard navigation between examples
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey || e.altKey || e.shiftKey || e.metaKey) {
+                return;
+            }
+            
+            if (e.key === 'ArrowRight') {
+                const nextLink = document.querySelector('.next a');
+                if (nextLink) {
+                    window.location.href = nextLink.getAttribute('href');
+                }
+            }
+            
+            if (e.key === 'ArrowLeft') {
+                const prevLink = document.querySelector('.prev a');
+                if (prevLink) {
+                    window.location.href = prevLink.getAttribute('href');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

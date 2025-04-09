@@ -1,0 +1,6076 @@
+# Structured Outputs by Example
+
+This file contains all examples from the Structured Outputs by Example site.
+It's organized by sections, with each example's Python code and terminal commands included.
+
+## Table of Contents
+
+* Getting Started
+  * Getting Started with Structured Outputs
+  * Installing Instructor
+  * Your First Extraction
+  * Understanding Response Models
+  * Client Setup
+* LLM Providers
+  * OpenAI Integration
+  * Anthropic Integration
+  * Gemini Integration
+  * Cohere Integration
+  * Mistral Integration
+  * Other Provider Integrations
+* Basic Extraction Patterns
+  * Simple Object Extraction
+  * List Extraction
+  * Nested Structures
+  * Field Validation
+  * Optional Fields
+  * Working with Enums
+* Classification and Analysis
+  * Simple Classification
+  * Multi-label Classification
+  * Sentiment Analysis
+  * Entity Classification
+  * Working with Confidence Scores
+* Streaming
+  * Streaming Basics
+  * Streaming Partial Objects
+  * Streaming Lists
+  * Progressive Updates
+  * Handling Stream Errors
+* Advanced Structures
+  * Recursive Structures
+  * Knowledge Graphs
+  * Dependency Trees
+  * Task Planning
+  * Document Structure
+* Validation
+  * Validation Basics
+  * Custom Validators
+  * Retry Mechanisms
+  * Fallback Strategies
+  * Field-level Validation
+* Multimodal Inputs
+  * Vision
+  * Image Extraction
+  * Table Extraction
+  * Audio Extraction
+  * PDF Extraction
+* Performance and Optimization
+  * Caching Responses
+  * Parallel Extraction
+  * Batch Processing
+  * Hooks and Callbacks
+  * Type Adapters
+* Miscellaneous Examples
+  * Resources
+
+## Getting Started
+
+Introduction to structured outputs with Instructor and setting up your environment
+
+### Getting Started with Structured Outputs
+
+```python
+from openai import OpenAI
+client = OpenAI()
+response = client.chat.completions.create(
+    model="gpt-3.5-turbo",
+    messages=[
+        {"role": "user", "content": "Extract customer: John Doe, age 35, email: john@example.com"}
+    ]
+)
+
+print(response.choices[0].message.content)
+import instructor
+from openai import OpenAI
+from pydantic import BaseModel, Field, EmailStr
+class Customer(BaseModel):
+    name: str = Field(description="Customer's full name")
+    age: int = Field(description="Customer's age in years", ge=0, le=120)
+    email: EmailStr = Field(description="Customer's email address")
+client = instructor.from_openai(OpenAI())
+customer = client.chat.completions.create(
+    model="gpt-3.5-turbo",
+    messages=[
+        {"role": "user", "content": "Extract customer: John Doe, age 35, email: john@example.com"}
+    ],
+    response_model=Customer  # This is the key part
+)
+
+print(customer)  # Customer(name='John Doe', age=35, email='john@example.com')
+print(f"Name: {customer.name}, Age: {customer.age}, Email: {customer.email}")
+from typing import List, Optional
+from pydantic import BaseModel, Field
+import instructor
+from openai import OpenAI
+client = instructor.from_openai(OpenAI())
+class Address(BaseModel):
+    street: str
+    city: str
+    state: str
+    zip_code: str
+
+class Contact(BaseModel):
+    email: Optional[str] = None
+    phone: Optional[str] = None
+
+class Person(BaseModel):
+    name: str
+    age: int
+    occupation: str
+    address: Address
+    contact: Contact
+    skills: List[str] = Field(description="List of professional skills")
+person = client.chat.completions.create(
+    model="gpt-4",
+    messages=[
+        {"role": "user", "content": """
+        Extract detailed information for this person:
+        John Smith is a 42-year-old software engineer living at 123 Main St, San Francisco, CA 94105.
+        His email is john.smith@example.com and phone is 555-123-4567.
+        John is skilled in Python, JavaScript, and cloud architecture.
+        """}
+    ],
+    response_model=Person
+)
+print(f"Name: {person.name}")
+print(f"Location: {person.address.city}, {person.address.state}")
+print(f"Skills: {', '.join(person.skills)}")
+```
+
+```shell
+$ pip install instructor pydantic
+$ python getting-started.py
+```
+
+For more information, see the original documentation:
+- https://github.com/jxnl/instructor
+
+### Installing Instructor
+
+```shell
+$ # Install the base package
+$ pip install instructor
+$ # For OpenAI (included by default)
+$ pip install instructor
+$ 
+$ # For Anthropic
+$ pip install "instructor[anthropic]"
+$ 
+$ # For Google/Gemini
+$ pip install "instructor[google-generativeai]"
+$ 
+$ # For Cohere
+$ pip install "instructor[cohere]"
+$ 
+$ # For Mistral
+$ pip install "instructor[mistralai]"
+$ 
+$ # For multiple providers via LiteLLM
+$ pip install "instructor[litellm]"
+$ # OpenAI
+$ export OPENAI_API_KEY=your_openai_key
+$ 
+$ # Anthropic
+$ export ANTHROPIC_API_KEY=your_anthropic_key
+$ 
+$ # Google/Gemini
+$ export GOOGLE_API_KEY=your_google_key
+```
+
+For more information, see the original documentation:
+- https://github.com/jxnl/instructor
+
+### Your First Extraction
+
+```python
+from pydantic import BaseModel
+
+class Person(BaseModel):
+    name: str
+    age: int
+
+import instructor
+from openai import OpenAI
+client = instructor.from_openai(OpenAI())
+person = client.chat.completions.create(
+    model="gpt-3.5-turbo",
+    response_model=Person,
+    messages=[
+        {"role": "user", "content": "John Doe is 30 years old"}
+    ]
+)
+
+print(f"Name: {person.name}, Age: {person.age}")
+```
+
+```shell
+$ pip install instructor pydantic
+$ python first-extraction.py
+```
+
+For more information, see the original documentation:
+- https://github.com/jxnl/instructor
+
+### Understanding Response Models
+
+```python
+from pydantic import BaseModel
+
+class User(BaseModel):
+    name: str
+    age: int
+
+from pydantic import BaseModel
+from typing import List, Optional
+
+class Address(BaseModel):
+    street: str
+    city: str
+    state: Optional[str] = None
+    country: str
+
+class User(BaseModel):
+    name: str
+    age: int
+    addresses: List[Address]
+from pydantic import BaseModel, Field
+
+class WeatherForecast(BaseModel):
+    """Weather forecast for a specific location"""
+
+    temperature: float = Field(
+        description="Current temperature in Celsius"
+    )
+    condition: str = Field(
+        description="Weather condition (sunny, cloudy, rainy, etc.)"
+    )
+    humidity: int = Field(
+        description="Humidity percentage from 0-100"
+    )
+from pydantic import BaseModel, Field
+
+class Product(BaseModel):
+    name: str = Field(min_length=3)
+    price: float = Field(gt=0)  # greater than 0
+    quantity: int = Field(ge=0)  # greater than or equal to 0
+    description: str = Field(max_length=500)
+
+import instructor
+from openai import OpenAI
+
+client = instructor.from_openai(OpenAI())
+
+forecast = client.chat.completions.create(
+    model="gpt-3.5-turbo",
+    response_model=WeatherForecast,
+    messages=[
+        {"role": "user", "content": "What's the weather in New York today?"}
+    ]
+)
+
+print(forecast.model_dump_json(indent=2))
+```
+
+```shell
+$ pip install instructor pydantic
+$ python response-models.py
+```
+
+For more information, see the original documentation:
+- https://github.com/jxnl/instructor
+
+### Client Setup
+
+```python
+import instructor
+from openai import OpenAI
+client = instructor.from_openai(OpenAI())
+client = instructor.from_openai(
+    OpenAI(),
+    mode=instructor.Mode.JSON  # Use JSON mode instead
+)
+
+import instructor
+from anthropic import Anthropic
+client = instructor.from_anthropic(Anthropic())
+client = instructor.from_anthropic(
+    Anthropic(),
+    mode=instructor.Mode.JSON
+)
+
+import instructor
+import google.generativeai as genai
+genai.configure(api_key="YOUR_API_KEY")
+model = genai.GenerativeModel("gemini-1.5-flash")
+client = instructor.from_gemini(
+    model,
+    mode=instructor.Mode.GEMINI_TOOLS  # or GEMINI_JSON
+)
+
+import instructor
+import cohere
+cohere_client = cohere.Client("YOUR_API_KEY")
+client = instructor.from_cohere(cohere_client)
+
+import instructor
+from mistralai.client import MistralClient
+
+mistral_client = MistralClient(api_key="YOUR_API_KEY")
+client = instructor.from_mistral(mistral_client)
+from instructor import Mode
+Mode.TOOLS         # OpenAI function calling format (default for OpenAI)
+Mode.JSON          # Plain JSON generation
+Mode.MD_JSON       # Markdown JSON (used by some providers)
+Mode.ANTHROPIC_TOOLS # Claude tools mode (default for Anthropic)
+Mode.GEMINI_TOOLS  # Gemini tools format
+Mode.GEMINI_JSON   # Gemini JSON format
+```
+
+```shell
+$ pip install instructor pydantic
+$ python client-setup.py
+```
+
+For more information, see the original documentation:
+- https://github.com/jxnl/instructor
+
+## LLM Providers
+
+Using Instructor with different LLM providers
+
+### OpenAI Integration
+
+```python
+import instructor
+from openai import OpenAI
+from pydantic import BaseModel
+
+class User(BaseModel):
+    name: str
+    age: int
+
+client = instructor.from_openai(OpenAI())
+user = client.chat.completions.create(
+    model="gpt-3.5-turbo",
+    response_model=User,
+    messages=[
+        {"role": "user", "content": "Extract: John is a 25-year-old engineer."}
+    ]
+)
+user = client.chat.completions.create(
+    model="gpt-4",
+    response_model=User,
+    messages=[
+        {"role": "user", "content": "Extract: John is a 25-year-old engineer."}
+    ]
+)
+
+user = client.chat.completions.create(
+    model="gpt-3.5-turbo",
+    response_model=User,
+    messages=[
+        {"role": "system", "content": "You are an expert at data extraction."},
+        {"role": "user", "content": "Extract user details from: John is 25 years old."}
+    ]
+)
+user = client.chat.completions.create(
+    model="gpt-3.5-turbo",
+    temperature=0.1,  # Very deterministic (0.0-1.0)
+    response_model=User,
+    messages=[
+        {"role": "user", "content": "Extract: John is a 25-year-old engineer."}
+    ]
+)
+client = instructor.from_openai(
+    OpenAI(),
+    mode=instructor.Mode.JSON
+)
+
+user = client.chat.completions.create(
+    model="gpt-3.5-turbo",
+    response_model=User,
+    messages=[
+        {"role": "user", "content": "Extract: John is a 25-year-old engineer."}
+    ]
+)
+
+import asyncio
+from openai import AsyncOpenAI
+
+async_client = instructor.from_openai(AsyncOpenAI())
+
+async def extract_user():
+    return await async_client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        response_model=User,
+        messages=[
+            {"role": "user", "content": "Extract: John is a 25-year-old engineer."}
+        ]
+    )
+
+user = asyncio.run(extract_user())
+```
+
+```shell
+$ pip install instructor pydantic
+$ python openai.py
+```
+
+For more information, see the original documentation:
+- https://github.com/jxnl/instructor
+
+### Anthropic Integration
+
+```python
+import instructor
+from anthropic import Anthropic
+from pydantic import BaseModel
+
+
+class User(BaseModel):
+    name: str
+    age: int
+client = instructor.from_anthropic(Anthropic())
+user = client.messages.create(
+    model="claude-3-haiku-20240307",
+    max_tokens=1000,
+    response_model=User,
+    messages=[{"role": "user", "content": "Extract: John is 25 years old."}],
+)
+user = client.messages.create(
+    model="claude-3-sonnet-20240229",
+    max_tokens=1000,
+    response_model=User,
+    messages=[{"role": "user", "content": "Extract: John is 25 years old."}],
+)
+user = client.messages.create(
+    model="claude-3-opus-20240229",
+    max_tokens=1000,
+    response_model=User,
+    messages=[{"role": "user", "content": "Extract: John is 25 years old."}],
+)
+
+user = client.messages.create(
+    model="claude-3-haiku-20240307",
+    max_tokens=1000,
+    response_model=User,
+    system="You are an expert at data extraction. Always extract all details accurately.",
+    messages=[{"role": "user", "content": "Extract: John is 25 years old."}],
+)
+
+user = client.messages.create(
+    model="claude-3-haiku-20240307",
+    max_tokens=1000,
+    temperature=0.2,  # Lower temperature for more consistent results
+    response_model=User,
+    messages=[{"role": "user", "content": "Extract: John is 25 years old."}],
+)
+client = instructor.from_anthropic(Anthropic())
+json_client = instructor.from_anthropic(Anthropic(), mode=instructor.Mode.JSON)
+md_client = instructor.from_anthropic(Anthropic(), mode=instructor.Mode.MD_JSON)
+
+import asyncio
+from anthropic import AsyncAnthropic
+
+async_client = instructor.from_anthropic(AsyncAnthropic())
+
+
+async def extract_user():
+    return await async_client.messages.create(
+        model="claude-3-haiku-20240307",
+        max_tokens=1000,
+        response_model=User,
+        messages=[{"role": "user", "content": "Extract: John is 25 years old."}],
+    )
+
+
+user = asyncio.run(extract_user())
+```
+
+```shell
+$ pip install instructor pydantic
+$ python anthropic.py
+```
+
+For more information, see the original documentation:
+- https://github.com/jxnl/instructor
+
+### Gemini Integration
+
+```python
+import instructor
+import google.generativeai as genai
+from pydantic import BaseModel
+genai.configure(api_key="YOUR_API_KEY")
+
+class User(BaseModel):
+    name: str
+    age: int
+model = genai.GenerativeModel("gemini-1.5-flash")
+client = instructor.from_gemini(
+    model,
+    mode=instructor.Mode.GEMINI_TOOLS  # or GEMINI_JSON
+)
+user = client.generate_content(
+    response_model=User,
+    contents="Extract: John is 25 years old."
+)
+
+print(f"Name: {user.name}, Age: {user.age}")
+flash_model = genai.GenerativeModel("gemini-1.5-flash")
+flash_client = instructor.from_gemini(
+    flash_model,
+    mode=instructor.Mode.GEMINI_TOOLS
+)
+pro_model = genai.GenerativeModel("gemini-1.5-pro")
+pro_client = instructor.from_gemini(
+    pro_model,
+    mode=instructor.Mode.GEMINI_TOOLS
+)
+
+user = client.generate_content(
+    response_model=User,
+    contents="Extract: John is 25 years old.",
+    generation_config={
+        "system_instruction": "You are an expert at extracting structured data."
+    }
+)
+
+user = client.generate_content(
+    response_model=User,
+    contents=[
+        {"role": "user", "parts": ["Extract: John is 25 years old."]}
+    ]
+)
+
+json_client = instructor.from_gemini(
+    genai.GenerativeModel("gemini-1.5-flash"),
+    mode=instructor.Mode.GEMINI_JSON
+)
+
+user = json_client.generate_content(
+    response_model=User,
+    contents="Extract: John is 25 years old."
+)
+
+import google.auth
+import google.auth.transport.requests
+import instructor
+from openai import OpenAI
+creds, project = google.auth.default()
+auth_req = google.auth.transport.requests.Request()
+creds.refresh(auth_req)
+PROJECT = 'your-project-id'
+LOCATION = 'us-central1'  # or your preferred region
+endpoint = f'https://{LOCATION}-aiplatform.googleapis.com/v1beta1/projects/{PROJECT}/locations/{LOCATION}/endpoints/openapi'
+client = instructor.from_openai(
+    OpenAI(base_url=endpoint, api_key=creds.token),
+    mode=instructor.Mode.JSON  # JSON mode required
+)
+user = client.chat.completions.create(
+    model="google/gemini-1.5-flash",
+    response_model=User,
+    messages=[
+        {"role": "user", "content": "Extract: John is 25 years old."}
+    ]
+)
+```
+
+```shell
+$ # Install required packages
+$ pip install instructor google-generativeai jsonref
+```
+
+For more information, see the original documentation:
+- https://github.com/jxnl/instructor
+
+### Cohere Integration
+
+```python
+import instructor
+import cohere
+from pydantic import BaseModel
+
+class User(BaseModel):
+    name: str
+    age: int
+co = cohere.Client("YOUR_API_KEY")  # or set CO_API_KEY env variable
+client = instructor.from_cohere(co)
+user = client.chat.completions.create(
+    model="command-r-plus",  # or other Cohere models
+    response_model=User,
+    messages=[
+        {"role": "user", "content": "Extract: John is 25 years old."}
+    ]
+)
+
+print(f"Name: {user.name}, Age: {user.age}")
+user = client.chat.completions.create(
+    model="command",
+    response_model=User,
+    messages=[
+        {"role": "user", "content": "Extract: John is 25 years old."}
+    ]
+)
+user = client.chat.completions.create(
+    model="command-r",
+    response_model=User,
+    messages=[
+        {"role": "user", "content": "Extract: John is 25 years old."}
+    ]
+)
+user = client.chat.completions.create(
+    model="command-r-plus",
+    response_model=User,
+    messages=[
+        {"role": "user", "content": "Extract: John is 25 years old."}
+    ]
+)
+
+user = client.chat.completions.create(
+    model="command-r-plus",
+    temperature=0.2,  # Lower for more consistent results
+    response_model=User,
+    messages=[
+        {"role": "user", "content": "Extract: John is 25 years old."}
+    ]
+)
+
+user = client.chat.completions.create(
+    model="command-r-plus",
+    response_model=User,
+    preamble="You are an expert at extracting structured information.",
+    messages=[
+        {"role": "user", "content": "Extract: John is 25 years old."}
+    ]
+)
+
+user = client.chat.completions.create(
+    model="command-r-plus",
+    response_model=User,
+    messages=[
+        {"role": "user", "content": "Hi, I'd like to discuss John who is 25 years old."},
+        {"role": "assistant", "content": "Hello! I'd be happy to discuss John with you."},
+        {"role": "user", "content": "Can you extract his information in a structured format?"}
+    ]
+)
+client = instructor.from_cohere(co)
+client = instructor.from_cohere(
+    co,
+    mode=instructor.Mode.JSON
+)
+```
+
+```shell
+$ # Install required packages
+$ pip install instructor cohere
+```
+
+For more information, see the original documentation:
+- https://github.com/jxnl/instructor
+
+### Mistral Integration
+
+```python
+import instructor
+from mistralai.client import MistralClient
+from pydantic import BaseModel
+
+class User(BaseModel):
+    name: str
+    age: int
+mistral_client = MistralClient(api_key="YOUR_API_KEY")
+client = instructor.from_mistral(mistral_client)
+user = client.chat.completions.create(
+    model="mistral-large-latest",
+    response_model=User,
+    messages=[
+        {"role": "user", "content": "Extract: John is 25 years old."}
+    ]
+)
+
+print(f"Name: {user.name}, Age: {user.age}")
+user = client.chat.completions.create(
+    model="mistral-small-latest",
+    response_model=User,
+    messages=[
+        {"role": "user", "content": "Extract: John is 25 years old."}
+    ]
+)
+user = client.chat.completions.create(
+    model="mistral-medium-latest",
+    response_model=User,
+    messages=[
+        {"role": "user", "content": "Extract: John is 25 years old."}
+    ]
+)
+user = client.chat.completions.create(
+    model="mistral-large-latest",
+    response_model=User,
+    messages=[
+        {"role": "user", "content": "Extract: John is 25 years old."}
+    ]
+)
+
+user = client.chat.completions.create(
+    model="mistral-large-latest",
+    response_model=User,
+    messages=[
+        {"role": "system", "content": "You are an expert at data extraction."},
+        {"role": "user", "content": "Extract: John is 25 years old."}
+    ]
+)
+
+user = client.chat.completions.create(
+    model="mistral-large-latest",
+    temperature=0.2,  # Lower for more consistent results
+    response_model=User,
+    messages=[
+        {"role": "user", "content": "Extract: John is 25 years old."}
+    ]
+)
+
+user = client.chat.completions.create(
+    model="mistral-large-latest",
+    response_model=User,
+    messages=[
+        {"role": "user", "content": "Hi, I'd like to discuss John who is 25 years old."},
+        {"role": "assistant", "content": "Hello! I'd be happy to discuss John with you."},
+        {"role": "user", "content": "Can you extract his information in a structured format?"}
+    ]
+)
+client = instructor.from_mistral(mistral_client)
+client = instructor.from_mistral(
+    mistral_client,
+    mode=instructor.Mode.JSON
+)
+client = instructor.from_mistral(
+    mistral_client,
+    mode=instructor.Mode.MD_JSON
+)
+
+import asyncio
+from mistralai.async_client import MistralAsyncClient
+
+async_client = instructor.from_mistral(
+    MistralAsyncClient(api_key="YOUR_API_KEY")
+)
+
+async def extract_user():
+    return await async_client.chat.completions.create(
+        model="mistral-large-latest",
+        response_model=User,
+        messages=[
+            {"role": "user", "content": "Extract: John is 25 years old."}
+        ]
+    )
+
+user = asyncio.run(extract_user())
+```
+
+```shell
+$ # Install required packages
+$ pip install instructor mistralai
+```
+
+For more information, see the original documentation:
+- https://github.com/jxnl/instructor
+
+### Other Provider Integrations
+
+```python
+import instructor
+from litellm import completion
+from pydantic import BaseModel
+
+class User(BaseModel):
+    name: str
+    age: int
+client = instructor.from_litellm(completion)
+user = client.chat.completions.create(
+    model="gpt-3.5-turbo",  # or any other provider/model combination
+    response_model=User,
+    messages=[
+        {"role": "user", "content": "John is 25 years old."}
+    ]
+)
+
+import instructor
+from pydantic import BaseModel
+from vertexai.preview.generative_models import GenerativeModel
+
+class User(BaseModel):
+    name: str
+    age: int
+model = GenerativeModel("gemini-1.5-flash")
+client = instructor.from_vertexai(model)
+user = client.generate_content(
+    response_model=User,
+    contents="Extract the user info: John is 25 years old."
+)
+
+import instructor
+from openai import OpenAI
+from pydantic import BaseModel
+
+class User(BaseModel):
+    name: str
+    age: int
+client = instructor.from_perplexity(
+    OpenAI(base_url="https://api.perplexity.ai", api_key="YOUR_API_KEY")
+)
+user = client.chat.completions.create(
+    model="sonar",  # or other Perplexity models
+    response_model=User,
+    messages=[
+        {"role": "user", "content": "John is 25 years old."}
+    ]
+)
+
+import instructor
+from openai import OpenAI
+from pydantic import BaseModel
+
+class User(BaseModel):
+    name: str
+    age: int
+client = instructor.from_fireworks(
+    OpenAI(base_url="https://api.fireworks.ai/inference/v1", api_key="YOUR_API_KEY")
+)
+user = client.chat.completions.create(
+    model="accounts/fireworks/models/mixtral-8x7b-instruct",
+    response_model=User,
+    messages=[
+        {"role": "user", "content": "John is 25 years old."}
+    ]
+)
+
+import instructor
+from openai import OpenAI
+from pydantic import BaseModel
+
+class User(BaseModel):
+    name: str
+    age: int
+client = instructor.from_anyscale(
+    OpenAI(base_url="https://api.endpoints.anyscale.com/v1", api_key="YOUR_API_KEY")
+)
+user = client.chat.completions.create(
+    model="meta-llama/Llama-3-8b-instruct",
+    response_model=User,
+    messages=[
+        {"role": "user", "content": "John is 25 years old."}
+    ]
+)
+
+import instructor
+from openai import OpenAI
+from pydantic import BaseModel
+
+class User(BaseModel):
+    name: str
+    age: int
+client = instructor.from_together(
+    OpenAI(base_url="https://api.together.xyz/v1", api_key="YOUR_API_KEY")
+)
+user = client.chat.completions.create(
+    model="togethercomputer/llama-3-8b-instructk",
+    response_model=User,
+    messages=[
+        {"role": "user", "content": "John is 25 years old."}
+    ]
+)
+
+import instructor
+from openai import OpenAI
+from pydantic import BaseModel
+
+class User(BaseModel):
+    name: str
+    age: int
+client = instructor.from_openrouter(
+    OpenAI(base_url="https://openrouter.ai/api/v1", api_key="YOUR_API_KEY")
+)
+user = client.chat.completions.create(
+    model="google/gemma-7b-instruct", # Or any other model on OpenRouter
+    response_model=User,
+    messages=[
+        {"role": "user", "content": "John is 25 years old."}
+    ]
+)
+```
+
+```shell
+$ pip install instructor pydantic
+$ python other-providers.py
+```
+
+For more information, see the original documentation:
+- https://github.com/jxnl/instructor
+
+## Basic Extraction Patterns
+
+Common patterns for extracting structured data
+
+### Simple Object Extraction
+
+```python
+from pydantic import BaseModel
+
+class Person(BaseModel):
+    name: str
+    age: int
+    occupation: str
+
+import instructor
+from openai import OpenAI
+client = instructor.from_openai(OpenAI())
+person = client.chat.completions.create(
+    model="gpt-3.5-turbo",
+    response_model=Person,
+    messages=[
+        {"role": "user", "content": "John Doe is a 30-year-old software engineer."}
+    ]
+)
+
+print(f"Name: {person.name}")
+print(f"Age: {person.age}")
+print(f"Occupation: {person.occupation}")
+extracted = client.chat.completions.create(
+    model="gpt-3.5-turbo",
+    response_model=Person,
+    messages=[
+        {"role": "user", "content": """
+        In our company blog post, we want to highlight one of our newest team members.
+        John Smith joined us last month. He's 34 years old and works as a data scientist.
+        John previously worked at TechCorp for 5 years.
+        """}
+    ]
+)
+
+print(f"Name: {extracted.name}")
+print(f"Age: {extracted.age}")
+print(f"Occupation: {extracted.occupation}")
+from pydantic import BaseModel, Field
+
+class Person(BaseModel):
+    name: str = Field(description="The person's full name")
+    age: int = Field(description="The person's age in years")
+    occupation: str = Field(description="The person's current job title or role")
+
+extracted = client.chat.completions.create(
+    model="gpt-3.5-turbo",
+    response_model=Person,
+    messages=[
+        {"role": "user", "content": """
+        Meet Sarah Johnson, one of our senior architects.
+        She's been with the firm since she was 28, and now at 42,
+        she leads our sustainable design initiatives.
+        """}
+    ]
+)
+
+print(f"Name: {extracted.name}")
+print(f"Age: {extracted.age}")
+print(f"Occupation: {extracted.occupation}")
+class Employee(BaseModel):
+    """Extract employee information from the provided text."""
+
+    name: str
+    age: int
+    department: str
+    years_of_service: int
+
+extracted = client.chat.completions.create(
+    model="gpt-3.5-turbo",
+    response_model=Employee,
+    messages=[
+        {"role": "user", "content": """
+        Employee Profile: Michael Chen has been in our Marketing department for 7 years.
+        He's 36 years old and has led multiple successful campaigns.
+        """}
+    ]
+)
+
+print(f"Name: {extracted.name}")
+print(f"Department: {extracted.department}")
+print(f"Years of Service: {extracted.years_of_service}")
+```
+
+```shell
+$ pip install instructor pydantic
+$ python simple-object.py
+```
+
+For more information, see the original documentation:
+- https://github.com/jxnl/instructor
+
+### List Extraction
+
+```python
+from pydantic import BaseModel
+
+class Person(BaseModel):
+    name: str
+    age: int
+
+import instructor
+from openai import OpenAI
+from typing import List
+client = instructor.from_openai(OpenAI())
+people = client.chat.completions.create(
+    model="gpt-3.5-turbo",
+    response_model=List[Person],  # Note the List wrapper
+    messages=[
+        {"role": "user", "content": """
+        Extract all people mentioned in this text:
+        - John is 30 years old
+        - Mary is 25 years old
+        - Bob is 45 years old
+        """}
+    ]
+)
+for person in people:
+    print(f"{person.name} is {person.age} years old")
+people = client.chat.completions.create(
+    model="gpt-3.5-turbo",
+    response_model=List[Person],
+    messages=[
+        {"role": "user", "content": """
+        Our team has grown significantly this year. John Smith, who is 32, joined our
+        engineering department. We also welcomed Sarah Johnson, 28, to our design team.
+        The most recent addition is Michael Chen, who is 35 and brings valuable experience.
+        """}
+    ]
+)
+
+for i, person in enumerate(people, 1):
+    print(f"Person {i}: {person.name}, {person.age}")
+from pydantic import BaseModel, Field
+from typing import List, Optional
+
+class Address(BaseModel):
+    street: str
+    city: str
+    state: Optional[str] = None
+    country: str
+
+class Person(BaseModel):
+    name: str
+    age: int
+    occupation: str = Field(description="The person's job or profession")
+    addresses: List[Address] = Field(description="List of addresses associated with this person")
+
+people = client.chat.completions.create(
+    model="gpt-4",  # More complex extraction works better with more capable models
+    response_model=List[Person],
+    messages=[
+        {"role": "user", "content": """
+        Our company employees include:
+
+        1. John Smith is a 34-year-old software developer who lives at 123 Main St, Boston, USA
+           and has a vacation home at 456 Beach Road, Miami, USA.
+
+        2. Maria Garcia is 29 and works as a marketing specialist. She lives at
+           78 Park Avenue, New York, USA.
+
+        3. Ahmed Hassan, 41, is our senior data scientist who recently moved from
+           555 River St, Cairo, Egypt to 890 Tech Blvd, San Francisco, USA.
+        """}
+    ]
+)
+
+for person in people:
+    print(f"{person.name}, {person.age} - {person.occupation}")
+    for i, addr in enumerate(person.addresses, 1):
+        print(f"  Address {i}: {addr.street}, {addr.city}, {addr.country}")
+    print()
+
+import instructor
+from openai import OpenAI
+from typing import List
+from pydantic import BaseModel
+
+class Person(BaseModel):
+    name: str
+    age: int
+client = instructor.from_openai(OpenAI())
+people_stream = client.chat.completions.create_iterable(
+    model="gpt-3.5-turbo",
+    response_model=Person,  # Note: no List wrapper here
+    messages=[
+        {"role": "user", "content": """
+        Extract all people mentioned in this text:
+        - John is 30 years old
+        - Mary is 25 years old
+        - Bob is 45 years old
+        """}
+    ]
+)
+for person in people_stream:
+    print(f"Received: {person.name} is {person.age} years old")
+```
+
+```shell
+$ pip install instructor pydantic
+$ python list-extraction.py
+```
+
+For more information, see the original documentation:
+- https://github.com/jxnl/instructor
+
+### Nested Structures
+
+```python
+from pydantic import BaseModel, Field
+from typing import List, Optional
+
+class Address(BaseModel):
+    street: str
+    city: str
+    state: Optional[str] = None
+    zip_code: Optional[str] = None
+    country: str
+
+class PhoneNumber(BaseModel):
+    number: str
+    type: str  # e.g., "home", "work", "mobile"
+
+class Person(BaseModel):
+    name: str
+    age: int
+    addresses: List[Address]
+    phone_numbers: List[PhoneNumber]
+    email: Optional[str] = None
+
+import instructor
+from openai import OpenAI
+client = instructor.from_openai(OpenAI())
+person = client.chat.completions.create(
+    model="gpt-4",  # Complex extraction works better with more capable models
+    response_model=Person,
+    messages=[
+        {"role": "user", "content": """
+        John Smith is a 35-year-old professional. He has two addresses:
+        1. Home: 123 Main St, Austin, TX 78701, USA
+        2. Work: 456 Business Ave, Austin, TX 78702, USA
+
+        His phone numbers are:
+        - Mobile: (555) 123-4567
+        - Work: (555) 987-6543
+
+        You can reach him at john.smith@example.com
+        """}
+    ]
+)
+
+print(f"Name: {person.name}, Age: {person.age}")
+print(f"Email: {person.email}")
+
+print("\nAddresses:")
+for i, address in enumerate(person.addresses, 1):
+    print(f"  {i}. {address.street}, {address.city}, {address.state} {address.zip_code}, {address.country}")
+
+print("\nPhone Numbers:")
+for phone in person.phone_numbers:
+    print(f"  {phone.type}: {phone.number}")
+
+from pydantic import BaseModel, Field
+from typing import List, Optional, Dict
+
+class Skill(BaseModel):
+    name: str
+    level: str  # e.g., "beginner", "intermediate", "expert"
+    years_of_experience: int
+
+class Education(BaseModel):
+    degree: str
+    institution: str
+    year: int
+
+class WorkExperience(BaseModel):
+    company: str
+    position: str
+    start_year: int
+    end_year: Optional[int] = None
+    is_current: bool
+    responsibilities: List[str]
+
+class Person(BaseModel):
+    name: str
+    age: int
+    skills: List[Skill]
+    education: List[Education]
+    work_experience: List[WorkExperience]
+    contact_info: Dict[str, str]  # e.g., "email", "phone", "linkedin"
+person = client.chat.completions.create(
+    model="gpt-4",
+    response_model=Person,
+    messages=[
+        {"role": "user", "content": """
+        Resume: Sarah Johnson
+
+        Sarah is a 42-year-old software architect with 15 years in the industry.
+
+        Contact Information:
+        - Email: sarah.j@example.com
+        - Phone: (555) 234-5678
+        - LinkedIn: linkedin.com/in/sarahjohnson
+
+        Skills:
+        - Python (Expert, 12 years)
+        - JavaScript (Intermediate, 8 years)
+        - Cloud Architecture (Expert, 7 years)
+
+        Education:
+        - Master's in Computer Science, Stanford University, 2008
+        - Bachelor's in Software Engineering, MIT, 2006
+
+        Work Experience:
+        - TechCorp Inc.
+          Senior Software Architect
+          2018-Present
+          Responsibilities:
+          * Lead architecture design for cloud solutions
+          * Manage team of 12 developers
+          * Implement CI/CD pipelines
+
+        - DataSystems LLC
+          Software Developer
+          2012-2018
+          Responsibilities:
+          * Developed backend services in Python
+          * Optimized database performance
+          * Created RESTful APIs
+        """}
+    ]
+)
+
+print(f"Name: {person.name}, Age: {person.age}")
+
+print("\nContact Info:")
+for key, value in person.contact_info.items():
+    print(f"  {key}: {value}")
+
+print("\nSkills:")
+for skill in person.skills:
+    print(f"  {skill.name}: {skill.level} ({skill.years_of_experience} years)")
+
+print("\nEducation:")
+for edu in person.education:
+    print(f"  {edu.degree}, {edu.institution}, {edu.year}")
+
+print("\nWork Experience:")
+for job in person.work_experience:
+    current = "(Current)" if job.is_current else f"({job.start_year}-{job.end_year})"
+    print(f"  {job.position} at {job.company} {current}")
+    print("  Responsibilities:")
+    for resp in job.responsibilities:
+        print(f"    - {resp}")
+
+from pydantic import BaseModel, Field
+from typing import List, Optional
+
+class Comment(BaseModel):
+    text: str
+    author: str
+    replies: List['Comment'] = []
+Comment.model_rebuild()
+
+class Post(BaseModel):
+    title: str
+    content: str
+    author: str
+    comments: List[Comment]
+post = client.chat.completions.create(
+    model="gpt-4",
+    response_model=Post,
+    messages=[
+        {"role": "user", "content": """
+        Blog Post: "Python Tips and Tricks"
+        By: JohnDev
+
+        Python has many features that make it a versatile language. Here are some tips to improve your code...
+
+        Comments:
+        1. Comment by Alice: "Great post! I especially liked the section on list comprehensions."
+          - Reply by JohnDev: "Thanks Alice! Glad you found it useful."
+            - Reply by Bob: "List comprehensions are my favorite too!"
+               - Reply by Alice: "They're so elegant compared to traditional loops."
+
+        2. Comment by Charlie: "Could you do a follow-up on decorators?"
+          - Reply by JohnDev: "Great idea! I'll add it to my list of topics."
+        """}
+    ]
+)
+
+print(f"Post: {post.title} by {post.author}")
+
+for i, comment in enumerate(post.comments, 1):
+    print(f"\nTop-level Comment {i}: {comment.author} said: '{comment.text}'")
+
+    def print_replies(replies, indent=2):
+        for reply in replies:
+            print(f"{'  ' * indent}{reply.author} replied: '{reply.text}'")
+            if reply.replies:
+                print_replies(reply.replies, indent + 1)
+
+    print_replies(comment.replies)
+```
+
+```shell
+$ pip install instructor pydantic
+$ python nested-structures.py
+```
+
+For more information, see the original documentation:
+- https://github.com/jxnl/instructor
+
+### Field Validation
+
+```python
+from pydantic import BaseModel, Field
+import instructor
+from openai import OpenAI
+class Product(BaseModel):
+    name: str = Field(min_length=3, max_length=50)
+    price: float = Field(gt=0)  # must be greater than 0
+    quantity: int = Field(ge=0)  # must be greater than or equal to 0
+    category: str
+client = instructor.from_openai(OpenAI())
+product = client.chat.completions.create(
+    model="gpt-3.5-turbo",
+    response_model=Product,
+    messages=[
+        {"role": "user", "content": "We sell a premium coffee mug for $12.99 and have 25 in stock in our kitchen category."}
+    ]
+)
+
+print(f"Name: {product.name}")
+print(f"Price: ${product.price}")
+print(f"Quantity: {product.quantity}")
+print(f"Category: {product.category}")
+
+from pydantic import BaseModel, Field
+
+class PersonStats(BaseModel):
+    name: str
+    age: int = Field(ge=0, lt=120)  # 0 ≤ age < 120
+    height: float = Field(gt=0, le=300)  # 0 < height ≤ 300 (cm)
+    weight: float = Field(gt=0, le=500)  # 0 < weight ≤ 500 (kg)
+    body_temperature: float = Field(ge=35, le=42)  # normal human range in Celsius
+person = client.chat.completions.create(
+    model="gpt-3.5-turbo",
+    response_model=PersonStats,
+    messages=[
+        {"role": "user", "content": """
+        Patient: John Smith
+        Age: 35 years old
+        Height: 180 cm
+        Weight: 75 kg
+        Temperature: 37.2°C
+        """}
+    ]
+)
+
+print(f"Patient: {person.name}")
+print(f"Age: {person.age}")
+print(f"Height: {person.height} cm")
+print(f"Weight: {person.weight} kg")
+print(f"Body Temperature: {person.body_temperature}°C")
+
+from pydantic import BaseModel, Field, field_validator
+import re
+
+class ContactInfo(BaseModel):
+    name: str
+    email: str = Field(pattern=r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$')
+    phone: str = Field(pattern=r'^\+?[1-9]\d{1,14}$')  # E.164 phone format
+    website: str = Field(pattern=r'^https?://(?:www\.)?[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(?:/[^\s]*)?$')
+@field_validator('name')
+    def validate_name(cls, v):
+        if len(v.split()) < 2:
+            raise ValueError('Name must include at least first and last name')
+        return v
+contact = client.chat.completions.create(
+    model="gpt-4",  # More capable for handling pattern constraints
+    response_model=ContactInfo,
+    messages=[
+        {"role": "user", "content": """
+        Contact details for our new client:
+        Name: John A. Smith
+        Email: john.smith@example.com
+        Phone: +1-555-123-4567
+        Website: https://www.johnsmith.com
+        """}
+    ]
+)
+
+print(f"Name: {contact.name}")
+print(f"Email: {contact.email}")
+print(f"Phone: {contact.phone}")
+print(f"Website: {contact.website}")
+from pydantic import BaseModel, Field
+
+class User(BaseModel):
+    name: str
+    age: int = Field(ge=18, le=100)  # Must be between 18 and 100
+    email: str = Field(pattern=r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$')
+user = client.chat.completions.create(
+    model="gpt-3.5-turbo",
+    response_model=User,
+    max_retries=2,  # Limit retries (default is 3)
+    messages=[
+        {"role": "user", "content": "Sam is 16 years old and his email is sam@example"}
+    ]
+)
+print(f"Name: {user.name}")
+print(f"Age: {user.age}")  # Should be adjusted to valid range
+print(f"Email: {user.email}")  # Should include a valid domain
+
+from pydantic import BaseModel, Field, field_validator
+from datetime import date
+from typing import Optional
+
+class Reservation(BaseModel):
+    guest_name: str
+    check_in_date: date
+    check_out_date: date
+    room_type: str
+    num_guests: int = Field(gt=0)
+    special_requests: Optional[str] = None
+
+    @field_validator('check_out_date')
+    def validate_dates(cls, v, values):
+        if 'check_in_date' in values.data and v <= values.data['check_in_date']:
+            raise ValueError('check_out_date must be after check_in_date')
+        return v
+
+    @field_validator('num_guests')
+    def validate_guests(cls, v, values):
+        if 'room_type' in values.data:
+            if values.data['room_type'].lower() == 'single' and v > 1:
+                raise ValueError('Single rooms can only accommodate 1 guest')
+            elif values.data['room_type'].lower() == 'double' and v > 2:
+                raise ValueError('Double rooms can only accommodate 2 guests')
+        return v
+reservation = client.chat.completions.create(
+    model="gpt-4",
+    response_model=Reservation,
+    messages=[
+        {"role": "user", "content": """
+        Hotel reservation details:
+        Guest: Maria Garcia
+        Check-in: 2023-11-15
+        Check-out: 2023-11-20
+        Room: Double
+        Guests: 2
+        Special requests: Early check-in if possible
+        """}
+    ]
+)
+
+print(f"Guest: {reservation.guest_name}")
+print(f"Stay: {reservation.check_in_date} to {reservation.check_out_date}")
+print(f"Room: {reservation.room_type} for {reservation.num_guests} guests")
+if reservation.special_requests:
+    print(f"Special requests: {reservation.special_requests}")
+```
+
+```shell
+$ pip install instructor pydantic
+$ python field-validation.py
+```
+
+For more information, see the original documentation:
+- https://github.com/jxnl/instructor
+
+### Optional Fields
+
+```python
+from pydantic import BaseModel, Field
+from typing import Optional
+import instructor
+from openai import OpenAI
+
+class Person(BaseModel):
+    name: str
+    age: int
+email: Optional[str] = None
+    phone: Optional[str] = None
+    occupation: Optional[str] = None
+client = instructor.from_openai(OpenAI())
+person = client.chat.completions.create(
+    model="gpt-3.5-turbo",
+    response_model=Person,
+    messages=[
+        {"role": "user", "content": "John Smith is 35 years old and works as a software engineer."}
+    ]
+)
+
+print(f"Name: {person.name}")
+print(f"Age: {person.age}")
+print(f"Email: {person.email}")  # None
+print(f"Phone: {person.phone}")  # None
+print(f"Occupation: {person.occupation}")  # "software engineer"
+
+from pydantic import BaseModel, Field
+from typing import Optional
+
+class Product(BaseModel):
+    name: str
+    price: float
+currency: str = "USD"
+    in_stock: bool = True
+    category: Optional[str] = None
+    tags: list[str] = Field(default_factory=list)  # Empty list by default
+
+product = client.chat.completions.create(
+    model="gpt-3.5-turbo",
+    response_model=Product,
+    messages=[
+        {"role": "user", "content": "Our new coffee mug costs 12.99 and is categorized under 'Kitchen'."}
+    ]
+)
+
+print(f"Product: {product.name}")
+print(f"Price: {product.price} {product.currency}")  # USD is the default
+print(f"In Stock: {product.in_stock}")  # True is the default
+print(f"Category: {product.category}")  # "Kitchen"
+print(f"Tags: {product.tags}")  # Empty list by default
+
+from pydantic import BaseModel, Field
+from typing import Optional
+
+class JobApplication(BaseModel):
+    name: str = Field(description="Applicant's full name")
+    email: str = Field(description="Contact email address")
+phone: Optional[str] = Field(
+        None, description="Phone number in international format (optional)"
+    )
+    years_experience: Optional[int] = Field(
+        None, description="Years of relevant work experience (optional)"
+    )
+    portfolio_url: Optional[str] = Field(
+        None, description="Link to portfolio or personal website (optional)"
+    )
+    cover_letter: Optional[str] = Field(
+        None, description="Brief cover letter or introduction (optional)"
+    )
+
+application = client.chat.completions.create(
+    model="gpt-3.5-turbo",
+    response_model=JobApplication,
+    messages=[
+        {"role": "user", "content": """
+        Job application from Sarah Johnson:
+        I'm applying for the software developer position. My email is sarah.j@example.com
+        and I have 5 years of experience in frontend development. You can see my work
+        at https://sarahjohnson.dev
+        """}
+    ]
+)
+
+print(f"Applicant: {application.name}")
+print(f"Email: {application.email}")
+print(f"Phone: {application.phone or 'Not provided'}")  # None -> 'Not provided'
+print(f"Experience: {application.years_experience or 'Not specified'} years")
+print(f"Portfolio: {application.portfolio_url or 'None provided'}")
+print(f"Cover Letter: {application.cover_letter or 'Not included'}")
+from pydantic import BaseModel, Field
+from instructor.dsl.maybe import Maybe
+import instructor
+from openai import OpenAI
+
+class Person(BaseModel):
+    name: str
+    age: int
+occupation: Maybe[str] = Field(default=None)
+    email: Maybe[str] = Field(default=None)
+    location: Maybe[str] = Field(default=None)
+client = instructor.from_openai(OpenAI())
+person = client.chat.completions.create(
+    model="gpt-3.5-turbo",
+    response_model=Person,
+    messages=[
+        {"role": "user", "content": "John Smith is 35 years old and works as a software engineer."}
+    ]
+)
+
+print(f"Name: {person.name}")
+print(f"Age: {person.age}")
+if person.occupation.exists:
+    print(f"Occupation: {person.occupation.value}")
+else:
+    print("Occupation: Not mentioned")
+if person.email.exists:
+    print(f"Email: {person.email.value}")
+else:
+    print("Email: Not mentioned")
+if person.location.exists:
+    print(f"Location: {person.location.value}")
+else:
+    print("Location: Not mentioned")
+
+from pydantic import BaseModel, Field
+from typing import Optional, List
+
+class Address(BaseModel):
+    street: str
+    city: str
+    country: str
+    zip_code: Optional[str] = None
+
+class ContactInfo(BaseModel):
+    email: Optional[str] = None
+    phone: Optional[str] = None
+address: Optional[Address] = None
+
+class Person(BaseModel):
+    name: str
+    age: int
+    contact: Optional[ContactInfo] = None
+    hobbies: List[str] = Field(default_factory=list)
+
+person = client.chat.completions.create(
+    model="gpt-4",  # Better for complex structures
+    response_model=Person,
+    messages=[
+        {"role": "user", "content": """
+        Profile: Jane Smith, 42 years old.
+        She enjoys hiking, photography, and playing piano.
+        Contact her at jane.smith@example.com or at her home in
+        123 Maple Street, Toronto, Canada.
+        """}
+    ]
+)
+
+print(f"Name: {person.name}, Age: {person.age}")
+print(f"Hobbies: {', '.join(person.hobbies)}")
+
+if person.contact:
+    if person.contact.email:
+        print(f"Email: {person.contact.email}")
+    if person.contact.phone:
+        print(f"Phone: {person.contact.phone}")
+    if person.contact.address:
+        addr = person.contact.address
+        print(f"Address: {addr.street}, {addr.city}, {addr.country}")
+```
+
+```shell
+$ pip install instructor pydantic
+$ python optional-fields.py
+```
+
+For more information, see the original documentation:
+- https://github.com/jxnl/instructor
+
+### Working with Enums
+
+```python
+from enum import Enum
+from pydantic import BaseModel
+import instructor
+from openai import OpenAI
+class ProductCategory(str, Enum):
+    ELECTRONICS = "electronics"
+    CLOTHING = "clothing"
+    HOME = "home"
+    BOOKS = "books"
+    TOYS = "toys"
+
+class Product(BaseModel):
+    name: str
+    price: float
+    category: ProductCategory
+client = instructor.from_openai(OpenAI())
+product = client.chat.completions.create(
+    model="gpt-3.5-turbo",
+    response_model=Product,
+    messages=[
+        {"role": "user", "content": "Our new wireless headphones cost $79.99 and belong in our electronics department."}
+    ]
+)
+
+print(f"Product: {product.name}")
+print(f"Price: ${product.price}")
+print(f"Category: {product.category}")
+if product.category == ProductCategory.ELECTRONICS:
+    print("This is an electronic product.")
+
+from enum import Enum, auto
+from pydantic import BaseModel
+from typing import List
+class Priority(str, Enum):
+    LOW = "low"
+    MEDIUM = "medium"
+    HIGH = "high"
+    CRITICAL = "critical"
+class Status(str, Enum):
+    TODO = "todo"
+    IN_PROGRESS = "in_progress"
+    REVIEW = "review"
+    DONE = "done"
+
+class Task(BaseModel):
+    title: str
+    description: str
+    priority: Priority
+    status: Status
+    tags: List[str] = []
+
+task = client.chat.completions.create(
+    model="gpt-3.5-turbo",
+    response_model=Task,
+    messages=[
+        {"role": "user", "content": """
+        Task Details:
+        Title: Fix login page bug
+        Description: Users report seeing errors when trying to log in with special characters
+        Priority: High
+        Status: In Progress
+        Tags: bug, authentication, frontend
+        """}
+    ]
+)
+
+print(f"Task: {task.title}")
+print(f"Description: {task.description}")
+print(f"Priority: {task.priority}")  # Priority.HIGH
+print(f"Status: {task.status}")  # Status.IN_PROGRESS
+print(f"Tags: {', '.join(task.tags)}")
+if task.priority in [Priority.HIGH, Priority.CRITICAL]:
+    print("This task requires immediate attention!")
+
+if task.status == Status.IN_PROGRESS:
+    print("This task is being worked on.")
+
+from enum import IntEnum
+from pydantic import BaseModel
+class SeverityLevel(IntEnum):
+    LOW = 1
+    MODERATE = 2
+    HIGH = 3
+    SEVERE = 4
+    CRITICAL = 5
+
+class SecurityIssue(BaseModel):
+    title: str
+    description: str
+    severity: SeverityLevel
+    affected_users: int
+
+issue = client.chat.completions.create(
+    model="gpt-3.5-turbo",
+    response_model=SecurityIssue,
+    messages=[
+        {"role": "user", "content": """
+        Security Alert:
+        Issue: Database Exposure
+        Details: Customer database was partially exposed due to misconfigured firewall
+        Severity: 4 (Severe)
+        Affected Users: 5,230
+        """}
+    ]
+)
+
+print(f"Issue: {issue.title}")
+print(f"Description: {issue.description}")
+print(f"Severity: {issue.severity.name} (Level {issue.severity.value})")  # "SEVERE (Level 4)"
+print(f"Affected Users: {issue.affected_users}")
+if issue.severity >= SeverityLevel.HIGH and issue.affected_users > 1000:
+    print("This requires executive notification!")
+
+from enum import Enum
+from pydantic import BaseModel, Field
+
+class TicketType(str, Enum):
+    BUG = "bug"
+    FEATURE = "feature"
+    IMPROVEMENT = "improvement"
+    DOCUMENTATION = "documentation"
+    QUESTION = "question"
+
+class Ticket(BaseModel):
+    title: str
+    description: str
+ticket_type: TicketType = Field(
+        description="""Type of ticket with these options:
+        - bug: Something is not working correctly
+        - feature: A new capability is requested
+        - improvement: Enhancement to an existing feature
+        - documentation: Updates to documentation
+        - question: Question about functionality"""
+    )
+
+ticket = client.chat.completions.create(
+    model="gpt-3.5-turbo",
+    response_model=Ticket,
+    messages=[
+        {"role": "user", "content": """
+        New Ticket:
+        Title: Add dark mode to application
+        Description: Users would like a dark theme option to reduce eye strain when using the app at night
+        """}
+    ]
+)
+
+print(f"Ticket: {ticket.title}")
+print(f"Description: {ticket.description}")
+print(f"Type: {ticket.ticket_type}")  # Should be TicketType.IMPROVEMENT or TicketType.FEATURE
+
+from enum import Flag, auto
+from pydantic import BaseModel, Field
+class Permissions(Flag):
+    NONE = 0
+    READ = auto()       # 1
+    WRITE = auto()      # 2
+    DELETE = auto()     # 4
+    ADMIN = auto()      # 8
+READ_WRITE = READ | WRITE                # 3
+    STANDARD = READ | WRITE | DELETE         # 7
+    ALL = READ | WRITE | DELETE | ADMIN      # 15
+
+class User(BaseModel):
+    name: str
+    role: str
+    permissions: Permissions = Field(
+        description="""User permissions, can be a combination of:
+        - READ: Can view content
+        - WRITE: Can create and edit content
+        - DELETE: Can remove content
+        - ADMIN: Has administrative privileges
+        - Or predefined combinations like READ_WRITE, STANDARD, or ALL"""
+    )
+
+user = client.chat.completions.create(
+    model="gpt-4",  # Better for complex models
+    response_model=User,
+    messages=[
+        {"role": "user", "content": """
+        User Profile:
+        Name: Sarah Johnson
+        Role: Content Manager
+        Permissions: Can read, write, and delete content
+        """}
+    ]
+)
+
+print(f"User: {user.name}")
+print(f"Role: {user.role}")
+print(f"Permissions: {user.permissions.name}")  # Should be "STANDARD"
+if Permissions.READ in user.permissions:
+    print("User can read content")
+
+if Permissions.WRITE in user.permissions:
+    print("User can write content")
+
+if Permissions.ADMIN in user.permissions:
+    print("User has admin privileges")
+else:
+    print("User does not have admin privileges")
+```
+
+```shell
+$ pip install instructor pydantic
+$ python working-with-enums.py
+```
+
+For more information, see the original documentation:
+- https://github.com/jxnl/instructor
+
+## Classification and Analysis
+
+Using structured outputs for classification tasks
+
+### Simple Classification
+
+```python
+from pydantic import BaseModel, Field
+from typing import Literal
+import instructor
+from openai import OpenAI
+
+class Classification(BaseModel):
+    """A single-label classification for text as SPAM or NOT_SPAM"""
+
+    label: Literal["SPAM", "NOT_SPAM"] = Field(
+        description="The classification label, either SPAM or NOT_SPAM"
+    )
+client = instructor.from_openai(OpenAI())
+
+def classify_text(text: str) -> Classification:
+    return client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        response_model=Classification,
+        messages=[
+            {
+                "role": "system",
+                "content": """
+                You are an email spam classifier. Classify the provided text as either SPAM or NOT_SPAM.
+
+                Examples of SPAM:
+                - "Claim your free prize now!"
+                - "Make $1000 a day working from home"
+                - "Limited time offer - 90% discount"
+
+                Examples of NOT_SPAM:
+                - "Can we schedule a meeting tomorrow?"
+                - "Here's the report you requested"
+                - "Please review the attached document"
+                """
+            },
+            {"role": "user", "content": f"Classify this text: {text}"}
+        ]
+    )
+spam_text = "URGENT: Your account has been compromised. Click here to verify details!"
+legit_text = "Please review the meeting notes and provide your feedback by Friday."
+
+spam_result = classify_text(spam_text)
+legit_result = classify_text(legit_text)
+
+print(f"Text: '{spam_text}'")
+print(f"Classification: {spam_result.label}")
+print(f"\nText: '{legit_text}'")
+print(f"Classification: {legit_result.label}")
+from pydantic import BaseModel, Field
+from typing import Literal
+
+class ClassificationWithConfidence(BaseModel):
+    label: Literal["SPAM", "NOT_SPAM"]
+    confidence: float = Field(
+        gt=0, le=1,  # Greater than 0, less than or equal to 1
+        description="Confidence score between 0 and 1 (higher = more confident)"
+    )
+
+def classify_with_confidence(text: str) -> ClassificationWithConfidence:
+    return client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        response_model=ClassificationWithConfidence,
+        messages=[
+            {
+                "role": "system",
+                "content": "Classify the text as SPAM or NOT_SPAM with a confidence score."
+            },
+            {"role": "user", "content": f"Classify this text: {text}"}
+        ]
+    )
+
+borderline_text = "Get your free account upgrade today. Limited availability."
+result = classify_with_confidence(borderline_text)
+
+print(f"Text: '{borderline_text}'")
+print(f"Classification: {result.label}")
+print(f"Confidence: {result.confidence:.2f}")
+from pydantic import BaseModel, Field
+from typing import Literal
+
+class DetailedClassification(BaseModel):
+    label: Literal["SPAM", "NOT_SPAM"]
+    explanation: str = Field(
+        description="Detailed reasoning for this classification"
+    )
+    spam_indicators: list[str] = Field(
+        default_factory=list,
+        description="List of specific elements that indicate spam, if any"
+    )
+
+def classify_with_details(text: str) -> DetailedClassification:
+    return client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        response_model=DetailedClassification,
+        messages=[
+            {"role": "system", "content": "Classify the text and provide a detailed explanation."},
+            {"role": "user", "content": f"Classify this text: {text}"}
+        ]
+    )
+
+text = "CONGRATULATIONS! You've been selected to receive a free iPhone! Click now to claim: bit.ly/claim-prize"
+result = classify_with_details(text)
+
+print(f"Text: '{text}'")
+print(f"Classification: {result.label}")
+print(f"Explanation: {result.explanation}")
+print("Spam indicators:")
+for indicator in result.spam_indicators:
+    print(f"- {indicator}")
+
+from typing import List
+
+def classify_batch(texts: List[str]) -> List[Classification]:
+formatted_texts = "\n\n".join([f"Text {i+1}: {text}" for i, text in enumerate(texts)])
+
+    return client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        response_model=List[Classification],
+        messages=[
+            {"role": "system", "content": "Classify each text as SPAM or NOT_SPAM."},
+            {"role": "user", "content": f"Classify these texts:\n\n{formatted_texts}"}
+        ]
+    )
+texts = [
+    "Your application has been approved. Sign the documents at your earliest convenience.",
+    "WINNER! You've been selected to receive $1000! Send your bank details now!",
+    "Meeting rescheduled to 3PM tomorrow. Same Zoom link."
+]
+
+results = classify_batch(texts)
+
+for i, (text, result) in enumerate(zip(texts, results)):
+    print(f"Text {i+1}: '{text}'")
+    print(f"Classification: {result.label}\n")
+```
+
+```shell
+$ pip install instructor pydantic
+$ python simple-classification.py
+```
+
+For more information, see the original documentation:
+- https://github.com/jxnl/instructor
+
+### Multi-label Classification
+
+```python
+from pydantic import BaseModel, Field
+from typing import List
+import instructor
+from openai import OpenAI
+
+class MultiLabelClassification(BaseModel):
+    """Multi-label classification of text content"""
+
+    labels: List[str] = Field(
+        description="List of applicable category labels for the text"
+    )
+client = instructor.from_openai(OpenAI())
+
+def classify_text(text: str) -> MultiLabelClassification:
+    return client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        response_model=MultiLabelClassification,
+        messages=[
+            {
+                "role": "system",
+                "content": """
+                Classify the text into one or more of these categories:
+                - Technology
+                - Finance
+                - Health
+                - Sports
+                - Entertainment
+                - Politics
+                - Science
+                - Education
+
+                Return all categories that apply to the text.
+                """
+            },
+            {"role": "user", "content": f"Text for classification: {text}"}
+        ]
+    )
+article = """
+    Bitcoin prices surged to a new all-time high today as several tech companies announced
+    plans to add the cryptocurrency to their balance sheets. Health officials warned that
+    the excitement might cause stress for some investors.
+"""
+
+result = classify_text(article)
+
+print(f"Text: '{article}'")
+print(f"Labels: {', '.join(result.labels)}")
+from enum import Enum
+from pydantic import BaseModel, Field
+from typing import List
+class Category(str, Enum):
+    BUSINESS = "business"
+    TECHNOLOGY = "technology"
+    POLITICS = "politics"
+    HEALTH = "health"
+    ENTERTAINMENT = "entertainment"
+    SPORTS = "sports"
+    SCIENCE = "science"
+    EDUCATION = "education"
+
+class EnumMultiLabelClassification(BaseModel):
+    """Multi-label classification using predefined categories"""
+
+    categories: List[Category] = Field(
+        description="List of applicable categories from the predefined set"
+    )
+
+def classify_with_enums(text: str) -> EnumMultiLabelClassification:
+    return client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        response_model=EnumMultiLabelClassification,
+        messages=[
+            {"role": "system", "content": "Classify the text into one or more predefined categories."},
+            {"role": "user", "content": f"Text for classification: {text}"}
+        ]
+    )
+
+article = """
+    New educational technology is transforming classrooms across the country.
+    Students are using AI-powered tools to enhance their learning experiences.
+"""
+
+result = classify_with_enums(article)
+
+print(f"Text: '{article}'")
+print(f"Categories: {', '.join([c.value for c in result.categories])}")
+from pydantic import BaseModel, Field
+from typing import List, Dict
+
+class LabelWithConfidence(BaseModel):
+    label: str
+    confidence: float = Field(gt=0, le=1)  # Between 0 and 1
+
+class ConfidenceClassification(BaseModel):
+    labels: List[LabelWithConfidence] = Field(
+        description="List of applicable labels with confidence scores"
+    )
+
+def classify_with_confidence(text: str) -> ConfidenceClassification:
+    return client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        response_model=ConfidenceClassification,
+        messages=[
+            {
+                "role": "system",
+                "content": """
+                Classify the text into these categories and provide confidence scores (0-1):
+                - Technology
+                - Finance
+                - Health
+                - Sports
+                - Entertainment
+                Only include categories that apply with a confidence score over 0.4.
+                """
+            },
+            {"role": "user", "content": f"Text for classification: {text}"}
+        ]
+    )
+
+article = """
+    The new smartphone features a built-in heart rate monitor that can alert users
+    about potential cardiac issues while they exercise.
+"""
+
+result = classify_with_confidence(article)
+
+print(f"Text: '{article}'")
+print("Labels with confidence:")
+for label in result.labels:
+    print(f"- {label.label}: {label.confidence:.2f}")
+from pydantic import BaseModel, Field
+from typing import List, Optional
+
+class SubCategory(BaseModel):
+    name: str
+    confidence: float = Field(gt=0, le=1)
+
+class MainCategory(BaseModel):
+    name: str
+    confidence: float = Field(gt=0, le=1)
+    subcategories: List[SubCategory] = []
+
+class HierarchicalClassification(BaseModel):
+    categories: List[MainCategory] = Field(
+        description="Hierarchical categories with confidence scores"
+    )
+
+def classify_hierarchical(text: str) -> HierarchicalClassification:
+    return client.chat.completions.create(
+        model="gpt-4",  # More complex tasks work better with GPT-4
+        response_model=HierarchicalClassification,
+        messages=[
+            {
+                "role": "system",
+                "content": """
+                Classify the text into main categories and subcategories:
+
+                Main categories:
+                - Technology (subcategories: Hardware, Software, AI, Internet)
+                - Science (subcategories: Physics, Biology, Chemistry, Astronomy)
+                - Health (subcategories: Fitness, Nutrition, Medical, Mental Health)
+
+                Return only relevant categories with confidence scores.
+                """
+            },
+            {"role": "user", "content": f"Text for classification: {text}"}
+        ]
+    )
+
+article = """
+    Researchers have developed a new AI algorithm that can detect early signs of
+    Alzheimer's disease from brain scans with 94% accuracy. The deep learning software
+    could help doctors diagnose patients years earlier than current methods.
+"""
+
+result = classify_hierarchical(article)
+
+print(f"Text: '{article}'")
+print("Classification:")
+for category in result.categories:
+    print(f"- {category.name} ({category.confidence:.2f})")
+    for subcategory in category.subcategories:
+        print(f"  - {subcategory.name} ({subcategory.confidence:.2f})")
+```
+
+```shell
+$ pip install instructor pydantic
+$ python multi-label-classification.py
+```
+
+For more information, see the original documentation:
+- https://github.com/jxnl/instructor
+
+### Sentiment Analysis
+
+```python
+from pydantic import BaseModel, Field
+from typing import Literal
+import instructor
+from openai import OpenAI
+
+class Sentiment(BaseModel):
+    """Sentiment analysis result"""
+
+    sentiment: Literal["positive", "neutral", "negative"] = Field(
+        description="The overall sentiment of the text"
+    )
+client = instructor.from_openai(OpenAI())
+
+def analyze_sentiment(text: str) -> Sentiment:
+    return client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        response_model=Sentiment,
+        messages=[
+            {"role": "system", "content": "Analyze the sentiment of the provided text."},
+            {"role": "user", "content": f"Text: {text}"}
+        ]
+    )
+examples = [
+    "I absolutely love this product! It exceeded all my expectations.",
+    "The service was okay. Nothing special but got the job done.",
+    "This is the worst experience I've ever had. Complete waste of money."
+]
+
+for text in examples:
+    result = analyze_sentiment(text)
+    print(f"Text: '{text}'")
+    print(f"Sentiment: {result.sentiment}\n")
+from pydantic import BaseModel, Field
+
+class SentimentWithScore(BaseModel):
+    """Sentiment analysis with numeric score"""
+
+    score: float = Field(
+        ge=-1.0, le=1.0,  # Between -1.0 and 1.0
+        description="Sentiment score from -1.0 (very negative) to 1.0 (very positive)"
+    )
+
+    @property
+    def sentiment(self) -> str:
+        if self.score > 0.3:
+            return "positive"
+        elif self.score < -0.3:
+            return "negative"
+        else:
+            return "neutral"
+
+def analyze_sentiment_with_score(text: str) -> SentimentWithScore:
+    return client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        response_model=SentimentWithScore,
+        messages=[
+            {
+                "role": "system",
+                "content": "Analyze the sentiment of the text and provide a score from -1.0 (very negative) to 1.0 (very positive)."
+            },
+            {"role": "user", "content": f"Text: {text}"}
+        ]
+    )
+examples = [
+    "The movie was absolutely phenomenal. Best I've seen in years!",
+    "The new update is slightly better than the previous version.",
+    "I'm really disappointed with the customer service response time."
+]
+
+for text in examples:
+    result = analyze_sentiment_with_score(text)
+    print(f"Text: '{text}'")
+    print(f"Score: {result.score:.2f}")
+    print(f"Sentiment: {result.sentiment}\n")
+from pydantic import BaseModel, Field
+from typing import List, Literal, Optional
+
+class AspectSentiment(BaseModel):
+    aspect: str = Field(description="The specific aspect being evaluated")
+    sentiment: Literal["positive", "neutral", "negative"]
+    explanation: str = Field(description="Brief explanation of the sentiment")
+
+class DetailedSentiment(BaseModel):
+    overall_sentiment: Literal["positive", "neutral", "negative"] = Field(
+        description="The overall sentiment of the entire text"
+    )
+    aspects: List[AspectSentiment] = Field(
+        description="Sentiment breakdown by specific aspects mentioned in the text"
+    )
+    summary: str = Field(
+        description="A brief summary of the sentiment analysis"
+    )
+
+def analyze_detailed_sentiment(text: str) -> DetailedSentiment:
+    return client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        response_model=DetailedSentiment,
+        messages=[
+            {
+                "role": "system",
+                "content": "Perform a detailed sentiment analysis, breaking down sentiment by aspects."
+            },
+            {"role": "user", "content": f"Text: {text}"}
+        ]
+    )
+review = """
+    I recently purchased the XYZ Bluetooth headphones. The sound quality is amazing and
+    battery life exceeds expectations - nearly 30 hours on a single charge! However,
+    they're a bit too tight on my head after a few hours, which gets uncomfortable.
+    The price was reasonable for the quality. Customer service was unhelpful when I asked
+    about adjustment options.
+"""
+
+result = analyze_detailed_sentiment(review)
+
+print(f"Overall Sentiment: {result.overall_sentiment}")
+print("\nAspect Breakdown:")
+for aspect in result.aspects:
+    print(f"- {aspect.aspect}: {aspect.sentiment}")
+    print(f"  {aspect.explanation}")
+
+print(f"\nSummary: {result.summary}")
+from pydantic import BaseModel, Field
+from typing import List, Literal, Optional
+from datetime import datetime
+
+class Emotion(BaseModel):
+    name: str
+    intensity: float = Field(ge=0, le=1)  # 0-1 scale
+
+class SocialMediaSentiment(BaseModel):
+    primary_sentiment: Literal["positive", "neutral", "negative"]
+    emotions: List[Emotion] = Field(description="Emotions detected in the text with intensity")
+    is_sarcastic: bool = Field(description="Whether the text appears to contain sarcasm")
+    topics: List[str] = Field(description="Key topics mentioned in the text")
+    action_items: Optional[List[str]] = Field(
+        default=None,
+        description="Suggested actions if this is a customer complaint or request"
+    )
+    urgency: int = Field(
+        ge=1, le=5,
+        description="Urgency level from 1 (not urgent) to 5 (extremely urgent)"
+    )
+
+def analyze_social_post(text: str) -> SocialMediaSentiment:
+    return client.chat.completions.create(
+        model="gpt-4",  # Using GPT-4 for more nuanced analysis
+        response_model=SocialMediaSentiment,
+        messages=[
+            {
+                "role": "system",
+                "content": "Analyze this social media post for sentiment, emotions, sarcasm, and topics."
+            },
+            {"role": "user", "content": f"Social Media Post: {text}"}
+        ]
+    )
+posts = [
+    "@AirlineX Your customer service is just AMAZING! 3 hours on hold and then hung up on. Can't wait to fly with you again... #sarcasm #badservice",
+    "Just tried the new coffee shop downtown and WOW! Best latte I've ever had, friendly staff, and great atmosphere. Definitely my new regular spot! #coffee #happy"
+]
+
+for post in posts:
+    result = analyze_social_post(post)
+    print(f"\nPost: '{post}'")
+    print(f"Primary Sentiment: {result.primary_sentiment}")
+    print(f"Sarcastic: {result.is_sarcastic}")
+
+    print("\nEmotions:")
+    for emotion in result.emotions:
+        print(f"- {emotion.name}: {emotion.intensity:.2f}")
+
+    print(f"\nTopics: {', '.join(result.topics)}")
+    print(f"Urgency: {result.urgency}/5")
+
+    if result.action_items:
+        print("\nSuggested Actions:")
+        for item in result.action_items:
+            print(f"- {item}")
+```
+
+```shell
+$ pip install instructor pydantic
+$ python sentiment-analysis.py
+```
+
+For more information, see the original documentation:
+- https://github.com/jxnl/instructor
+
+### Entity Classification
+
+```python
+from pydantic import BaseModel, Field
+from typing import List, Literal
+import instructor
+from openai import OpenAI
+
+class Entity(BaseModel):
+    text: str = Field(description="The entity text as it appears in the document")
+    type: Literal["PERSON", "ORGANIZATION", "LOCATION", "DATE", "PRODUCT"] = Field(
+        description="The category/type of the entity"
+    )
+    start_index: int = Field(description="The starting character position in text")
+    end_index: int = Field(description="The ending character position in text")
+
+class EntitiesExtraction(BaseModel):
+    entities: List[Entity] = Field(description="List of entities extracted from the text")
+client = instructor.from_openai(OpenAI())
+
+def extract_entities(text: str) -> EntitiesExtraction:
+    return client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        response_model=EntitiesExtraction,
+        messages=[
+            {
+                "role": "system",
+                "content": "Extract named entities from the text with their types and positions."
+            },
+            {"role": "user", "content": text}
+        ]
+    )
+sample_text = """Apple Inc. is planning to open a new store in Berlin, Germany in July 2024.
+               CEO Tim Cook announced the expansion during a press conference yesterday."""
+
+result = extract_entities(sample_text)
+
+print(f"Text: '{sample_text}'")
+print("\nExtracted Entities:")
+for entity in result.entities:
+    print(f"- {entity.text} ({entity.type}) at positions {entity.start_index}-{entity.end_index}")
+from pydantic import BaseModel, Field
+from typing import List, Literal
+EntityType = Literal[
+    "COMPANY", "PERSON", "CITY", "COUNTRY", "PRODUCT", "TECHNOLOGY",
+    "JOB_TITLE", "EVENT", "CURRENCY", "DATE_TIME"
+]
+
+class CustomEntity(BaseModel):
+    text: str
+    type: EntityType
+    context: str = Field(description="Brief contextual information about this entity")
+
+class CustomEntitiesExtraction(BaseModel):
+    entities: List[CustomEntity]
+
+def extract_custom_entities(text: str) -> CustomEntitiesExtraction:
+    return client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        response_model=CustomEntitiesExtraction,
+        messages=[
+            {
+                "role": "system",
+                "content": """Extract named entities from the text using only these types:
+                COMPANY, PERSON, CITY, COUNTRY, PRODUCT, TECHNOLOGY, JOB_TITLE, EVENT, CURRENCY, DATE_TIME.
+                Include brief contextual information about each entity."""
+            },
+            {"role": "user", "content": text}
+        ]
+    )
+tech_news = """Microsoft's CEO Satya Nadella revealed the new Surface Pro 10 at the Build 2024 conference in
+               Seattle last week. The device features Qualcomm's Snapdragon X processor and will sell for $1,299
+               in the United States starting June 15th."""
+
+result = extract_custom_entities(tech_news)
+
+print(f"Text: '{tech_news}'")
+print("\nExtracted Entities:")
+for entity in result.entities:
+    print(f"- {entity.text} ({entity.type})")
+    print(f"  Context: {entity.context}")
+from pydantic import BaseModel, Field
+from typing import List, Optional, Dict, Union, Literal
+
+class PersonEntity(BaseModel):
+    name: str
+    type: Literal["PERSON"] = "PERSON"
+    title: Optional[str] = None
+    organization: Optional[str] = None
+
+class OrganizationEntity(BaseModel):
+    name: str
+    type: Literal["ORGANIZATION"] = "ORGANIZATION"
+    industry: Optional[str] = None
+    location: Optional[str] = None
+
+class ProductEntity(BaseModel):
+    name: str
+    type: Literal["PRODUCT"] = "PRODUCT"
+    category: Optional[str] = None
+    manufacturer: Optional[str] = None
+    price: Optional[str] = None
+
+class LocationEntity(BaseModel):
+    name: str
+    type: Literal["LOCATION"] = "LOCATION"
+    location_type: Optional[str] = None  # city, country, address, etc.
+    region: Optional[str] = None
+
+class DateEntity(BaseModel):
+    text: str
+    type: Literal["DATE"] = "DATE"
+    is_range: bool = False
+    precision: Optional[str] = None  # day, month, year, etc.
+
+class EntitiesWithAttributes(BaseModel):
+    entities: List[Union[PersonEntity, OrganizationEntity, ProductEntity, LocationEntity, DateEntity]]
+
+def extract_entities_with_attributes(text: str) -> EntitiesWithAttributes:
+    return client.chat.completions.create(
+        model="gpt-4",  # More complex task, better with GPT-4
+        response_model=EntitiesWithAttributes,
+        messages=[
+            {
+                "role": "system",
+                "content": "Extract entities with their attributes. Each entity type has specific attributes."
+            },
+            {"role": "user", "content": text}
+        ]
+    )
+complex_text = """Tesla CEO Elon Musk announced the new Cybertruck will be available in Austin, Texas
+                 from December 2023. The electric vehicle starts at $39,900 and will be manufactured
+                 at Tesla's Gigafactory."""
+
+result = extract_entities_with_attributes(complex_text)
+
+print(f"Text: '{complex_text}'")
+print("\nExtracted Entities with Attributes:")
+for entity in result.entities:
+    print(f"\n- {entity.name if hasattr(entity, 'name') else entity.text} ({entity.type})")
+for key, value in entity.model_dump().items():
+        if key not in ['name', 'text', 'type'] and value is not None:
+            print(f"  {key}: {value}")
+
+from pydantic import BaseModel, Field
+from typing import List, Optional, Dict, Any
+
+class EntityWithId(BaseModel):
+    id: str = Field(description="Unique identifier for the entity")
+    text: str = Field(description="The entity text as found in the document")
+    type: str = Field(description="The entity type/category")
+    attributes: Dict[str, Any] = Field(default_factory=dict, description="Additional entity attributes")
+
+class Relationship(BaseModel):
+    source_id: str = Field(description="ID of the source entity")
+    target_id: str = Field(description="ID of the target entity")
+    relation_type: str = Field(description="Type of relationship between entities")
+    description: Optional[str] = None
+
+class EntityRelationExtraction(BaseModel):
+    entities: List[EntityWithId] = Field(description="List of entities with unique IDs")
+    relationships: List[Relationship] = Field(description="Relationships between entities")
+
+def extract_entity_relationships(text: str) -> EntityRelationExtraction:
+    return client.chat.completions.create(
+        model="gpt-4",  # Complex relationships need GPT-4
+        response_model=EntityRelationExtraction,
+        messages=[
+            {
+                "role": "system",
+                "content": """Extract entities and their relationships from the text.
+                Assign each entity a unique ID and identify relationships between entities.
+
+                Example relationship types: WORKS_FOR, LOCATED_IN, MANUFACTURES, OWNS, PART_OF, etc."""
+            },
+            {"role": "user", "content": text}
+        ]
+    )
+corporate_news = """
+    Amazon CEO Andy Jassy announced that the e-commerce giant is acquiring Anthropic,
+    an AI startup based in San Francisco. The deal, worth $4 billion, will help Amazon
+    compete with Microsoft, which has invested heavily in OpenAI. Anthropic's founder
+    Dario Amodei will continue to lead the company after the acquisition.
+"""
+
+result = extract_entity_relationships(corporate_news)
+
+print("Entities:")
+for entity in result.entities:
+    attrs = ", ".join([f"{k}: {v}" for k, v in entity.attributes.items()]) if entity.attributes else ""
+    print(f"- [{entity.id}] {entity.text} ({entity.type}) {attrs}")
+
+print("\nRelationships:")
+for rel in result.relationships:
+    source = next((e.text for e in result.entities if e.id == rel.source_id), "Unknown")
+    target = next((e.text for e in result.entities if e.id == rel.target_id), "Unknown")
+    print(f"- {source} {rel.relation_type} {target}")
+    if rel.description:
+        print(f"  Description: {rel.description}")
+```
+
+```shell
+$ pip install instructor pydantic
+$ python entity-classification.py
+```
+
+For more information, see the original documentation:
+- https://github.com/jxnl/instructor
+
+### Working with Confidence Scores
+
+```python
+from pydantic import BaseModel, Field
+import instructor
+from openai import OpenAI
+
+class PredictionWithConfidence(BaseModel):
+    prediction: str = Field(description="The predicted answer or category")
+    confidence: float = Field(
+        gt=0, le=1,  # Greater than 0, less than or equal to 1
+        description="Confidence score between 0 and 1 (higher = more confident)"
+    )
+client = instructor.from_openai(OpenAI())
+
+def predict_with_confidence(question: str, context: str) -> PredictionWithConfidence:
+    return client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        response_model=PredictionWithConfidence,
+        messages=[
+            {
+                "role": "system",
+                "content": "Answer the question based on the provided context. Include a confidence score."
+            },
+            {
+                "role": "user",
+                "content": f"Context: {context}\n\nQuestion: {question}"
+            }
+        ]
+    )
+contexts = [
+"The Golden Gate Bridge was completed in 1937. It is located in San Francisco, California.",
+"The Golden Gate Bridge is a famous landmark in California. Many tourists visit it each year.",
+"California has many famous landmarks and tourist attractions that draw visitors from around the world."
+]
+
+question = "When was the Golden Gate Bridge completed?"
+
+for i, context in enumerate(contexts):
+    result = predict_with_confidence(question, context)
+    print(f"Example {i+1}:")
+    print(f"Context: '{context}'")
+    print(f"Question: '{question}'")
+    print(f"Prediction: {result.prediction}")
+    print(f"Confidence: {result.confidence:.2f}\n")
+from pydantic import BaseModel, Field
+from typing import Literal
+
+class ClassificationWithConfidence(BaseModel):
+    category: Literal["sports", "politics", "technology", "entertainment", "business"]
+    confidence: float = Field(
+        gt=0, le=1,
+        description="Confidence score between 0 and 1"
+    )
+
+    @property
+    def is_reliable(self) -> bool:
+        return self.confidence >= 0.7  # Threshold for reliability
+
+def classify_with_confidence(text: str) -> ClassificationWithConfidence:
+    return client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        response_model=ClassificationWithConfidence,
+        messages=[
+            {
+                "role": "system",
+                "content": "Classify the text into one of these categories: sports, politics, technology, entertainment, business."
+            },
+            {"role": "user", "content": text}
+        ]
+    )
+examples = [
+    "Apple announced its new M3 chip with significantly improved performance.",  # Clear tech
+    "The game went into overtime after a last-minute equalizer.",  # Clear sports
+    "The gathering included discussion of market trends and artistic influences."  # Ambiguous
+]
+
+for text in examples:
+    result = classify_with_confidence(text)
+    print(f"Text: '{text}'")
+    print(f"Category: {result.category}")
+    print(f"Confidence: {result.confidence:.2f}")
+    print(f"Reliable: {result.is_reliable}\n")
+from pydantic import BaseModel, Field
+from typing import List
+
+class PredictionOption(BaseModel):
+    value: str
+    confidence: float = Field(gt=0, le=1)
+
+class MultipleOptions(BaseModel):
+    options: List[PredictionOption] = Field(
+        description="List of possible answers with confidence scores",
+        min_items=1
+    )
+
+    @property
+    def best_option(self) -> PredictionOption:
+        return max(self.options, key=lambda x: x.confidence)
+
+def generate_options(question: str) -> MultipleOptions:
+    return client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        response_model=MultipleOptions,
+        messages=[
+            {
+                "role": "system",
+                "content": "Generate 2-4 possible answers to the question with confidence scores."
+            },
+            {"role": "user", "content": question}
+        ]
+    )
+question = "What year is considered the beginning of the modern internet?"
+
+result = generate_options(question)
+
+print(f"Question: '{question}'")
+print("Possible answers:")
+for option in sorted(result.options, key=lambda x: x.confidence, reverse=True):
+    print(f"- {option.value} (confidence: {option.confidence:.2f})")
+
+print(f"\nBest option: {result.best_option.value} (confidence: {result.best_option.confidence:.2f})")
+
+from pydantic import BaseModel, Field
+from typing import Dict, List
+
+class ConfidenceMatrix(BaseModel):
+    category_scores: Dict[str, float] = Field(
+        description="Confidence scores for each possible category"
+    )
+    most_likely_category: str = Field(
+        description="The category with the highest confidence score"
+    )
+    reliability: Literal["high", "medium", "low"] = Field(
+        description="Reliability assessment of the classification"
+    )
+
+def multi_category_confidence(text: str, categories: List[str]) -> ConfidenceMatrix:
+    categories_str = ", ".join(categories)
+    return client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        response_model=ConfidenceMatrix,
+        messages=[
+            {
+                "role": "system",
+                "content": f"""Analyze the text and provide confidence scores for each possible category: {categories_str}.
+                Confidence scores should be between 0 and 1, sum to 1.0, and represent the probability of the text belonging to each category.
+                Also assess if the classification reliability is high (clear winner >0.7), medium (top score 0.4-0.7), or low (ambiguous, top score <0.4)."""
+            },
+            {"role": "user", "content": text}
+        ]
+    )
+categories = ["health", "finance", "technology", "travel", "education"]
+text = "The new smartwatch can track your heart rate, sleep patterns, and activity levels throughout the day."
+
+result = multi_category_confidence(text, categories)
+
+print(f"Text: '{text}'")
+print("\nConfidence Scores:")
+for category, score in sorted(result.category_scores.items(), key=lambda x: x[1], reverse=True):
+    print(f"- {category}: {score:.2f}")
+
+print(f"\nMost Likely Category: {result.most_likely_category}")
+print(f"Reliability: {result.reliability}")
+
+from pydantic import BaseModel, Field
+from typing import List, Optional, Union, Literal
+from enum import Enum
+
+class ConfidenceLevel(str, Enum):
+    HIGH = "high"
+    MEDIUM = "medium"
+    LOW = "low"
+
+class Extraction(BaseModel):
+    value: str
+    confidence: float = Field(gt=0, le=1)
+    confidence_level: ConfidenceLevel
+    requires_human_review: bool
+
+class ExtractionResult(BaseModel):
+    extracted_info: Extraction
+    alternative_values: Optional[List[str]] = None
+    extraction_notes: Optional[str] = None
+    suggested_action: Literal["accept", "review", "reject"] = Field(
+        description="Recommended action based on confidence: accept (high confidence), review (medium), reject (low)"
+    )
+
+def extract_with_decision(text: str, field_to_extract: str) -> ExtractionResult:
+    return client.chat.completions.create(
+        model="gpt-4",  # Better judgement with GPT-4
+        response_model=ExtractionResult,
+        messages=[
+            {
+                "role": "system",
+                "content": f"""Extract the {field_to_extract} from the text with a confidence score.
+                Assess confidence level (high: >0.8, medium: 0.5-0.8, low: <0.5) and determine if human review is needed.
+                Recommend an action (accept/review/reject) based on confidence."""
+            },
+            {"role": "user", "content": text}
+        ]
+    )
+examples = [
+    "Patient's DOB: 04/15/1985. Patient presented with symptoms of...",  # Clear
+    "The pt. was born in the mid-1980s (possibly '85) and first presented...",  # Uncertain
+    "Patient demographic information will be provided in a follow-up report."  # Missing
+]
+
+for text in examples:
+    result = extract_with_decision(text, "date of birth")
+    print(f"Text: '{text}'")
+    print(f"Extracted Value: {result.extracted_info.value}")
+    print(f"Confidence: {result.extracted_info.confidence:.2f} ({result.extracted_info.confidence_level})")
+    print(f"Requires Human Review: {result.extracted_info.requires_human_review}")
+    print(f"Suggested Action: {result.suggested_action}")
+
+    if result.alternative_values:
+        print(f"Alternative Values: {', '.join(result.alternative_values)}")
+    if result.extraction_notes:
+        print(f"Notes: {result.extraction_notes}")
+    print()
+```
+
+```shell
+$ pip install instructor pydantic
+$ python confidence-scores.py
+```
+
+For more information, see the original documentation:
+- https://github.com/jxnl/instructor
+
+## Streaming
+
+Working with streaming responses
+
+### Streaming Basics
+
+```python
+import instructor
+from openai import OpenAI
+from pydantic import BaseModel
+
+class User(BaseModel):
+    name: str
+    age: int
+    bio: str
+client = instructor.from_openai(OpenAI())
+
+def stream_user_info():
+stream = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        response_model=User,
+        stream=True,  # Enable streaming
+        messages=[
+            {"role": "user", "content": "Generate a profile for a fictional user named Alice who is 28 years old."}
+        ]
+    )
+for chunk in stream:
+print(f"Received chunk: {chunk}")
+return chunk
+
+user = stream_user_info()
+print(f"\nFinal result: {user}")
+
+from instructor import Partial
+
+def stream_user_with_partial():
+user_stream = client.chat.completions.create_partial(
+        model="gpt-3.5-turbo",
+        response_model=User,
+        messages=[
+            {"role": "user", "content": "Generate a profile for a fictional user named Bob who is 35 years old and works as a software developer."}
+        ]
+    )
+print("Streaming user data:")
+
+    for partial_user in user_stream:
+print(f"Current state: name={partial_user.name}, age={partial_user.age}, bio={partial_user.bio!r}")
+from typing import Dict, Any
+
+class ProgressTracker:
+    def __init__(self):
+        self.progress = {}
+
+    def update(self, partial_user: Partial[User]):
+total_fields = len(User.model_fields)
+        populated = sum(1 for v in [partial_user.name, partial_user.age, partial_user.bio] if v is not None)
+        completion = int(populated / total_fields * 100)
+data = {}
+        if partial_user.name is not None:
+            data["name"] = partial_user.name
+        if partial_user.age is not None:
+            data["age"] = partial_user.age
+        if partial_user.bio is not None:
+            data["bio"] = partial_user.bio
+
+        self.progress = {
+            "completion": f"{completion}%",
+            "data": data
+        }
+
+        return self.progress
+
+def stream_with_progress():
+    tracker = ProgressTracker()
+
+    user_stream = client.chat.completions.create_partial(
+        model="gpt-3.5-turbo",
+        response_model=User,
+        messages=[
+            {"role": "user", "content": "Generate a profile for a fictional user named Carol who is 42 years old."}
+        ]
+    )
+
+    for partial_user in user_stream:
+        progress = tracker.update(partial_user)
+        print(f"Progress: {progress['completion']} - Current data: {progress['data']}")
+import asyncio
+from openai import AsyncOpenAI
+
+async def stream_async():
+async_client = instructor.from_openai(AsyncOpenAI())
+user_stream = await async_client.chat.completions.create_partial(
+        model="gpt-3.5-turbo",
+        response_model=User,
+        messages=[
+            {"role": "user", "content": "Generate a profile for a fictional user named Dave who is 31 years old."}
+        ]
+    )
+async for partial_user in user_stream:
+        print(f"Async stream update: {partial_user}")
+asyncio.run(stream_async())
+```
+
+```shell
+$ pip install instructor pydantic
+$ python streaming-basics.py
+```
+
+For more information, see the original documentation:
+- https://github.com/jxnl/instructor
+
+### Streaming Partial Objects
+
+```python
+from pydantic import BaseModel, Field
+import instructor
+from openai import OpenAI
+from typing import Optional, List
+
+class Person(BaseModel):
+    name: str
+    age: int
+    occupation: str
+    skills: List[str] = Field(description="List of professional skills")
+    bio: Optional[str] = None
+client = instructor.from_openai(OpenAI())
+person_stream = client.chat.completions.create_partial(
+    model="gpt-3.5-turbo",
+    response_model=Person,
+    messages=[
+        {"role": "user", "content": "Generate profile: John Smith is a 35-year-old software engineer who knows Python, JavaScript, and SQL."}
+    ]
+)
+print("Receiving partial updates:")
+for person in person_stream:
+name = person.name if person.name is not None else "[pending]"
+    age = person.age if person.age is not None else "[pending]"
+    occupation = person.occupation if person.occupation is not None else "[pending]"
+    skills = ", ".join(person.skills) if person.skills else "[pending]"
+    bio = person.bio if person.bio is not None else "[pending]"
+print(f"\nCurrent state:")
+    print(f"Name: {name}")
+    print(f"Age: {age}")
+    print(f"Occupation: {occupation}")
+    print(f"Skills: {skills}")
+    print(f"Bio: {bio}")
+class FieldTracker:
+    def __init__(self, model_class):
+        self.field_names = list(model_class.model_fields.keys())
+        self.completed_fields = set()
+
+    def update(self, partial_obj):
+newly_completed = []
+
+        for field in self.field_names:
+            value = getattr(partial_obj, field)
+            if value is not None and field not in self.completed_fields:
+                self.completed_fields.add(field)
+                newly_completed.append(field)
+
+        return newly_completed
+person_stream = client.chat.completions.create_partial(
+    model="gpt-3.5-turbo",
+    response_model=Person,
+    messages=[
+        {"role": "user", "content": "Generate profile: Sarah Johnson is a 42-year-old marketing director skilled in SEO, content strategy, and social media."}
+    ]
+)
+tracker = FieldTracker(Person)
+
+for person in person_stream:
+    new_fields = tracker.update(person)
+
+    if new_fields:
+        print(f"Newly completed fields: {', '.join(new_fields)}")
+for field in new_fields:
+            value = getattr(person, field)
+            print(f"  {field}: {value}")
+import time
+
+class CompletionBar:
+    def __init__(self, model_class, width=40):
+        self.fields = list(model_class.model_fields.keys())
+        self.total_fields = len(self.fields)
+        self.width = width
+        self.last_progress = 0
+
+    def update(self, partial_obj):
+populated = sum(1 for field in self.fields if getattr(partial_obj, field) is not None)
+        progress = populated / self.total_fields
+if progress > self.last_progress:
+            self.last_progress = progress
+filled_width = int(self.width * progress)
+            empty_width = self.width - filled_width
+            bar = "█" * filled_width + "░" * empty_width
+            percent = int(progress * 100)
+print(f"\rProgress: [{bar}] {percent}% ({populated}/{self.total_fields} fields)", end="")
+            return True
+
+        return False
+
+def stream_with_progress_bar():
+bar = CompletionBar(Person)
+person_stream = client.chat.completions.create_partial(
+        model="gpt-3.5-turbo",
+        response_model=Person,
+        messages=[
+            {"role": "user", "content": "Generate profile: Michael Chen is a 39-year-old data scientist who knows Python, R, and machine learning techniques."}
+        ]
+    )
+for person in person_stream:
+        bar.update(person)
+        time.sleep(0.1)  # Slow down updates for visibility
+print("\n\nFinal result:")
+    print(f"Name: {person.name}")
+    print(f"Age: {person.age}")
+    print(f"Occupation: {person.occupation}")
+    print(f"Skills: {', '.join(person.skills)}")
+    if person.bio:
+        print(f"Bio: {person.bio}")
+from pydantic import BaseModel, Field
+from typing import List, Optional
+
+class Address(BaseModel):
+    street: str
+    city: str
+    country: str
+    postal_code: Optional[str] = None
+
+class Experience(BaseModel):
+    title: str
+    company: str
+    years: int
+    description: Optional[str] = None
+
+class ProfileWithNested(BaseModel):
+    name: str
+    age: int
+    addresses: List[Address] = Field(default_factory=list)
+    experience: List[Experience] = Field(default_factory=list)
+profile_stream = client.chat.completions.create_partial(
+    model="gpt-4",  # More complex model handles nested data better
+    response_model=ProfileWithNested,
+    messages=[
+        {"role": "user", "content": """
+            Generate a profile for Emma Wilson, a 45-year-old executive who has homes in:
+            - 123 Main St, New York, USA, 10001
+            - 45 Beach Road, Sydney, Australia, 2000
+
+            Work experience:
+            - CEO at TechCorp for 5 years
+            - VP of Operations at GlobalSystems for 8 years
+        """}
+    ]
+)
+for profile in profile_stream:
+    print("\nCurrent profile state:")
+    print(f"Name: {profile.name if profile.name else '[pending]'}")
+    print(f"Age: {profile.age if profile.age is not None else '[pending]'}")
+print("Addresses:")
+    if not profile.addresses:
+        print("  [pending]")
+    else:
+        for i, addr in enumerate(profile.addresses):
+            print(f"  Address {i+1}:")
+            print(f"    Street: {addr.street if addr.street else '[pending]'}")
+            print(f"    City: {addr.city if addr.city else '[pending]'}")
+            print(f"    Country: {addr.country if addr.country else '[pending]'}")
+            print(f"    Postal Code: {addr.postal_code if addr.postal_code else '[pending]'}")
+print("Experience:")
+    if not profile.experience:
+        print("  [pending]")
+    else:
+        for i, exp in enumerate(profile.experience):
+            print(f"  Job {i+1}:")
+            print(f"    Title: {exp.title if exp.title else '[pending]'}")
+            print(f"    Company: {exp.company if exp.company else '[pending]'}")
+            print(f"    Years: {exp.years if exp.years is not None else '[pending]'}")
+            print(f"    Description: {exp.description if exp.description else '[pending]'}")
+```
+
+```shell
+$ pip install instructor pydantic
+$ python partial-objects.py
+```
+
+For more information, see the original documentation:
+- https://github.com/jxnl/instructor
+
+### Streaming Lists
+
+```python
+from pydantic import BaseModel, Field
+from typing import List
+import instructor
+from openai import OpenAI
+
+class Person(BaseModel):
+    name: str
+    age: int
+    occupation: str
+client = instructor.from_openai(OpenAI())
+people_stream = client.chat.completions.create_iterable(
+    model="gpt-3.5-turbo",
+    response_model=Person,  # Note: no List[] wrapper needed here
+    messages=[
+        {"role": "user", "content": """
+            Generate profiles for three different people:
+            1. A software engineer in their 30s
+            2. A teacher in their 40s
+            3. A doctor in their 50s
+        """}
+    ]
+)
+print("Receiving people one at a time:")
+for i, person in enumerate(people_stream, 1):
+    print(f"\nPerson {i}:")
+    print(f"Name: {person.name}")
+    print(f"Age: {person.age}")
+    print(f"Occupation: {person.occupation}")
+from pydantic import BaseModel, Field
+from typing import List, Optional
+
+class Book(BaseModel):
+    title: str
+    author: str
+    year: int
+    genre: str
+    summary: str = Field(description="Brief summary of the book's plot")
+    rating: Optional[float] = Field(None, ge=0, le=5, description="Rating from 0-5 stars")
+books_stream = client.chat.completions.create_iterable(
+    model="gpt-3.5-turbo",
+    response_model=Book,
+    messages=[
+        {"role": "system", "content": "Generate detailed book entries with accurate information."},
+        {"role": "user", "content": """
+            Generate entries for three classic science fiction books.
+            Include their titles, authors, publication years, and summaries.
+        """}
+    ]
+)
+print("Streaming book data:")
+for i, book in enumerate(books_stream, 1):
+    print(f"\nBook {i}: {book.title} ({book.year})")
+    print(f"Author: {book.author}")
+    print(f"Genre: {book.genre}")
+    print(f"Rating: {book.rating if book.rating is not None else 'Not rated'}")
+    print(f"Summary: {book.summary}")
+
+from typing import List, Dict, Any
+import time
+
+class Task(BaseModel):
+    title: str
+    priority: str
+    estimated_hours: float
+    assigned_to: Optional[str] = None
+all_tasks = []
+total_hours = 0
+by_priority = {"high": 0, "medium": 0, "low": 0}
+by_assignee = {}
+tasks_stream = client.chat.completions.create_iterable(
+    model="gpt-3.5-turbo",
+    response_model=Task,
+    messages=[
+        {"role": "user", "content": """
+            Generate 5 tasks for a software development sprint.
+            Include high, medium, and low priority tasks.
+            Assign team members: Alex, Jamie, Taylor, and Morgan.
+        """}
+    ]
+)
+print("Project task planning:")
+print("---------------------")
+
+for task in tasks_stream:
+all_tasks.append(task)
+    total_hours += task.estimated_hours
+    by_priority[task.priority.lower()] += 1
+
+    if task.assigned_to:
+        by_assignee[task.assigned_to] = by_assignee.get(task.assigned_to, 0) + 1
+print(f"\nNew Task: {task.title}")
+    print(f"Priority: {task.priority}")
+    print(f"Estimate: {task.estimated_hours} hours")
+    print(f"Assigned to: {task.assigned_to or 'Unassigned'}")
+print("\nCurrent Sprint Stats:")
+    print(f"Tasks planned: {len(all_tasks)}")
+    print(f"Total hours: {total_hours:.1f}")
+    print(f"By priority: {by_priority}")
+    print(f"By assignee: {by_assignee}")
+time.sleep(0.5)
+
+print("\nSprint planning complete!")
+
+from typing import Dict, List, Any, Generator, TypeVar, Generic
+
+T = TypeVar('T')
+
+def combine_streams(streams: Dict[str, Generator[T, None, None]]) -> Generator[Dict[str, T], None, None]:
+    """Combine multiple iterables with identification."""
+    active_streams = streams.copy()
+    results = {key: None for key in streams}
+
+    while active_streams:
+        for key, stream in list(active_streams.items()):
+            try:
+                value = next(stream)
+                results[key] = value
+                yield results.copy()
+            except StopIteration:
+                del active_streams[key]
+class DocumentSummary(BaseModel):
+    title: str
+    content_type: str
+    key_points: List[str]
+    word_count: int
+prompts = {
+    "emails": "Generate summaries for 3 important emails about project deadlines",
+    "reports": "Generate summaries for 2 financial reports about quarterly earnings",
+    "articles": "Generate summaries for 2 news articles about technology trends"
+}
+streams = {}
+for category, prompt in prompts.items():
+    streams[category] = client.chat.completions.create_iterable(
+        model="gpt-3.5-turbo",
+        response_model=DocumentSummary,
+        messages=[{"role": "user", "content": prompt}]
+    )
+for i, result in enumerate(combine_streams(streams), 1):
+    print(f"\nUpdate {i}:")
+    for category, doc in result.items():
+        if doc:
+            print(f"  {category.upper()}: {doc.title}")
+        else:
+            print(f"  {category.upper()}: No documents yet")
+
+from typing import List, Optional, Iterator
+import itertools
+
+class NewsHeadline(BaseModel):
+    title: str
+    source: str
+    category: str
+    publish_date: str
+    summary: str
+headlines_stream = client.chat.completions.create_iterable(
+    model="gpt-3.5-turbo",
+    response_model=NewsHeadline,
+    messages=[
+        {"role": "user", "content": "Generate 10 fictional technology news headlines from the past week."}
+    ]
+)
+print("Top Headlines:")
+for i, headline in enumerate(itertools.islice(headlines_stream, 3)):
+    print(f"\nHeadline {i+1}: {headline.title}")
+    print(f"Source: {headline.source}")
+    print(f"Category: {headline.category}")
+    print(f"Date: {headline.publish_date}")
+    print(f"Summary: {headline.summary}")
+print("\nShowing only the first 3 headlines.")
+```
+
+```shell
+$ pip install instructor pydantic
+$ python streaming-lists.py
+```
+
+For more information, see the original documentation:
+- https://github.com/jxnl/instructor
+
+### Progressive Updates
+
+```python
+from pydantic import BaseModel, Field
+from typing import List, Dict, Optional
+import instructor
+from openai import OpenAI
+import time
+from enum import Enum
+from rich.console import Console
+from rich.panel import Panel
+from rich.progress import Progress, BarColumn, TextColumn, TaskProgressColumn
+from rich.table import Table
+from rich.layout import Layout
+from rich.live import Live
+from rich.text import Text
+console = Console()
+class WeatherForecast(BaseModel):
+    location: str
+    current_temp: float = Field(description="Current temperature in Celsius")
+    conditions: str = Field(description="Current weather conditions")
+    forecast: List[str] = Field(description="Weather forecast for the next few days")
+    humidity: Optional[float] = Field(None, description="Current humidity percentage")
+    wind_speed: Optional[float] = Field(None, description="Wind speed in km/h")
+client = instructor.from_openai(OpenAI())
+def update_ui(partial_forecast):
+weather_table = Table(show_header=False, expand=True)
+    weather_table.add_column("Label")
+    weather_table.add_column("Value")
+location = (
+        partial_forecast.location
+        if partial_forecast.location
+        else "Loading location..."
+    )
+    weather_table.add_row("📍 Location", location)
+temp = (
+        f"{partial_forecast.current_temp}°C"
+        if partial_forecast.current_temp is not None
+        else "--°C"
+    )
+    conditions = (
+        partial_forecast.conditions
+        if partial_forecast.conditions
+        else "Loading conditions..."
+    )
+    weather_table.add_row("🌡️ Temperature", temp)
+    weather_table.add_row("☁️ Conditions", conditions)
+humidity = (
+        f"{partial_forecast.humidity}%"
+        if partial_forecast.humidity is not None
+        else "--%"
+    )
+    wind = (
+        f"{partial_forecast.wind_speed} km/h"
+        if partial_forecast.wind_speed is not None
+        else "-- km/h"
+    )
+    weather_table.add_row("💧 Humidity", humidity)
+    weather_table.add_row("💨 Wind", wind)
+forecast_text = Text()
+    if not partial_forecast.forecast:
+        forecast_text.append("Loading forecast data...")
+    else:
+        for i, day in enumerate(partial_forecast.forecast):
+            forecast_text.append(
+                f"• {day}\n" if i < len(partial_forecast.forecast) - 1 else f"• {day}"
+            )
+fields = [
+        "location",
+        "current_temp",
+        "conditions",
+        "forecast",
+        "humidity",
+        "wind_speed",
+    ]
+    populated = sum(
+        1
+        for f in fields
+        if getattr(partial_forecast, f) is not None
+        and getattr(partial_forecast, f) != []
+    )
+    progress_value = populated / len(fields)
+
+    progress = Progress(
+        TextColumn("[bold blue]Loading:"),
+        BarColumn(),
+        TaskProgressColumn(),
+        expand=True,
+    )
+    task = progress.add_task("", total=1.0, completed=progress_value)
+layout = Layout()
+    layout.split(
+        Layout(Panel(weather_table, title="Weather Forecast"), name="weather"),
+        Layout(Panel(forecast_text, title="Forecast"), name="forecast"),
+        Layout(Panel(progress, title="Progress"), name="progress"),
+    )
+
+    console.clear()
+    console.print(layout)
+forecast_stream = client.chat.completions.create_partial(
+    model="gpt-3.5-turbo",
+    response_model=WeatherForecast,
+    messages=[
+        {
+            "role": "user",
+            "content": "Generate a fictional weather forecast for Tokyo, Japan.",
+        }
+    ],
+)
+for partial_forecast in forecast_stream:
+    update_ui(partial_forecast)
+    time.sleep(0.3)  # Slow down for demonstration
+
+console.print("[bold green]✅ Forecast fully loaded!")
+class SalesData(BaseModel):
+    total_revenue: float = Field(description="Total revenue in USD")
+    products_sold: int = Field(description="Total number of products sold")
+    by_category: Dict[str, float] = Field(
+        description="Revenue breakdown by product category"
+    )
+    top_products: List[str] = Field(description="List of top-selling products")
+    growth_rate: Optional[float] = Field(
+        None, description="Year-over-year growth rate percentage"
+    )
+def render_charts(data):
+    layout = Layout()
+header = Panel("Sales Dashboard", style="bold white on blue")
+stats_table = Table(expand=True)
+    stats_table.add_column("Metric", style="cyan")
+    stats_table.add_column("Value", style="green")
+
+    revenue = (
+        f"${data.total_revenue:,.2f}"
+        if data.total_revenue is not None
+        else "Loading..."
+    )
+    products = (
+        f"{data.products_sold:,}" if data.products_sold is not None else "Loading..."
+    )
+
+    stats_table.add_row("Revenue", revenue)
+    stats_table.add_row("Products Sold", products)
+growth_text = "Loading..."
+    if data.growth_rate is not None:
+        growth = f"{data.growth_rate:+.1f}%"
+        color = "green" if data.growth_rate > 0 else "red"
+        growth_text = Text(growth, style=color)
+    stats_table.add_row("Growth Rate", growth_text)
+category_table = Table(title="Revenue by Category", expand=True)
+    category_table.add_column("Category")
+    category_table.add_column("Amount")
+    category_table.add_column("Chart")
+
+    if not data.by_category:
+        category_table.add_row("Loading category data...", "", "")
+    else:
+        max_value = max(data.by_category.values()) if data.by_category else 0
+        for category, amount in data.by_category.items():
+            bar_length = int(20 * (amount / max_value)) if max_value > 0 else 0
+            bar = "█" * bar_length
+            category_table.add_row(category, f"${amount:,.2f}", bar)
+products_table = Table(title="Top Products", expand=True)
+    products_table.add_column("Rank")
+    products_table.add_column("Product")
+
+    if not data.top_products:
+        products_table.add_row("", "Loading top products...")
+    else:
+        for i, product in enumerate(data.top_products, 1):
+            products_table.add_row(f"{i}", product)
+layout.split(
+        Layout(header, size=3),
+        Layout(Panel(stats_table, title="Key Metrics"), name="stats", size=10),
+        Layout(Panel(category_table, title="Categories"), name="categories"),
+        Layout(Panel(products_table, title="Top Products"), name="products"),
+    )
+
+    console.clear()
+    console.print(layout)
+sales_stream = client.chat.completions.create_partial(
+    model="gpt-3.5-turbo",
+    response_model=SalesData,
+    messages=[
+        {
+            "role": "user",
+            "content": "Generate fictional quarterly sales data for an electronics company.",
+        }
+    ],
+)
+for partial_data in sales_stream:
+    render_charts(partial_data)
+    time.sleep(0.5)  # Slow down for demonstration
+
+console.print("[bold green]✅ Dashboard fully loaded!")
+
+
+class TaskStatus(str, Enum):
+    PENDING = "pending"
+    IN_PROGRESS = "in_progress"
+    COMPLETED = "completed"
+
+
+class SubTask(BaseModel):
+    name: str
+    status: TaskStatus = TaskStatus.PENDING
+    details: Optional[str] = None
+
+
+class AnalysisTask(BaseModel):
+    document_name: str
+    total_words: Optional[int] = None
+    subtasks: List[SubTask] = Field(default_factory=list)
+    key_findings: List[str] = Field(default_factory=list)
+    completion_percentage: Optional[float] = None
+analysis_stream = client.chat.completions.create_partial(
+    model="gpt-3.5-turbo",
+    response_model=AnalysisTask,
+    messages=[
+        {
+            "role": "user",
+            "content": """
+            Simulate a document analysis process for a research paper titled
+            'Advances in Renewable Energy Storage'. Include multiple subtasks
+            and key findings.
+        """,
+        }
+    ],
+)
+def render_progress_ui(task):
+    layout = Layout()
+doc_name = task.document_name if task.document_name else "Loading document..."
+    header = Panel(f"Analyzing: {doc_name}", style="bold white on blue")
+doc_info = Text()
+    if task.total_words is not None:
+        doc_info.append(f"Document length: {task.total_words:,} words")
+    else:
+        doc_info.append("Document length: Calculating...")
+tasks_table = Table(expand=True)
+    tasks_table.add_column("Status")
+    tasks_table.add_column("Task")
+    tasks_table.add_column("Details")
+
+    if not task.subtasks:
+        tasks_table.add_row("⏱️", "Preparing analysis tasks...", "")
+    else:
+        for subtask in task.subtasks:
+if subtask.status == TaskStatus.COMPLETED:
+                symbol = "✅"
+            elif subtask.status == TaskStatus.IN_PROGRESS:
+                symbol = "⏳"
+            else:
+                symbol = "⏱️"
+
+            details = subtask.details if subtask.details else ""
+            tasks_table.add_row(symbol, subtask.name, details)
+findings_text = Text()
+    if not task.key_findings:
+        findings_text.append("No findings yet...")
+    else:
+        for i, finding in enumerate(task.key_findings, 1):
+            findings_text.append(
+                f"{i}. {finding}\n" if i < len(task.key_findings) else f"{i}. {finding}"
+            )
+progress = Progress(
+        TextColumn("[bold blue]Overall Progress:"),
+        BarColumn(),
+        TaskProgressColumn(),
+        expand=True,
+    )
+    task_progress = progress.add_task(
+        "", total=1.0, completed=task.completion_percentage or 0
+    )
+layout.split(
+        Layout(header, size=3),
+        Layout(Panel(doc_info, title="Document Info"), size=5),
+        Layout(Panel(tasks_table, title="Analysis Progress"), name="tasks"),
+        Layout(Panel(findings_text, title="Key Findings"), name="findings"),
+        Layout(Panel(progress, title="Progress"), name="progress", size=5),
+    )
+
+    console.clear()
+    console.print(layout)
+for partial_analysis in analysis_stream:
+    render_progress_ui(partial_analysis)
+    time.sleep(0.3)  # Slow down for demonstration
+
+console.print("[bold green]✅ Analysis complete!")
+
+
+class DocumentSummary(BaseModel):
+    title: str
+    author: Optional[str] = None
+    publication_date: Optional[str] = None
+    word_count: Optional[int] = None
+    summary: str = Field(description="Complete summary of the document")
+    key_points: List[str] = Field(default_factory=list)
+    categories: List[str] = Field(default_factory=list)
+summary_stream = client.chat.completions.create_partial(
+    model="gpt-3.5-turbo",
+    response_model=DocumentSummary,
+    messages=[
+        {
+            "role": "user",
+            "content": """
+            Generate a summary for an academic paper titled:
+            "The Impact of Artificial Intelligence on Global Labor Markets:
+            A Comprehensive Analysis of Automation Trends from 2020-2023"
+        """,
+        }
+    ],
+)
+def render_document_summary(partial_summary):
+    layout = Layout()
+title = partial_summary.title if partial_summary.title else "Loading title..."
+    header = Panel(title, style="bold white on blue")
+meta_table = Table(expand=True, show_header=False)
+    meta_table.add_column("Field")
+    meta_table.add_column("Value")
+
+    author = partial_summary.author if partial_summary.author else "Unknown"
+    date = (
+        partial_summary.publication_date
+        if partial_summary.publication_date
+        else "Unknown"
+    )
+    word_count = (
+        f"{partial_summary.word_count:,} words"
+        if partial_summary.word_count is not None
+        else "Calculating..."
+    )
+
+    meta_table.add_row("👤 Author", author)
+    meta_table.add_row("📅 Published", date)
+    meta_table.add_row("📊 Word Count", word_count)
+categories_text = Text()
+    if not partial_summary.categories:
+        categories_text.append("Loading categories...")
+    else:
+        categories_text.append(", ".join(partial_summary.categories))
+points_text = Text()
+    if not partial_summary.key_points:
+        points_text.append("Extracting key points...")
+    else:
+        for i, point in enumerate(partial_summary.key_points, 1):
+            points_text.append(
+                f"{i}. {point}\n"
+                if i < len(partial_summary.key_points)
+                else f"{i}. {point}"
+            )
+summary_text = Text()
+    if not partial_summary.summary:
+        summary_text.append("Generating summary...")
+    else:
+        summary_text.append(partial_summary.summary)
+layout.split(
+        Layout(header, size=3),
+        Layout(Panel(meta_table, title="Document Metadata"), size=10),
+        Layout(Panel(categories_text, title="Categories"), size=5),
+        Layout(Panel(points_text, title="Key Points")),
+        Layout(Panel(summary_text, title="Summary")),
+    )
+
+    console.clear()
+    console.print(layout)
+for partial_summary in summary_stream:
+    render_document_summary(partial_summary)
+    time.sleep(0.3)  # Slow down for demonstration
+
+console.print("[bold green]✅ Document summary complete!")
+```
+
+For more information, see the original documentation:
+- https://github.com/jxnl/instructor
+
+### Handling Stream Errors
+
+```python
+from pydantic import BaseModel, Field
+import instructor
+from openai import OpenAI
+from typing import List, Optional
+class Person(BaseModel):
+    name: str
+    age: int = Field(gt=0, lt=150)  # Age validation constraint: must be between 1-149
+    occupation: str
+client = instructor.from_openai(OpenAI())
+def stream_with_error_handling():
+    try:
+person_stream = client.chat.completions.create_partial(
+            model="gpt-3.5-turbo",
+            response_model=Person,
+            messages=[
+                {"role": "user", "content": "Generate a profile for a fictional person who is 200 years old."}
+            ]
+        )
+for partial_person in person_stream:
+print(f"Current state: {partial_person}")
+print("\nFinal result:", partial_person)
+
+    except Exception as e:
+print(f"\nError occurred: {type(e).__name__}: {str(e)}")
+        print("Handling the error gracefully...")
+stream_with_error_handling()
+from pydantic import BaseModel, Field, ValidationError
+from typing import Optional, List, Any
+
+class Product(BaseModel):
+    name: str
+    price: float = Field(gt=0)  # Must be positive
+    quantity: int = Field(ge=0)  # Must be non-negative
+    category: str
+
+def safe_stream_processing():
+try:
+        product_stream = client.chat.completions.create_partial(
+            model="gpt-3.5-turbo",
+            response_model=Product,
+            messages=[
+                {"role": "user", "content": "Generate a product with negative price."},
+            ]
+        )
+last_valid_state = None
+
+        try:
+            for partial_product in product_stream:
+                print(f"Processing: {partial_product}")
+                last_valid_state = partial_product
+        except ValidationError as e:
+            print(f"\nValidation failed: {e}\n")
+
+            if last_valid_state:
+                print(f"Last valid state before error: {last_valid_state}")
+corrected_product = Product(
+                    name=last_valid_state.name or "Unknown Product",
+                    price=abs(last_valid_state.price) if last_valid_state.price is not None else 9.99,
+                    quantity=last_valid_state.quantity or 0,
+                    category=last_valid_state.category or "Uncategorized"
+                )
+
+                print(f"\nRecovered with corrected data: {corrected_product}")
+            else:
+                print("No valid state was received before the error")
+
+    except Exception as outer_e:
+        print(f"Outer exception: {outer_e}")
+safe_stream_processing()
+
+from pydantic import BaseModel, Field, ValidationError
+from typing import Optional, List, Dict, Union, Any
+
+class StockData(BaseModel):
+    symbol: str
+    price: float = Field(gt=0)
+    volume: int = Field(gt=0)
+    change_percent: float
+def safe_extract_from_chunk(chunk_data: Dict[str, Any], model_class) -> Optional[Any]:
+    try:
+return model_class.model_validate(chunk_data)
+    except ValidationError:
+return None
+def stream_with_manual_validation():
+stream = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        stream=True,  # Enable streaming
+        messages=[
+            {"role": "user", "content": "Generate stock data for ACME Corp with possible errors."}
+        ],
+        tools=[
+            {
+                "type": "function",
+                "function": {
+                    "name": "stock_data",
+                    "description": "Return stock data",
+                    "parameters": StockData.model_json_schema()
+                }
+            }
+        ],
+        tool_choice={"type": "function", "function": {"name": "stock_data"}}
+    )
+combined_data = {}
+    invalid_chunks = []
+
+    for chunk in stream:
+        if hasattr(chunk, 'choices') and chunk.choices and hasattr(chunk.choices[0], 'delta'):
+            delta = chunk.choices[0].delta
+if hasattr(delta, 'tool_calls') and delta.tool_calls:
+                for tool_call in delta.tool_calls:
+                    if hasattr(tool_call, 'function') and tool_call.function:
+                        if hasattr(tool_call.function, 'arguments') and tool_call.function.arguments:
+try:
+                                import json
+                                json_str = tool_call.function.arguments
+                                data = json.loads(json_str)
+combined_data.update(data)
+result = safe_extract_from_chunk(combined_data, StockData)
+
+                                if result:
+                                    print(f"Valid partial data: {result}")
+                                else:
+                                    print(f"Current data invalid: {combined_data}")
+                                    invalid_chunks.append(combined_data.copy())
+                            except json.JSONDecodeError:
+                                print(f"Invalid JSON: {tool_call.function.arguments}")
+try:
+        final_result = StockData.model_validate(combined_data)
+        print(f"\nFinal valid result: {final_result}")
+    except ValidationError as e:
+        print(f"\nFinal validation failed: {e}")
+        print("Invalid states encountered:", invalid_chunks)
+corrected_data = combined_data.copy()
+        if 'price' in corrected_data and corrected_data['price'] <= 0:
+            corrected_data['price'] = abs(corrected_data['price']) or 10.0
+        if 'volume' in corrected_data and corrected_data['volume'] <= 0:
+            corrected_data['volume'] = abs(corrected_data['volume']) or 1000
+
+        try:
+            recovered = StockData.model_validate(corrected_data)
+            print(f"Recovered result: {recovered}")
+        except ValidationError:
+            print("Could not recover valid data")
+stream_with_manual_validation()
+
+from pydantic import BaseModel, Field, ValidationError
+from typing import Optional, List, Any, Union
+class Address(BaseModel):
+    street: str
+    city: str
+    country: str
+    postal_code: str = Field(min_length=5)  # Validation that might fail
+
+class Person(BaseModel):
+    name: str
+    age: int = Field(gt=0, lt=150)
+    address: Address
+class SimpleAddress(BaseModel):
+    street: Optional[str] = None
+    city: Optional[str] = None
+    country: Optional[str] = None
+    postal_code: Optional[str] = None
+
+class SimplePerson(BaseModel):
+    name: Optional[str] = None
+    age: Optional[int] = None
+    address: Optional[SimpleAddress] = None
+def stream_with_fallbacks():
+person_stream = client.chat.completions.create_partial(
+        model="gpt-3.5-turbo",
+        response_model=Person,
+        max_retries=1,  # Limit retries
+        messages=[
+            {"role": "user", "content": "Generate a person with an invalid postal code."}
+        ]
+    )
+primary_stream_failed = False
+    try:
+        for partial_person in person_stream:
+            print(f"Primary model state: {partial_person}")
+    except ValidationError as e:
+        print(f"\nValidation error in primary model: {str(e)}\n")
+        primary_stream_failed = True
+if primary_stream_failed:
+        print("Falling back to simplified model...")
+fallback_stream = client.chat.completions.create_partial(
+            model="gpt-3.5-turbo",
+            response_model=SimplePerson,
+            messages=[
+                {"role": "user", "content": "Generate a person with an invalid postal code."}
+            ]
+        )
+
+        try:
+for partial_person in fallback_stream:
+                print(f"Fallback model state: {partial_person}")
+
+            print("\nCompleted with fallback model")
+        except Exception as fallback_error:
+            print(f"Even fallback model failed: {str(fallback_error)}")
+stream_with_fallbacks()
+
+from pydantic import BaseModel, Field, ValidationError
+from typing import Optional, List, Any
+
+class Review(BaseModel):
+    product_id: str
+    rating: int = Field(ge=1, le=5)
+    comment: str
+    reviewer_name: str
+def robust_stream_processing():
+    print("1. Testing partial stream with validation errors:\n")
+
+    try:
+review_stream = client.chat.completions.create_partial(
+            model="gpt-3.5-turbo",
+            response_model=Review,
+            messages=[
+                {"role": "user", "content": "Generate a product review with a rating of 10 stars."}
+            ]
+        )
+
+        for partial_review in review_stream:
+            print(f"Partial: {partial_review}")
+
+    except ValidationError as e:
+        print(f"\nPartial stream validation failed: {str(e)}\n")
+
+    print("\n2. Testing iterable stream with validation errors:\n")
+
+    try:
+reviews_iterable = client.chat.completions.create_iterable(
+            model="gpt-3.5-turbo",
+            response_model=Review,
+            messages=[
+                {"role": "user", "content": "Generate 3 product reviews, make one with an invalid rating of 0."}
+            ]
+        )
+for i, review in enumerate(reviews_iterable):
+            try:
+                print(f"Item {i+1}: {review}")
+            except ValidationError as item_error:
+                print(f"Item {i+1} validation failed: {str(item_error)}")
+
+    except Exception as outer_error:
+        print(f"Outer iterable error: {str(outer_error)}")
+robust_stream_processing()
+```
+
+```shell
+$ pip install instructor pydantic
+$ python handling-stream-errors.py
+```
+
+For more information, see the original documentation:
+- https://github.com/jxnl/instructor
+
+## Advanced Structures
+
+Building complex structured outputs
+
+### Recursive Structures
+
+```python
+import instructor
+from openai import OpenAI
+import enum
+from pydantic import BaseModel, Field
+client = instructor.from_openai(OpenAI())
+class NodeType(str, enum.Enum):
+    FILE = "file"
+    FOLDER = "folder"
+class Node(BaseModel):
+    name: str = Field(..., description="Name of the node")
+    children: list["Node"] = Field(
+        default_factory=list,
+        description="List of children nodes, only applicable for folders"
+    )
+    node_type: NodeType = Field(
+        default=NodeType.FILE,
+        description="Either a file or folder"
+    )
+Node.model_rebuild()
+class DirectoryTree(BaseModel):
+    root: Node = Field(..., description="Root folder of the directory tree")
+def parse_directory_structure(text_representation: str) -> DirectoryTree:
+    return client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        response_model=DirectoryTree,
+        messages=[
+            {
+                "role": "system",
+                "content": "Parse the following directory structure into a tree."
+            },
+            {
+                "role": "user",
+                "content": f"Parse this directory structure:\n{text_representation}"
+            }
+        ]
+    )
+directory_structure = '''
+root
+├── images
+│   ├── logo.png
+│   └── banner.jpg
+└── docs
+    ├── readme.md
+    └── config
+        └── settings.json
+'''
+
+result = parse_directory_structure(directory_structure)
+```
+
+```shell
+$ pip install instructor pydantic
+$ python recursive-structures.py
+```
+
+For more information, see the original documentation:
+- https://github.com/jxnl/instructor
+
+### Knowledge Graphs
+
+```python
+import instructor
+from openai import OpenAI
+from pydantic import BaseModel, Field
+client = instructor.from_openai(OpenAI())
+class Node(BaseModel):
+    id: int
+    label: str
+    color: str
+class Edge(BaseModel):
+    source: int
+    target: int
+    label: str
+    color: str = "black"
+class KnowledgeGraph(BaseModel):
+    nodes: list[Node] = Field(..., default_factory=list)
+    edges: list[Edge] = Field(..., default_factory=list)
+def generate_knowledge_graph(input_text: str) -> KnowledgeGraph:
+    return client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {
+                "role": "user",
+                "content": f"Create a detailed knowledge graph for: {input_text}"
+            }
+        ],
+        response_model=KnowledgeGraph
+    )
+graph = generate_knowledge_graph("Quantum mechanics and its applications")
+for node in graph.nodes:
+    print(f"Node {node.id}: {node.label} ({node.color})")
+
+for edge in graph.edges:
+    print(f"Edge: {edge.source} --({edge.label})--> {edge.target}")
+from graphviz import Digraph
+
+def visualize_knowledge_graph(kg: KnowledgeGraph):
+    dot = Digraph(comment="Knowledge Graph")
+for node in kg.nodes:
+        dot.node(str(node.id), node.label, color=node.color)
+for edge in kg.edges:
+        dot.edge(str(edge.source), str(edge.target),
+                 label=edge.label, color=edge.color)
+dot.render("knowledge_graph.gv", view=True)
+visualize_knowledge_graph(graph)
+```
+
+```shell
+$ pip install instructor pydantic
+$ python knowledge-graphs.py
+```
+
+For more information, see the original documentation:
+- https://github.com/jxnl/instructor
+
+### Dependency Trees
+
+```python
+import instructor
+from openai import OpenAI
+from pydantic import BaseModel, Field
+client = instructor.from_openai(OpenAI())
+class DependencyNode(BaseModel):
+    id: str
+    description: str
+    dependencies: list[str] = Field(default_factory=list,
+                                   description="IDs of nodes this node depends on")
+class DependencyTree(BaseModel):
+    nodes: list[DependencyNode]
+
+    def get_execution_order(self) -> list[str]:
+        """Returns topologically sorted execution order."""
+dep_graph = {node.id: set(node.dependencies) for node in self.nodes}
+        result = []
+while dep_graph:
+roots = {node for node, deps in dep_graph.items() if not deps}
+            if not roots:
+                raise ValueError("Circular dependency detected")
+result.extend(sorted(roots))
+dep_graph = {
+                node: (deps - roots)
+                for node, deps in dep_graph.items()
+                if node not in roots
+            }
+
+        return result
+def extract_dependencies(project_description: str) -> DependencyTree:
+    return client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {
+                "role": "system",
+                "content": "Extract the dependencies between tasks in this project."
+            },
+            {
+                "role": "user",
+                "content": project_description
+            }
+        ],
+        response_model=DependencyTree
+    )
+project = """
+Building a web application requires:
+1. Setup development environment
+2. Design database schema (after setup)
+3. Create API endpoints (after database schema)
+4. Build frontend UI (after API design)
+5. Write tests (after API and UI)
+6. Deploy application (after tests pass)
+"""
+
+dependencies = extract_dependencies(project)
+execution_order = dependencies.get_execution_order()
+print("Execution order:", execution_order)
+```
+
+```shell
+$ pip install instructor pydantic
+$ python dependency-trees.py
+```
+
+For more information, see the original documentation:
+- https://github.com/jxnl/instructor
+
+### Task Planning
+
+```python
+import asyncio
+import instructor
+from openai import OpenAI
+from pydantic import BaseModel, Field
+client = instructor.from_openai(OpenAI())
+class TaskResult(BaseModel):
+    task_id: int
+    result: str
+
+class TaskResults(BaseModel):
+    results: list[TaskResult]
+class Task(BaseModel):
+    id: int = Field(..., description="Unique id of the task")
+    task: str = Field(..., description="The task to be performed")
+    subtasks: list[int] = Field(
+        default_factory=list,
+        description="IDs of subtasks that must be completed before this task"
+    )
+
+    async def execute(self, with_results: TaskResults) -> TaskResult:
+        """Execute this task and return the result."""
+return TaskResult(task_id=self.id, result=f"Result for task: {self.task}")
+class TaskPlan(BaseModel):
+    task_graph: list[Task] = Field(
+        ...,
+        description="List of tasks and their dependencies"
+    )
+
+    def _get_execution_order(self) -> list[int]:
+        """Compute topological sort of tasks based on dependencies."""
+        dep_graph = {task.id: set(task.subtasks) for task in self.task_graph}
+        result = []
+
+        while dep_graph:
+available = {task_id for task_id, deps in dep_graph.items() if not deps}
+            if not available:
+                raise ValueError("Circular dependency detected in tasks")
+result.extend(sorted(available))
+dep_graph = {
+                task_id: (deps - available)
+                for task_id, deps in dep_graph.items()
+                if task_id not in available
+            }
+
+        return result
+
+    async def execute(self) -> dict[int, TaskResult]:
+        """Execute all tasks in dependency order."""
+        execution_order = self._get_execution_order()
+        tasks_by_id = {task.id: task for task in self.task_graph}
+        results = {}
+
+        while len(results) < len(self.task_graph):
+ready_tasks = [
+                tasks_by_id[task_id]
+                for task_id in execution_order
+                if task_id not in results and
+                all(dep_id in results for dep_id in tasks_by_id[task_id].subtasks)
+            ]
+new_results = await asyncio.gather(*[
+                task.execute(
+                    with_results=TaskResults(
+                        results=[
+                            results[dep_id]
+                            for dep_id in task.subtasks
+                        ]
+                    )
+                )
+                for task in ready_tasks
+            ])
+for result in new_results:
+                results[result.task_id] = result
+
+        return results
+def create_task_plan(question: str) -> TaskPlan:
+    return client.chat.completions.create(
+        model="gpt-4",
+        messages=[
+            {
+                "role": "system",
+                "content": "Create a detailed task plan to answer the user's question. Break down the problem into smaller, dependent tasks."
+            },
+            {
+                "role": "user",
+                "content": question
+            }
+        ],
+        response_model=TaskPlan
+    )
+async def main():
+    plan = create_task_plan(
+        "What is the economic impact of renewable energy adoption in developing countries?"
+    )
+    print("Task Plan:")
+    for task in plan.task_graph:
+        deps = f" (depends on: {task.subtasks})" if task.subtasks else ""
+        print(f"Task {task.id}: {task.task}{deps}")
+
+    print("\nExecuting plan...")
+    results = await plan.execute()
+
+    print("\nResults:")
+    for task_id, result in sorted(results.items()):
+        print(f"Task {task_id}: {result.result}")
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
+```shell
+$ pip install instructor pydantic
+$ python task-planning.py
+```
+
+For more information, see the original documentation:
+- https://github.com/jxnl/instructor
+
+### Document Structure
+
+```python
+import instructor
+from openai import OpenAI
+from pydantic import BaseModel, Field
+from typing import Optional, List
+client = instructor.from_openai(OpenAI())
+class Section(BaseModel):
+    heading: str
+    content: str
+    subsections: List["Section"] = Field(default_factory=list)
+Section.model_rebuild()
+class Document(BaseModel):
+    title: str
+    abstract: Optional[str] = None
+    authors: List[str] = Field(default_factory=list)
+    sections: List[Section] = Field(default_factory=list)
+    keywords: List[str] = Field(default_factory=list)
+def extract_document_structure(text: str) -> Document:
+    return client.chat.completions.create(
+        model="gpt-4",
+        messages=[
+            {
+                "role": "system",
+                "content": "Extract the structured representation of this document, including all sections and subsections."
+            },
+            {
+                "role": "user",
+                "content": text
+            }
+        ],
+        response_model=Document
+    )
+document_text = """
+This paper explores the applications of machine learning in healthcare settings.
+machine learning, healthcare, AI, medical diagnosis
+Machine learning has shown promising results in healthcare applications.
+Healthcare has historically been slow to adopt new technologies.
+Data privacy and model interpretability remain significant challenges.
+We employed a mixed-methods approach.
+Our findings indicate a 30% improvement in diagnostic accuracy.
+These results have significant implications for clinical practice.
+Machine learning will continue to transform healthcare delivery.
+"""
+
+doc_structure = extract_document_structure(document_text)
+print(f"Title: {doc_structure.title}")
+print(f"Authors: {', '.join(doc_structure.authors)}")
+if doc_structure.abstract:
+    print(f"Abstract: {doc_structure.abstract}")
+print(f"Keywords: {', '.join(doc_structure.keywords)}")
+print("\nSections:")
+for section in doc_structure.sections:
+    print(f"- {section.heading}")
+    for subsection in section.subsections:
+        print(f"  - {subsection.heading}")
+```
+
+```shell
+$ pip install instructor pydantic
+$ python document-structure.py
+```
+
+For more information, see the original documentation:
+- https://github.com/jxnl/instructor
+
+## Validation
+
+Ensuring data quality with validation
+
+### Validation Basics
+
+```python
+import instructor
+from openai import OpenAI
+from pydantic import BaseModel, Field
+client = instructor.from_openai(OpenAI())
+class User(BaseModel):
+    name: str = Field(..., description="User's full name")
+    age: int = Field(...,
+                    description="User's age in years",
+                    ge=0, le=120)  # Must be between 0 and 120
+    email: str = Field(..., description="User's email address")
+def extract_user(text: str) -> User:
+    return client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {
+                "role": "user",
+                "content": f"Extract user information from this text: {text}"
+            }
+        ],
+        response_model=User
+    )
+text = "John Doe is 25 years old and his email is john.doe@example.com."
+user = extract_user(text)
+print(user.model_dump_json(indent=2))
+import instructor
+from openai import OpenAI
+from pydantic import BaseModel, Field, field_validator
+client = instructor.from_openai(OpenAI())
+class User(BaseModel):
+    name: str
+    age: int
+
+    @field_validator("age")
+    def validate_age(cls, v):
+        if v < 0 or v > 120:
+            raise ValueError("Age must be between 0 and 120")
+        return v
+user = client.chat.completions.create(
+    model="gpt-3.5-turbo",
+    messages=[
+        {
+            "role": "user",
+            "content": "Extract: John Doe, age: 150"
+        }
+    ],
+    response_model=User,
+    max_retries=2  # Try up to 2 more times if validation fails
+)
+
+print(user.model_dump_json(indent=2))
+```
+
+```shell
+$ pip install instructor pydantic
+$ python validation-basics.py
+```
+
+For more information, see the original documentation:
+- https://github.com/jxnl/instructor
+
+### Custom Validators
+
+```python
+import instructor
+from openai import OpenAI
+from pydantic import BaseModel, Field, field_validator
+client = instructor.from_openai(OpenAI())
+class Contact(BaseModel):
+    name: str = Field(description="Person's full name")
+    email: str = Field(description="Person's email address")
+    phone: str = Field(description="Person's phone number")
+
+    @field_validator("email")
+    def validate_email(cls, v):
+        if "@" not in v:
+            raise ValueError("Email must contain @ symbol")
+        return v
+
+    @field_validator("phone")
+    def validate_phone(cls, v):
+digits = ''.join(c for c in v if c.isdigit())
+        if len(digits) < 10:
+            raise ValueError("Phone number must have at least 10 digits")
+        return v
+contact = client.chat.completions.create(
+    model="gpt-3.5-turbo",
+    messages=[
+        {
+            "role": "user",
+            "content": "Extract: John Doe, email: johndoe.example.com, phone: 555-1234"
+        }
+    ],
+    response_model=Contact,
+    max_retries=2
+)
+
+print(contact.model_dump_json(indent=2))
+from typing_extensions import Annotated
+from pydantic import AfterValidator
+def validate_uppercase(v: str) -> str:
+    if v != v.upper():
+        raise ValueError("String must be uppercase")
+    return v
+class Document(BaseModel):
+    title: Annotated[str, AfterValidator(validate_uppercase)]
+    content: str
+
+    @field_validator("content")
+    def validate_content_length(cls, v):
+        if len(v.split()) < 5:
+            raise ValueError("Content must be at least 5 words long")
+        return v
+import instructor
+from openai import OpenAI
+from pydantic import BaseModel, BeforeValidator
+from typing_extensions import Annotated
+from instructor import llm_validator
+client = instructor.from_openai(OpenAI())
+class Review(BaseModel):
+    product: str
+    content: Annotated[
+        str,
+        BeforeValidator(llm_validator("must be positive and respectful", client=client))
+    ]
+    rating: int
+review = client.chat.completions.create(
+    model="gpt-3.5-turbo",
+    messages=[
+        {
+            "role": "user",
+            "content": "Extract: iPhone 14, content: This product is terrible and I hate it, rating: 1"
+        }
+    ],
+    response_model=Review,
+    max_retries=2
+)
+```
+
+```shell
+$ pip install instructor pydantic
+$ python custom-validators.py
+```
+
+For more information, see the original documentation:
+- https://github.com/jxnl/instructor
+
+### Retry Mechanisms
+
+```python
+import instructor
+from openai import OpenAI
+from pydantic import BaseModel, Field, field_validator
+client = instructor.from_openai(OpenAI())
+class Profile(BaseModel):
+    username: str = Field(description="Username without spaces")
+    age: int = Field(description="Age in years", ge=13)
+
+    @field_validator("username")
+    def validate_username(cls, v):
+        if " " in v:
+            raise ValueError("Username cannot contain spaces")
+        return v
+profile = client.chat.completions.create(
+    model="gpt-3.5-turbo",
+    messages=[
+        {
+            "role": "user",
+            "content": "Extract: username: John Doe, age: 25"
+        }
+    ],
+    response_model=Profile,
+    max_retries=3  # Try up to 3 more times if validation fails
+)
+
+print(profile.model_dump_json(indent=2))
+import instructor
+from openai import OpenAI
+from pydantic import BaseModel, field_validator
+from tenacity import Retrying, stop_after_attempt, wait_fixed
+client = instructor.from_openai(OpenAI())
+class User(BaseModel):
+    name: str
+    age: int
+
+    @field_validator("name")
+    def validate_name(cls, v):
+        if not v.isupper():
+            raise ValueError("Name must be uppercase")
+        return v
+user = client.chat.completions.create(
+    model="gpt-3.5-turbo",
+    messages=[
+        {
+            "role": "user",
+            "content": "Extract: John is 30 years old"
+        }
+    ],
+    response_model=User,
+    max_retries=Retrying(
+        stop=stop_after_attempt(3),  # Stop after 3 attempts
+        wait=wait_fixed(1),  # Wait 1 second between attempts
+    )
+)
+
+print(user.model_dump_json(indent=2))
+import instructor
+from openai import OpenAI
+from pydantic import BaseModel, field_validator
+from instructor.exceptions import InstructorRetryException
+client = instructor.from_openai(OpenAI())
+class ImpossibleModel(BaseModel):
+    name: str
+    age: int
+
+    @field_validator("age")
+    def validate_age(cls, v):
+        raise ValueError("This validator will always fail")
+try:
+    result = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {
+                "role": "user",
+                "content": "Extract: Jane is 25 years old"
+            }
+        ],
+        response_model=ImpossibleModel,
+        max_retries=2
+    )
+except InstructorRetryException as e:
+    print(f"Failed after {e.n_attempts} attempts")
+    print(f"Last error message: {e.messages[-1]['content']}")
+fallback_result = {"name": "Jane", "age": 0}
+    print(f"Using fallback: {fallback_result}")
+```
+
+```shell
+$ pip install instructor pydantic
+$ python retry-mechanisms.py
+```
+
+For more information, see the original documentation:
+- https://github.com/jxnl/instructor
+
+### Fallback Strategies
+
+```python
+import instructor
+from openai import OpenAI
+from pydantic import BaseModel, Field, ValidationError
+from instructor.exceptions import InstructorRetryException
+client = instructor.from_openai(OpenAI())
+class DetailedUserProfile(BaseModel):
+    name: str = Field(description="User's full name")
+    age: int = Field(description="User's age in years", ge=18)
+    occupation: str = Field(description="User's job or profession")
+    income: int = Field(description="User's annual income in USD", ge=0)
+    education: str = Field(description="User's highest education level")
+class BasicUserProfile(BaseModel):
+    name: str = Field(description="User's name")
+    age: int = Field(description="User's age", ge=0)
+def extract_user_with_fallback(text: str):
+    try:
+return client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {
+                    "role": "user",
+                    "content": f"Extract user information: {text}"
+                }
+            ],
+            response_model=DetailedUserProfile,
+            max_retries=2
+        )
+    except InstructorRetryException:
+        print("Detailed extraction failed, falling back to basic profile")
+return client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {
+                    "role": "user",
+                    "content": f"Extract basic user information: {text}"
+                }
+            ],
+            response_model=BasicUserProfile,
+            max_retries=1
+        )
+text = "John is 25 years old"
+user = extract_user_with_fallback(text)
+print(user.model_dump_json(indent=2))
+from typing import Optional
+import instructor
+from openai import OpenAI
+from pydantic import BaseModel, Field
+client = instructor.from_openai(OpenAI())
+class FlexibleProfile(BaseModel):
+    name: str = Field(description="Person's name")
+    age: Optional[int] = Field(None, description="Person's age if mentioned")
+    location: Optional[str] = Field(None, description="Person's location if mentioned")
+    occupation: Optional[str] = Field(None, description="Person's job if mentioned")
+profile = client.chat.completions.create(
+    model="gpt-3.5-turbo",
+    messages=[
+        {
+            "role": "user",
+            "content": "Sarah is a software engineer from Boston"
+        }
+    ],
+    response_model=FlexibleProfile
+)
+
+print(profile.model_dump_json(indent=2))
+import instructor
+from openai import OpenAI
+from pydantic import BaseModel, Field, ValidationError
+from enum import Enum
+client = instructor.from_openai(OpenAI())
+class ExtractionStatus(str, Enum):
+    SUCCESS = "success"
+    PARTIAL = "partial"
+    FAILED = "failed"
+class Contact(BaseModel):
+    name: str
+    email: str
+    phone: str
+class ExtractionResult(BaseModel):
+    status: ExtractionStatus
+    data: dict
+    error_message: str = ""
+def extract_with_robustness(text: str) -> ExtractionResult:
+    try:
+result = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[{"role": "user", "content": f"Extract contact info: {text}"}],
+            response_model=Contact,
+            max_retries=2
+        )
+        return ExtractionResult(
+            status=ExtractionStatus.SUCCESS,
+            data=result.model_dump()
+        )
+    except InstructorRetryException as e:
+try:
+            partial_data = {}
+error_msg = e.messages[-1]["content"]
+text_lines = text.split('\n')
+            for line in text_lines:
+                if "name:" in line.lower():
+                    partial_data["name"] = line.split("name:")[1].strip()
+                if "email:" in line.lower():
+                    partial_data["email"] = line.split("email:")[1].strip()
+                if "phone:" in line.lower():
+                    partial_data["phone"] = line.split("phone:")[1].strip()
+
+            if partial_data:
+                return ExtractionResult(
+                    status=ExtractionStatus.PARTIAL,
+                    data=partial_data,
+                    error_message=error_msg
+                )
+            else:
+                return ExtractionResult(
+                    status=ExtractionStatus.FAILED,
+                    data={},
+                    error_message=error_msg
+                )
+        except Exception as nested_error:
+            return ExtractionResult(
+                status=ExtractionStatus.FAILED,
+                data={},
+                error_message=f"Complete extraction failure: {str(nested_error)}"
+            )
+```
+
+```shell
+$ pip install instructor pydantic
+$ python fallback-strategies.py
+```
+
+For more information, see the original documentation:
+- https://github.com/jxnl/instructor
+
+### Field-level Validation
+
+```python
+import instructor
+from openai import OpenAI
+from pydantic import BaseModel, Field, field_validator
+import re
+client = instructor.from_openai(OpenAI())
+class UserProfile(BaseModel):
+    username: str = Field(
+        description="Username (lowercase, no spaces)",
+        min_length=3,
+        max_length=20
+    )
+    email: str = Field(
+        description="Valid email address"
+    )
+    age: int = Field(
+        description="Age in years",
+        ge=13,  # Greater than or equal to 13
+        le=120  # Less than or equal to 120
+    )
+
+    @field_validator("username")
+    def validate_username(cls, v):
+        if not v.islower() or " " in v:
+            raise ValueError("Username must be lowercase and contain no spaces")
+        return v
+
+    @field_validator("email")
+    def validate_email(cls, v):
+        pattern = r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"
+        if not re.match(pattern, v):
+            raise ValueError("Invalid email format")
+        return v
+profile = client.chat.completions.create(
+    model="gpt-3.5-turbo",
+    messages=[
+        {
+            "role": "user",
+            "content": "Extract user profile: John Doe, john.doe@example.com, 25 years old"
+        }
+    ],
+    response_model=UserProfile,
+    max_retries=2
+)
+
+print(profile.model_dump_json(indent=2))
+import instructor
+from openai import OpenAI
+from pydantic import BaseModel, Field
+from typing import List
+client = instructor.from_openai(OpenAI())
+class Product(BaseModel):
+    name: str = Field(
+        description="Product name",
+        min_length=2,
+        max_length=100
+    )
+    price: float = Field(
+        description="Product price in USD",
+        gt=0  # Greater than 0
+    )
+    description: str = Field(
+        description="Product description",
+        min_length=10,
+        max_length=1000
+    )
+    tags: List[str] = Field(
+        description="Product tags",
+        min_length=1,  # At least one tag
+        max_length=10  # At most 10 tags
+    )
+product = client.chat.completions.create(
+    model="gpt-3.5-turbo",
+    messages=[
+        {
+            "role": "user",
+            "content": "Extract product info: iPhone, $999, Latest smartphone with advanced features, tags: electronics, smartphone, apple"
+        }
+    ],
+    response_model=Product
+)
+
+print(product.model_dump_json(indent=2))
+from typing_extensions import Annotated
+from pydantic import AfterValidator
+import re
+
+def validate_phone_number(v: str) -> str:
+    """Validate phone number format."""
+digits = ''.join(c for c in v if c.isdigit())
+    if len(digits) < 10:
+        raise ValueError("Phone number must have at least 10 digits")
+    return v
+
+def validate_zip_code(v: str) -> str:
+    """Validate US zip code format."""
+    pattern = r"^\d{5}(-\d{4})?$"
+    if not re.match(pattern, v):
+        raise ValueError("Invalid zip code format (must be 12345 or 12345-6789)")
+    return v
+
+class Address(BaseModel):
+    street: str
+    city: str
+    state: str
+    zip_code: Annotated[str, AfterValidator(validate_zip_code)]
+    phone: Annotated[str, AfterValidator(validate_phone_number)]
+```
+
+```shell
+$ pip install instructor pydantic
+$ python field-level-validation.py
+```
+
+For more information, see the original documentation:
+- https://github.com/jxnl/instructor
+
+## Multimodal Inputs
+
+Working with images, audio, and documents
+
+### Vision
+
+```python
+import instructor
+from openai import OpenAI
+from pydantic import BaseModel, Field
+from typing import List
+client = instructor.from_openai(OpenAI())
+class ImageContent(BaseModel):
+    description: str = Field(description="A detailed description of the image")
+    objects: List[str] = Field(description="List of main objects in the image")
+    colors: List[str] = Field(description="Dominant colors in the image")
+def analyze_image_from_file(file_path: str) -> ImageContent:
+image = instructor.Image.from_path(file_path)
+
+    return client.chat.completions.create(
+        model="gpt-4-vision-preview",
+        response_model=ImageContent,
+        messages=[
+            {
+                "role": "user",
+                "content": [
+                    "Describe this image in detail:",
+                    image  # The Image object is handled automatically
+                ]
+            }
+        ]
+    )
+def analyze_image_from_url(image_url: str) -> ImageContent:
+image = instructor.Image.from_url(image_url)
+
+    return client.chat.completions.create(
+        model="gpt-4-vision-preview",
+        response_model=ImageContent,
+        messages=[
+            {
+                "role": "user",
+                "content": [
+                    "Describe this image in detail:",
+                    image
+                ]
+            }
+        ]
+    )
+def analyze_with_autodetect(image_path_or_url: str) -> ImageContent:
+    return client.chat.completions.create(
+        model="gpt-4-vision-preview",
+        response_model=ImageContent,
+        messages=[
+            {
+                "role": "user",
+                "content": [
+                    "Describe this image in detail:",
+                    image_path_or_url  # Will be automatically detected as an image
+                ]
+            }
+        ],
+        autodetect_images=True  # Automatically converts paths/URLs to Image objects
+    )
+result = analyze_with_autodetect("https://example.com/image.jpg")
+print(f"Description: {result.description}")
+print(f"Objects: {', '.join(result.objects)}")
+print(f"Colors: {', '.join(result.colors)}")
+```
+
+```shell
+$ pip install instructor pydantic
+$ python vision-inputs.py
+```
+
+For more information, see the original documentation:
+- https://github.com/jxnl/instructor
+
+### Image Extraction
+
+```python
+import instructor
+from openai import OpenAI
+from pydantic import BaseModel, Field
+from typing import List, Optional
+client = instructor.from_openai(OpenAI())
+class Product(BaseModel):
+    name: str = Field(description="Product name")
+    price: float = Field(description="Product price in USD")
+    description: str = Field(description="Brief product description")
+    features: List[str] = Field(description="Key product features")
+    brand: Optional[str] = Field(None, description="Brand name if visible")
+def extract_product_info(image_path_or_url: str) -> Product:
+    return client.chat.completions.create(
+        model="gpt-4-vision-preview",
+        response_model=Product,
+        messages=[
+            {
+                "role": "user",
+                "content": [
+                    "Extract detailed product information from this image:",
+                    image_path_or_url
+                ]
+            }
+        ],
+        autodetect_images=True  # Automatically handle the image
+    )
+product = extract_product_info("path/to/product_image.jpg")
+print(f"Product: {product.name} (${product.price:.2f})")
+print(f"Description: {product.description}")
+print(f"Features: {', '.join(product.features)}")
+if product.brand:
+    print(f"Brand: {product.brand}")
+from typing import List, Optional
+from pydantic import BaseModel, Field
+import instructor
+from openai import OpenAI
+client = instructor.from_openai(OpenAI())
+class Ingredient(BaseModel):
+    name: str = Field(description="Ingredient name")
+    quantity: str = Field(description="Amount needed, including units")
+    optional: bool = Field(description="Whether this ingredient is optional")
+
+class Step(BaseModel):
+    instruction: str = Field(description="Cooking instruction")
+    time_minutes: Optional[int] = Field(None, description="Time required for this step in minutes")
+
+class Recipe(BaseModel):
+    title: str = Field(description="Recipe title")
+    servings: int = Field(description="Number of servings")
+    prep_time_minutes: int = Field(description="Preparation time in minutes")
+    cook_time_minutes: int = Field(description="Cooking time in minutes")
+    ingredients: List[Ingredient] = Field(description="List of ingredients")
+    steps: List[Step] = Field(description="Cooking steps in order")
+    difficulty: str = Field(description="Recipe difficulty (easy, medium, hard)")
+def extract_recipe(image_path: str) -> Recipe:
+image = instructor.Image.from_path(image_path)
+
+    return client.chat.completions.create(
+        model="gpt-4-vision-preview",
+        response_model=Recipe,
+        messages=[
+            {
+                "role": "system",
+                "content": "Extract complete recipe information from the provided image."
+            },
+            {
+                "role": "user",
+                "content": [
+                    "Please extract the detailed recipe information from this image:",
+                    image
+                ]
+            }
+        ]
+    )
+```
+
+```shell
+$ pip install instructor pydantic
+$ python image-to-structured-data.py
+```
+
+For more information, see the original documentation:
+- https://github.com/jxnl/instructor
+
+### Table Extraction
+
+```python
+import instructor
+from openai import OpenAI
+from pydantic import BaseModel, Field
+import pandas as pd
+from typing import Annotated, Any
+from io import StringIO
+from pydantic import (
+    BaseModel,
+    BeforeValidator,
+    PlainSerializer,
+    InstanceOf,
+    WithJsonSchema,
+)
+client = instructor.from_openai(OpenAI(), mode=instructor.Mode.MD_JSON)
+def to_markdown(df: pd.DataFrame) -> str:
+    """Convert a dataframe to markdown format."""
+    return df.to_markdown()
+
+
+def md_to_df(data: Any) -> Any:
+    """Convert markdown table to a pandas dataframe."""
+    if isinstance(data, str):
+        return (
+            pd.read_csv(
+                StringIO(data),
+                sep="|",
+                index_col=1,
+            )
+            .dropna(axis=1, how="all")
+            .iloc[1:]
+            .map(lambda x: x.strip())
+        )
+    return data
+MarkdownDataFrame = Annotated[
+    InstanceOf[pd.DataFrame],
+    BeforeValidator(md_to_df),
+    PlainSerializer(to_markdown),
+    WithJsonSchema(
+        {
+            "type": "string",
+            "description": "The markdown representation of the table",
+        }
+    ),
+]
+class Table(BaseModel):
+    caption: str = Field(description="A descriptive caption for the table")
+    dataframe: MarkdownDataFrame = Field(
+        description="The table data as a markdown table"
+    )
+def extract_table_from_image(image_path_or_url: str) -> Table:
+    """Extract a table from an image and return it as a structured object."""
+    if image_path_or_url.startswith(("http://", "https://")):
+        image = instructor.Image.from_url(image_path_or_url)
+    else:
+        image = instructor.Image.from_path(image_path_or_url)
+
+    return client.chat.completions.create(
+        model="gpt-4-vision-preview",
+        response_model=Table,
+        max_tokens=1800,
+        messages=[
+            {
+                "role": "user",
+                "content": [
+                    {
+                        "type": "text",
+                        "text": "Extract the table from this image with a descriptive caption.",
+                    },
+                    image,
+                ],
+            }
+        ],
+    )
+def analyze_table_data(image_path: str):
+    """Extract and analyze a table from an image."""
+    table = extract_table_from_image(image_path)
+
+    print(f"Table Caption: {table.caption}")
+    print("\nExtracted Table:")
+    print(table.dataframe)
+if isinstance(table.dataframe, pd.DataFrame):
+        print("\nData Analysis:")
+        print(f"- Rows: {len(table.dataframe)}")
+        print(f"- Columns: {len(table.dataframe.columns)}")
+numeric_cols = table.dataframe.select_dtypes(include=["number"]).columns
+        if len(numeric_cols) > 0:
+            print("\nNumeric Column Statistics:")
+            for col in numeric_cols:
+                col_data = table.dataframe[col]
+                print(
+                    f"- {col}: Min={col_data.min()}, Max={col_data.max()}, Mean={col_data.mean():.2f}"
+                )
+
+        return table.dataframe
+
+    return None
+def extract_multiple_tables(image_path_or_url: str) -> list[Table]:
+    """Extract all tables from an image."""
+    if image_path_or_url.startswith(("http://", "https://")):
+        image = instructor.Image.from_url(image_path_or_url)
+    else:
+        image = instructor.Image.from_path(image_path_or_url)
+
+    tables = client.chat.completions.create_iterable(
+        model="gpt-4-vision-preview",
+        response_model=Table,
+        max_tokens=1800,
+        messages=[
+            {
+                "role": "user",
+                "content": [
+                    {
+                        "type": "text",
+                        "text": "Extract all tables from this image. Each table should be separate and have its own caption.",
+                    },
+                    image,
+                ],
+            }
+        ],
+    )
+
+    return list(tables)
+def analyze_multiple_tables(image_path: str):
+    """Extract and analyze all tables from an image."""
+    tables = extract_multiple_tables(image_path)
+
+    print(f"Found {len(tables)} tables in the image.")
+
+    for i, table in enumerate(tables):
+        print(f"\n--- Table {i+1}: {table.caption} ---")
+        print(table.dataframe)
+
+        if isinstance(table.dataframe, pd.DataFrame):
+            yield table.dataframe
+```
+
+```shell
+$ pip install instructor pydantic
+$ python table-extraction.py
+```
+
+For more information, see the original documentation:
+- https://github.com/jxnl/instructor
+
+### Audio Extraction
+
+```python
+import instructor
+from openai import OpenAI
+from pydantic import BaseModel, Field
+from instructor.multimodal import Audio
+client = instructor.from_openai(OpenAI())
+class AudioTranscription(BaseModel):
+    text: str = Field(description="Full transcription of the audio")
+    speaker: str = Field(description="Identity of the speaker if known")
+    language: str = Field(description="Language spoken in the audio")
+    confidence: float = Field(description="Confidence score for the transcription", ge=0.0, le=1.0)
+def transcribe_audio(audio_path: str) -> AudioTranscription:
+    """Extract structured transcription from an audio file."""
+audio = Audio.from_path(audio_path)
+
+    return client.chat.completions.create(
+        model="gpt-4o-audio-preview",  # Audio-capable model
+        response_model=AudioTranscription,
+        messages=[
+            {
+                "role": "user",
+                "content": [
+                    "Transcribe this audio file and identify the speaker and language:",
+                    audio  # The Audio object is handled automatically
+                ]
+            }
+        ]
+    )
+from typing import List, Optional
+from pydantic import BaseModel, Field
+import instructor
+from openai import OpenAI
+from instructor.multimodal import Audio
+client = instructor.from_openai(OpenAI())
+class Person(BaseModel):
+    name: str = Field(description="Person's full name")
+    age: int = Field(description="Person's age in years")
+    occupation: Optional[str] = Field(None, description="Person's job or profession if mentioned")
+class MeetingPoint(BaseModel):
+    topic: str = Field(description="Topic discussed")
+    decision: Optional[str] = Field(None, description="Decision made on this topic")
+    action_items: List[str] = Field(default_factory=list, description="Action items related to this topic")
+
+class Meeting(BaseModel):
+    title: str = Field(description="Meeting title or purpose")
+    date: Optional[str] = Field(None, description="Meeting date if mentioned")
+    participants: List[str] = Field(description="Names of meeting participants")
+    key_points: List[MeetingPoint] = Field(description="Key discussion points and decisions")
+    summary: str = Field(description="Brief summary of the meeting")
+def extract_meeting_info(audio_path: str) -> Meeting:
+    """Extract structured meeting information from audio recording."""
+    audio = Audio.from_path(audio_path)
+
+    return client.chat.completions.create(
+        model="gpt-4o-audio-preview",
+        response_model=Meeting,
+        messages=[
+            {
+                "role": "system",
+                "content": "Extract detailed meeting information from this audio recording."
+            },
+            {
+                "role": "user",
+                "content": [
+                    "Extract the complete meeting details from this recording:",
+                    audio
+                ]
+            }
+        ]
+    )
+def extract_person_from_audio(audio_path: str) -> Person:
+    """Extract structured person information from audio."""
+    audio = Audio.from_path(audio_path)
+
+    return client.chat.completions.create(
+        model="gpt-4o-audio-preview",
+        response_model=Person,
+        messages=[
+            {
+                "role": "user",
+                "content": [
+                    "Extract the person's name, age, and occupation from this audio:",
+                    audio
+                ]
+            }
+        ]
+    )
+```
+
+```shell
+$ pip install instructor pydantic
+$ python audio-extraction.py
+```
+
+For more information, see the original documentation:
+- https://github.com/jxnl/instructor
+
+### PDF Extraction
+
+```python
+import instructor
+from openai import OpenAI
+from pydantic import BaseModel, Field
+from typing import List
+import tempfile
+from pdf2image import convert_from_path
+client = instructor.from_openai(OpenAI())
+class Section(BaseModel):
+    title: str = Field(description="Section title")
+    content: str = Field(description="Section content")
+
+class Document(BaseModel):
+    title: str = Field(description="Document title")
+    author: str = Field(description="Document author")
+    sections: List[Section] = Field(description="Document sections")
+    summary: str = Field(description="Brief document summary")
+def extract_from_pdf_page(pdf_path: str, page_number: int = 0) -> Document:
+    """Extract structured information from a PDF page."""
+images = convert_from_path(pdf_path, first_page=page_number+1, last_page=page_number+1)
+with tempfile.NamedTemporaryFile(suffix='.jpg', delete=False) as temp:
+        temp_path = temp.name
+        images[0].save(temp_path, 'JPEG')
+image = instructor.Image.from_path(temp_path)
+return client.chat.completions.create(
+        model="gpt-4-vision-preview",
+        response_model=Document,
+        messages=[
+            {
+                "role": "system",
+                "content": "Extract structured information from this document page."
+            },
+            {
+                "role": "user",
+                "content": [
+                    "Extract the complete document structure from this page:",
+                    image
+                ]
+            }
+        ]
+    )
+def process_pdf_document(pdf_path: str, max_pages: int = 5) -> List[Document]:
+    """Process multiple pages from a PDF document."""
+    results = []
+from pypdf import PdfReader
+    reader = PdfReader(pdf_path)
+    num_pages = len(reader.pages)
+    actual_pages = min(num_pages, max_pages)
+for i in range(actual_pages):
+        page_result = extract_from_pdf_page(pdf_path, i)
+        results.append(page_result)
+        print(f"Processed page {i+1}/{actual_pages}")
+
+    return results
+from typing import List, Optional
+from pydantic import BaseModel, Field
+import instructor
+from openai import OpenAI
+from pdf2image import convert_from_path
+import tempfile
+client = instructor.from_openai(OpenAI())
+class LineItem(BaseModel):
+    description: str = Field(description="Description of the item or service")
+    quantity: float = Field(description="Quantity of the item")
+    unit_price: float = Field(description="Price per unit")
+    amount: float = Field(description="Total amount for this line")
+
+class Invoice(BaseModel):
+    invoice_number: str = Field(description="Invoice identifier")
+    date: str = Field(description="Invoice date")
+    vendor: str = Field(description="Name of the vendor/seller")
+    customer: str = Field(description="Name of the customer/buyer")
+    items: List[LineItem] = Field(description="Line items in the invoice")
+    subtotal: float = Field(description="Sum of all items before tax")
+    tax: Optional[float] = Field(None, description="Tax amount")
+    total: float = Field(description="Total invoice amount")
+def extract_invoice(pdf_path: str) -> Invoice:
+    """Extract structured invoice data from a PDF."""
+images = convert_from_path(pdf_path, first_page=1, last_page=1)
+with tempfile.NamedTemporaryFile(suffix='.jpg', delete=False) as temp:
+        temp_path = temp.name
+        images[0].save(temp_path, 'JPEG')
+image = instructor.Image.from_path(temp_path)
+return client.chat.completions.create(
+        model="gpt-4-vision-preview",
+        response_model=Invoice,
+        messages=[
+            {
+                "role": "system",
+                "content": "You are an invoice processing assistant that extracts structured data from invoice images."
+            },
+            {
+                "role": "user",
+                "content": [
+                    "Extract complete invoice details from this document:",
+                    image
+                ]
+            }
+        ]
+    )
+```
+
+```shell
+$ pip install instructor pydantic
+$ python pdf-extraction.py
+```
+
+For more information, see the original documentation:
+- https://github.com/jxnl/instructor
+
+## Performance and Optimization
+
+Optimizing performance for production use
+
+### Caching Responses
+
+```python
+import functools
+import instructor
+from openai import OpenAI
+from pydantic import BaseModel
+client = instructor.from_openai(OpenAI())
+class User(BaseModel):
+    name: str
+    age: int
+@functools.cache
+def extract_user(text: str) -> User:
+    """Extract user information with in-memory caching."""
+    return client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        response_model=User,
+        messages=[
+            {
+                "role": "user",
+                "content": f"Extract user information from: {text}"
+            }
+        ]
+    )
+user1 = extract_user("John is 30 years old")
+print(user1)
+user2 = extract_user("John is 30 years old")
+print(user2)
+import functools
+import inspect
+import instructor
+import diskcache
+from openai import OpenAI
+from pydantic import BaseModel
+client = instructor.from_openai(OpenAI())
+cache = diskcache.Cache('./my_cache_directory')
+def instructor_cache(func):
+    """Cache a function that returns a Pydantic model."""
+    return_type = inspect.signature(func).return_annotation
+    if not issubclass(return_type, BaseModel):
+        raise ValueError("The return type must be a Pydantic model")
+
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+key = f"{func.__name__}-{functools._make_key(args, kwargs, typed=False)}"
+if (cached := cache.get(key)) is not None:
+return return_type.model_validate_json(cached)
+result = func(*args, **kwargs)
+        serialized_result = result.model_dump_json()
+        cache.set(key, serialized_result)
+
+        return result
+
+    return wrapper
+class Product(BaseModel):
+    name: str
+    price: float
+    category: str
+@instructor_cache
+def extract_product(text: str) -> Product:
+    """Extract product information with disk caching."""
+    return client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        response_model=Product,
+        messages=[
+            {
+                "role": "user",
+                "content": f"Extract product information from: {text}"
+            }
+        ]
+    )
+product = extract_product("iPhone 14 Pro costs $999 and is in the smartphones category")
+print(product)
+import redis
+import functools
+import inspect
+import instructor
+from openai import OpenAI
+from pydantic import BaseModel
+client = instructor.from_openai(OpenAI())
+cache = redis.Redis(host="localhost", port=6379, db=0)
+def redis_cache(func):
+    """Cache a function that returns a Pydantic model using Redis."""
+    return_type = inspect.signature(func).return_annotation
+    if not issubclass(return_type, BaseModel):
+        raise ValueError("The return type must be a Pydantic model")
+
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+key = f"{func.__name__}-{functools._make_key(args, kwargs, typed=False)}"
+if (cached := cache.get(key)) is not None:
+return return_type.model_validate_json(cached)
+result = func(*args, **kwargs)
+        serialized_result = result.model_dump_json()
+        cache.set(key, serialized_result)
+
+        return result
+
+    return wrapper
+```
+
+```shell
+$ pip install instructor pydantic
+$ python caching-responses.py
+```
+
+For more information, see the original documentation:
+- https://github.com/jxnl/instructor
+
+### Parallel Extraction
+
+```python
+import instructor
+from openai import OpenAI
+from typing import Iterable, Literal, Union
+from pydantic import BaseModel
+client = instructor.from_openai(OpenAI(), mode=instructor.Mode.PARALLEL_TOOLS)
+class Weather(BaseModel):
+    location: str
+    units: Literal["imperial", "metric"]
+
+class SearchQuery(BaseModel):
+    query: str
+def extract_parallel_info(user_query: str) -> list[Union[Weather, SearchQuery]]:
+    function_calls = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": "You must always use tools"},
+            {
+                "role": "user",
+                "content": user_query
+            }
+        ],
+        response_model=Iterable[Weather | SearchQuery]
+    )
+return list(function_calls)
+results = extract_parallel_info(
+    "What's the weather in New York and Tokyo? Also, find information about renewable energy."
+)
+
+for result in results:
+    if isinstance(result, Weather):
+        print(f"Weather request for {result.location} in {result.units} units")
+    elif isinstance(result, SearchQuery):
+        print(f"Search query: {result.query}")
+from typing import Iterable, Union
+from pydantic import BaseModel, Field
+import instructor
+from openai import OpenAI
+client = instructor.from_openai(OpenAI(), mode=instructor.Mode.PARALLEL_TOOLS)
+class Person(BaseModel):
+    name: str
+    age: int
+    occupation: str
+
+class Company(BaseModel):
+    name: str
+    industry: str
+    year_founded: int
+
+class Location(BaseModel):
+    city: str
+    country: str
+    population: int = Field(description="Approximate population")
+def extract_entities(text: str) -> list[Union[Person, Company, Location]]:
+    results = client.chat.completions.create(
+        model="gpt-4-turbo",
+        messages=[
+            {"role": "system", "content": "Extract all relevant entities from the text."},
+            {"role": "user", "content": text}
+        ],
+        response_model=Iterable[Person | Company | Location]
+    )
+
+    return list(results)
+text = """
+John Smith is a 35-year-old software engineer living in San Francisco, USA,
+a city with about 815,000 people. He works at TechCorp, a software development
+company founded in 2005 that specializes in AI applications. His colleague
+Maria Rodriguez, 29, is a data scientist who recently moved from Madrid, Spain,
+a city of approximately 3.2 million people.
+"""
+
+entities = extract_entities(text)
+people = [e for e in entities if isinstance(e, Person)]
+companies = [e for e in entities if isinstance(e, Company)]
+locations = [e for e in entities if isinstance(e, Location)]
+
+print(f"Found {len(people)} people, {len(companies)} companies, and {len(locations)} locations")
+```
+
+```shell
+$ pip install instructor pydantic
+$ python parallel-extraction.py
+```
+
+For more information, see the original documentation:
+- https://github.com/jxnl/instructor
+
+### Batch Processing
+
+```python
+import asyncio
+import instructor
+from openai import AsyncOpenAI
+from pydantic import BaseModel, Field
+from typing import List, Tuple
+client = instructor.from_openai(AsyncOpenAI())
+sem = asyncio.Semaphore(5)
+class SentimentAnalysis(BaseModel):
+    sentiment: str = Field(description="The sentiment of the text (positive, negative, or neutral)")
+    confidence: float = Field(description="Confidence score from 0.0 to 1.0")
+    reasoning: str = Field(description="Brief explanation for the sentiment classification")
+async def analyze_sentiment(text: str) -> Tuple[str, SentimentAnalysis]:
+    async with sem:  # Rate limiting
+        result = await client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            response_model=SentimentAnalysis,
+            messages=[
+                {
+                    "role": "user",
+                    "content": f"Analyze the sentiment of this text: {text}"
+                }
+            ]
+        )
+        return text, result
+async def process_batch(texts: List[str]):
+tasks = [analyze_sentiment(text) for text in texts]
+results = []
+    for task in asyncio.as_completed(tasks):
+        original_text, sentiment = await task
+        results.append({
+            "text": original_text,
+            "sentiment": sentiment.sentiment,
+            "confidence": sentiment.confidence,
+            "reasoning": sentiment.reasoning
+        })
+
+    return results
+async def main():
+    texts = [
+        "I absolutely love this product! It's amazing.",
+        "The service was terrible and the staff was rude.",
+        "The weather is cloudy today with a chance of rain.",
+        "I'm disappointed with the quality of this item.",
+        "The conference was informative and well-organized."
+    ]
+
+    results = await process_batch(texts)
+
+    for result in results:
+        print(f"Text: {result['text']}")
+        print(f"Sentiment: {result['sentiment']} (Confidence: {result['confidence']:.2f})")
+        print(f"Reasoning: {result['reasoning']}")
+        print("-" * 50)
+if __name__ == "__main__":
+    asyncio.run(main())
+import json
+import asyncio
+import instructor
+from openai import AsyncOpenAI
+from pydantic import BaseModel, Field
+from enum import Enum
+from typing import List, Dict, Any, Optional
+client = instructor.from_openai(AsyncOpenAI())
+class Category(str, Enum):
+    PRODUCT = "PRODUCT"
+    SERVICE = "SERVICE"
+    FEATURE = "FEATURE"
+    SUPPORT = "SUPPORT"
+    OTHER = "OTHER"
+
+class FeedbackClassification(BaseModel):
+    categories: List[Category] = Field(description="Categories that apply to this feedback")
+    priority: int = Field(description="Priority score from 1-5, where 5 is highest priority", ge=1, le=5)
+    analysis: str = Field(description="Brief analysis of the feedback")
+async def process_item(item: str, retry_count: int = 2) -> Dict[str, Any]:
+    attempts = 0
+    while attempts <= retry_count:
+        try:
+            result = await client.chat.completions.create(
+                model="gpt-3.5-turbo",
+                response_model=FeedbackClassification,
+                messages=[
+                    {
+                        "role": "system",
+                        "content": "You are a customer feedback analyzer. Categorize and prioritize the feedback."
+                    },
+                    {
+                        "role": "user",
+                        "content": f"Analyze this feedback: {item}"
+                    }
+                ]
+            )
+            return {
+                "feedback": item,
+                "categories": [c.value for c in result.categories],
+                "priority": result.priority,
+                "analysis": result.analysis,
+                "status": "success"
+            }
+        except Exception as e:
+            attempts += 1
+            if attempts > retry_count:
+                return {
+                    "feedback": item,
+                    "error": str(e),
+                    "status": "failed"
+                }
+            await asyncio.sleep(1)  # Backoff before retry
+async def batch_process(items: List[str],
+                        chunk_size: int = 10,
+                        concurrency_limit: int = 5,
+                        output_file: Optional[str] = None):
+
+    sem = asyncio.Semaphore(concurrency_limit)
+    results = []
+    processed = 0
+    total = len(items)
+for i in range(0, total, chunk_size):
+        chunk = items[i:i+chunk_size]
+async def process_with_sem(item):
+            async with sem:
+                return await process_item(item)
+
+        tasks = [process_with_sem(item) for item in chunk]
+chunk_results = await asyncio.gather(*tasks)
+        results.extend(chunk_results)
+
+        processed += len(chunk)
+        print(f"Progress: {processed}/{total} ({processed/total*100:.1f}%)")
+if output_file:
+            with open(output_file, "a") as f:
+                for result in chunk_results:
+                    f.write(json.dumps(result) + "\n")
+
+    return results
+async def main():
+feedback_items = [
+        "Your app crashes every time I try to upload a photo. Please fix this ASAP!",
+        "I love the new dark mode feature. It makes the app much easier on the eyes.",
+        "The checkout process is too complicated. I gave up trying to make a purchase.",
+        "Your customer service rep was very helpful in resolving my issue.",
+]
+
+    results = await batch_process(
+        items=feedback_items,
+        output_file="feedback_results.jsonl"
+    )
+success_count = sum(1 for r in results if r["status"] == "success")
+    print(f"Successfully processed: {success_count}/{len(results)}")
+priorities = [r.get("priority", 0) for r in results if r["status"] == "success"]
+    if priorities:
+        print(f"Average priority: {sum(priorities)/len(priorities):.1f}")
+categories = {}
+    for r in results:
+        if r["status"] == "success":
+            for cat in r.get("categories", []):
+                categories[cat] = categories.get(cat, 0) + 1
+
+    print("Category distribution:")
+    for cat, count in categories.items():
+        print(f"  {cat}: {count}")
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
+```shell
+$ pip install instructor pydantic
+$ python batch-processing.py
+```
+
+For more information, see the original documentation:
+- https://github.com/jxnl/instructor
+
+### Hooks and Callbacks
+
+```python
+import instructor
+import openai
+import pprint
+from pydantic import BaseModel
+client = instructor.from_openai(openai.OpenAI())
+class User(BaseModel):
+    name: str
+    age: int
+def log_completion_kwargs(*args, **kwargs):
+    """Log all arguments passed to the completion function."""
+    print("Arguments sent to completion:")
+    pprint.pprint(kwargs)
+
+def log_completion_response(response):
+    """Log the raw response from the API."""
+    print("API Response received:")
+    print(f"Model: {response.model}")
+    print(f"Usage: {response.usage.total_tokens} tokens")
+
+def handle_error(error):
+    """Handle any errors that occur during completion."""
+    print(f"Error type: {type(error).__name__}")
+    print(f"Error message: {str(error)}")
+client.on("completion:kwargs", log_completion_kwargs)
+client.on("completion:response", log_completion_response)
+client.on("completion:error", handle_error)
+client.on("parse:error", handle_error)
+user = client.chat.completions.create(
+    model="gpt-3.5-turbo",
+    messages=[
+        {"role": "user", "content": "Extract the user info: John is 25 years old."}
+    ],
+    response_model=User
+)
+
+print("Extracted user:", user)
+client.off("completion:kwargs", log_completion_kwargs)
+client.clear("completion:error")
+client.clear()
+import time
+import instructor
+import openai
+from pydantic import BaseModel
+client = instructor.from_openai(openai.OpenAI())
+class Metrics:
+    def __init__(self):
+        self.request_times = []
+        self.token_counts = []
+        self.error_count = 0
+        self.request_start_time = None
+
+    def start_request(self, *args, **kwargs):
+        self.request_start_time = time.time()
+
+    def end_request(self, response):
+        if self.request_start_time is not None:
+            elapsed = time.time() - self.request_start_time
+            self.request_times.append(elapsed)
+            self.token_counts.append(response.usage.total_tokens)
+            print(f"Request completed in {elapsed:.2f}s, {response.usage.total_tokens} tokens")
+
+    def record_error(self, error):
+        self.error_count += 1
+        print(f"Error recorded: {str(error)}")
+
+    def report(self):
+        if not self.request_times:
+            return "No requests recorded."
+
+        avg_time = sum(self.request_times) / len(self.request_times)
+        avg_tokens = sum(self.token_counts) / len(self.token_counts)
+        total_tokens = sum(self.token_counts)
+
+        return {
+            "total_requests": len(self.request_times),
+            "avg_request_time": f"{avg_time:.2f}s",
+            "avg_tokens_per_request": int(avg_tokens),
+            "total_tokens": total_tokens,
+            "error_count": self.error_count
+        }
+metrics = Metrics()
+client.on("completion:kwargs", metrics.start_request)
+client.on("completion:response", metrics.end_request)
+client.on("completion:error", metrics.record_error)
+client.on("parse:error", metrics.record_error)
+class Product(BaseModel):
+    name: str
+    price: float
+    category: str
+
+for i, query in enumerate([
+    "iPhone 13, $799, Smartphones",
+    "Air Fryer, $129.99, Kitchen Appliances",
+    "Nike Running Shoes, $89.95, Athletic Footwear"
+]):
+    try:
+        product = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "user", "content": f"Extract product info: {query}"}
+            ],
+            response_model=Product
+        )
+        print(f"Product {i+1}: {product.name}, ${product.price}, {product.category}")
+    except Exception as e:
+        print(f"Failed to extract product {i+1}: {e}")
+performance_report = metrics.report()
+print("\nPerformance Report:")
+for key, value in performance_report.items():
+    print(f"  {key}: {value}")
+```
+
+```shell
+$ pip install instructor pydantic
+$ python hooks-and-callbacks.py
+```
+
+For more information, see the original documentation:
+- https://github.com/jxnl/instructor
+
+### Type Adapters
+
+```python
+from typing import List, Dict, Any
+from pydantic import TypeAdapter, BaseModel
+import instructor
+from openai import OpenAI
+client = instructor.from_openai(OpenAI())
+class User(BaseModel):
+    name: str
+    age: int
+    skills: List[str]
+UserListAdapter = TypeAdapter(List[User])
+def extract_users_from_text(text: str) -> List[User]:
+raw_data = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {
+                "role": "user",
+                "content": f"Extract all users from this text as a JSON array: {text}"
+            }
+        ],
+        response_format={"type": "json_object"},
+        temperature=0
+    ).choices[0].message.content
+import json
+    try:
+        data = json.loads(raw_data)
+users = UserListAdapter.validate_python(data.get("users", []))
+        return users
+    except Exception as e:
+        print(f"Error parsing data: {e}")
+        return []
+text = """
+Team members:
+- John Smith, 32 years old, skills: Python, JavaScript, Docker
+- Maria Garcia, 28 years old, skills: UX Design, Figma, HTML/CSS
+- Alex Johnson, 35 years old, skills: Project Management, Agile, Scrum
+"""
+
+users = extract_users_from_text(text)
+for user in users:
+    print(f"{user.name} ({user.age}): {', '.join(user.skills)}")
+from typing import Dict, List, Union, Any
+from pydantic import TypeAdapter, BaseModel, Field
+class Comment(BaseModel):
+    user: str
+    text: str
+    timestamp: str
+
+class Post(BaseModel):
+    id: int
+    title: str
+    content: str
+    tags: List[str]
+    comments: List[Comment]
+CommentAdapter = TypeAdapter(Comment)
+PostAdapter = TypeAdapter(Post)
+PostDictAdapter = TypeAdapter(Dict[str, Post])
+def process_comment(raw_comment: Dict[str, Any]) -> Comment:
+    return CommentAdapter.validate_python(raw_comment)
+
+def process_post(raw_post: Dict[str, Any]) -> Post:
+    return PostAdapter.validate_python(raw_post)
+
+def process_posts_dict(raw_posts: Dict[str, Any]) -> Dict[str, Post]:
+    return PostDictAdapter.validate_python(raw_posts)
+raw_comment = {
+    "user": "alice",
+    "text": "Great post!",
+    "timestamp": "2023-06-15T14:30:00Z"
+}
+
+raw_post = {
+    "id": 1,
+    "title": "Introduction to Type Adapters",
+    "content": "Type adapters are a powerful feature...",
+    "tags": ["pydantic", "python", "validation"],
+    "comments": [
+        raw_comment,
+        {"user": "bob", "text": "Thanks for sharing!", "timestamp": "2023-06-15T15:45:00Z"}
+    ]
+}
+comment = process_comment(raw_comment)
+post = process_post(raw_post)
+
+print(f"Comment by {comment.user}: {comment.text}")
+print(f"Post: {post.title} with {len(post.comments)} comments and tags: {', '.join(post.tags)}")
+from typing import List, Dict, Any, Optional
+from pydantic import TypeAdapter, BaseModel, Field
+class Address(BaseModel):
+    street: str
+    city: str
+    postal_code: str
+    country: str
+
+class ContactInfo(BaseModel):
+    email: str
+    phone: Optional[str] = None
+    address: Address
+
+class Customer(BaseModel):
+    id: str
+    name: str
+    contact_info: ContactInfo
+    account_type: str
+    active: bool
+AddressAdapter = TypeAdapter(Address)
+ContactInfoAdapter = TypeAdapter(ContactInfo)
+CustomerAdapter = TypeAdapter(Customer)
+CustomerListAdapter = TypeAdapter(List[Customer])
+def process_customers(data: Dict[str, Any]) -> List[Customer]:
+    try:
+customers_data = data.get("results", {}).get("customers", [])
+        return CustomerListAdapter.validate_python(customers_data)
+    except Exception as e:
+        print(f"Validation error: {e}")
+        return []
+api_response = {
+    "status": "success",
+    "results": {
+        "customers": [
+            {
+                "id": "cust-001",
+                "name": "Acme Corporation",
+                "contact_info": {
+                    "email": "contact@acme.com",
+                    "phone": "555-123-4567",
+                    "address": {
+                        "street": "123 Main St",
+                        "city": "San Francisco",
+                        "postal_code": "94105",
+                        "country": "USA"
+                    }
+                },
+                "account_type": "enterprise",
+                "active": True
+            },
+            {
+                "id": "cust-002",
+                "name": "Globex Inc",
+                "contact_info": {
+                    "email": "info@globex.com",
+                    "address": {
+                        "street": "456 Market St",
+                        "city": "New York",
+                        "postal_code": "10001",
+                        "country": "USA"
+                    }
+                },
+                "account_type": "small_business",
+                "active": True
+            }
+        ]
+    }
+}
+customers = process_customers(api_response)
+print(f"Processed {len(customers)} valid customers")
+for customer in customers:
+    print(f"- {customer.name} ({customer.id})")
+    print(f"  Email: {customer.contact_info.email}")
+    print(f"  Address: {customer.contact_info.address.city}, {customer.contact_info.address.country}")
+```
+
+```shell
+$ pip install instructor pydantic
+$ python type-adapters.py
+```
+
+For more information, see the original documentation:
+- https://github.com/jxnl/instructor
+
+## Miscellaneous Examples
+
+Additional examples that don't fit into other categories
+
+### Resources
+
+```shell
+$ pip install instructor pydantic
+$ python resources.py
+```
+
+For more information, see the original documentation:
+- https://github.com/instructor-ai/instructor
+- https://python.useinstructor.com/
+- https://discord.gg/bD9YE9JArw
+- https://twitter.com/jxnlco
+- https://python.useinstructor.com/blog
+- https://github.com/instructor-ai/instructor/tree/main/examples
+- https://python.useinstructor.com/
+- https://github.com/instructor-ai/instructor/issues
+- https://discord.gg/bD9YE9JArw
+- https://github.com/instructor-ai/instructor/issues/new
+- https://github.com/instructor-ai/instructor
+- https://discord.gg/bD9YE9JArw
+- https://python.useinstructor.com/blog
+- https://github.com/instructor-ai/instructor/blob/main/CONTRIBUTING.md
+- https://github.com/instructor-ai/instructor/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22
+- https://docs.pydantic.dev/
+

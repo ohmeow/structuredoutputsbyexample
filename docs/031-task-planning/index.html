@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Planning - Structured Outputs by Example</title>
+    <meta name="description" content="Learn to work with structured outputs through annotated examples">
+    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css'>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js'></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/firacode@6.2.0/distr/fira_code.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap');
+        
+        code, pre code, .hljs {
+            font-family: 'Fira Code', 'JetBrains Mono', monospace;
+            font-feature-settings: "liga" 1;
+        }
+        
+        @supports (font-variation-settings: normal) {
+            code, pre code, .hljs {
+                font-family: 'Fira Code VF', 'JetBrains Mono', monospace;
+            }
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            hljs.highlightAll();
+        });
+    </script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            line-height: 1.5;
+            color: #222;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        header {
+            border-bottom: 1px solid #eee;
+            padding: 15px 0;
+            margin-bottom: 20px;
+        }
+        .site-title {
+            text-decoration: none;
+            color: #0066CC;
+            font-weight: 500;
+            font-size: 20px;
+        }
+        main {
+            padding-bottom: 40px;
+        }
+        footer {
+            border-top: 1px solid #eee;
+            padding: 15px 0;
+            margin-top: 20px;
+            color: #666;
+            font-size: 0.9em;
+        }
+        h1 {
+            font-size: 36px;
+            font-weight: 500;
+            margin: 0 0 25px 0;
+            color: #333;
+        }
+        p {
+            margin: 20px 0;
+            color: #444;
+            line-height: 1.6;
+        }
+        a {
+            color: #0066CC;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .example-link {
+            margin: 4px 0;
+            line-height: 1.3;
+        }
+        .row {
+            display: flex;
+            width: 100%;
+            margin-bottom: 30px;
+            gap: 40px;
+        }
+        .docs {
+            flex: 0.75;
+            min-width: 0;
+            color: #444;
+            line-height: 1.6;
+            font-size: 1em;
+        }
+        .code {
+            flex: 2.25;
+            min-width: 0;
+            position: relative;
+        }
+        pre {
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f8f8;
+            border-radius: 5px;
+            overflow-x: auto;
+            line-height: 1.5;
+        }
+        /* Prevent double styling from highlight.js */
+        pre code.hljs, pre code {
+            background-color: transparent;
+            padding: 0;
+            margin: 0;
+            border: none;
+        }
+        .leading {
+            margin-bottom: 5px;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid #eee;
+            margin: 20px 0;
+        }
+        .buttons {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            z-index: 10;
+        }
+        .copy {
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+            opacity: 0.6;
+            color: #666;
+            background-color: #f8f8f8;
+            border-radius: 3px;
+            padding: 3px;
+        }
+        .copy:hover {
+            opacity: 1;
+            color: #0066CC;
+        }
+        .tooltip {
+            position: absolute;
+            background: #333;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            top: -25px;
+            right: 0;
+        }
+        .command-prompt {
+            color: #888;
+        }
+        .command-text {
+            font-weight: bold;
+        }
+        .navigation {
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        .prev, .next {
+            margin: 5px 0;
+            font-weight: 500;
+        }
+        .prev {
+            margin-right: auto;
+        }
+        .next {
+            margin-left: auto;
+        }
+        .prev span, .next span {
+            color: #666;
+            font-weight: normal;
+        }
+        @media (max-width: 900px) {
+            .row {
+                flex-direction: column;
+            }
+            .docs, .code {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="../" class="site-title">Structured Outputs by Example</a>
+        </header>
+        <main>
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
+                <div>
+                    <div style="margin-bottom: 10px; color: #666; font-size: 0.9em;">
+                        <a href="../" style="text-decoration: none; color: #666;">Advanced Structures</a>
+                    </div>
+                    <h1 style="margin: 0; margin-bottom: 10px;">Task Planning</h1>
+                </div>
+                <div style="position: relative; margin-top: 10px;">
+                    <button id="copy-all-python" style="background-color: #f1f8ff; border: 1px solid #c8e1ff; border-radius: 6px; padding: 6px 12px; font-size: 14px; color: #0066CC; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16 1H4C2.9 1 2 1.9 2 3V17H4V3H16V1ZM19 5H8C6.9 5 6 5.9 6 7V21C6 22.1 6.9 23 8 23H19C20.1 23 21 22.1 21 21V7C21 5.9 20.1 5 19 5ZM19 21H8V7H19V21Z" fill="currentColor"/>
+                        </svg>
+                        Copy All Python
+                    </button>
+                    <div id="all-python-code" style="display: none;">import asyncio
+import instructor
+from openai import OpenAI
+from pydantic import BaseModel, Field
+client = instructor.from_openai(OpenAI())
+class TaskResult(BaseModel):
+    task_id: int
+    result: str
+
+class TaskResults(BaseModel):
+    results: list[TaskResult]
+class Task(BaseModel):
+    id: int = Field(..., description=&quot;Unique id of the task&quot;)
+    task: str = Field(..., description=&quot;The task to be performed&quot;)
+    subtasks: list[int] = Field(
+        default_factory=list,
+        description=&quot;IDs of subtasks that must be completed before this task&quot;
+    )
+
+    async def execute(self, with_results: TaskResults) -&gt; TaskResult:
+        &quot;&quot;&quot;Execute this task and return the result.&quot;&quot;&quot;
+return TaskResult(task_id=self.id, result=f&quot;Result for task: {self.task}&quot;)
+class TaskPlan(BaseModel):
+    task_graph: list[Task] = Field(
+        ...,
+        description=&quot;List of tasks and their dependencies&quot;
+    )
+
+    def _get_execution_order(self) -&gt; list[int]:
+        &quot;&quot;&quot;Compute topological sort of tasks based on dependencies.&quot;&quot;&quot;
+        dep_graph = {task.id: set(task.subtasks) for task in self.task_graph}
+        result = []
+
+        while dep_graph:
+available = {task_id for task_id, deps in dep_graph.items() if not deps}
+            if not available:
+                raise ValueError(&quot;Circular dependency detected in tasks&quot;)
+result.extend(sorted(available))
+dep_graph = {
+                task_id: (deps - available)
+                for task_id, deps in dep_graph.items()
+                if task_id not in available
+            }
+
+        return result
+
+    async def execute(self) -&gt; dict[int, TaskResult]:
+        &quot;&quot;&quot;Execute all tasks in dependency order.&quot;&quot;&quot;
+        execution_order = self._get_execution_order()
+        tasks_by_id = {task.id: task for task in self.task_graph}
+        results = {}
+
+        while len(results) &lt; len(self.task_graph):
+ready_tasks = [
+                tasks_by_id[task_id]
+                for task_id in execution_order
+                if task_id not in results and
+                all(dep_id in results for dep_id in tasks_by_id[task_id].subtasks)
+            ]
+new_results = await asyncio.gather(*[
+                task.execute(
+                    with_results=TaskResults(
+                        results=[
+                            results[dep_id]
+                            for dep_id in task.subtasks
+                        ]
+                    )
+                )
+                for task in ready_tasks
+            ])
+for result in new_results:
+                results[result.task_id] = result
+
+        return results
+def create_task_plan(question: str) -&gt; TaskPlan:
+    return client.chat.completions.create(
+        model=&quot;gpt-4&quot;,
+        messages=[
+            {
+                &quot;role&quot;: &quot;system&quot;,
+                &quot;content&quot;: &quot;Create a detailed task plan to answer the user&#x27;s question. Break down the problem into smaller, dependent tasks.&quot;
+            },
+            {
+                &quot;role&quot;: &quot;user&quot;,
+                &quot;content&quot;: question
+            }
+        ],
+        response_model=TaskPlan
+    )
+async def main():
+    plan = create_task_plan(
+        &quot;What is the economic impact of renewable energy adoption in developing countries?&quot;
+    )
+    print(&quot;Task Plan:&quot;)
+    for task in plan.task_graph:
+        deps = f&quot; (depends on: {task.subtasks})&quot; if task.subtasks else &quot;&quot;
+        print(f&quot;Task {task.id}: {task.task}{deps}&quot;)
+
+    print(&quot;\nExecuting plan...&quot;)
+    results = await plan.execute()
+
+    print(&quot;\nResults:&quot;)
+    for task_id, result in sorted(results.items()):
+        print(f&quot;Task {task_id}: {result.result}&quot;)
+if __name__ == &quot;__main__&quot;:
+    asyncio.run(main())
+</div>
+                </div>            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Instructor can be used to create sophisticated task planning systems that break down complex problems into manageable subtasks. This example shows how to implement a task planner with dependencies and execute them in the correct order.</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">import asyncio
+import instructor
+from openai import OpenAI
+from pydantic import BaseModel, Field</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Initialize the client with instructor</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">client = instructor.from_openai(OpenAI())</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Define models for task results</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">class TaskResult(BaseModel):
+    task_id: int
+    result: str
+
+class TaskResults(BaseModel):
+    results: list[TaskResult]</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Define the Task model</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">class Task(BaseModel):
+    id: int = Field(..., description=&quot;Unique id of the task&quot;)
+    task: str = Field(..., description=&quot;The task to be performed&quot;)
+    subtasks: list[int] = Field(
+        default_factory=list,
+        description=&quot;IDs of subtasks that must be completed before this task&quot;
+    )
+
+    async def execute(self, with_results: TaskResults) -&gt; TaskResult:
+        &quot;&quot;&quot;Execute this task and return the result.&quot;&quot;&quot;</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>In a real implementation, this would perform the actual task
+Here we just return a placeholder result</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">return TaskResult(task_id=self.id, result=f&quot;Result for task: {self.task}&quot;)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Define the TaskPlan model</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">class TaskPlan(BaseModel):
+    task_graph: list[Task] = Field(
+        ...,
+        description=&quot;List of tasks and their dependencies&quot;
+    )
+
+    def _get_execution_order(self) -&gt; list[int]:
+        &quot;&quot;&quot;Compute topological sort of tasks based on dependencies.&quot;&quot;&quot;
+        dep_graph = {task.id: set(task.subtasks) for task in self.task_graph}
+        result = []
+
+        while dep_graph:</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Find tasks with no remaining dependencies</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">available = {task_id for task_id, deps in dep_graph.items() if not deps}
+            if not available:
+                raise ValueError(&quot;Circular dependency detected in tasks&quot;)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Add them to the result</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">result.extend(sorted(available))</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Remove these tasks from the graph</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">dep_graph = {
+                task_id: (deps - available)
+                for task_id, deps in dep_graph.items()
+                if task_id not in available
+            }
+
+        return result
+
+    async def execute(self) -&gt; dict[int, TaskResult]:
+        &quot;&quot;&quot;Execute all tasks in dependency order.&quot;&quot;&quot;
+        execution_order = self._get_execution_order()
+        tasks_by_id = {task.id: task for task in self.task_graph}
+        results = {}
+
+        while len(results) &lt; len(self.task_graph):</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Find tasks ready to execute (all dependencies satisfied)</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">ready_tasks = [
+                tasks_by_id[task_id]
+                for task_id in execution_order
+                if task_id not in results and
+                all(dep_id in results for dep_id in tasks_by_id[task_id].subtasks)
+            ]</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Execute tasks in parallel</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">new_results = await asyncio.gather(*[
+                task.execute(
+                    with_results=TaskResults(
+                        results=[
+                            results[dep_id]
+                            for dep_id in task.subtasks
+                        ]
+                    )
+                )
+                for task in ready_tasks
+            ])</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Store results</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">for result in new_results:
+                results[result.task_id] = result
+
+        return results</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Generate a task plan for a complex question</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">def create_task_plan(question: str) -&gt; TaskPlan:
+    return client.chat.completions.create(
+        model=&quot;gpt-4&quot;,
+        messages=[
+            {
+                &quot;role&quot;: &quot;system&quot;,
+                &quot;content&quot;: &quot;Create a detailed task plan to answer the user&#x27;s question. Break down the problem into smaller, dependent tasks.&quot;
+            },
+            {
+                &quot;role&quot;: &quot;user&quot;,
+                &quot;content&quot;: question
+            }
+        ],
+        response_model=TaskPlan
+    )</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Example usage</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">async def main():
+    plan = create_task_plan(
+        &quot;What is the economic impact of renewable energy adoption in developing countries?&quot;
+    )
+    print(&quot;Task Plan:&quot;)
+    for task in plan.task_graph:
+        deps = f&quot; (depends on: {task.subtasks})&quot; if task.subtasks else &quot;&quot;
+        print(f&quot;Task {task.id}: {task.task}{deps}&quot;)
+
+    print(&quot;\nExecuting plan...&quot;)
+    results = await plan.execute()
+
+    print(&quot;\nResults:&quot;)
+    for task_id, result in sorted(results.items()):
+        print(f&quot;Task {task_id}: {result.result}&quot;)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Run the example</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">if __name__ == &quot;__main__&quot;:
+    asyncio.run(main())</code></pre>
+                </div>
+            </div>
+            <hr>
+            <h2>Running the Example</h2>
+            <div class="row">
+                <div class="docs" style='font-size: 0.9em; color: #666;'>
+                    First, install Instructor and any dependencies
+                </div>
+                <div class="code">
+                    <div class="buttons">
+                        <svg class="copy" title="Copy command" onclick="copyCode(this)" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16 1H4C2.9 1 2 1.9 2 3V17H4V3H16V1ZM19 5H8C6.9 5 6 5.9 6 7V21C6 22.1 6.9 23 8 23H19C20.1 23 21 22.1 21 21V7C21 5.9 20.1 5 19 5ZM19 21H8V7H19V21Z" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <pre><code class="language-shell"><span><span class="command-prompt">$ </span><span class="command-text">pip install instructor pydantic</span></span>
+</code></pre>
+                </div>
+            </div>
+            <div class="row">
+                <div class="docs" style='font-size: 0.9em; color: #666;'>
+                    Run the Python script
+                </div>
+                <div class="code">
+                    <div class="buttons">
+                        <svg class="copy" title="Copy command" onclick="copyCode(this)" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16 1H4C2.9 1 2 1.9 2 3V17H4V3H16V1ZM19 5H8C6.9 5 6 5.9 6 7V21C6 22.1 6.9 23 8 23H19C20.1 23 21 22.1 21 21V7C21 5.9 20.1 5 19 5ZM19 21H8V7H19V21Z" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <pre><code class="language-shell"><span><span class="command-prompt">$ </span><span class="command-text">python task-planning.py</span></span>
+</code></pre>
+                </div>
+            </div>
+            <hr>
+            <h4>Further Information</h4>
+            <ul style="font-size: 0.9em;">
+                <li><a href="https://github.com/jxnl/instructor"
+                         target="_blank">Documentation link 1</a></li>
+            </ul>
+            <div class="navigation">
+                <p class="prev">
+                    <span>← Previous:</span> <a href="../030-dependency-trees/">Dependency Trees</a>
+                </p>
+                <p class="next">
+                    <span>Next:</span> <a href="../032-document-structure/">Document Structure</a> →
+                </p>
+            </div>
+        </main>
+        <footer>
+            <p>by <a href="https://github.com/jxnl/instructor">Instructor</a> | <a href="https://github.com/jxnl/instructor">GitHub</a> | <span style="color: #888; font-size: 0.9em;">Last updated: April 9, 2025</span></p>
+        </footer>
+    </div>
+    <script>
+        // Function to copy code to clipboard
+        function copyCode(button) {
+            const codeBlock = button.closest('.code').querySelector('pre');
+            const code = codeBlock.textContent;
+            copyToClipboard(code, button);
+        }
+        
+        // Function to copy all Python code
+        document.addEventListener('DOMContentLoaded', function() {
+            const copyAllButton = document.getElementById('copy-all-python');
+            if (copyAllButton) {
+                copyAllButton.addEventListener('click', function() {
+                    const allCodeElement = document.getElementById('all-python-code');
+                    const code = allCodeElement.textContent;
+                    copyToClipboard(code, copyAllButton);
+                });
+            }
+        });
+        
+        // Shared function to copy text and show tooltip
+        function copyToClipboard(text, element) {
+            // For older browsers, fallback to textarea method
+            if (!navigator.clipboard) {
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                textArea.style.position = 'fixed';  // Avoid scrolling to bottom
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                
+                try {
+                    document.execCommand('copy');
+                    showTooltip(element, 'Copied!');
+                } catch (err) {
+                    console.error('Failed to copy text: ', err);
+                    showTooltip(element, 'Error!');
+                }
+                
+                document.body.removeChild(textArea);
+                return;
+            }
+            
+            // Use clipboard API if available
+            navigator.clipboard.writeText(text).then(() => {
+                showTooltip(element, 'Copied!');
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+                showTooltip(element, 'Error!');
+            });
+        }
+        
+        // Helper to show tooltip
+        function showTooltip(element, message) {
+            // Check if there's already a tooltip
+            let tooltip = element.parentElement.querySelector('.tooltip');
+            if (tooltip) {
+                tooltip.textContent = message;
+            } else {
+                // Create and append new tooltip
+                tooltip = document.createElement('span');
+                tooltip.textContent = message;
+                tooltip.className = 'tooltip';
+                tooltip.style.position = 'absolute';
+                tooltip.style.background = '#333';
+                tooltip.style.color = 'white';
+                tooltip.style.padding = '2px 8px';
+                tooltip.style.borderRadius = '4px';
+                tooltip.style.fontSize = '12px';
+                tooltip.style.top = '-25px';
+                tooltip.style.right = '0';
+                
+                // Make sure the parent has position relative for tooltip positioning
+                if (getComputedStyle(element.parentElement).position === 'static') {
+                    element.parentElement.style.position = 'relative';
+                }
+                
+                element.parentElement.appendChild(tooltip);
+            }
+            
+            // Remove tooltip after 1.5 seconds
+            setTimeout(() => tooltip.remove(), 1500);
+        }
+
+        // Enable keyboard navigation between examples
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey || e.altKey || e.shiftKey || e.metaKey) {
+                return;
+            }
+            
+            if (e.key === 'ArrowRight') {
+                const nextLink = document.querySelector('.next a');
+                if (nextLink) {
+                    window.location.href = nextLink.getAttribute('href');
+                }
+            }
+            
+            if (e.key === 'ArrowLeft') {
+                const prevLink = document.querySelector('.prev a');
+                if (prevLink) {
+                    window.location.href = prevLink.getAttribute('href');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

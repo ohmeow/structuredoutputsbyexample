@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Knowledge Graphs - Structured Outputs by Example</title>
+    <meta name="description" content="Learn to work with structured outputs through annotated examples">
+    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css'>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js'></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/firacode@6.2.0/distr/fira_code.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap');
+        
+        code, pre code, .hljs {
+            font-family: 'Fira Code', 'JetBrains Mono', monospace;
+            font-feature-settings: "liga" 1;
+        }
+        
+        @supports (font-variation-settings: normal) {
+            code, pre code, .hljs {
+                font-family: 'Fira Code VF', 'JetBrains Mono', monospace;
+            }
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            hljs.highlightAll();
+        });
+    </script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            line-height: 1.5;
+            color: #222;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        header {
+            border-bottom: 1px solid #eee;
+            padding: 15px 0;
+            margin-bottom: 20px;
+        }
+        .site-title {
+            text-decoration: none;
+            color: #0066CC;
+            font-weight: 500;
+            font-size: 20px;
+        }
+        main {
+            padding-bottom: 40px;
+        }
+        footer {
+            border-top: 1px solid #eee;
+            padding: 15px 0;
+            margin-top: 20px;
+            color: #666;
+            font-size: 0.9em;
+        }
+        h1 {
+            font-size: 36px;
+            font-weight: 500;
+            margin: 0 0 25px 0;
+            color: #333;
+        }
+        p {
+            margin: 20px 0;
+            color: #444;
+            line-height: 1.6;
+        }
+        a {
+            color: #0066CC;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .example-link {
+            margin: 4px 0;
+            line-height: 1.3;
+        }
+        .row {
+            display: flex;
+            width: 100%;
+            margin-bottom: 30px;
+            gap: 40px;
+        }
+        .docs {
+            flex: 0.75;
+            min-width: 0;
+            color: #444;
+            line-height: 1.6;
+            font-size: 1em;
+        }
+        .code {
+            flex: 2.25;
+            min-width: 0;
+            position: relative;
+        }
+        pre {
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f8f8;
+            border-radius: 5px;
+            overflow-x: auto;
+            line-height: 1.5;
+        }
+        /* Prevent double styling from highlight.js */
+        pre code.hljs, pre code {
+            background-color: transparent;
+            padding: 0;
+            margin: 0;
+            border: none;
+        }
+        .leading {
+            margin-bottom: 5px;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid #eee;
+            margin: 20px 0;
+        }
+        .buttons {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            z-index: 10;
+        }
+        .copy {
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+            opacity: 0.6;
+            color: #666;
+            background-color: #f8f8f8;
+            border-radius: 3px;
+            padding: 3px;
+        }
+        .copy:hover {
+            opacity: 1;
+            color: #0066CC;
+        }
+        .tooltip {
+            position: absolute;
+            background: #333;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            top: -25px;
+            right: 0;
+        }
+        .command-prompt {
+            color: #888;
+        }
+        .command-text {
+            font-weight: bold;
+        }
+        .navigation {
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        .prev, .next {
+            margin: 5px 0;
+            font-weight: 500;
+        }
+        .prev {
+            margin-right: auto;
+        }
+        .next {
+            margin-left: auto;
+        }
+        .prev span, .next span {
+            color: #666;
+            font-weight: normal;
+        }
+        @media (max-width: 900px) {
+            .row {
+                flex-direction: column;
+            }
+            .docs, .code {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="../" class="site-title">Structured Outputs by Example</a>
+        </header>
+        <main>
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
+                <div>
+                    <div style="margin-bottom: 10px; color: #666; font-size: 0.9em;">
+                        <a href="../" style="text-decoration: none; color: #666;">Advanced Structures</a>
+                    </div>
+                    <h1 style="margin: 0; margin-bottom: 10px;">Knowledge Graphs</h1>
+                </div>
+                <div style="position: relative; margin-top: 10px;">
+                    <button id="copy-all-python" style="background-color: #f1f8ff; border: 1px solid #c8e1ff; border-radius: 6px; padding: 6px 12px; font-size: 14px; color: #0066CC; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16 1H4C2.9 1 2 1.9 2 3V17H4V3H16V1ZM19 5H8C6.9 5 6 5.9 6 7V21C6 22.1 6.9 23 8 23H19C20.1 23 21 22.1 21 21V7C21 5.9 20.1 5 19 5ZM19 21H8V7H19V21Z" fill="currentColor"/>
+                        </svg>
+                        Copy All Python
+                    </button>
+                    <div id="all-python-code" style="display: none;">import instructor
+from openai import OpenAI
+from pydantic import BaseModel, Field
+client = instructor.from_openai(OpenAI())
+class Node(BaseModel):
+    id: int
+    label: str
+    color: str
+class Edge(BaseModel):
+    source: int
+    target: int
+    label: str
+    color: str = &quot;black&quot;
+class KnowledgeGraph(BaseModel):
+    nodes: list[Node] = Field(..., default_factory=list)
+    edges: list[Edge] = Field(..., default_factory=list)
+def generate_knowledge_graph(input_text: str) -&gt; KnowledgeGraph:
+    return client.chat.completions.create(
+        model=&quot;gpt-3.5-turbo&quot;,
+        messages=[
+            {
+                &quot;role&quot;: &quot;user&quot;,
+                &quot;content&quot;: f&quot;Create a detailed knowledge graph for: {input_text}&quot;
+            }
+        ],
+        response_model=KnowledgeGraph
+    )
+graph = generate_knowledge_graph(&quot;Quantum mechanics and its applications&quot;)
+for node in graph.nodes:
+    print(f&quot;Node {node.id}: {node.label} ({node.color})&quot;)
+
+for edge in graph.edges:
+    print(f&quot;Edge: {edge.source} --({edge.label})--&gt; {edge.target}&quot;)
+from graphviz import Digraph
+
+def visualize_knowledge_graph(kg: KnowledgeGraph):
+    dot = Digraph(comment=&quot;Knowledge Graph&quot;)
+for node in kg.nodes:
+        dot.node(str(node.id), node.label, color=node.color)
+for edge in kg.edges:
+        dot.edge(str(edge.source), str(edge.target),
+                 label=edge.label, color=edge.color)
+dot.render(&quot;knowledge_graph.gv&quot;, view=True)
+visualize_knowledge_graph(graph)
+</div>
+                </div>            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Instructor can be used to extract structured knowledge graphs from text. A knowledge graph represents entities and their relationships, making complex information easier to understand and visualize.</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">import instructor
+from openai import OpenAI
+from pydantic import BaseModel, Field</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Initialize the client with instructor</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">client = instructor.from_openai(OpenAI())</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Define the node structure</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">class Node(BaseModel):
+    id: int
+    label: str
+    color: str</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Define the edge structure</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">class Edge(BaseModel):
+    source: int
+    target: int
+    label: str
+    color: str = &quot;black&quot;</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Define the knowledge graph structure</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">class KnowledgeGraph(BaseModel):
+    nodes: list[Node] = Field(..., default_factory=list)
+    edges: list[Edge] = Field(..., default_factory=list)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Extract a knowledge graph from text</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">def generate_knowledge_graph(input_text: str) -&gt; KnowledgeGraph:
+    return client.chat.completions.create(
+        model=&quot;gpt-3.5-turbo&quot;,
+        messages=[
+            {
+                &quot;role&quot;: &quot;user&quot;,
+                &quot;content&quot;: f&quot;Create a detailed knowledge graph for: {input_text}&quot;
+            }
+        ],
+        response_model=KnowledgeGraph
+    )</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Example usage</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">graph = generate_knowledge_graph(&quot;Quantum mechanics and its applications&quot;)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Print the nodes and edges</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">for node in graph.nodes:
+    print(f&quot;Node {node.id}: {node.label} ({node.color})&quot;)
+
+for edge in graph.edges:
+    print(f&quot;Edge: {edge.source} --({edge.label})--&gt; {edge.target}&quot;)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>To visualize the knowledge graph, you can use libraries like graphviz:</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">from graphviz import Digraph
+
+def visualize_knowledge_graph(kg: KnowledgeGraph):
+    dot = Digraph(comment=&quot;Knowledge Graph&quot;)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Add nodes</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">for node in kg.nodes:
+        dot.node(str(node.id), node.label, color=node.color)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Add edges</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">for edge in kg.edges:
+        dot.edge(str(edge.source), str(edge.target),
+                 label=edge.label, color=edge.color)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Render the graph</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">dot.render(&quot;knowledge_graph.gv&quot;, view=True)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Visualize the graph</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">visualize_knowledge_graph(graph)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <h2>Running the Example</h2>
+            <div class="row">
+                <div class="docs" style='font-size: 0.9em; color: #666;'>
+                    First, install Instructor and any dependencies
+                </div>
+                <div class="code">
+                    <div class="buttons">
+                        <svg class="copy" title="Copy command" onclick="copyCode(this)" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16 1H4C2.9 1 2 1.9 2 3V17H4V3H16V1ZM19 5H8C6.9 5 6 5.9 6 7V21C6 22.1 6.9 23 8 23H19C20.1 23 21 22.1 21 21V7C21 5.9 20.1 5 19 5ZM19 21H8V7H19V21Z" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <pre><code class="language-shell"><span><span class="command-prompt">$ </span><span class="command-text">pip install instructor pydantic</span></span>
+</code></pre>
+                </div>
+            </div>
+            <div class="row">
+                <div class="docs" style='font-size: 0.9em; color: #666;'>
+                    Run the Python script
+                </div>
+                <div class="code">
+                    <div class="buttons">
+                        <svg class="copy" title="Copy command" onclick="copyCode(this)" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16 1H4C2.9 1 2 1.9 2 3V17H4V3H16V1ZM19 5H8C6.9 5 6 5.9 6 7V21C6 22.1 6.9 23 8 23H19C20.1 23 21 22.1 21 21V7C21 5.9 20.1 5 19 5ZM19 21H8V7H19V21Z" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <pre><code class="language-shell"><span><span class="command-prompt">$ </span><span class="command-text">python knowledge-graphs.py</span></span>
+</code></pre>
+                </div>
+            </div>
+            <hr>
+            <h4>Further Information</h4>
+            <ul style="font-size: 0.9em;">
+                <li><a href="https://github.com/jxnl/instructor"
+                         target="_blank">Documentation link 1</a></li>
+            </ul>
+            <div class="navigation">
+                <p class="prev">
+                    <span>← Previous:</span> <a href="../028-recursive-structures/">Recursive Structures</a>
+                </p>
+                <p class="next">
+                    <span>Next:</span> <a href="../030-dependency-trees/">Dependency Trees</a> →
+                </p>
+            </div>
+        </main>
+        <footer>
+            <p>by <a href="https://github.com/jxnl/instructor">Instructor</a> | <a href="https://github.com/jxnl/instructor">GitHub</a> | <span style="color: #888; font-size: 0.9em;">Last updated: April 9, 2025</span></p>
+        </footer>
+    </div>
+    <script>
+        // Function to copy code to clipboard
+        function copyCode(button) {
+            const codeBlock = button.closest('.code').querySelector('pre');
+            const code = codeBlock.textContent;
+            copyToClipboard(code, button);
+        }
+        
+        // Function to copy all Python code
+        document.addEventListener('DOMContentLoaded', function() {
+            const copyAllButton = document.getElementById('copy-all-python');
+            if (copyAllButton) {
+                copyAllButton.addEventListener('click', function() {
+                    const allCodeElement = document.getElementById('all-python-code');
+                    const code = allCodeElement.textContent;
+                    copyToClipboard(code, copyAllButton);
+                });
+            }
+        });
+        
+        // Shared function to copy text and show tooltip
+        function copyToClipboard(text, element) {
+            // For older browsers, fallback to textarea method
+            if (!navigator.clipboard) {
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                textArea.style.position = 'fixed';  // Avoid scrolling to bottom
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                
+                try {
+                    document.execCommand('copy');
+                    showTooltip(element, 'Copied!');
+                } catch (err) {
+                    console.error('Failed to copy text: ', err);
+                    showTooltip(element, 'Error!');
+                }
+                
+                document.body.removeChild(textArea);
+                return;
+            }
+            
+            // Use clipboard API if available
+            navigator.clipboard.writeText(text).then(() => {
+                showTooltip(element, 'Copied!');
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+                showTooltip(element, 'Error!');
+            });
+        }
+        
+        // Helper to show tooltip
+        function showTooltip(element, message) {
+            // Check if there's already a tooltip
+            let tooltip = element.parentElement.querySelector('.tooltip');
+            if (tooltip) {
+                tooltip.textContent = message;
+            } else {
+                // Create and append new tooltip
+                tooltip = document.createElement('span');
+                tooltip.textContent = message;
+                tooltip.className = 'tooltip';
+                tooltip.style.position = 'absolute';
+                tooltip.style.background = '#333';
+                tooltip.style.color = 'white';
+                tooltip.style.padding = '2px 8px';
+                tooltip.style.borderRadius = '4px';
+                tooltip.style.fontSize = '12px';
+                tooltip.style.top = '-25px';
+                tooltip.style.right = '0';
+                
+                // Make sure the parent has position relative for tooltip positioning
+                if (getComputedStyle(element.parentElement).position === 'static') {
+                    element.parentElement.style.position = 'relative';
+                }
+                
+                element.parentElement.appendChild(tooltip);
+            }
+            
+            // Remove tooltip after 1.5 seconds
+            setTimeout(() => tooltip.remove(), 1500);
+        }
+
+        // Enable keyboard navigation between examples
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey || e.altKey || e.shiftKey || e.metaKey) {
+                return;
+            }
+            
+            if (e.key === 'ArrowRight') {
+                const nextLink = document.querySelector('.next a');
+                if (nextLink) {
+                    window.location.href = nextLink.getAttribute('href');
+                }
+            }
+            
+            if (e.key === 'ArrowLeft') {
+                const prevLink = document.querySelector('.prev a');
+                if (prevLink) {
+                    window.location.href = prevLink.getAttribute('href');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

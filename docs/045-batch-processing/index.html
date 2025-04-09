@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Batch Processing - Structured Outputs by Example</title>
+    <meta name="description" content="Learn to work with structured outputs through annotated examples">
+    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css'>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js'></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/firacode@6.2.0/distr/fira_code.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap');
+        
+        code, pre code, .hljs {
+            font-family: 'Fira Code', 'JetBrains Mono', monospace;
+            font-feature-settings: "liga" 1;
+        }
+        
+        @supports (font-variation-settings: normal) {
+            code, pre code, .hljs {
+                font-family: 'Fira Code VF', 'JetBrains Mono', monospace;
+            }
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            hljs.highlightAll();
+        });
+    </script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            line-height: 1.5;
+            color: #222;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        header {
+            border-bottom: 1px solid #eee;
+            padding: 15px 0;
+            margin-bottom: 20px;
+        }
+        .site-title {
+            text-decoration: none;
+            color: #0066CC;
+            font-weight: 500;
+            font-size: 20px;
+        }
+        main {
+            padding-bottom: 40px;
+        }
+        footer {
+            border-top: 1px solid #eee;
+            padding: 15px 0;
+            margin-top: 20px;
+            color: #666;
+            font-size: 0.9em;
+        }
+        h1 {
+            font-size: 36px;
+            font-weight: 500;
+            margin: 0 0 25px 0;
+            color: #333;
+        }
+        p {
+            margin: 20px 0;
+            color: #444;
+            line-height: 1.6;
+        }
+        a {
+            color: #0066CC;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .example-link {
+            margin: 4px 0;
+            line-height: 1.3;
+        }
+        .row {
+            display: flex;
+            width: 100%;
+            margin-bottom: 30px;
+            gap: 40px;
+        }
+        .docs {
+            flex: 0.75;
+            min-width: 0;
+            color: #444;
+            line-height: 1.6;
+            font-size: 1em;
+        }
+        .code {
+            flex: 2.25;
+            min-width: 0;
+            position: relative;
+        }
+        pre {
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f8f8;
+            border-radius: 5px;
+            overflow-x: auto;
+            line-height: 1.5;
+        }
+        /* Prevent double styling from highlight.js */
+        pre code.hljs, pre code {
+            background-color: transparent;
+            padding: 0;
+            margin: 0;
+            border: none;
+        }
+        .leading {
+            margin-bottom: 5px;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid #eee;
+            margin: 20px 0;
+        }
+        .buttons {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            z-index: 10;
+        }
+        .copy {
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+            opacity: 0.6;
+            color: #666;
+            background-color: #f8f8f8;
+            border-radius: 3px;
+            padding: 3px;
+        }
+        .copy:hover {
+            opacity: 1;
+            color: #0066CC;
+        }
+        .tooltip {
+            position: absolute;
+            background: #333;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            top: -25px;
+            right: 0;
+        }
+        .command-prompt {
+            color: #888;
+        }
+        .command-text {
+            font-weight: bold;
+        }
+        .navigation {
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        .prev, .next {
+            margin: 5px 0;
+            font-weight: 500;
+        }
+        .prev {
+            margin-right: auto;
+        }
+        .next {
+            margin-left: auto;
+        }
+        .prev span, .next span {
+            color: #666;
+            font-weight: normal;
+        }
+        @media (max-width: 900px) {
+            .row {
+                flex-direction: column;
+            }
+            .docs, .code {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="../" class="site-title">Structured Outputs by Example</a>
+        </header>
+        <main>
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
+                <div>
+                    <div style="margin-bottom: 10px; color: #666; font-size: 0.9em;">
+                        <a href="../" style="text-decoration: none; color: #666;">Performance and Optimization</a>
+                    </div>
+                    <h1 style="margin: 0; margin-bottom: 10px;">Batch Processing</h1>
+                </div>
+                <div style="position: relative; margin-top: 10px;">
+                    <button id="copy-all-python" style="background-color: #f1f8ff; border: 1px solid #c8e1ff; border-radius: 6px; padding: 6px 12px; font-size: 14px; color: #0066CC; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16 1H4C2.9 1 2 1.9 2 3V17H4V3H16V1ZM19 5H8C6.9 5 6 5.9 6 7V21C6 22.1 6.9 23 8 23H19C20.1 23 21 22.1 21 21V7C21 5.9 20.1 5 19 5ZM19 21H8V7H19V21Z" fill="currentColor"/>
+                        </svg>
+                        Copy All Python
+                    </button>
+                    <div id="all-python-code" style="display: none;">import asyncio
+import instructor
+from openai import AsyncOpenAI
+from pydantic import BaseModel, Field
+from typing import List, Tuple
+client = instructor.from_openai(AsyncOpenAI())
+sem = asyncio.Semaphore(5)
+class SentimentAnalysis(BaseModel):
+    sentiment: str = Field(description=&quot;The sentiment of the text (positive, negative, or neutral)&quot;)
+    confidence: float = Field(description=&quot;Confidence score from 0.0 to 1.0&quot;)
+    reasoning: str = Field(description=&quot;Brief explanation for the sentiment classification&quot;)
+async def analyze_sentiment(text: str) -&gt; Tuple[str, SentimentAnalysis]:
+    async with sem:  # Rate limiting
+        result = await client.chat.completions.create(
+            model=&quot;gpt-3.5-turbo&quot;,
+            response_model=SentimentAnalysis,
+            messages=[
+                {
+                    &quot;role&quot;: &quot;user&quot;,
+                    &quot;content&quot;: f&quot;Analyze the sentiment of this text: {text}&quot;
+                }
+            ]
+        )
+        return text, result
+async def process_batch(texts: List[str]):
+tasks = [analyze_sentiment(text) for text in texts]
+results = []
+    for task in asyncio.as_completed(tasks):
+        original_text, sentiment = await task
+        results.append({
+            &quot;text&quot;: original_text,
+            &quot;sentiment&quot;: sentiment.sentiment,
+            &quot;confidence&quot;: sentiment.confidence,
+            &quot;reasoning&quot;: sentiment.reasoning
+        })
+
+    return results
+async def main():
+    texts = [
+        &quot;I absolutely love this product! It&#x27;s amazing.&quot;,
+        &quot;The service was terrible and the staff was rude.&quot;,
+        &quot;The weather is cloudy today with a chance of rain.&quot;,
+        &quot;I&#x27;m disappointed with the quality of this item.&quot;,
+        &quot;The conference was informative and well-organized.&quot;
+    ]
+
+    results = await process_batch(texts)
+
+    for result in results:
+        print(f&quot;Text: {result[&#x27;text&#x27;]}&quot;)
+        print(f&quot;Sentiment: {result[&#x27;sentiment&#x27;]} (Confidence: {result[&#x27;confidence&#x27;]:.2f})&quot;)
+        print(f&quot;Reasoning: {result[&#x27;reasoning&#x27;]}&quot;)
+        print(&quot;-&quot; * 50)
+if __name__ == &quot;__main__&quot;:
+    asyncio.run(main())
+import json
+import asyncio
+import instructor
+from openai import AsyncOpenAI
+from pydantic import BaseModel, Field
+from enum import Enum
+from typing import List, Dict, Any, Optional
+client = instructor.from_openai(AsyncOpenAI())
+class Category(str, Enum):
+    PRODUCT = &quot;PRODUCT&quot;
+    SERVICE = &quot;SERVICE&quot;
+    FEATURE = &quot;FEATURE&quot;
+    SUPPORT = &quot;SUPPORT&quot;
+    OTHER = &quot;OTHER&quot;
+
+class FeedbackClassification(BaseModel):
+    categories: List[Category] = Field(description=&quot;Categories that apply to this feedback&quot;)
+    priority: int = Field(description=&quot;Priority score from 1-5, where 5 is highest priority&quot;, ge=1, le=5)
+    analysis: str = Field(description=&quot;Brief analysis of the feedback&quot;)
+async def process_item(item: str, retry_count: int = 2) -&gt; Dict[str, Any]:
+    attempts = 0
+    while attempts &lt;= retry_count:
+        try:
+            result = await client.chat.completions.create(
+                model=&quot;gpt-3.5-turbo&quot;,
+                response_model=FeedbackClassification,
+                messages=[
+                    {
+                        &quot;role&quot;: &quot;system&quot;,
+                        &quot;content&quot;: &quot;You are a customer feedback analyzer. Categorize and prioritize the feedback.&quot;
+                    },
+                    {
+                        &quot;role&quot;: &quot;user&quot;,
+                        &quot;content&quot;: f&quot;Analyze this feedback: {item}&quot;
+                    }
+                ]
+            )
+            return {
+                &quot;feedback&quot;: item,
+                &quot;categories&quot;: [c.value for c in result.categories],
+                &quot;priority&quot;: result.priority,
+                &quot;analysis&quot;: result.analysis,
+                &quot;status&quot;: &quot;success&quot;
+            }
+        except Exception as e:
+            attempts += 1
+            if attempts &gt; retry_count:
+                return {
+                    &quot;feedback&quot;: item,
+                    &quot;error&quot;: str(e),
+                    &quot;status&quot;: &quot;failed&quot;
+                }
+            await asyncio.sleep(1)  # Backoff before retry
+async def batch_process(items: List[str],
+                        chunk_size: int = 10,
+                        concurrency_limit: int = 5,
+                        output_file: Optional[str] = None):
+
+    sem = asyncio.Semaphore(concurrency_limit)
+    results = []
+    processed = 0
+    total = len(items)
+for i in range(0, total, chunk_size):
+        chunk = items[i:i+chunk_size]
+async def process_with_sem(item):
+            async with sem:
+                return await process_item(item)
+
+        tasks = [process_with_sem(item) for item in chunk]
+chunk_results = await asyncio.gather(*tasks)
+        results.extend(chunk_results)
+
+        processed += len(chunk)
+        print(f&quot;Progress: {processed}/{total} ({processed/total*100:.1f}%)&quot;)
+if output_file:
+            with open(output_file, &quot;a&quot;) as f:
+                for result in chunk_results:
+                    f.write(json.dumps(result) + &quot;\n&quot;)
+
+    return results
+async def main():
+feedback_items = [
+        &quot;Your app crashes every time I try to upload a photo. Please fix this ASAP!&quot;,
+        &quot;I love the new dark mode feature. It makes the app much easier on the eyes.&quot;,
+        &quot;The checkout process is too complicated. I gave up trying to make a purchase.&quot;,
+        &quot;Your customer service rep was very helpful in resolving my issue.&quot;,
+]
+
+    results = await batch_process(
+        items=feedback_items,
+        output_file=&quot;feedback_results.jsonl&quot;
+    )
+success_count = sum(1 for r in results if r[&quot;status&quot;] == &quot;success&quot;)
+    print(f&quot;Successfully processed: {success_count}/{len(results)}&quot;)
+priorities = [r.get(&quot;priority&quot;, 0) for r in results if r[&quot;status&quot;] == &quot;success&quot;]
+    if priorities:
+        print(f&quot;Average priority: {sum(priorities)/len(priorities):.1f}&quot;)
+categories = {}
+    for r in results:
+        if r[&quot;status&quot;] == &quot;success&quot;:
+            for cat in r.get(&quot;categories&quot;, []):
+                categories[cat] = categories.get(cat, 0) + 1
+
+    print(&quot;Category distribution:&quot;)
+    for cat, count in categories.items():
+        print(f&quot;  {cat}: {count}&quot;)
+
+if __name__ == &quot;__main__&quot;:
+    asyncio.run(main())
+</div>
+                </div>            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Instructor supports batch processing for efficiently handling multiple requests, which is essential for large-scale data processing.</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">import asyncio
+import instructor
+from openai import AsyncOpenAI
+from pydantic import BaseModel, Field
+from typing import List, Tuple</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Initialize the async client with instructor</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">client = instructor.from_openai(AsyncOpenAI())</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Semaphore to limit concurrent requests (respect API rate limits)</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">sem = asyncio.Semaphore(5)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Define a model for sentiment analysis</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">class SentimentAnalysis(BaseModel):
+    sentiment: str = Field(description=&quot;The sentiment of the text (positive, negative, or neutral)&quot;)
+    confidence: float = Field(description=&quot;Confidence score from 0.0 to 1.0&quot;)
+    reasoning: str = Field(description=&quot;Brief explanation for the sentiment classification&quot;)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Function to analyze sentiment of a single text</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">async def analyze_sentiment(text: str) -&gt; Tuple[str, SentimentAnalysis]:
+    async with sem:  # Rate limiting
+        result = await client.chat.completions.create(
+            model=&quot;gpt-3.5-turbo&quot;,
+            response_model=SentimentAnalysis,
+            messages=[
+                {
+                    &quot;role&quot;: &quot;user&quot;,
+                    &quot;content&quot;: f&quot;Analyze the sentiment of this text: {text}&quot;
+                }
+            ]
+        )
+        return text, result</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Process a batch of texts</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">async def process_batch(texts: List[str]):</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Create tasks for all texts</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">tasks = [analyze_sentiment(text) for text in texts]</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Process tasks as they complete</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">results = []
+    for task in asyncio.as_completed(tasks):
+        original_text, sentiment = await task
+        results.append({
+            &quot;text&quot;: original_text,
+            &quot;sentiment&quot;: sentiment.sentiment,
+            &quot;confidence&quot;: sentiment.confidence,
+            &quot;reasoning&quot;: sentiment.reasoning
+        })
+
+    return results</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Example usage</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">async def main():
+    texts = [
+        &quot;I absolutely love this product! It&#x27;s amazing.&quot;,
+        &quot;The service was terrible and the staff was rude.&quot;,
+        &quot;The weather is cloudy today with a chance of rain.&quot;,
+        &quot;I&#x27;m disappointed with the quality of this item.&quot;,
+        &quot;The conference was informative and well-organized.&quot;
+    ]
+
+    results = await process_batch(texts)
+
+    for result in results:
+        print(f&quot;Text: {result[&#x27;text&#x27;]}&quot;)
+        print(f&quot;Sentiment: {result[&#x27;sentiment&#x27;]} (Confidence: {result[&#x27;confidence&#x27;]:.2f})&quot;)
+        print(f&quot;Reasoning: {result[&#x27;reasoning&#x27;]}&quot;)
+        print(&quot;-&quot; * 50)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Run the example</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">if __name__ == &quot;__main__&quot;:
+    asyncio.run(main())</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>For larger datasets, you can implement a more comprehensive batch processing solution:</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">import json
+import asyncio
+import instructor
+from openai import AsyncOpenAI
+from pydantic import BaseModel, Field
+from enum import Enum
+from typing import List, Dict, Any, Optional</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Initialize the client</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">client = instructor.from_openai(AsyncOpenAI())</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Define classification types</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">class Category(str, Enum):
+    PRODUCT = &quot;PRODUCT&quot;
+    SERVICE = &quot;SERVICE&quot;
+    FEATURE = &quot;FEATURE&quot;
+    SUPPORT = &quot;SUPPORT&quot;
+    OTHER = &quot;OTHER&quot;
+
+class FeedbackClassification(BaseModel):
+    categories: List[Category] = Field(description=&quot;Categories that apply to this feedback&quot;)
+    priority: int = Field(description=&quot;Priority score from 1-5, where 5 is highest priority&quot;, ge=1, le=5)
+    analysis: str = Field(description=&quot;Brief analysis of the feedback&quot;)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Process function with error handling and retries</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">async def process_item(item: str, retry_count: int = 2) -&gt; Dict[str, Any]:
+    attempts = 0
+    while attempts &lt;= retry_count:
+        try:
+            result = await client.chat.completions.create(
+                model=&quot;gpt-3.5-turbo&quot;,
+                response_model=FeedbackClassification,
+                messages=[
+                    {
+                        &quot;role&quot;: &quot;system&quot;,
+                        &quot;content&quot;: &quot;You are a customer feedback analyzer. Categorize and prioritize the feedback.&quot;
+                    },
+                    {
+                        &quot;role&quot;: &quot;user&quot;,
+                        &quot;content&quot;: f&quot;Analyze this feedback: {item}&quot;
+                    }
+                ]
+            )
+            return {
+                &quot;feedback&quot;: item,
+                &quot;categories&quot;: [c.value for c in result.categories],
+                &quot;priority&quot;: result.priority,
+                &quot;analysis&quot;: result.analysis,
+                &quot;status&quot;: &quot;success&quot;
+            }
+        except Exception as e:
+            attempts += 1
+            if attempts &gt; retry_count:
+                return {
+                    &quot;feedback&quot;: item,
+                    &quot;error&quot;: str(e),
+                    &quot;status&quot;: &quot;failed&quot;
+                }
+            await asyncio.sleep(1)  # Backoff before retry</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Batch processor with chunking and progress tracking</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">async def batch_process(items: List[str],
+                        chunk_size: int = 10,
+                        concurrency_limit: int = 5,
+                        output_file: Optional[str] = None):
+
+    sem = asyncio.Semaphore(concurrency_limit)
+    results = []
+    processed = 0
+    total = len(items)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Process in chunks to avoid memory issues with very large datasets</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">for i in range(0, total, chunk_size):
+        chunk = items[i:i+chunk_size]</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Create tasks with semaphore for rate limiting</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">async def process_with_sem(item):
+            async with sem:
+                return await process_item(item)
+
+        tasks = [process_with_sem(item) for item in chunk]</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Process chunk and update progress</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">chunk_results = await asyncio.gather(*tasks)
+        results.extend(chunk_results)
+
+        processed += len(chunk)
+        print(f&quot;Progress: {processed}/{total} ({processed/total*100:.1f}%)&quot;)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Optionally save results to file incrementally</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">if output_file:
+            with open(output_file, &quot;a&quot;) as f:
+                for result in chunk_results:
+                    f.write(json.dumps(result) + &quot;\n&quot;)
+
+    return results</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Example usage</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">async def main():</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Sample feedback data</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">feedback_items = [
+        &quot;Your app crashes every time I try to upload a photo. Please fix this ASAP!&quot;,
+        &quot;I love the new dark mode feature. It makes the app much easier on the eyes.&quot;,
+        &quot;The checkout process is too complicated. I gave up trying to make a purchase.&quot;,
+        &quot;Your customer service rep was very helpful in resolving my issue.&quot;,</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Add more items as needed</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">]
+
+    results = await batch_process(
+        items=feedback_items,
+        output_file=&quot;feedback_results.jsonl&quot;
+    )</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Analyze results</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">success_count = sum(1 for r in results if r[&quot;status&quot;] == &quot;success&quot;)
+    print(f&quot;Successfully processed: {success_count}/{len(results)}&quot;)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Calculate average priority</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">priorities = [r.get(&quot;priority&quot;, 0) for r in results if r[&quot;status&quot;] == &quot;success&quot;]
+    if priorities:
+        print(f&quot;Average priority: {sum(priorities)/len(priorities):.1f}&quot;)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Count categories</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">categories = {}
+    for r in results:
+        if r[&quot;status&quot;] == &quot;success&quot;:
+            for cat in r.get(&quot;categories&quot;, []):
+                categories[cat] = categories.get(cat, 0) + 1
+
+    print(&quot;Category distribution:&quot;)
+    for cat, count in categories.items():
+        print(f&quot;  {cat}: {count}&quot;)
+
+if __name__ == &quot;__main__&quot;:
+    asyncio.run(main())</code></pre>
+                </div>
+            </div>
+            <hr>
+            <h2>Running the Example</h2>
+            <div class="row">
+                <div class="docs" style='font-size: 0.9em; color: #666;'>
+                    First, install Instructor and any dependencies
+                </div>
+                <div class="code">
+                    <div class="buttons">
+                        <svg class="copy" title="Copy command" onclick="copyCode(this)" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16 1H4C2.9 1 2 1.9 2 3V17H4V3H16V1ZM19 5H8C6.9 5 6 5.9 6 7V21C6 22.1 6.9 23 8 23H19C20.1 23 21 22.1 21 21V7C21 5.9 20.1 5 19 5ZM19 21H8V7H19V21Z" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <pre><code class="language-shell"><span><span class="command-prompt">$ </span><span class="command-text">pip install instructor pydantic</span></span>
+</code></pre>
+                </div>
+            </div>
+            <div class="row">
+                <div class="docs" style='font-size: 0.9em; color: #666;'>
+                    Run the Python script
+                </div>
+                <div class="code">
+                    <div class="buttons">
+                        <svg class="copy" title="Copy command" onclick="copyCode(this)" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16 1H4C2.9 1 2 1.9 2 3V17H4V3H16V1ZM19 5H8C6.9 5 6 5.9 6 7V21C6 22.1 6.9 23 8 23H19C20.1 23 21 22.1 21 21V7C21 5.9 20.1 5 19 5ZM19 21H8V7H19V21Z" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <pre><code class="language-shell"><span><span class="command-prompt">$ </span><span class="command-text">python batch-processing.py</span></span>
+</code></pre>
+                </div>
+            </div>
+            <hr>
+            <h4>Further Information</h4>
+            <ul style="font-size: 0.9em;">
+                <li><a href="https://github.com/jxnl/instructor"
+                         target="_blank">Documentation link 1</a></li>
+            </ul>
+            <div class="navigation">
+                <p class="prev">
+                    <span>← Previous:</span> <a href="../044-parallel-extraction/">Parallel Extraction</a>
+                </p>
+                <p class="next">
+                    <span>Next:</span> <a href="../046-hooks-and-callbacks/">Hooks and Callbacks</a> →
+                </p>
+            </div>
+        </main>
+        <footer>
+            <p>by <a href="https://github.com/jxnl/instructor">Instructor</a> | <a href="https://github.com/jxnl/instructor">GitHub</a> | <span style="color: #888; font-size: 0.9em;">Last updated: April 9, 2025</span></p>
+        </footer>
+    </div>
+    <script>
+        // Function to copy code to clipboard
+        function copyCode(button) {
+            const codeBlock = button.closest('.code').querySelector('pre');
+            const code = codeBlock.textContent;
+            copyToClipboard(code, button);
+        }
+        
+        // Function to copy all Python code
+        document.addEventListener('DOMContentLoaded', function() {
+            const copyAllButton = document.getElementById('copy-all-python');
+            if (copyAllButton) {
+                copyAllButton.addEventListener('click', function() {
+                    const allCodeElement = document.getElementById('all-python-code');
+                    const code = allCodeElement.textContent;
+                    copyToClipboard(code, copyAllButton);
+                });
+            }
+        });
+        
+        // Shared function to copy text and show tooltip
+        function copyToClipboard(text, element) {
+            // For older browsers, fallback to textarea method
+            if (!navigator.clipboard) {
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                textArea.style.position = 'fixed';  // Avoid scrolling to bottom
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                
+                try {
+                    document.execCommand('copy');
+                    showTooltip(element, 'Copied!');
+                } catch (err) {
+                    console.error('Failed to copy text: ', err);
+                    showTooltip(element, 'Error!');
+                }
+                
+                document.body.removeChild(textArea);
+                return;
+            }
+            
+            // Use clipboard API if available
+            navigator.clipboard.writeText(text).then(() => {
+                showTooltip(element, 'Copied!');
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+                showTooltip(element, 'Error!');
+            });
+        }
+        
+        // Helper to show tooltip
+        function showTooltip(element, message) {
+            // Check if there's already a tooltip
+            let tooltip = element.parentElement.querySelector('.tooltip');
+            if (tooltip) {
+                tooltip.textContent = message;
+            } else {
+                // Create and append new tooltip
+                tooltip = document.createElement('span');
+                tooltip.textContent = message;
+                tooltip.className = 'tooltip';
+                tooltip.style.position = 'absolute';
+                tooltip.style.background = '#333';
+                tooltip.style.color = 'white';
+                tooltip.style.padding = '2px 8px';
+                tooltip.style.borderRadius = '4px';
+                tooltip.style.fontSize = '12px';
+                tooltip.style.top = '-25px';
+                tooltip.style.right = '0';
+                
+                // Make sure the parent has position relative for tooltip positioning
+                if (getComputedStyle(element.parentElement).position === 'static') {
+                    element.parentElement.style.position = 'relative';
+                }
+                
+                element.parentElement.appendChild(tooltip);
+            }
+            
+            // Remove tooltip after 1.5 seconds
+            setTimeout(() => tooltip.remove(), 1500);
+        }
+
+        // Enable keyboard navigation between examples
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey || e.altKey || e.shiftKey || e.metaKey) {
+                return;
+            }
+            
+            if (e.key === 'ArrowRight') {
+                const nextLink = document.querySelector('.next a');
+                if (nextLink) {
+                    window.location.href = nextLink.getAttribute('href');
+                }
+            }
+            
+            if (e.key === 'ArrowLeft') {
+                const prevLink = document.querySelector('.prev a');
+                if (prevLink) {
+                    window.location.href = prevLink.getAttribute('href');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

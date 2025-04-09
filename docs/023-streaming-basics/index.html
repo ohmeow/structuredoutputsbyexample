@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Streaming Basics - Structured Outputs by Example</title>
+    <meta name="description" content="Learn to work with structured outputs through annotated examples">
+    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css'>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js'></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/firacode@6.2.0/distr/fira_code.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap');
+        
+        code, pre code, .hljs {
+            font-family: 'Fira Code', 'JetBrains Mono', monospace;
+            font-feature-settings: "liga" 1;
+        }
+        
+        @supports (font-variation-settings: normal) {
+            code, pre code, .hljs {
+                font-family: 'Fira Code VF', 'JetBrains Mono', monospace;
+            }
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            hljs.highlightAll();
+        });
+    </script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            line-height: 1.5;
+            color: #222;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        header {
+            border-bottom: 1px solid #eee;
+            padding: 15px 0;
+            margin-bottom: 20px;
+        }
+        .site-title {
+            text-decoration: none;
+            color: #0066CC;
+            font-weight: 500;
+            font-size: 20px;
+        }
+        main {
+            padding-bottom: 40px;
+        }
+        footer {
+            border-top: 1px solid #eee;
+            padding: 15px 0;
+            margin-top: 20px;
+            color: #666;
+            font-size: 0.9em;
+        }
+        h1 {
+            font-size: 36px;
+            font-weight: 500;
+            margin: 0 0 25px 0;
+            color: #333;
+        }
+        p {
+            margin: 20px 0;
+            color: #444;
+            line-height: 1.6;
+        }
+        a {
+            color: #0066CC;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .example-link {
+            margin: 4px 0;
+            line-height: 1.3;
+        }
+        .row {
+            display: flex;
+            width: 100%;
+            margin-bottom: 30px;
+            gap: 40px;
+        }
+        .docs {
+            flex: 0.75;
+            min-width: 0;
+            color: #444;
+            line-height: 1.6;
+            font-size: 1em;
+        }
+        .code {
+            flex: 2.25;
+            min-width: 0;
+            position: relative;
+        }
+        pre {
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f8f8;
+            border-radius: 5px;
+            overflow-x: auto;
+            line-height: 1.5;
+        }
+        /* Prevent double styling from highlight.js */
+        pre code.hljs, pre code {
+            background-color: transparent;
+            padding: 0;
+            margin: 0;
+            border: none;
+        }
+        .leading {
+            margin-bottom: 5px;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid #eee;
+            margin: 20px 0;
+        }
+        .buttons {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            z-index: 10;
+        }
+        .copy {
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+            opacity: 0.6;
+            color: #666;
+            background-color: #f8f8f8;
+            border-radius: 3px;
+            padding: 3px;
+        }
+        .copy:hover {
+            opacity: 1;
+            color: #0066CC;
+        }
+        .tooltip {
+            position: absolute;
+            background: #333;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            top: -25px;
+            right: 0;
+        }
+        .command-prompt {
+            color: #888;
+        }
+        .command-text {
+            font-weight: bold;
+        }
+        .navigation {
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        .prev, .next {
+            margin: 5px 0;
+            font-weight: 500;
+        }
+        .prev {
+            margin-right: auto;
+        }
+        .next {
+            margin-left: auto;
+        }
+        .prev span, .next span {
+            color: #666;
+            font-weight: normal;
+        }
+        @media (max-width: 900px) {
+            .row {
+                flex-direction: column;
+            }
+            .docs, .code {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="../" class="site-title">Structured Outputs by Example</a>
+        </header>
+        <main>
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
+                <div>
+                    <div style="margin-bottom: 10px; color: #666; font-size: 0.9em;">
+                        <a href="../" style="text-decoration: none; color: #666;">Streaming</a>
+                    </div>
+                    <h1 style="margin: 0; margin-bottom: 10px;">Streaming Basics</h1>
+                </div>
+                <div style="position: relative; margin-top: 10px;">
+                    <button id="copy-all-python" style="background-color: #f1f8ff; border: 1px solid #c8e1ff; border-radius: 6px; padding: 6px 12px; font-size: 14px; color: #0066CC; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16 1H4C2.9 1 2 1.9 2 3V17H4V3H16V1ZM19 5H8C6.9 5 6 5.9 6 7V21C6 22.1 6.9 23 8 23H19C20.1 23 21 22.1 21 21V7C21 5.9 20.1 5 19 5ZM19 21H8V7H19V21Z" fill="currentColor"/>
+                        </svg>
+                        Copy All Python
+                    </button>
+                    <div id="all-python-code" style="display: none;">import instructor
+from openai import OpenAI
+from pydantic import BaseModel
+
+class User(BaseModel):
+    name: str
+    age: int
+    bio: str
+client = instructor.from_openai(OpenAI())
+
+def stream_user_info():
+stream = client.chat.completions.create(
+        model=&quot;gpt-3.5-turbo&quot;,
+        response_model=User,
+        stream=True,  # Enable streaming
+        messages=[
+            {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Generate a profile for a fictional user named Alice who is 28 years old.&quot;}
+        ]
+    )
+for chunk in stream:
+print(f&quot;Received chunk: {chunk}&quot;)
+return chunk
+
+user = stream_user_info()
+print(f&quot;\nFinal result: {user}&quot;)
+
+from instructor import Partial
+
+def stream_user_with_partial():
+user_stream = client.chat.completions.create_partial(
+        model=&quot;gpt-3.5-turbo&quot;,
+        response_model=User,
+        messages=[
+            {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Generate a profile for a fictional user named Bob who is 35 years old and works as a software developer.&quot;}
+        ]
+    )
+print(&quot;Streaming user data:&quot;)
+
+    for partial_user in user_stream:
+print(f&quot;Current state: name={partial_user.name}, age={partial_user.age}, bio={partial_user.bio!r}&quot;)
+from typing import Dict, Any
+
+class ProgressTracker:
+    def __init__(self):
+        self.progress = {}
+
+    def update(self, partial_user: Partial[User]):
+total_fields = len(User.model_fields)
+        populated = sum(1 for v in [partial_user.name, partial_user.age, partial_user.bio] if v is not None)
+        completion = int(populated / total_fields * 100)
+data = {}
+        if partial_user.name is not None:
+            data[&quot;name&quot;] = partial_user.name
+        if partial_user.age is not None:
+            data[&quot;age&quot;] = partial_user.age
+        if partial_user.bio is not None:
+            data[&quot;bio&quot;] = partial_user.bio
+
+        self.progress = {
+            &quot;completion&quot;: f&quot;{completion}%&quot;,
+            &quot;data&quot;: data
+        }
+
+        return self.progress
+
+def stream_with_progress():
+    tracker = ProgressTracker()
+
+    user_stream = client.chat.completions.create_partial(
+        model=&quot;gpt-3.5-turbo&quot;,
+        response_model=User,
+        messages=[
+            {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Generate a profile for a fictional user named Carol who is 42 years old.&quot;}
+        ]
+    )
+
+    for partial_user in user_stream:
+        progress = tracker.update(partial_user)
+        print(f&quot;Progress: {progress[&#x27;completion&#x27;]} - Current data: {progress[&#x27;data&#x27;]}&quot;)
+import asyncio
+from openai import AsyncOpenAI
+
+async def stream_async():
+async_client = instructor.from_openai(AsyncOpenAI())
+user_stream = await async_client.chat.completions.create_partial(
+        model=&quot;gpt-3.5-turbo&quot;,
+        response_model=User,
+        messages=[
+            {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Generate a profile for a fictional user named Dave who is 31 years old.&quot;}
+        ]
+    )
+async for partial_user in user_stream:
+        print(f&quot;Async stream update: {partial_user}&quot;)
+asyncio.run(stream_async())
+</div>
+                </div>            </div>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Get started with streaming responses in Instructor for real-time processing.
+
+Streaming allows you to receive partial responses from LLMs as they're being generated,
+rather than waiting for the complete response.
+
+Instructor offers two main ways to stream structured data:
+
+1. Partial: Stream a single object as it's being populated field by field
+2. Iterable: Stream multiple complete objects one at a time</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">import instructor
+from openai import OpenAI
+from pydantic import BaseModel
+
+class User(BaseModel):
+    name: str
+    age: int
+    bio: str</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Patch the OpenAI client</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">client = instructor.from_openai(OpenAI())
+
+def stream_user_info():</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Create a streaming response</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">stream = client.chat.completions.create(
+        model=&quot;gpt-3.5-turbo&quot;,
+        response_model=User,
+        stream=True,  # Enable streaming
+        messages=[
+            {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Generate a profile for a fictional user named Alice who is 28 years old.&quot;}
+        ]
+    )</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Process the stream</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">for chunk in stream:</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>The chunk contains a partial response so far</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">print(f&quot;Received chunk: {chunk}&quot;)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>The last chunk is the complete response</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">return chunk
+
+user = stream_user_info()
+print(f&quot;\nFinal result: {user}&quot;)
+
+from instructor import Partial
+
+def stream_user_with_partial():</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Create a streaming response using create_partial</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">user_stream = client.chat.completions.create_partial(
+        model=&quot;gpt-3.5-turbo&quot;,
+        response_model=User,
+        messages=[
+            {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Generate a profile for a fictional user named Bob who is 35 years old and works as a software developer.&quot;}
+        ]
+    )</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Process the stream of Partial[User] objects</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">print(&quot;Streaming user data:&quot;)
+
+    for partial_user in user_stream:</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>As new fields are populated, they show up in the partial_user</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">print(f&quot;Current state: name={partial_user.name}, age={partial_user.age}, bio={partial_user.bio!r}&quot;)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Example output:
+Current state: name=None, age=None, bio=None
+Current state: name='Bob', age=None, bio=None
+Current state: name='Bob', age=35, bio=None
+Current state: name='Bob', age=35, bio='Software developer with 10 years of experience...'</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">from typing import Dict, Any
+
+class ProgressTracker:
+    def __init__(self):
+        self.progress = {}
+
+    def update(self, partial_user: Partial[User]):</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Calculate percentage of fields that are populated</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">total_fields = len(User.model_fields)
+        populated = sum(1 for v in [partial_user.name, partial_user.age, partial_user.bio] if v is not None)
+        completion = int(populated / total_fields * 100)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Track changes</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">data = {}
+        if partial_user.name is not None:
+            data[&quot;name&quot;] = partial_user.name
+        if partial_user.age is not None:
+            data[&quot;age&quot;] = partial_user.age
+        if partial_user.bio is not None:
+            data[&quot;bio&quot;] = partial_user.bio
+
+        self.progress = {
+            &quot;completion&quot;: f&quot;{completion}%&quot;,
+            &quot;data&quot;: data
+        }
+
+        return self.progress
+
+def stream_with_progress():
+    tracker = ProgressTracker()
+
+    user_stream = client.chat.completions.create_partial(
+        model=&quot;gpt-3.5-turbo&quot;,
+        response_model=User,
+        messages=[
+            {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Generate a profile for a fictional user named Carol who is 42 years old.&quot;}
+        ]
+    )
+
+    for partial_user in user_stream:
+        progress = tracker.update(partial_user)
+        print(f&quot;Progress: {progress[&#x27;completion&#x27;]} - Current data: {progress[&#x27;data&#x27;]}&quot;)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Example output:
+Progress: 33% - Current data: {'name': 'Carol'}
+Progress: 66% - Current data: {'name': 'Carol', 'age': 42}
+Progress: 100% - Current data: {'name': 'Carol', 'age': 42, 'bio': 'Carol is a passionate...'}</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">import asyncio
+from openai import AsyncOpenAI
+
+async def stream_async():</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Create async client</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">async_client = instructor.from_openai(AsyncOpenAI())</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Create an async streaming response</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">user_stream = await async_client.chat.completions.create_partial(
+        model=&quot;gpt-3.5-turbo&quot;,
+        response_model=User,
+        messages=[
+            {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Generate a profile for a fictional user named Dave who is 31 years old.&quot;}
+        ]
+    )</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Process the stream</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">async for partial_user in user_stream:
+        print(f&quot;Async stream update: {partial_user}&quot;)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Run the async function</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">asyncio.run(stream_async())</code></pre>
+                </div>
+            </div>
+            <hr>
+            <h2>Running the Example</h2>
+            <div class="row">
+                <div class="docs" style='font-size: 0.9em; color: #666;'>
+                    First, install Instructor and any dependencies
+                </div>
+                <div class="code">
+                    <div class="buttons">
+                        <svg class="copy" title="Copy command" onclick="copyCode(this)" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16 1H4C2.9 1 2 1.9 2 3V17H4V3H16V1ZM19 5H8C6.9 5 6 5.9 6 7V21C6 22.1 6.9 23 8 23H19C20.1 23 21 22.1 21 21V7C21 5.9 20.1 5 19 5ZM19 21H8V7H19V21Z" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <pre><code class="language-shell"><span><span class="command-prompt">$ </span><span class="command-text">pip install instructor pydantic</span></span>
+</code></pre>
+                </div>
+            </div>
+            <div class="row">
+                <div class="docs" style='font-size: 0.9em; color: #666;'>
+                    Run the Python script
+                </div>
+                <div class="code">
+                    <div class="buttons">
+                        <svg class="copy" title="Copy command" onclick="copyCode(this)" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16 1H4C2.9 1 2 1.9 2 3V17H4V3H16V1ZM19 5H8C6.9 5 6 5.9 6 7V21C6 22.1 6.9 23 8 23H19C20.1 23 21 22.1 21 21V7C21 5.9 20.1 5 19 5ZM19 21H8V7H19V21Z" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <pre><code class="language-shell"><span><span class="command-prompt">$ </span><span class="command-text">python streaming-basics.py</span></span>
+</code></pre>
+                </div>
+            </div>
+            <hr>
+            <h4>Further Information</h4>
+            <ul style="font-size: 0.9em;">
+                <li><a href="https://github.com/jxnl/instructor"
+                         target="_blank">Documentation link 1</a></li>
+            </ul>
+            <div class="navigation">
+                <p class="prev">
+                    <span>← Previous:</span> <a href="../022-confidence-scores/">Working with Confidence Scores</a>
+                </p>
+                <p class="next">
+                    <span>Next:</span> <a href="../024-partial-objects/">Streaming Partial Objects</a> →
+                </p>
+            </div>
+        </main>
+        <footer>
+            <p>by <a href="https://github.com/jxnl/instructor">Instructor</a> | <a href="https://github.com/jxnl/instructor">GitHub</a> | <span style="color: #888; font-size: 0.9em;">Last updated: April 9, 2025</span></p>
+        </footer>
+    </div>
+    <script>
+        // Function to copy code to clipboard
+        function copyCode(button) {
+            const codeBlock = button.closest('.code').querySelector('pre');
+            const code = codeBlock.textContent;
+            copyToClipboard(code, button);
+        }
+        
+        // Function to copy all Python code
+        document.addEventListener('DOMContentLoaded', function() {
+            const copyAllButton = document.getElementById('copy-all-python');
+            if (copyAllButton) {
+                copyAllButton.addEventListener('click', function() {
+                    const allCodeElement = document.getElementById('all-python-code');
+                    const code = allCodeElement.textContent;
+                    copyToClipboard(code, copyAllButton);
+                });
+            }
+        });
+        
+        // Shared function to copy text and show tooltip
+        function copyToClipboard(text, element) {
+            // For older browsers, fallback to textarea method
+            if (!navigator.clipboard) {
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                textArea.style.position = 'fixed';  // Avoid scrolling to bottom
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                
+                try {
+                    document.execCommand('copy');
+                    showTooltip(element, 'Copied!');
+                } catch (err) {
+                    console.error('Failed to copy text: ', err);
+                    showTooltip(element, 'Error!');
+                }
+                
+                document.body.removeChild(textArea);
+                return;
+            }
+            
+            // Use clipboard API if available
+            navigator.clipboard.writeText(text).then(() => {
+                showTooltip(element, 'Copied!');
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+                showTooltip(element, 'Error!');
+            });
+        }
+        
+        // Helper to show tooltip
+        function showTooltip(element, message) {
+            // Check if there's already a tooltip
+            let tooltip = element.parentElement.querySelector('.tooltip');
+            if (tooltip) {
+                tooltip.textContent = message;
+            } else {
+                // Create and append new tooltip
+                tooltip = document.createElement('span');
+                tooltip.textContent = message;
+                tooltip.className = 'tooltip';
+                tooltip.style.position = 'absolute';
+                tooltip.style.background = '#333';
+                tooltip.style.color = 'white';
+                tooltip.style.padding = '2px 8px';
+                tooltip.style.borderRadius = '4px';
+                tooltip.style.fontSize = '12px';
+                tooltip.style.top = '-25px';
+                tooltip.style.right = '0';
+                
+                // Make sure the parent has position relative for tooltip positioning
+                if (getComputedStyle(element.parentElement).position === 'static') {
+                    element.parentElement.style.position = 'relative';
+                }
+                
+                element.parentElement.appendChild(tooltip);
+            }
+            
+            // Remove tooltip after 1.5 seconds
+            setTimeout(() => tooltip.remove(), 1500);
+        }
+
+        // Enable keyboard navigation between examples
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey || e.altKey || e.shiftKey || e.metaKey) {
+                return;
+            }
+            
+            if (e.key === 'ArrowRight') {
+                const nextLink = document.querySelector('.next a');
+                if (nextLink) {
+                    window.location.href = nextLink.getAttribute('href');
+                }
+            }
+            
+            if (e.key === 'ArrowLeft') {
+                const prevLink = document.querySelector('.prev a');
+                if (prevLink) {
+                    window.location.href = prevLink.getAttribute('href');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

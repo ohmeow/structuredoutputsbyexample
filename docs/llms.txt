@@ -1,0 +1,93 @@
+# Structured Outputs by Example
+
+> Structured Outputs by Example is a hands-on introduction to working with structured data extraction from LLMs. The site showcases how to use libraries like [Instructor](https://github.com/jxnl/instructor) and [Pydantic](https://docs.pydantic.dev/) to reliably extract structured information from LLM outputs.
+
+Examples here assume Python `>=3.9` and the latest versions of Instructor and Pydantic. Try to upgrade to the latest versions if something isn't working.
+
+Note: A more comprehensive version of this file / documentation is available at llms-ctx.txt, which contains the full text of all examples including code samples and terminal output. You could paste that into your IDE or AI model to then ask questions and get it to generate code with the examples as context.
+
+## Getting Started
+
+- Getting Started with Structured Outputs
+- Installing Instructor
+- Your First Extraction
+- Understanding Response Models
+- Client Setup
+
+## LLM Providers
+
+- OpenAI Integration
+- Anthropic Integration
+- Gemini Integration
+- Cohere Integration
+- Mistral Integration
+- Other Provider Integrations
+
+## Basic Extraction Patterns
+
+- Simple Object Extraction
+- List Extraction
+- Nested Structures
+- Field Validation
+- Optional Fields
+- Working with Enums
+
+## Classification and Analysis
+
+- Simple Classification
+- Multi-label Classification
+- Sentiment Analysis
+- Entity Classification
+- Working with Confidence Scores
+
+## Streaming
+
+- Streaming Basics
+- Streaming Partial Objects
+- Streaming Lists
+- Progressive Updates
+- Handling Stream Errors
+
+## Advanced Structures
+
+- Recursive Structures
+- Knowledge Graphs
+- Dependency Trees
+- Task Planning
+- Document Structure
+
+## Validation
+
+- Validation Basics
+- Custom Validators
+- Retry Mechanisms
+- Fallback Strategies
+- Field-level Validation
+
+## Multimodal Inputs
+
+- Vision
+- Image Extraction
+- Table Extraction
+- Audio Extraction
+- PDF Extraction
+
+## Performance and Optimization
+
+- Caching Responses
+- Parallel Extraction
+- Batch Processing
+- Hooks and Callbacks
+- Type Adapters
+
+## Miscellaneous Examples
+
+- Resources
+
+## Resources
+
+- [Instructor GitHub](https://github.com/jxnl/instructor)
+- [Instructor Documentation](https://instructor-ai.github.io/instructor/)
+- [Pydantic Documentation](https://docs.pydantic.dev/)
+
+Last updated: April 9, 2025

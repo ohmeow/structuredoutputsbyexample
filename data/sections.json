@@ -1,0 +1,123 @@
+{
+  "sections": [
+    {
+      "id": "001-getting-started",
+      "title": "Getting Started",
+      "description": "Introduction to structured outputs with Instructor and setting up your environment",
+      "order": 1,
+      "examples": [
+        "001-getting-started",
+        "002-installation",
+        "003-first-extraction",
+        "004-response-models",
+        "005-client-setup"
+      ]
+    },
+    {
+      "id": "002-providers",
+      "title": "LLM Providers",
+      "description": "Using Instructor with different LLM providers",
+      "order": 2,
+      "examples": [
+        "006-openai",
+        "007-anthropic",
+        "008-gemini",
+        "009-cohere",
+        "010-mistral",
+        "011-other-providers"
+      ]
+    },
+    {
+      "id": "003-basic-extraction",
+      "title": "Basic Extraction Patterns",
+      "description": "Common patterns for extracting structured data",
+      "order": 3,
+      "examples": [
+        "012-simple-object",
+        "013-list-extraction",
+        "014-nested-structures",
+        "015-field-validation",
+        "016-optional-fields",
+        "017-working-with-enums"
+      ]
+    },
+    {
+      "id": "004-classification",
+      "title": "Classification and Analysis",
+      "description": "Using structured outputs for classification tasks",
+      "order": 4,
+      "examples": [
+        "018-simple-classification",
+        "019-multi-label-classification",
+        "020-sentiment-analysis",
+        "021-entity-classification",
+        "022-confidence-scores"
+      ]
+    },
+    {
+      "id": "005-streaming",
+      "title": "Streaming",
+      "description": "Working with streaming responses",
+      "order": 5,
+      "examples": [
+        "023-streaming-basics",
+        "024-partial-objects",
+        "025-streaming-lists",
+        "026-progressive-updates",
+        "027-handling-stream-errors"
+      ]
+    },
+    {
+      "id": "006-advanced-structures",
+      "title": "Advanced Structures",
+      "description": "Building complex structured outputs",
+      "order": 6,
+      "examples": [
+        "028-recursive-structures",
+        "029-knowledge-graphs",
+        "030-dependency-trees",
+        "031-task-planning",
+        "032-document-structure"
+      ]
+    },
+    {
+      "id": "007-validation",
+      "title": "Validation",
+      "description": "Ensuring data quality with validation",
+      "order": 7,
+      "examples": [
+        "033-validation-basics",
+        "034-custom-validators",
+        "035-retry-mechanisms",
+        "036-fallback-strategies",
+        "037-field-level-validation"
+      ]
+    },
+    {
+      "id": "008-multimodal",
+      "title": "Multimodal Inputs",
+      "description": "Working with images, audio, and documents",
+      "order": 8,
+      "examples": [
+        "038-vision-inputs",
+        "039-image-to-structured-data", 
+        "040-table-extraction",
+        "041-audio-extraction",
+        "042-pdf-extraction"
+      ]
+    },
+    {
+      "id": "009-performance",
+      "title": "Performance and Optimization",
+      "description": "Optimizing performance for production use",
+      "order": 9,
+      "examples": [
+        "043-caching-responses",
+        "044-parallel-extraction",
+        "045-batch-processing",
+        "046-hooks-and-callbacks",
+        "047-type-adapters"
+      ]
+    }
+  ]
+}

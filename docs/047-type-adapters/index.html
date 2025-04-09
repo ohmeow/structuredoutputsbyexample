@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Type Adapters - Structured Outputs by Example</title>
+    <meta name="description" content="Learn to work with structured outputs through annotated examples">
+    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css'>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js'></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/firacode@6.2.0/distr/fira_code.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap');
+        
+        code, pre code, .hljs {
+            font-family: 'Fira Code', 'JetBrains Mono', monospace;
+            font-feature-settings: "liga" 1;
+        }
+        
+        @supports (font-variation-settings: normal) {
+            code, pre code, .hljs {
+                font-family: 'Fira Code VF', 'JetBrains Mono', monospace;
+            }
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            hljs.highlightAll();
+        });
+    </script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            line-height: 1.5;
+            color: #222;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        header {
+            border-bottom: 1px solid #eee;
+            padding: 15px 0;
+            margin-bottom: 20px;
+        }
+        .site-title {
+            text-decoration: none;
+            color: #0066CC;
+            font-weight: 500;
+            font-size: 20px;
+        }
+        main {
+            padding-bottom: 40px;
+        }
+        footer {
+            border-top: 1px solid #eee;
+            padding: 15px 0;
+            margin-top: 20px;
+            color: #666;
+            font-size: 0.9em;
+        }
+        h1 {
+            font-size: 36px;
+            font-weight: 500;
+            margin: 0 0 25px 0;
+            color: #333;
+        }
+        p {
+            margin: 20px 0;
+            color: #444;
+            line-height: 1.6;
+        }
+        a {
+            color: #0066CC;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .example-link {
+            margin: 4px 0;
+            line-height: 1.3;
+        }
+        .row {
+            display: flex;
+            width: 100%;
+            margin-bottom: 30px;
+            gap: 40px;
+        }
+        .docs {
+            flex: 0.75;
+            min-width: 0;
+            color: #444;
+            line-height: 1.6;
+            font-size: 1em;
+        }
+        .code {
+            flex: 2.25;
+            min-width: 0;
+            position: relative;
+        }
+        pre {
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f8f8;
+            border-radius: 5px;
+            overflow-x: auto;
+            line-height: 1.5;
+        }
+        /* Prevent double styling from highlight.js */
+        pre code.hljs, pre code {
+            background-color: transparent;
+            padding: 0;
+            margin: 0;
+            border: none;
+        }
+        .leading {
+            margin-bottom: 5px;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid #eee;
+            margin: 20px 0;
+        }
+        .buttons {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            z-index: 10;
+        }
+        .copy {
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+            opacity: 0.6;
+            color: #666;
+            background-color: #f8f8f8;
+            border-radius: 3px;
+            padding: 3px;
+        }
+        .copy:hover {
+            opacity: 1;
+            color: #0066CC;
+        }
+        .tooltip {
+            position: absolute;
+            background: #333;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            top: -25px;
+            right: 0;
+        }
+        .command-prompt {
+            color: #888;
+        }
+        .command-text {
+            font-weight: bold;
+        }
+        .navigation {
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        .prev, .next {
+            margin: 5px 0;
+            font-weight: 500;
+        }
+        .prev {
+            margin-right: auto;
+        }
+        .next {
+            margin-left: auto;
+        }
+        .prev span, .next span {
+            color: #666;
+            font-weight: normal;
+        }
+        @media (max-width: 900px) {
+            .row {
+                flex-direction: column;
+            }
+            .docs, .code {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="../" class="site-title">Structured Outputs by Example</a>
+        </header>
+        <main>
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
+                <div>
+                    <div style="margin-bottom: 10px; color: #666; font-size: 0.9em;">
+                        <a href="../" style="text-decoration: none; color: #666;">Performance and Optimization</a>
+                    </div>
+                    <h1 style="margin: 0; margin-bottom: 10px;">Type Adapters</h1>
+                </div>
+                <div style="position: relative; margin-top: 10px;">
+                    <button id="copy-all-python" style="background-color: #f1f8ff; border: 1px solid #c8e1ff; border-radius: 6px; padding: 6px 12px; font-size: 14px; color: #0066CC; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16 1H4C2.9 1 2 1.9 2 3V17H4V3H16V1ZM19 5H8C6.9 5 6 5.9 6 7V21C6 22.1 6.9 23 8 23H19C20.1 23 21 22.1 21 21V7C21 5.9 20.1 5 19 5ZM19 21H8V7H19V21Z" fill="currentColor"/>
+                        </svg>
+                        Copy All Python
+                    </button>
+                    <div id="all-python-code" style="display: none;">from typing import List, Dict, Any
+from pydantic import TypeAdapter, BaseModel
+import instructor
+from openai import OpenAI
+client = instructor.from_openai(OpenAI())
+class User(BaseModel):
+    name: str
+    age: int
+    skills: List[str]
+UserListAdapter = TypeAdapter(List[User])
+def extract_users_from_text(text: str) -&gt; List[User]:
+raw_data = client.chat.completions.create(
+        model=&quot;gpt-3.5-turbo&quot;,
+        messages=[
+            {
+                &quot;role&quot;: &quot;user&quot;,
+                &quot;content&quot;: f&quot;Extract all users from this text as a JSON array: {text}&quot;
+            }
+        ],
+        response_format={&quot;type&quot;: &quot;json_object&quot;},
+        temperature=0
+    ).choices[0].message.content
+import json
+    try:
+        data = json.loads(raw_data)
+users = UserListAdapter.validate_python(data.get(&quot;users&quot;, []))
+        return users
+    except Exception as e:
+        print(f&quot;Error parsing data: {e}&quot;)
+        return []
+text = &quot;&quot;&quot;
+Team members:
+- John Smith, 32 years old, skills: Python, JavaScript, Docker
+- Maria Garcia, 28 years old, skills: UX Design, Figma, HTML/CSS
+- Alex Johnson, 35 years old, skills: Project Management, Agile, Scrum
+&quot;&quot;&quot;
+
+users = extract_users_from_text(text)
+for user in users:
+    print(f&quot;{user.name} ({user.age}): {&#x27;, &#x27;.join(user.skills)}&quot;)
+from typing import Dict, List, Union, Any
+from pydantic import TypeAdapter, BaseModel, Field
+class Comment(BaseModel):
+    user: str
+    text: str
+    timestamp: str
+
+class Post(BaseModel):
+    id: int
+    title: str
+    content: str
+    tags: List[str]
+    comments: List[Comment]
+CommentAdapter = TypeAdapter(Comment)
+PostAdapter = TypeAdapter(Post)
+PostDictAdapter = TypeAdapter(Dict[str, Post])
+def process_comment(raw_comment: Dict[str, Any]) -&gt; Comment:
+    return CommentAdapter.validate_python(raw_comment)
+
+def process_post(raw_post: Dict[str, Any]) -&gt; Post:
+    return PostAdapter.validate_python(raw_post)
+
+def process_posts_dict(raw_posts: Dict[str, Any]) -&gt; Dict[str, Post]:
+    return PostDictAdapter.validate_python(raw_posts)
+raw_comment = {
+    &quot;user&quot;: &quot;alice&quot;,
+    &quot;text&quot;: &quot;Great post!&quot;,
+    &quot;timestamp&quot;: &quot;2023-06-15T14:30:00Z&quot;
+}
+
+raw_post = {
+    &quot;id&quot;: 1,
+    &quot;title&quot;: &quot;Introduction to Type Adapters&quot;,
+    &quot;content&quot;: &quot;Type adapters are a powerful feature...&quot;,
+    &quot;tags&quot;: [&quot;pydantic&quot;, &quot;python&quot;, &quot;validation&quot;],
+    &quot;comments&quot;: [
+        raw_comment,
+        {&quot;user&quot;: &quot;bob&quot;, &quot;text&quot;: &quot;Thanks for sharing!&quot;, &quot;timestamp&quot;: &quot;2023-06-15T15:45:00Z&quot;}
+    ]
+}
+comment = process_comment(raw_comment)
+post = process_post(raw_post)
+
+print(f&quot;Comment by {comment.user}: {comment.text}&quot;)
+print(f&quot;Post: {post.title} with {len(post.comments)} comments and tags: {&#x27;, &#x27;.join(post.tags)}&quot;)
+from typing import List, Dict, Any, Optional
+from pydantic import TypeAdapter, BaseModel, Field
+class Address(BaseModel):
+    street: str
+    city: str
+    postal_code: str
+    country: str
+
+class ContactInfo(BaseModel):
+    email: str
+    phone: Optional[str] = None
+    address: Address
+
+class Customer(BaseModel):
+    id: str
+    name: str
+    contact_info: ContactInfo
+    account_type: str
+    active: bool
+AddressAdapter = TypeAdapter(Address)
+ContactInfoAdapter = TypeAdapter(ContactInfo)
+CustomerAdapter = TypeAdapter(Customer)
+CustomerListAdapter = TypeAdapter(List[Customer])
+def process_customers(data: Dict[str, Any]) -&gt; List[Customer]:
+    try:
+customers_data = data.get(&quot;results&quot;, {}).get(&quot;customers&quot;, [])
+        return CustomerListAdapter.validate_python(customers_data)
+    except Exception as e:
+        print(f&quot;Validation error: {e}&quot;)
+        return []
+api_response = {
+    &quot;status&quot;: &quot;success&quot;,
+    &quot;results&quot;: {
+        &quot;customers&quot;: [
+            {
+                &quot;id&quot;: &quot;cust-001&quot;,
+                &quot;name&quot;: &quot;Acme Corporation&quot;,
+                &quot;contact_info&quot;: {
+                    &quot;email&quot;: &quot;contact@acme.com&quot;,
+                    &quot;phone&quot;: &quot;555-123-4567&quot;,
+                    &quot;address&quot;: {
+                        &quot;street&quot;: &quot;123 Main St&quot;,
+                        &quot;city&quot;: &quot;San Francisco&quot;,
+                        &quot;postal_code&quot;: &quot;94105&quot;,
+                        &quot;country&quot;: &quot;USA&quot;
+                    }
+                },
+                &quot;account_type&quot;: &quot;enterprise&quot;,
+                &quot;active&quot;: True
+            },
+            {
+                &quot;id&quot;: &quot;cust-002&quot;,
+                &quot;name&quot;: &quot;Globex Inc&quot;,
+                &quot;contact_info&quot;: {
+                    &quot;email&quot;: &quot;info@globex.com&quot;,
+                    &quot;address&quot;: {
+                        &quot;street&quot;: &quot;456 Market St&quot;,
+                        &quot;city&quot;: &quot;New York&quot;,
+                        &quot;postal_code&quot;: &quot;10001&quot;,
+                        &quot;country&quot;: &quot;USA&quot;
+                    }
+                },
+                &quot;account_type&quot;: &quot;small_business&quot;,
+                &quot;active&quot;: True
+            }
+        ]
+    }
+}
+customers = process_customers(api_response)
+print(f&quot;Processed {len(customers)} valid customers&quot;)
+for customer in customers:
+    print(f&quot;- {customer.name} ({customer.id})&quot;)
+    print(f&quot;  Email: {customer.contact_info.email}&quot;)
+    print(f&quot;  Address: {customer.contact_info.address.city}, {customer.contact_info.address.country}&quot;)
+</div>
+                </div>            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Pydantic's Type Adapter is a powerful feature that allows you to wrap arbitrary data parsing logic with Pydantic's validation. Instructor leverages this to provide flexible data conversion and validation.</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">from typing import List, Dict, Any
+from pydantic import TypeAdapter, BaseModel
+import instructor
+from openai import OpenAI</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Initialize the client with instructor</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">client = instructor.from_openai(OpenAI())</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Define a model for validation</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">class User(BaseModel):
+    name: str
+    age: int
+    skills: List[str]</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Create a type adapter for a list of users</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">UserListAdapter = TypeAdapter(List[User])</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Define an extraction function</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">def extract_users_from_text(text: str) -&gt; List[User]:</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Get raw JSON data from LLM</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">raw_data = client.chat.completions.create(
+        model=&quot;gpt-3.5-turbo&quot;,
+        messages=[
+            {
+                &quot;role&quot;: &quot;user&quot;,
+                &quot;content&quot;: f&quot;Extract all users from this text as a JSON array: {text}&quot;
+            }
+        ],
+        response_format={&quot;type&quot;: &quot;json_object&quot;},
+        temperature=0
+    ).choices[0].message.content</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Parse JSON</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">import json
+    try:
+        data = json.loads(raw_data)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Use type adapter for validation</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">users = UserListAdapter.validate_python(data.get(&quot;users&quot;, []))
+        return users
+    except Exception as e:
+        print(f&quot;Error parsing data: {e}&quot;)
+        return []</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Example usage</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">text = &quot;&quot;&quot;
+Team members:
+- John Smith, 32 years old, skills: Python, JavaScript, Docker
+- Maria Garcia, 28 years old, skills: UX Design, Figma, HTML/CSS
+- Alex Johnson, 35 years old, skills: Project Management, Agile, Scrum
+&quot;&quot;&quot;
+
+users = extract_users_from_text(text)
+for user in users:
+    print(f&quot;{user.name} ({user.age}): {&#x27;, &#x27;.join(user.skills)}&quot;)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Type adapters can also be used with dictionaries and more complex structures:</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">from typing import Dict, List, Union, Any
+from pydantic import TypeAdapter, BaseModel, Field</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Define some models</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">class Comment(BaseModel):
+    user: str
+    text: str
+    timestamp: str
+
+class Post(BaseModel):
+    id: int
+    title: str
+    content: str
+    tags: List[str]
+    comments: List[Comment]</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Create type adapters</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">CommentAdapter = TypeAdapter(Comment)
+PostAdapter = TypeAdapter(Post)
+PostDictAdapter = TypeAdapter(Dict[str, Post])</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Process raw data with type adapters</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">def process_comment(raw_comment: Dict[str, Any]) -&gt; Comment:
+    return CommentAdapter.validate_python(raw_comment)
+
+def process_post(raw_post: Dict[str, Any]) -&gt; Post:
+    return PostAdapter.validate_python(raw_post)
+
+def process_posts_dict(raw_posts: Dict[str, Any]) -&gt; Dict[str, Post]:
+    return PostDictAdapter.validate_python(raw_posts)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Example data</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">raw_comment = {
+    &quot;user&quot;: &quot;alice&quot;,
+    &quot;text&quot;: &quot;Great post!&quot;,
+    &quot;timestamp&quot;: &quot;2023-06-15T14:30:00Z&quot;
+}
+
+raw_post = {
+    &quot;id&quot;: 1,
+    &quot;title&quot;: &quot;Introduction to Type Adapters&quot;,
+    &quot;content&quot;: &quot;Type adapters are a powerful feature...&quot;,
+    &quot;tags&quot;: [&quot;pydantic&quot;, &quot;python&quot;, &quot;validation&quot;],
+    &quot;comments&quot;: [
+        raw_comment,
+        {&quot;user&quot;: &quot;bob&quot;, &quot;text&quot;: &quot;Thanks for sharing!&quot;, &quot;timestamp&quot;: &quot;2023-06-15T15:45:00Z&quot;}
+    ]
+}</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Validate and convert the data</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">comment = process_comment(raw_comment)
+post = process_post(raw_post)
+
+print(f&quot;Comment by {comment.user}: {comment.text}&quot;)
+print(f&quot;Post: {post.title} with {len(post.comments)} comments and tags: {&#x27;, &#x27;.join(post.tags)}&quot;)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Type adapters can be particularly useful when working with external APIs or complex data structures:</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">from typing import List, Dict, Any, Optional
+from pydantic import TypeAdapter, BaseModel, Field</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Define complex nested structures</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">class Address(BaseModel):
+    street: str
+    city: str
+    postal_code: str
+    country: str
+
+class ContactInfo(BaseModel):
+    email: str
+    phone: Optional[str] = None
+    address: Address
+
+class Customer(BaseModel):
+    id: str
+    name: str
+    contact_info: ContactInfo
+    account_type: str
+    active: bool</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Create nested type adapters</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">AddressAdapter = TypeAdapter(Address)
+ContactInfoAdapter = TypeAdapter(ContactInfo)
+CustomerAdapter = TypeAdapter(Customer)
+CustomerListAdapter = TypeAdapter(List[Customer])</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Process data with validation</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">def process_customers(data: Dict[str, Any]) -&gt; List[Customer]:
+    try:</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Extract customer data from a complex API response</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">customers_data = data.get(&quot;results&quot;, {}).get(&quot;customers&quot;, [])
+        return CustomerListAdapter.validate_python(customers_data)
+    except Exception as e:
+        print(f&quot;Validation error: {e}&quot;)
+        return []</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Example API response data</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">api_response = {
+    &quot;status&quot;: &quot;success&quot;,
+    &quot;results&quot;: {
+        &quot;customers&quot;: [
+            {
+                &quot;id&quot;: &quot;cust-001&quot;,
+                &quot;name&quot;: &quot;Acme Corporation&quot;,
+                &quot;contact_info&quot;: {
+                    &quot;email&quot;: &quot;contact@acme.com&quot;,
+                    &quot;phone&quot;: &quot;555-123-4567&quot;,
+                    &quot;address&quot;: {
+                        &quot;street&quot;: &quot;123 Main St&quot;,
+                        &quot;city&quot;: &quot;San Francisco&quot;,
+                        &quot;postal_code&quot;: &quot;94105&quot;,
+                        &quot;country&quot;: &quot;USA&quot;
+                    }
+                },
+                &quot;account_type&quot;: &quot;enterprise&quot;,
+                &quot;active&quot;: True
+            },
+            {
+                &quot;id&quot;: &quot;cust-002&quot;,
+                &quot;name&quot;: &quot;Globex Inc&quot;,
+                &quot;contact_info&quot;: {
+                    &quot;email&quot;: &quot;info@globex.com&quot;,
+                    &quot;address&quot;: {
+                        &quot;street&quot;: &quot;456 Market St&quot;,
+                        &quot;city&quot;: &quot;New York&quot;,
+                        &quot;postal_code&quot;: &quot;10001&quot;,
+                        &quot;country&quot;: &quot;USA&quot;
+                    }
+                },
+                &quot;account_type&quot;: &quot;small_business&quot;,
+                &quot;active&quot;: True
+            }
+        ]
+    }
+}</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Process and validate the data</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">customers = process_customers(api_response)
+print(f&quot;Processed {len(customers)} valid customers&quot;)
+for customer in customers:
+    print(f&quot;- {customer.name} ({customer.id})&quot;)
+    print(f&quot;  Email: {customer.contact_info.email}&quot;)
+    print(f&quot;  Address: {customer.contact_info.address.city}, {customer.contact_info.address.country}&quot;)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <h2>Running the Example</h2>
+            <div class="row">
+                <div class="docs" style='font-size: 0.9em; color: #666;'>
+                    First, install Instructor and any dependencies
+                </div>
+                <div class="code">
+                    <div class="buttons">
+                        <svg class="copy" title="Copy command" onclick="copyCode(this)" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16 1H4C2.9 1 2 1.9 2 3V17H4V3H16V1ZM19 5H8C6.9 5 6 5.9 6 7V21C6 22.1 6.9 23 8 23H19C20.1 23 21 22.1 21 21V7C21 5.9 20.1 5 19 5ZM19 21H8V7H19V21Z" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <pre><code class="language-shell"><span><span class="command-prompt">$ </span><span class="command-text">pip install instructor pydantic</span></span>
+</code></pre>
+                </div>
+            </div>
+            <div class="row">
+                <div class="docs" style='font-size: 0.9em; color: #666;'>
+                    Run the Python script
+                </div>
+                <div class="code">
+                    <div class="buttons">
+                        <svg class="copy" title="Copy command" onclick="copyCode(this)" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16 1H4C2.9 1 2 1.9 2 3V17H4V3H16V1ZM19 5H8C6.9 5 6 5.9 6 7V21C6 22.1 6.9 23 8 23H19C20.1 23 21 22.1 21 21V7C21 5.9 20.1 5 19 5ZM19 21H8V7H19V21Z" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <pre><code class="language-shell"><span><span class="command-prompt">$ </span><span class="command-text">python type-adapters.py</span></span>
+</code></pre>
+                </div>
+            </div>
+            <hr>
+            <h4>Further Information</h4>
+            <ul style="font-size: 0.9em;">
+                <li><a href="https://github.com/jxnl/instructor"
+                         target="_blank">Documentation link 1</a></li>
+            </ul>
+            <div class="navigation">
+                <p class="prev">
+                    <span>← Previous:</span> <a href="../046-hooks-and-callbacks/">Hooks and Callbacks</a>
+                </p>
+                <p class="next">
+                    <span>Next:</span> <a href="../050-resources/">Resources</a> →
+                </p>
+            </div>
+        </main>
+        <footer>
+            <p>by <a href="https://github.com/jxnl/instructor">Instructor</a> | <a href="https://github.com/jxnl/instructor">GitHub</a> | <span style="color: #888; font-size: 0.9em;">Last updated: April 9, 2025</span></p>
+        </footer>
+    </div>
+    <script>
+        // Function to copy code to clipboard
+        function copyCode(button) {
+            const codeBlock = button.closest('.code').querySelector('pre');
+            const code = codeBlock.textContent;
+            copyToClipboard(code, button);
+        }
+        
+        // Function to copy all Python code
+        document.addEventListener('DOMContentLoaded', function() {
+            const copyAllButton = document.getElementById('copy-all-python');
+            if (copyAllButton) {
+                copyAllButton.addEventListener('click', function() {
+                    const allCodeElement = document.getElementById('all-python-code');
+                    const code = allCodeElement.textContent;
+                    copyToClipboard(code, copyAllButton);
+                });
+            }
+        });
+        
+        // Shared function to copy text and show tooltip
+        function copyToClipboard(text, element) {
+            // For older browsers, fallback to textarea method
+            if (!navigator.clipboard) {
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                textArea.style.position = 'fixed';  // Avoid scrolling to bottom
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                
+                try {
+                    document.execCommand('copy');
+                    showTooltip(element, 'Copied!');
+                } catch (err) {
+                    console.error('Failed to copy text: ', err);
+                    showTooltip(element, 'Error!');
+                }
+                
+                document.body.removeChild(textArea);
+                return;
+            }
+            
+            // Use clipboard API if available
+            navigator.clipboard.writeText(text).then(() => {
+                showTooltip(element, 'Copied!');
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+                showTooltip(element, 'Error!');
+            });
+        }
+        
+        // Helper to show tooltip
+        function showTooltip(element, message) {
+            // Check if there's already a tooltip
+            let tooltip = element.parentElement.querySelector('.tooltip');
+            if (tooltip) {
+                tooltip.textContent = message;
+            } else {
+                // Create and append new tooltip
+                tooltip = document.createElement('span');
+                tooltip.textContent = message;
+                tooltip.className = 'tooltip';
+                tooltip.style.position = 'absolute';
+                tooltip.style.background = '#333';
+                tooltip.style.color = 'white';
+                tooltip.style.padding = '2px 8px';
+                tooltip.style.borderRadius = '4px';
+                tooltip.style.fontSize = '12px';
+                tooltip.style.top = '-25px';
+                tooltip.style.right = '0';
+                
+                // Make sure the parent has position relative for tooltip positioning
+                if (getComputedStyle(element.parentElement).position === 'static') {
+                    element.parentElement.style.position = 'relative';
+                }
+                
+                element.parentElement.appendChild(tooltip);
+            }
+            
+            // Remove tooltip after 1.5 seconds
+            setTimeout(() => tooltip.remove(), 1500);
+        }
+
+        // Enable keyboard navigation between examples
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey || e.altKey || e.shiftKey || e.metaKey) {
+                return;
+            }
+            
+            if (e.key === 'ArrowRight') {
+                const nextLink = document.querySelector('.next a');
+                if (nextLink) {
+                    window.location.href = nextLink.getAttribute('href');
+                }
+            }
+            
+            if (e.key === 'ArrowLeft') {
+                const prevLink = document.querySelector('.prev a');
+                if (prevLink) {
+                    window.location.href = prevLink.getAttribute('href');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

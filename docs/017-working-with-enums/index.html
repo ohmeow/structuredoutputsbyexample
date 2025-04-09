@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Working with Enums - Structured Outputs by Example</title>
+    <meta name="description" content="Learn to work with structured outputs through annotated examples">
+    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css'>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js'></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/firacode@6.2.0/distr/fira_code.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap');
+        
+        code, pre code, .hljs {
+            font-family: 'Fira Code', 'JetBrains Mono', monospace;
+            font-feature-settings: "liga" 1;
+        }
+        
+        @supports (font-variation-settings: normal) {
+            code, pre code, .hljs {
+                font-family: 'Fira Code VF', 'JetBrains Mono', monospace;
+            }
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            hljs.highlightAll();
+        });
+    </script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            line-height: 1.5;
+            color: #222;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        header {
+            border-bottom: 1px solid #eee;
+            padding: 15px 0;
+            margin-bottom: 20px;
+        }
+        .site-title {
+            text-decoration: none;
+            color: #0066CC;
+            font-weight: 500;
+            font-size: 20px;
+        }
+        main {
+            padding-bottom: 40px;
+        }
+        footer {
+            border-top: 1px solid #eee;
+            padding: 15px 0;
+            margin-top: 20px;
+            color: #666;
+            font-size: 0.9em;
+        }
+        h1 {
+            font-size: 36px;
+            font-weight: 500;
+            margin: 0 0 25px 0;
+            color: #333;
+        }
+        p {
+            margin: 20px 0;
+            color: #444;
+            line-height: 1.6;
+        }
+        a {
+            color: #0066CC;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .example-link {
+            margin: 4px 0;
+            line-height: 1.3;
+        }
+        .row {
+            display: flex;
+            width: 100%;
+            margin-bottom: 30px;
+            gap: 40px;
+        }
+        .docs {
+            flex: 0.75;
+            min-width: 0;
+            color: #444;
+            line-height: 1.6;
+            font-size: 1em;
+        }
+        .code {
+            flex: 2.25;
+            min-width: 0;
+            position: relative;
+        }
+        pre {
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f8f8;
+            border-radius: 5px;
+            overflow-x: auto;
+            line-height: 1.5;
+        }
+        /* Prevent double styling from highlight.js */
+        pre code.hljs, pre code {
+            background-color: transparent;
+            padding: 0;
+            margin: 0;
+            border: none;
+        }
+        .leading {
+            margin-bottom: 5px;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid #eee;
+            margin: 20px 0;
+        }
+        .buttons {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            z-index: 10;
+        }
+        .copy {
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+            opacity: 0.6;
+            color: #666;
+            background-color: #f8f8f8;
+            border-radius: 3px;
+            padding: 3px;
+        }
+        .copy:hover {
+            opacity: 1;
+            color: #0066CC;
+        }
+        .tooltip {
+            position: absolute;
+            background: #333;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            top: -25px;
+            right: 0;
+        }
+        .command-prompt {
+            color: #888;
+        }
+        .command-text {
+            font-weight: bold;
+        }
+        .navigation {
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        .prev, .next {
+            margin: 5px 0;
+            font-weight: 500;
+        }
+        .prev {
+            margin-right: auto;
+        }
+        .next {
+            margin-left: auto;
+        }
+        .prev span, .next span {
+            color: #666;
+            font-weight: normal;
+        }
+        @media (max-width: 900px) {
+            .row {
+                flex-direction: column;
+            }
+            .docs, .code {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="../" class="site-title">Structured Outputs by Example</a>
+        </header>
+        <main>
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
+                <div>
+                    <div style="margin-bottom: 10px; color: #666; font-size: 0.9em;">
+                        <a href="../" style="text-decoration: none; color: #666;">Basic Extraction Patterns</a>
+                    </div>
+                    <h1 style="margin: 0; margin-bottom: 10px;">Working with Enums</h1>
+                </div>
+                <div style="position: relative; margin-top: 10px;">
+                    <button id="copy-all-python" style="background-color: #f1f8ff; border: 1px solid #c8e1ff; border-radius: 6px; padding: 6px 12px; font-size: 14px; color: #0066CC; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16 1H4C2.9 1 2 1.9 2 3V17H4V3H16V1ZM19 5H8C6.9 5 6 5.9 6 7V21C6 22.1 6.9 23 8 23H19C20.1 23 21 22.1 21 21V7C21 5.9 20.1 5 19 5ZM19 21H8V7H19V21Z" fill="currentColor"/>
+                        </svg>
+                        Copy All Python
+                    </button>
+                    <div id="all-python-code" style="display: none;">from enum import Enum
+from pydantic import BaseModel
+import instructor
+from openai import OpenAI
+class ProductCategory(str, Enum):
+    ELECTRONICS = &quot;electronics&quot;
+    CLOTHING = &quot;clothing&quot;
+    HOME = &quot;home&quot;
+    BOOKS = &quot;books&quot;
+    TOYS = &quot;toys&quot;
+
+class Product(BaseModel):
+    name: str
+    price: float
+    category: ProductCategory
+client = instructor.from_openai(OpenAI())
+product = client.chat.completions.create(
+    model=&quot;gpt-3.5-turbo&quot;,
+    response_model=Product,
+    messages=[
+        {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Our new wireless headphones cost $79.99 and belong in our electronics department.&quot;}
+    ]
+)
+
+print(f&quot;Product: {product.name}&quot;)
+print(f&quot;Price: ${product.price}&quot;)
+print(f&quot;Category: {product.category}&quot;)
+if product.category == ProductCategory.ELECTRONICS:
+    print(&quot;This is an electronic product.&quot;)
+
+from enum import Enum, auto
+from pydantic import BaseModel
+from typing import List
+class Priority(str, Enum):
+    LOW = &quot;low&quot;
+    MEDIUM = &quot;medium&quot;
+    HIGH = &quot;high&quot;
+    CRITICAL = &quot;critical&quot;
+class Status(str, Enum):
+    TODO = &quot;todo&quot;
+    IN_PROGRESS = &quot;in_progress&quot;
+    REVIEW = &quot;review&quot;
+    DONE = &quot;done&quot;
+
+class Task(BaseModel):
+    title: str
+    description: str
+    priority: Priority
+    status: Status
+    tags: List[str] = []
+
+task = client.chat.completions.create(
+    model=&quot;gpt-3.5-turbo&quot;,
+    response_model=Task,
+    messages=[
+        {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;&quot;&quot;
+        Task Details:
+        Title: Fix login page bug
+        Description: Users report seeing errors when trying to log in with special characters
+        Priority: High
+        Status: In Progress
+        Tags: bug, authentication, frontend
+        &quot;&quot;&quot;}
+    ]
+)
+
+print(f&quot;Task: {task.title}&quot;)
+print(f&quot;Description: {task.description}&quot;)
+print(f&quot;Priority: {task.priority}&quot;)  # Priority.HIGH
+print(f&quot;Status: {task.status}&quot;)  # Status.IN_PROGRESS
+print(f&quot;Tags: {&#x27;, &#x27;.join(task.tags)}&quot;)
+if task.priority in [Priority.HIGH, Priority.CRITICAL]:
+    print(&quot;This task requires immediate attention!&quot;)
+
+if task.status == Status.IN_PROGRESS:
+    print(&quot;This task is being worked on.&quot;)
+
+from enum import IntEnum
+from pydantic import BaseModel
+class SeverityLevel(IntEnum):
+    LOW = 1
+    MODERATE = 2
+    HIGH = 3
+    SEVERE = 4
+    CRITICAL = 5
+
+class SecurityIssue(BaseModel):
+    title: str
+    description: str
+    severity: SeverityLevel
+    affected_users: int
+
+issue = client.chat.completions.create(
+    model=&quot;gpt-3.5-turbo&quot;,
+    response_model=SecurityIssue,
+    messages=[
+        {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;&quot;&quot;
+        Security Alert:
+        Issue: Database Exposure
+        Details: Customer database was partially exposed due to misconfigured firewall
+        Severity: 4 (Severe)
+        Affected Users: 5,230
+        &quot;&quot;&quot;}
+    ]
+)
+
+print(f&quot;Issue: {issue.title}&quot;)
+print(f&quot;Description: {issue.description}&quot;)
+print(f&quot;Severity: {issue.severity.name} (Level {issue.severity.value})&quot;)  # &quot;SEVERE (Level 4)&quot;
+print(f&quot;Affected Users: {issue.affected_users}&quot;)
+if issue.severity &gt;= SeverityLevel.HIGH and issue.affected_users &gt; 1000:
+    print(&quot;This requires executive notification!&quot;)
+
+from enum import Enum
+from pydantic import BaseModel, Field
+
+class TicketType(str, Enum):
+    BUG = &quot;bug&quot;
+    FEATURE = &quot;feature&quot;
+    IMPROVEMENT = &quot;improvement&quot;
+    DOCUMENTATION = &quot;documentation&quot;
+    QUESTION = &quot;question&quot;
+
+class Ticket(BaseModel):
+    title: str
+    description: str
+ticket_type: TicketType = Field(
+        description=&quot;&quot;&quot;Type of ticket with these options:
+        - bug: Something is not working correctly
+        - feature: A new capability is requested
+        - improvement: Enhancement to an existing feature
+        - documentation: Updates to documentation
+        - question: Question about functionality&quot;&quot;&quot;
+    )
+
+ticket = client.chat.completions.create(
+    model=&quot;gpt-3.5-turbo&quot;,
+    response_model=Ticket,
+    messages=[
+        {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;&quot;&quot;
+        New Ticket:
+        Title: Add dark mode to application
+        Description: Users would like a dark theme option to reduce eye strain when using the app at night
+        &quot;&quot;&quot;}
+    ]
+)
+
+print(f&quot;Ticket: {ticket.title}&quot;)
+print(f&quot;Description: {ticket.description}&quot;)
+print(f&quot;Type: {ticket.ticket_type}&quot;)  # Should be TicketType.IMPROVEMENT or TicketType.FEATURE
+
+from enum import Flag, auto
+from pydantic import BaseModel, Field
+class Permissions(Flag):
+    NONE = 0
+    READ = auto()       # 1
+    WRITE = auto()      # 2
+    DELETE = auto()     # 4
+    ADMIN = auto()      # 8
+READ_WRITE = READ | WRITE                # 3
+    STANDARD = READ | WRITE | DELETE         # 7
+    ALL = READ | WRITE | DELETE | ADMIN      # 15
+
+class User(BaseModel):
+    name: str
+    role: str
+    permissions: Permissions = Field(
+        description=&quot;&quot;&quot;User permissions, can be a combination of:
+        - READ: Can view content
+        - WRITE: Can create and edit content
+        - DELETE: Can remove content
+        - ADMIN: Has administrative privileges
+        - Or predefined combinations like READ_WRITE, STANDARD, or ALL&quot;&quot;&quot;
+    )
+
+user = client.chat.completions.create(
+    model=&quot;gpt-4&quot;,  # Better for complex models
+    response_model=User,
+    messages=[
+        {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;&quot;&quot;
+        User Profile:
+        Name: Sarah Johnson
+        Role: Content Manager
+        Permissions: Can read, write, and delete content
+        &quot;&quot;&quot;}
+    ]
+)
+
+print(f&quot;User: {user.name}&quot;)
+print(f&quot;Role: {user.role}&quot;)
+print(f&quot;Permissions: {user.permissions.name}&quot;)  # Should be &quot;STANDARD&quot;
+if Permissions.READ in user.permissions:
+    print(&quot;User can read content&quot;)
+
+if Permissions.WRITE in user.permissions:
+    print(&quot;User can write content&quot;)
+
+if Permissions.ADMIN in user.permissions:
+    print(&quot;User has admin privileges&quot;)
+else:
+    print(&quot;User does not have admin privileges&quot;)
+</div>
+                </div>            </div>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Use enumerated types in your data extraction for more consistent and validated results.</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">from enum import Enum
+from pydantic import BaseModel
+import instructor
+from openai import OpenAI</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Define an enum for product categories</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">class ProductCategory(str, Enum):
+    ELECTRONICS = &quot;electronics&quot;
+    CLOTHING = &quot;clothing&quot;
+    HOME = &quot;home&quot;
+    BOOKS = &quot;books&quot;
+    TOYS = &quot;toys&quot;
+
+class Product(BaseModel):
+    name: str
+    price: float
+    category: ProductCategory</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Patch the client</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">client = instructor.from_openai(OpenAI())</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Extract with enum validation</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">product = client.chat.completions.create(
+    model=&quot;gpt-3.5-turbo&quot;,
+    response_model=Product,
+    messages=[
+        {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Our new wireless headphones cost $79.99 and belong in our electronics department.&quot;}
+    ]
+)
+
+print(f&quot;Product: {product.name}&quot;)
+print(f&quot;Price: ${product.price}&quot;)
+print(f&quot;Category: {product.category}&quot;)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>You can use the enum for comparisons</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">if product.category == ProductCategory.ELECTRONICS:
+    print(&quot;This is an electronic product.&quot;)
+
+from enum import Enum, auto
+from pydantic import BaseModel
+from typing import List</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Define priority enum</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">class Priority(str, Enum):
+    LOW = &quot;low&quot;
+    MEDIUM = &quot;medium&quot;
+    HIGH = &quot;high&quot;
+    CRITICAL = &quot;critical&quot;</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Define status enum</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">class Status(str, Enum):
+    TODO = &quot;todo&quot;
+    IN_PROGRESS = &quot;in_progress&quot;
+    REVIEW = &quot;review&quot;
+    DONE = &quot;done&quot;
+
+class Task(BaseModel):
+    title: str
+    description: str
+    priority: Priority
+    status: Status
+    tags: List[str] = []
+
+task = client.chat.completions.create(
+    model=&quot;gpt-3.5-turbo&quot;,
+    response_model=Task,
+    messages=[
+        {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;&quot;&quot;
+        Task Details:
+        Title: Fix login page bug
+        Description: Users report seeing errors when trying to log in with special characters
+        Priority: High
+        Status: In Progress
+        Tags: bug, authentication, frontend
+        &quot;&quot;&quot;}
+    ]
+)
+
+print(f&quot;Task: {task.title}&quot;)
+print(f&quot;Description: {task.description}&quot;)
+print(f&quot;Priority: {task.priority}&quot;)  # Priority.HIGH
+print(f&quot;Status: {task.status}&quot;)  # Status.IN_PROGRESS
+print(f&quot;Tags: {&#x27;, &#x27;.join(task.tags)}&quot;)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Use enums for conditional logic</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">if task.priority in [Priority.HIGH, Priority.CRITICAL]:
+    print(&quot;This task requires immediate attention!&quot;)
+
+if task.status == Status.IN_PROGRESS:
+    print(&quot;This task is being worked on.&quot;)
+
+from enum import IntEnum
+from pydantic import BaseModel</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Define an integer-based enum</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">class SeverityLevel(IntEnum):
+    LOW = 1
+    MODERATE = 2
+    HIGH = 3
+    SEVERE = 4
+    CRITICAL = 5
+
+class SecurityIssue(BaseModel):
+    title: str
+    description: str
+    severity: SeverityLevel
+    affected_users: int
+
+issue = client.chat.completions.create(
+    model=&quot;gpt-3.5-turbo&quot;,
+    response_model=SecurityIssue,
+    messages=[
+        {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;&quot;&quot;
+        Security Alert:
+        Issue: Database Exposure
+        Details: Customer database was partially exposed due to misconfigured firewall
+        Severity: 4 (Severe)
+        Affected Users: 5,230
+        &quot;&quot;&quot;}
+    ]
+)
+
+print(f&quot;Issue: {issue.title}&quot;)
+print(f&quot;Description: {issue.description}&quot;)
+print(f&quot;Severity: {issue.severity.name} (Level {issue.severity.value})&quot;)  # &quot;SEVERE (Level 4)&quot;
+print(f&quot;Affected Users: {issue.affected_users}&quot;)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Use integer enum for thresholds</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">if issue.severity &gt;= SeverityLevel.HIGH and issue.affected_users &gt; 1000:
+    print(&quot;This requires executive notification!&quot;)
+
+from enum import Enum
+from pydantic import BaseModel, Field
+
+class TicketType(str, Enum):
+    BUG = &quot;bug&quot;
+    FEATURE = &quot;feature&quot;
+    IMPROVEMENT = &quot;improvement&quot;
+    DOCUMENTATION = &quot;documentation&quot;
+    QUESTION = &quot;question&quot;
+
+class Ticket(BaseModel):
+    title: str
+    description: str</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Add descriptions to help the LLM understand the enum</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">ticket_type: TicketType = Field(
+        description=&quot;&quot;&quot;Type of ticket with these options:
+        - bug: Something is not working correctly
+        - feature: A new capability is requested
+        - improvement: Enhancement to an existing feature
+        - documentation: Updates to documentation
+        - question: Question about functionality&quot;&quot;&quot;
+    )
+
+ticket = client.chat.completions.create(
+    model=&quot;gpt-3.5-turbo&quot;,
+    response_model=Ticket,
+    messages=[
+        {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;&quot;&quot;
+        New Ticket:
+        Title: Add dark mode to application
+        Description: Users would like a dark theme option to reduce eye strain when using the app at night
+        &quot;&quot;&quot;}
+    ]
+)
+
+print(f&quot;Ticket: {ticket.title}&quot;)
+print(f&quot;Description: {ticket.description}&quot;)
+print(f&quot;Type: {ticket.ticket_type}&quot;)  # Should be TicketType.IMPROVEMENT or TicketType.FEATURE
+
+from enum import Flag, auto
+from pydantic import BaseModel, Field</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Define a Flag enum for permissions</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">class Permissions(Flag):
+    NONE = 0
+    READ = auto()       # 1
+    WRITE = auto()      # 2
+    DELETE = auto()     # 4
+    ADMIN = auto()      # 8</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Combinations</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">READ_WRITE = READ | WRITE                # 3
+    STANDARD = READ | WRITE | DELETE         # 7
+    ALL = READ | WRITE | DELETE | ADMIN      # 15
+
+class User(BaseModel):
+    name: str
+    role: str
+    permissions: Permissions = Field(
+        description=&quot;&quot;&quot;User permissions, can be a combination of:
+        - READ: Can view content
+        - WRITE: Can create and edit content
+        - DELETE: Can remove content
+        - ADMIN: Has administrative privileges
+        - Or predefined combinations like READ_WRITE, STANDARD, or ALL&quot;&quot;&quot;
+    )
+
+user = client.chat.completions.create(
+    model=&quot;gpt-4&quot;,  # Better for complex models
+    response_model=User,
+    messages=[
+        {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;&quot;&quot;
+        User Profile:
+        Name: Sarah Johnson
+        Role: Content Manager
+        Permissions: Can read, write, and delete content
+        &quot;&quot;&quot;}
+    ]
+)
+
+print(f&quot;User: {user.name}&quot;)
+print(f&quot;Role: {user.role}&quot;)
+print(f&quot;Permissions: {user.permissions.name}&quot;)  # Should be &quot;STANDARD&quot;</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Check individual permissions</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">if Permissions.READ in user.permissions:
+    print(&quot;User can read content&quot;)
+
+if Permissions.WRITE in user.permissions:
+    print(&quot;User can write content&quot;)
+
+if Permissions.ADMIN in user.permissions:
+    print(&quot;User has admin privileges&quot;)
+else:
+    print(&quot;User does not have admin privileges&quot;)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <h2>Running the Example</h2>
+            <div class="row">
+                <div class="docs" style='font-size: 0.9em; color: #666;'>
+                    First, install Instructor and any dependencies
+                </div>
+                <div class="code">
+                    <div class="buttons">
+                        <svg class="copy" title="Copy command" onclick="copyCode(this)" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16 1H4C2.9 1 2 1.9 2 3V17H4V3H16V1ZM19 5H8C6.9 5 6 5.9 6 7V21C6 22.1 6.9 23 8 23H19C20.1 23 21 22.1 21 21V7C21 5.9 20.1 5 19 5ZM19 21H8V7H19V21Z" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <pre><code class="language-shell"><span><span class="command-prompt">$ </span><span class="command-text">pip install instructor pydantic</span></span>
+</code></pre>
+                </div>
+            </div>
+            <div class="row">
+                <div class="docs" style='font-size: 0.9em; color: #666;'>
+                    Run the Python script
+                </div>
+                <div class="code">
+                    <div class="buttons">
+                        <svg class="copy" title="Copy command" onclick="copyCode(this)" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16 1H4C2.9 1 2 1.9 2 3V17H4V3H16V1ZM19 5H8C6.9 5 6 5.9 6 7V21C6 22.1 6.9 23 8 23H19C20.1 23 21 22.1 21 21V7C21 5.9 20.1 5 19 5ZM19 21H8V7H19V21Z" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <pre><code class="language-shell"><span><span class="command-prompt">$ </span><span class="command-text">python working-with-enums.py</span></span>
+</code></pre>
+                </div>
+            </div>
+            <hr>
+            <h4>Further Information</h4>
+            <ul style="font-size: 0.9em;">
+                <li><a href="https://github.com/jxnl/instructor"
+                         target="_blank">Documentation link 1</a></li>
+            </ul>
+            <div class="navigation">
+                <p class="prev">
+                    <span>← Previous:</span> <a href="../016-optional-fields/">Optional Fields</a>
+                </p>
+                <p class="next">
+                    <span>Next:</span> <a href="../018-simple-classification/">Simple Classification</a> →
+                </p>
+            </div>
+        </main>
+        <footer>
+            <p>by <a href="https://github.com/jxnl/instructor">Instructor</a> | <a href="https://github.com/jxnl/instructor">GitHub</a> | <span style="color: #888; font-size: 0.9em;">Last updated: April 9, 2025</span></p>
+        </footer>
+    </div>
+    <script>
+        // Function to copy code to clipboard
+        function copyCode(button) {
+            const codeBlock = button.closest('.code').querySelector('pre');
+            const code = codeBlock.textContent;
+            copyToClipboard(code, button);
+        }
+        
+        // Function to copy all Python code
+        document.addEventListener('DOMContentLoaded', function() {
+            const copyAllButton = document.getElementById('copy-all-python');
+            if (copyAllButton) {
+                copyAllButton.addEventListener('click', function() {
+                    const allCodeElement = document.getElementById('all-python-code');
+                    const code = allCodeElement.textContent;
+                    copyToClipboard(code, copyAllButton);
+                });
+            }
+        });
+        
+        // Shared function to copy text and show tooltip
+        function copyToClipboard(text, element) {
+            // For older browsers, fallback to textarea method
+            if (!navigator.clipboard) {
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                textArea.style.position = 'fixed';  // Avoid scrolling to bottom
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                
+                try {
+                    document.execCommand('copy');
+                    showTooltip(element, 'Copied!');
+                } catch (err) {
+                    console.error('Failed to copy text: ', err);
+                    showTooltip(element, 'Error!');
+                }
+                
+                document.body.removeChild(textArea);
+                return;
+            }
+            
+            // Use clipboard API if available
+            navigator.clipboard.writeText(text).then(() => {
+                showTooltip(element, 'Copied!');
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+                showTooltip(element, 'Error!');
+            });
+        }
+        
+        // Helper to show tooltip
+        function showTooltip(element, message) {
+            // Check if there's already a tooltip
+            let tooltip = element.parentElement.querySelector('.tooltip');
+            if (tooltip) {
+                tooltip.textContent = message;
+            } else {
+                // Create and append new tooltip
+                tooltip = document.createElement('span');
+                tooltip.textContent = message;
+                tooltip.className = 'tooltip';
+                tooltip.style.position = 'absolute';
+                tooltip.style.background = '#333';
+                tooltip.style.color = 'white';
+                tooltip.style.padding = '2px 8px';
+                tooltip.style.borderRadius = '4px';
+                tooltip.style.fontSize = '12px';
+                tooltip.style.top = '-25px';
+                tooltip.style.right = '0';
+                
+                // Make sure the parent has position relative for tooltip positioning
+                if (getComputedStyle(element.parentElement).position === 'static') {
+                    element.parentElement.style.position = 'relative';
+                }
+                
+                element.parentElement.appendChild(tooltip);
+            }
+            
+            // Remove tooltip after 1.5 seconds
+            setTimeout(() => tooltip.remove(), 1500);
+        }
+
+        // Enable keyboard navigation between examples
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey || e.altKey || e.shiftKey || e.metaKey) {
+                return;
+            }
+            
+            if (e.key === 'ArrowRight') {
+                const nextLink = document.querySelector('.next a');
+                if (nextLink) {
+                    window.location.href = nextLink.getAttribute('href');
+                }
+            }
+            
+            if (e.key === 'ArrowLeft') {
+                const prevLink = document.querySelector('.prev a');
+                if (prevLink) {
+                    window.location.href = prevLink.getAttribute('href');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

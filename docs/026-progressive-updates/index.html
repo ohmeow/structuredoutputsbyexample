@@ -1,0 +1,1462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Progressive Updates - Structured Outputs by Example</title>
+    <meta name="description" content="Learn to work with structured outputs through annotated examples">
+    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css'>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js'></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/firacode@6.2.0/distr/fira_code.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap');
+        
+        code, pre code, .hljs {
+            font-family: 'Fira Code', 'JetBrains Mono', monospace;
+            font-feature-settings: "liga" 1;
+        }
+        
+        @supports (font-variation-settings: normal) {
+            code, pre code, .hljs {
+                font-family: 'Fira Code VF', 'JetBrains Mono', monospace;
+            }
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            hljs.highlightAll();
+        });
+    </script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            line-height: 1.5;
+            color: #222;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        header {
+            border-bottom: 1px solid #eee;
+            padding: 15px 0;
+            margin-bottom: 20px;
+        }
+        .site-title {
+            text-decoration: none;
+            color: #0066CC;
+            font-weight: 500;
+            font-size: 20px;
+        }
+        main {
+            padding-bottom: 40px;
+        }
+        footer {
+            border-top: 1px solid #eee;
+            padding: 15px 0;
+            margin-top: 20px;
+            color: #666;
+            font-size: 0.9em;
+        }
+        h1 {
+            font-size: 36px;
+            font-weight: 500;
+            margin: 0 0 25px 0;
+            color: #333;
+        }
+        p {
+            margin: 20px 0;
+            color: #444;
+            line-height: 1.6;
+        }
+        a {
+            color: #0066CC;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .example-link {
+            margin: 4px 0;
+            line-height: 1.3;
+        }
+        .row {
+            display: flex;
+            width: 100%;
+            margin-bottom: 30px;
+            gap: 40px;
+        }
+        .docs {
+            flex: 0.75;
+            min-width: 0;
+            color: #444;
+            line-height: 1.6;
+            font-size: 1em;
+        }
+        .code {
+            flex: 2.25;
+            min-width: 0;
+            position: relative;
+        }
+        pre {
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f8f8;
+            border-radius: 5px;
+            overflow-x: auto;
+            line-height: 1.5;
+        }
+        /* Prevent double styling from highlight.js */
+        pre code.hljs, pre code {
+            background-color: transparent;
+            padding: 0;
+            margin: 0;
+            border: none;
+        }
+        .leading {
+            margin-bottom: 5px;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid #eee;
+            margin: 20px 0;
+        }
+        .buttons {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            z-index: 10;
+        }
+        .copy {
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+            opacity: 0.6;
+            color: #666;
+            background-color: #f8f8f8;
+            border-radius: 3px;
+            padding: 3px;
+        }
+        .copy:hover {
+            opacity: 1;
+            color: #0066CC;
+        }
+        .tooltip {
+            position: absolute;
+            background: #333;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            top: -25px;
+            right: 0;
+        }
+        .command-prompt {
+            color: #888;
+        }
+        .command-text {
+            font-weight: bold;
+        }
+        .navigation {
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        .prev, .next {
+            margin: 5px 0;
+            font-weight: 500;
+        }
+        .prev {
+            margin-right: auto;
+        }
+        .next {
+            margin-left: auto;
+        }
+        .prev span, .next span {
+            color: #666;
+            font-weight: normal;
+        }
+        @media (max-width: 900px) {
+            .row {
+                flex-direction: column;
+            }
+            .docs, .code {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="../" class="site-title">Structured Outputs by Example</a>
+        </header>
+        <main>
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
+                <div>
+                    <div style="margin-bottom: 10px; color: #666; font-size: 0.9em;">
+                        <a href="../" style="text-decoration: none; color: #666;">Streaming</a>
+                    </div>
+                    <h1 style="margin: 0; margin-bottom: 10px;">Progressive Updates</h1>
+                </div>
+                <div style="position: relative; margin-top: 10px;">
+                    <button id="copy-all-python" style="background-color: #f1f8ff; border: 1px solid #c8e1ff; border-radius: 6px; padding: 6px 12px; font-size: 14px; color: #0066CC; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16 1H4C2.9 1 2 1.9 2 3V17H4V3H16V1ZM19 5H8C6.9 5 6 5.9 6 7V21C6 22.1 6.9 23 8 23H19C20.1 23 21 22.1 21 21V7C21 5.9 20.1 5 19 5ZM19 21H8V7H19V21Z" fill="currentColor"/>
+                        </svg>
+                        Copy All Python
+                    </button>
+                    <div id="all-python-code" style="display: none;">from pydantic import BaseModel, Field
+from typing import List, Dict, Optional
+import instructor
+from openai import OpenAI
+import time
+from enum import Enum
+from rich.console import Console
+from rich.panel import Panel
+from rich.progress import Progress, BarColumn, TextColumn, TaskProgressColumn
+from rich.table import Table
+from rich.layout import Layout
+from rich.live import Live
+from rich.text import Text
+console = Console()
+class WeatherForecast(BaseModel):
+    location: str
+    current_temp: float = Field(description=&quot;Current temperature in Celsius&quot;)
+    conditions: str = Field(description=&quot;Current weather conditions&quot;)
+    forecast: List[str] = Field(description=&quot;Weather forecast for the next few days&quot;)
+    humidity: Optional[float] = Field(None, description=&quot;Current humidity percentage&quot;)
+    wind_speed: Optional[float] = Field(None, description=&quot;Wind speed in km/h&quot;)
+client = instructor.from_openai(OpenAI())
+def update_ui(partial_forecast):
+weather_table = Table(show_header=False, expand=True)
+    weather_table.add_column(&quot;Label&quot;)
+    weather_table.add_column(&quot;Value&quot;)
+location = (
+        partial_forecast.location
+        if partial_forecast.location
+        else &quot;Loading location...&quot;
+    )
+    weather_table.add_row(&quot;📍 Location&quot;, location)
+temp = (
+        f&quot;{partial_forecast.current_temp}°C&quot;
+        if partial_forecast.current_temp is not None
+        else &quot;--°C&quot;
+    )
+    conditions = (
+        partial_forecast.conditions
+        if partial_forecast.conditions
+        else &quot;Loading conditions...&quot;
+    )
+    weather_table.add_row(&quot;🌡️ Temperature&quot;, temp)
+    weather_table.add_row(&quot;☁️ Conditions&quot;, conditions)
+humidity = (
+        f&quot;{partial_forecast.humidity}%&quot;
+        if partial_forecast.humidity is not None
+        else &quot;--%&quot;
+    )
+    wind = (
+        f&quot;{partial_forecast.wind_speed} km/h&quot;
+        if partial_forecast.wind_speed is not None
+        else &quot;-- km/h&quot;
+    )
+    weather_table.add_row(&quot;💧 Humidity&quot;, humidity)
+    weather_table.add_row(&quot;💨 Wind&quot;, wind)
+forecast_text = Text()
+    if not partial_forecast.forecast:
+        forecast_text.append(&quot;Loading forecast data...&quot;)
+    else:
+        for i, day in enumerate(partial_forecast.forecast):
+            forecast_text.append(
+                f&quot;• {day}\n&quot; if i &lt; len(partial_forecast.forecast) - 1 else f&quot;• {day}&quot;
+            )
+fields = [
+        &quot;location&quot;,
+        &quot;current_temp&quot;,
+        &quot;conditions&quot;,
+        &quot;forecast&quot;,
+        &quot;humidity&quot;,
+        &quot;wind_speed&quot;,
+    ]
+    populated = sum(
+        1
+        for f in fields
+        if getattr(partial_forecast, f) is not None
+        and getattr(partial_forecast, f) != []
+    )
+    progress_value = populated / len(fields)
+
+    progress = Progress(
+        TextColumn(&quot;[bold blue]Loading:&quot;),
+        BarColumn(),
+        TaskProgressColumn(),
+        expand=True,
+    )
+    task = progress.add_task(&quot;&quot;, total=1.0, completed=progress_value)
+layout = Layout()
+    layout.split(
+        Layout(Panel(weather_table, title=&quot;Weather Forecast&quot;), name=&quot;weather&quot;),
+        Layout(Panel(forecast_text, title=&quot;Forecast&quot;), name=&quot;forecast&quot;),
+        Layout(Panel(progress, title=&quot;Progress&quot;), name=&quot;progress&quot;),
+    )
+
+    console.clear()
+    console.print(layout)
+forecast_stream = client.chat.completions.create_partial(
+    model=&quot;gpt-3.5-turbo&quot;,
+    response_model=WeatherForecast,
+    messages=[
+        {
+            &quot;role&quot;: &quot;user&quot;,
+            &quot;content&quot;: &quot;Generate a fictional weather forecast for Tokyo, Japan.&quot;,
+        }
+    ],
+)
+for partial_forecast in forecast_stream:
+    update_ui(partial_forecast)
+    time.sleep(0.3)  # Slow down for demonstration
+
+console.print(&quot;[bold green]✅ Forecast fully loaded!&quot;)
+class SalesData(BaseModel):
+    total_revenue: float = Field(description=&quot;Total revenue in USD&quot;)
+    products_sold: int = Field(description=&quot;Total number of products sold&quot;)
+    by_category: Dict[str, float] = Field(
+        description=&quot;Revenue breakdown by product category&quot;
+    )
+    top_products: List[str] = Field(description=&quot;List of top-selling products&quot;)
+    growth_rate: Optional[float] = Field(
+        None, description=&quot;Year-over-year growth rate percentage&quot;
+    )
+def render_charts(data):
+    layout = Layout()
+header = Panel(&quot;Sales Dashboard&quot;, style=&quot;bold white on blue&quot;)
+stats_table = Table(expand=True)
+    stats_table.add_column(&quot;Metric&quot;, style=&quot;cyan&quot;)
+    stats_table.add_column(&quot;Value&quot;, style=&quot;green&quot;)
+
+    revenue = (
+        f&quot;${data.total_revenue:,.2f}&quot;
+        if data.total_revenue is not None
+        else &quot;Loading...&quot;
+    )
+    products = (
+        f&quot;{data.products_sold:,}&quot; if data.products_sold is not None else &quot;Loading...&quot;
+    )
+
+    stats_table.add_row(&quot;Revenue&quot;, revenue)
+    stats_table.add_row(&quot;Products Sold&quot;, products)
+growth_text = &quot;Loading...&quot;
+    if data.growth_rate is not None:
+        growth = f&quot;{data.growth_rate:+.1f}%&quot;
+        color = &quot;green&quot; if data.growth_rate &gt; 0 else &quot;red&quot;
+        growth_text = Text(growth, style=color)
+    stats_table.add_row(&quot;Growth Rate&quot;, growth_text)
+category_table = Table(title=&quot;Revenue by Category&quot;, expand=True)
+    category_table.add_column(&quot;Category&quot;)
+    category_table.add_column(&quot;Amount&quot;)
+    category_table.add_column(&quot;Chart&quot;)
+
+    if not data.by_category:
+        category_table.add_row(&quot;Loading category data...&quot;, &quot;&quot;, &quot;&quot;)
+    else:
+        max_value = max(data.by_category.values()) if data.by_category else 0
+        for category, amount in data.by_category.items():
+            bar_length = int(20 * (amount / max_value)) if max_value &gt; 0 else 0
+            bar = &quot;█&quot; * bar_length
+            category_table.add_row(category, f&quot;${amount:,.2f}&quot;, bar)
+products_table = Table(title=&quot;Top Products&quot;, expand=True)
+    products_table.add_column(&quot;Rank&quot;)
+    products_table.add_column(&quot;Product&quot;)
+
+    if not data.top_products:
+        products_table.add_row(&quot;&quot;, &quot;Loading top products...&quot;)
+    else:
+        for i, product in enumerate(data.top_products, 1):
+            products_table.add_row(f&quot;{i}&quot;, product)
+layout.split(
+        Layout(header, size=3),
+        Layout(Panel(stats_table, title=&quot;Key Metrics&quot;), name=&quot;stats&quot;, size=10),
+        Layout(Panel(category_table, title=&quot;Categories&quot;), name=&quot;categories&quot;),
+        Layout(Panel(products_table, title=&quot;Top Products&quot;), name=&quot;products&quot;),
+    )
+
+    console.clear()
+    console.print(layout)
+sales_stream = client.chat.completions.create_partial(
+    model=&quot;gpt-3.5-turbo&quot;,
+    response_model=SalesData,
+    messages=[
+        {
+            &quot;role&quot;: &quot;user&quot;,
+            &quot;content&quot;: &quot;Generate fictional quarterly sales data for an electronics company.&quot;,
+        }
+    ],
+)
+for partial_data in sales_stream:
+    render_charts(partial_data)
+    time.sleep(0.5)  # Slow down for demonstration
+
+console.print(&quot;[bold green]✅ Dashboard fully loaded!&quot;)
+
+
+class TaskStatus(str, Enum):
+    PENDING = &quot;pending&quot;
+    IN_PROGRESS = &quot;in_progress&quot;
+    COMPLETED = &quot;completed&quot;
+
+
+class SubTask(BaseModel):
+    name: str
+    status: TaskStatus = TaskStatus.PENDING
+    details: Optional[str] = None
+
+
+class AnalysisTask(BaseModel):
+    document_name: str
+    total_words: Optional[int] = None
+    subtasks: List[SubTask] = Field(default_factory=list)
+    key_findings: List[str] = Field(default_factory=list)
+    completion_percentage: Optional[float] = None
+analysis_stream = client.chat.completions.create_partial(
+    model=&quot;gpt-3.5-turbo&quot;,
+    response_model=AnalysisTask,
+    messages=[
+        {
+            &quot;role&quot;: &quot;user&quot;,
+            &quot;content&quot;: &quot;&quot;&quot;
+            Simulate a document analysis process for a research paper titled
+            &#x27;Advances in Renewable Energy Storage&#x27;. Include multiple subtasks
+            and key findings.
+        &quot;&quot;&quot;,
+        }
+    ],
+)
+def render_progress_ui(task):
+    layout = Layout()
+doc_name = task.document_name if task.document_name else &quot;Loading document...&quot;
+    header = Panel(f&quot;Analyzing: {doc_name}&quot;, style=&quot;bold white on blue&quot;)
+doc_info = Text()
+    if task.total_words is not None:
+        doc_info.append(f&quot;Document length: {task.total_words:,} words&quot;)
+    else:
+        doc_info.append(&quot;Document length: Calculating...&quot;)
+tasks_table = Table(expand=True)
+    tasks_table.add_column(&quot;Status&quot;)
+    tasks_table.add_column(&quot;Task&quot;)
+    tasks_table.add_column(&quot;Details&quot;)
+
+    if not task.subtasks:
+        tasks_table.add_row(&quot;⏱️&quot;, &quot;Preparing analysis tasks...&quot;, &quot;&quot;)
+    else:
+        for subtask in task.subtasks:
+if subtask.status == TaskStatus.COMPLETED:
+                symbol = &quot;✅&quot;
+            elif subtask.status == TaskStatus.IN_PROGRESS:
+                symbol = &quot;⏳&quot;
+            else:
+                symbol = &quot;⏱️&quot;
+
+            details = subtask.details if subtask.details else &quot;&quot;
+            tasks_table.add_row(symbol, subtask.name, details)
+findings_text = Text()
+    if not task.key_findings:
+        findings_text.append(&quot;No findings yet...&quot;)
+    else:
+        for i, finding in enumerate(task.key_findings, 1):
+            findings_text.append(
+                f&quot;{i}. {finding}\n&quot; if i &lt; len(task.key_findings) else f&quot;{i}. {finding}&quot;
+            )
+progress = Progress(
+        TextColumn(&quot;[bold blue]Overall Progress:&quot;),
+        BarColumn(),
+        TaskProgressColumn(),
+        expand=True,
+    )
+    task_progress = progress.add_task(
+        &quot;&quot;, total=1.0, completed=task.completion_percentage or 0
+    )
+layout.split(
+        Layout(header, size=3),
+        Layout(Panel(doc_info, title=&quot;Document Info&quot;), size=5),
+        Layout(Panel(tasks_table, title=&quot;Analysis Progress&quot;), name=&quot;tasks&quot;),
+        Layout(Panel(findings_text, title=&quot;Key Findings&quot;), name=&quot;findings&quot;),
+        Layout(Panel(progress, title=&quot;Progress&quot;), name=&quot;progress&quot;, size=5),
+    )
+
+    console.clear()
+    console.print(layout)
+for partial_analysis in analysis_stream:
+    render_progress_ui(partial_analysis)
+    time.sleep(0.3)  # Slow down for demonstration
+
+console.print(&quot;[bold green]✅ Analysis complete!&quot;)
+
+
+class DocumentSummary(BaseModel):
+    title: str
+    author: Optional[str] = None
+    publication_date: Optional[str] = None
+    word_count: Optional[int] = None
+    summary: str = Field(description=&quot;Complete summary of the document&quot;)
+    key_points: List[str] = Field(default_factory=list)
+    categories: List[str] = Field(default_factory=list)
+summary_stream = client.chat.completions.create_partial(
+    model=&quot;gpt-3.5-turbo&quot;,
+    response_model=DocumentSummary,
+    messages=[
+        {
+            &quot;role&quot;: &quot;user&quot;,
+            &quot;content&quot;: &quot;&quot;&quot;
+            Generate a summary for an academic paper titled:
+            &quot;The Impact of Artificial Intelligence on Global Labor Markets:
+            A Comprehensive Analysis of Automation Trends from 2020-2023&quot;
+        &quot;&quot;&quot;,
+        }
+    ],
+)
+def render_document_summary(partial_summary):
+    layout = Layout()
+title = partial_summary.title if partial_summary.title else &quot;Loading title...&quot;
+    header = Panel(title, style=&quot;bold white on blue&quot;)
+meta_table = Table(expand=True, show_header=False)
+    meta_table.add_column(&quot;Field&quot;)
+    meta_table.add_column(&quot;Value&quot;)
+
+    author = partial_summary.author if partial_summary.author else &quot;Unknown&quot;
+    date = (
+        partial_summary.publication_date
+        if partial_summary.publication_date
+        else &quot;Unknown&quot;
+    )
+    word_count = (
+        f&quot;{partial_summary.word_count:,} words&quot;
+        if partial_summary.word_count is not None
+        else &quot;Calculating...&quot;
+    )
+
+    meta_table.add_row(&quot;👤 Author&quot;, author)
+    meta_table.add_row(&quot;📅 Published&quot;, date)
+    meta_table.add_row(&quot;📊 Word Count&quot;, word_count)
+categories_text = Text()
+    if not partial_summary.categories:
+        categories_text.append(&quot;Loading categories...&quot;)
+    else:
+        categories_text.append(&quot;, &quot;.join(partial_summary.categories))
+points_text = Text()
+    if not partial_summary.key_points:
+        points_text.append(&quot;Extracting key points...&quot;)
+    else:
+        for i, point in enumerate(partial_summary.key_points, 1):
+            points_text.append(
+                f&quot;{i}. {point}\n&quot;
+                if i &lt; len(partial_summary.key_points)
+                else f&quot;{i}. {point}&quot;
+            )
+summary_text = Text()
+    if not partial_summary.summary:
+        summary_text.append(&quot;Generating summary...&quot;)
+    else:
+        summary_text.append(partial_summary.summary)
+layout.split(
+        Layout(header, size=3),
+        Layout(Panel(meta_table, title=&quot;Document Metadata&quot;), size=10),
+        Layout(Panel(categories_text, title=&quot;Categories&quot;), size=5),
+        Layout(Panel(points_text, title=&quot;Key Points&quot;)),
+        Layout(Panel(summary_text, title=&quot;Summary&quot;)),
+    )
+
+    console.clear()
+    console.print(layout)
+for partial_summary in summary_stream:
+    render_document_summary(partial_summary)
+    time.sleep(0.3)  # Slow down for demonstration
+
+console.print(&quot;[bold green]✅ Document summary complete!&quot;)
+</div>
+                </div>            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Import necessary libraries</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">from pydantic import BaseModel, Field
+from typing import List, Dict, Optional
+import instructor
+from openai import OpenAI
+import time
+from enum import Enum
+from rich.console import Console
+from rich.panel import Panel
+from rich.progress import Progress, BarColumn, TextColumn, TaskProgressColumn
+from rich.table import Table
+from rich.layout import Layout
+from rich.live import Live
+from rich.text import Text</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Initialize Rich console</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">console = Console()</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Define our weather forecast data model</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">class WeatherForecast(BaseModel):
+    location: str
+    current_temp: float = Field(description=&quot;Current temperature in Celsius&quot;)
+    conditions: str = Field(description=&quot;Current weather conditions&quot;)
+    forecast: List[str] = Field(description=&quot;Weather forecast for the next few days&quot;)
+    humidity: Optional[float] = Field(None, description=&quot;Current humidity percentage&quot;)
+    wind_speed: Optional[float] = Field(None, description=&quot;Wind speed in km/h&quot;)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Patch the OpenAI client with Instructor</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">client = instructor.from_openai(OpenAI())</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Define a simulated UI update function to display partial forecast data</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">def update_ui(partial_forecast):</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Create a panel for weather information</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">weather_table = Table(show_header=False, expand=True)
+    weather_table.add_column(&quot;Label&quot;)
+    weather_table.add_column(&quot;Value&quot;)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Location - show placeholder if not available yet</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">location = (
+        partial_forecast.location
+        if partial_forecast.location
+        else &quot;Loading location...&quot;
+    )
+    weather_table.add_row(&quot;📍 Location&quot;, location)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Temperature and conditions section</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">temp = (
+        f&quot;{partial_forecast.current_temp}°C&quot;
+        if partial_forecast.current_temp is not None
+        else &quot;--°C&quot;
+    )
+    conditions = (
+        partial_forecast.conditions
+        if partial_forecast.conditions
+        else &quot;Loading conditions...&quot;
+    )
+    weather_table.add_row(&quot;🌡️ Temperature&quot;, temp)
+    weather_table.add_row(&quot;☁️ Conditions&quot;, conditions)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Additional data</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">humidity = (
+        f&quot;{partial_forecast.humidity}%&quot;
+        if partial_forecast.humidity is not None
+        else &quot;--%&quot;
+    )
+    wind = (
+        f&quot;{partial_forecast.wind_speed} km/h&quot;
+        if partial_forecast.wind_speed is not None
+        else &quot;-- km/h&quot;
+    )
+    weather_table.add_row(&quot;💧 Humidity&quot;, humidity)
+    weather_table.add_row(&quot;💨 Wind&quot;, wind)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Forecast section</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">forecast_text = Text()
+    if not partial_forecast.forecast:
+        forecast_text.append(&quot;Loading forecast data...&quot;)
+    else:
+        for i, day in enumerate(partial_forecast.forecast):
+            forecast_text.append(
+                f&quot;• {day}\n&quot; if i &lt; len(partial_forecast.forecast) - 1 else f&quot;• {day}&quot;
+            )</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Calculate progress</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">fields = [
+        &quot;location&quot;,
+        &quot;current_temp&quot;,
+        &quot;conditions&quot;,
+        &quot;forecast&quot;,
+        &quot;humidity&quot;,
+        &quot;wind_speed&quot;,
+    ]
+    populated = sum(
+        1
+        for f in fields
+        if getattr(partial_forecast, f) is not None
+        and getattr(partial_forecast, f) != []
+    )
+    progress_value = populated / len(fields)
+
+    progress = Progress(
+        TextColumn(&quot;[bold blue]Loading:&quot;),
+        BarColumn(),
+        TaskProgressColumn(),
+        expand=True,
+    )
+    task = progress.add_task(&quot;&quot;, total=1.0, completed=progress_value)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Combine everything in a panel</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">layout = Layout()
+    layout.split(
+        Layout(Panel(weather_table, title=&quot;Weather Forecast&quot;), name=&quot;weather&quot;),
+        Layout(Panel(forecast_text, title=&quot;Forecast&quot;), name=&quot;forecast&quot;),
+        Layout(Panel(progress, title=&quot;Progress&quot;), name=&quot;progress&quot;),
+    )
+
+    console.clear()
+    console.print(layout)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Create a partial stream using Instructor's create_partial method</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">forecast_stream = client.chat.completions.create_partial(
+    model=&quot;gpt-3.5-turbo&quot;,
+    response_model=WeatherForecast,
+    messages=[
+        {
+            &quot;role&quot;: &quot;user&quot;,
+            &quot;content&quot;: &quot;Generate a fictional weather forecast for Tokyo, Japan.&quot;,
+        }
+    ],
+)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Update UI with each new partial object received from the stream</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">for partial_forecast in forecast_stream:
+    update_ui(partial_forecast)
+    time.sleep(0.3)  # Slow down for demonstration
+
+console.print(&quot;[bold green]✅ Forecast fully loaded!&quot;)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Define a data model for sales information</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">class SalesData(BaseModel):
+    total_revenue: float = Field(description=&quot;Total revenue in USD&quot;)
+    products_sold: int = Field(description=&quot;Total number of products sold&quot;)
+    by_category: Dict[str, float] = Field(
+        description=&quot;Revenue breakdown by product category&quot;
+    )
+    top_products: List[str] = Field(description=&quot;List of top-selling products&quot;)
+    growth_rate: Optional[float] = Field(
+        None, description=&quot;Year-over-year growth rate percentage&quot;
+    )</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Simulated chart rendering function</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">def render_charts(data):
+    layout = Layout()</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Header</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">header = Panel(&quot;Sales Dashboard&quot;, style=&quot;bold white on blue&quot;)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Revenue and products display</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">stats_table = Table(expand=True)
+    stats_table.add_column(&quot;Metric&quot;, style=&quot;cyan&quot;)
+    stats_table.add_column(&quot;Value&quot;, style=&quot;green&quot;)
+
+    revenue = (
+        f&quot;${data.total_revenue:,.2f}&quot;
+        if data.total_revenue is not None
+        else &quot;Loading...&quot;
+    )
+    products = (
+        f&quot;{data.products_sold:,}&quot; if data.products_sold is not None else &quot;Loading...&quot;
+    )
+
+    stats_table.add_row(&quot;Revenue&quot;, revenue)
+    stats_table.add_row(&quot;Products Sold&quot;, products)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Growth rate</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">growth_text = &quot;Loading...&quot;
+    if data.growth_rate is not None:
+        growth = f&quot;{data.growth_rate:+.1f}%&quot;
+        color = &quot;green&quot; if data.growth_rate &gt; 0 else &quot;red&quot;
+        growth_text = Text(growth, style=color)
+    stats_table.add_row(&quot;Growth Rate&quot;, growth_text)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Category breakdown</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">category_table = Table(title=&quot;Revenue by Category&quot;, expand=True)
+    category_table.add_column(&quot;Category&quot;)
+    category_table.add_column(&quot;Amount&quot;)
+    category_table.add_column(&quot;Chart&quot;)
+
+    if not data.by_category:
+        category_table.add_row(&quot;Loading category data...&quot;, &quot;&quot;, &quot;&quot;)
+    else:
+        max_value = max(data.by_category.values()) if data.by_category else 0
+        for category, amount in data.by_category.items():
+            bar_length = int(20 * (amount / max_value)) if max_value &gt; 0 else 0
+            bar = &quot;█&quot; * bar_length
+            category_table.add_row(category, f&quot;${amount:,.2f}&quot;, bar)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Top products</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">products_table = Table(title=&quot;Top Products&quot;, expand=True)
+    products_table.add_column(&quot;Rank&quot;)
+    products_table.add_column(&quot;Product&quot;)
+
+    if not data.top_products:
+        products_table.add_row(&quot;&quot;, &quot;Loading top products...&quot;)
+    else:
+        for i, product in enumerate(data.top_products, 1):
+            products_table.add_row(f&quot;{i}&quot;, product)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Create layout</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">layout.split(
+        Layout(header, size=3),
+        Layout(Panel(stats_table, title=&quot;Key Metrics&quot;), name=&quot;stats&quot;, size=10),
+        Layout(Panel(category_table, title=&quot;Categories&quot;), name=&quot;categories&quot;),
+        Layout(Panel(products_table, title=&quot;Top Products&quot;), name=&quot;products&quot;),
+    )
+
+    console.clear()
+    console.print(layout)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Create a partial stream</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">sales_stream = client.chat.completions.create_partial(
+    model=&quot;gpt-3.5-turbo&quot;,
+    response_model=SalesData,
+    messages=[
+        {
+            &quot;role&quot;: &quot;user&quot;,
+            &quot;content&quot;: &quot;Generate fictional quarterly sales data for an electronics company.&quot;,
+        }
+    ],
+)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Update visualization as data comes in</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">for partial_data in sales_stream:
+    render_charts(partial_data)
+    time.sleep(0.5)  # Slow down for demonstration
+
+console.print(&quot;[bold green]✅ Dashboard fully loaded!&quot;)
+
+
+class TaskStatus(str, Enum):
+    PENDING = &quot;pending&quot;
+    IN_PROGRESS = &quot;in_progress&quot;
+    COMPLETED = &quot;completed&quot;
+
+
+class SubTask(BaseModel):
+    name: str
+    status: TaskStatus = TaskStatus.PENDING
+    details: Optional[str] = None
+
+
+class AnalysisTask(BaseModel):
+    document_name: str
+    total_words: Optional[int] = None
+    subtasks: List[SubTask] = Field(default_factory=list)
+    key_findings: List[str] = Field(default_factory=list)
+    completion_percentage: Optional[float] = None</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Create a partial stream for a document analysis task</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">analysis_stream = client.chat.completions.create_partial(
+    model=&quot;gpt-3.5-turbo&quot;,
+    response_model=AnalysisTask,
+    messages=[
+        {
+            &quot;role&quot;: &quot;user&quot;,
+            &quot;content&quot;: &quot;&quot;&quot;
+            Simulate a document analysis process for a research paper titled
+            &#x27;Advances in Renewable Energy Storage&#x27;. Include multiple subtasks
+            and key findings.
+        &quot;&quot;&quot;,
+        }
+    ],
+)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Display progress updates</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">def render_progress_ui(task):
+    layout = Layout()</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Header</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">doc_name = task.document_name if task.document_name else &quot;Loading document...&quot;
+    header = Panel(f&quot;Analyzing: {doc_name}&quot;, style=&quot;bold white on blue&quot;)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Document stats</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">doc_info = Text()
+    if task.total_words is not None:
+        doc_info.append(f&quot;Document length: {task.total_words:,} words&quot;)
+    else:
+        doc_info.append(&quot;Document length: Calculating...&quot;)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Subtasks progress</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">tasks_table = Table(expand=True)
+    tasks_table.add_column(&quot;Status&quot;)
+    tasks_table.add_column(&quot;Task&quot;)
+    tasks_table.add_column(&quot;Details&quot;)
+
+    if not task.subtasks:
+        tasks_table.add_row(&quot;⏱️&quot;, &quot;Preparing analysis tasks...&quot;, &quot;&quot;)
+    else:
+        for subtask in task.subtasks:</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Status symbol</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">if subtask.status == TaskStatus.COMPLETED:
+                symbol = &quot;✅&quot;
+            elif subtask.status == TaskStatus.IN_PROGRESS:
+                symbol = &quot;⏳&quot;
+            else:
+                symbol = &quot;⏱️&quot;
+
+            details = subtask.details if subtask.details else &quot;&quot;
+            tasks_table.add_row(symbol, subtask.name, details)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Findings so far</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">findings_text = Text()
+    if not task.key_findings:
+        findings_text.append(&quot;No findings yet...&quot;)
+    else:
+        for i, finding in enumerate(task.key_findings, 1):
+            findings_text.append(
+                f&quot;{i}. {finding}\n&quot; if i &lt; len(task.key_findings) else f&quot;{i}. {finding}&quot;
+            )</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Overall progress</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">progress = Progress(
+        TextColumn(&quot;[bold blue]Overall Progress:&quot;),
+        BarColumn(),
+        TaskProgressColumn(),
+        expand=True,
+    )
+    task_progress = progress.add_task(
+        &quot;&quot;, total=1.0, completed=task.completion_percentage or 0
+    )</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Create layout</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">layout.split(
+        Layout(header, size=3),
+        Layout(Panel(doc_info, title=&quot;Document Info&quot;), size=5),
+        Layout(Panel(tasks_table, title=&quot;Analysis Progress&quot;), name=&quot;tasks&quot;),
+        Layout(Panel(findings_text, title=&quot;Key Findings&quot;), name=&quot;findings&quot;),
+        Layout(Panel(progress, title=&quot;Progress&quot;), name=&quot;progress&quot;, size=5),
+    )
+
+    console.clear()
+    console.print(layout)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Update UI as analysis progresses</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">for partial_analysis in analysis_stream:
+    render_progress_ui(partial_analysis)
+    time.sleep(0.3)  # Slow down for demonstration
+
+console.print(&quot;[bold green]✅ Analysis complete!&quot;)
+
+
+class DocumentSummary(BaseModel):
+    title: str
+    author: Optional[str] = None
+    publication_date: Optional[str] = None
+    word_count: Optional[int] = None
+    summary: str = Field(description=&quot;Complete summary of the document&quot;)
+    key_points: List[str] = Field(default_factory=list)
+    categories: List[str] = Field(default_factory=list)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Create a streaming document summary</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">summary_stream = client.chat.completions.create_partial(
+    model=&quot;gpt-3.5-turbo&quot;,
+    response_model=DocumentSummary,
+    messages=[
+        {
+            &quot;role&quot;: &quot;user&quot;,
+            &quot;content&quot;: &quot;&quot;&quot;
+            Generate a summary for an academic paper titled:
+            &quot;The Impact of Artificial Intelligence on Global Labor Markets:
+            A Comprehensive Analysis of Automation Trends from 2020-2023&quot;
+        &quot;&quot;&quot;,
+        }
+    ],
+)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Display document summary with progressive updates</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">def render_document_summary(partial_summary):
+    layout = Layout()</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Document title</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">title = partial_summary.title if partial_summary.title else &quot;Loading title...&quot;
+    header = Panel(title, style=&quot;bold white on blue&quot;)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Metadata table</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">meta_table = Table(expand=True, show_header=False)
+    meta_table.add_column(&quot;Field&quot;)
+    meta_table.add_column(&quot;Value&quot;)
+
+    author = partial_summary.author if partial_summary.author else &quot;Unknown&quot;
+    date = (
+        partial_summary.publication_date
+        if partial_summary.publication_date
+        else &quot;Unknown&quot;
+    )
+    word_count = (
+        f&quot;{partial_summary.word_count:,} words&quot;
+        if partial_summary.word_count is not None
+        else &quot;Calculating...&quot;
+    )
+
+    meta_table.add_row(&quot;👤 Author&quot;, author)
+    meta_table.add_row(&quot;📅 Published&quot;, date)
+    meta_table.add_row(&quot;📊 Word Count&quot;, word_count)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Categories</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">categories_text = Text()
+    if not partial_summary.categories:
+        categories_text.append(&quot;Loading categories...&quot;)
+    else:
+        categories_text.append(&quot;, &quot;.join(partial_summary.categories))</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Key points</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">points_text = Text()
+    if not partial_summary.key_points:
+        points_text.append(&quot;Extracting key points...&quot;)
+    else:
+        for i, point in enumerate(partial_summary.key_points, 1):
+            points_text.append(
+                f&quot;{i}. {point}\n&quot;
+                if i &lt; len(partial_summary.key_points)
+                else f&quot;{i}. {point}&quot;
+            )</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Summary</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">summary_text = Text()
+    if not partial_summary.summary:
+        summary_text.append(&quot;Generating summary...&quot;)
+    else:
+        summary_text.append(partial_summary.summary)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Create layout</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">layout.split(
+        Layout(header, size=3),
+        Layout(Panel(meta_table, title=&quot;Document Metadata&quot;), size=10),
+        Layout(Panel(categories_text, title=&quot;Categories&quot;), size=5),
+        Layout(Panel(points_text, title=&quot;Key Points&quot;)),
+        Layout(Panel(summary_text, title=&quot;Summary&quot;)),
+    )
+
+    console.clear()
+    console.print(layout)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Update UI as summary progresses</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">for partial_summary in summary_stream:
+    render_document_summary(partial_summary)
+    time.sleep(0.3)  # Slow down for demonstration
+
+console.print(&quot;[bold green]✅ Document summary complete!&quot;)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <h4>Further Information</h4>
+            <ul style="font-size: 0.9em;">
+                <li><a href="https://github.com/jxnl/instructor"
+                         target="_blank">Documentation link 1</a></li>
+            </ul>
+            <div class="navigation">
+                <p class="prev">
+                    <span>← Previous:</span> <a href="../025-streaming-lists/">Streaming Lists</a>
+                </p>
+                <p class="next">
+                    <span>Next:</span> <a href="../027-handling-stream-errors/">Handling Stream Errors</a> →
+                </p>
+            </div>
+        </main>
+        <footer>
+            <p>by <a href="https://github.com/jxnl/instructor">Instructor</a> | <a href="https://github.com/jxnl/instructor">GitHub</a> | <span style="color: #888; font-size: 0.9em;">Last updated: April 9, 2025</span></p>
+        </footer>
+    </div>
+    <script>
+        // Function to copy code to clipboard
+        function copyCode(button) {
+            const codeBlock = button.closest('.code').querySelector('pre');
+            const code = codeBlock.textContent;
+            copyToClipboard(code, button);
+        }
+        
+        // Function to copy all Python code
+        document.addEventListener('DOMContentLoaded', function() {
+            const copyAllButton = document.getElementById('copy-all-python');
+            if (copyAllButton) {
+                copyAllButton.addEventListener('click', function() {
+                    const allCodeElement = document.getElementById('all-python-code');
+                    const code = allCodeElement.textContent;
+                    copyToClipboard(code, copyAllButton);
+                });
+            }
+        });
+        
+        // Shared function to copy text and show tooltip
+        function copyToClipboard(text, element) {
+            // For older browsers, fallback to textarea method
+            if (!navigator.clipboard) {
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                textArea.style.position = 'fixed';  // Avoid scrolling to bottom
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                
+                try {
+                    document.execCommand('copy');
+                    showTooltip(element, 'Copied!');
+                } catch (err) {
+                    console.error('Failed to copy text: ', err);
+                    showTooltip(element, 'Error!');
+                }
+                
+                document.body.removeChild(textArea);
+                return;
+            }
+            
+            // Use clipboard API if available
+            navigator.clipboard.writeText(text).then(() => {
+                showTooltip(element, 'Copied!');
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+                showTooltip(element, 'Error!');
+            });
+        }
+        
+        // Helper to show tooltip
+        function showTooltip(element, message) {
+            // Check if there's already a tooltip
+            let tooltip = element.parentElement.querySelector('.tooltip');
+            if (tooltip) {
+                tooltip.textContent = message;
+            } else {
+                // Create and append new tooltip
+                tooltip = document.createElement('span');
+                tooltip.textContent = message;
+                tooltip.className = 'tooltip';
+                tooltip.style.position = 'absolute';
+                tooltip.style.background = '#333';
+                tooltip.style.color = 'white';
+                tooltip.style.padding = '2px 8px';
+                tooltip.style.borderRadius = '4px';
+                tooltip.style.fontSize = '12px';
+                tooltip.style.top = '-25px';
+                tooltip.style.right = '0';
+                
+                // Make sure the parent has position relative for tooltip positioning
+                if (getComputedStyle(element.parentElement).position === 'static') {
+                    element.parentElement.style.position = 'relative';
+                }
+                
+                element.parentElement.appendChild(tooltip);
+            }
+            
+            // Remove tooltip after 1.5 seconds
+            setTimeout(() => tooltip.remove(), 1500);
+        }
+
+        // Enable keyboard navigation between examples
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey || e.altKey || e.shiftKey || e.metaKey) {
+                return;
+            }
+            
+            if (e.key === 'ArrowRight') {
+                const nextLink = document.querySelector('.next a');
+                if (nextLink) {
+                    window.location.href = nextLink.getAttribute('href');
+                }
+            }
+            
+            if (e.key === 'ArrowLeft') {
+                const prevLink = document.querySelector('.prev a');
+                if (prevLink) {
+                    window.location.href = prevLink.getAttribute('href');
+                }
+            }
+        });
+    </script>
+</body>
+</html>
