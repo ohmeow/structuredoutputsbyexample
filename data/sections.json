@@ -33,6 +33,7 @@
       "description": "Common patterns for extracting structured data",
       "order": 3,
       "examples": [
+        "048-templates",
         "012-simple-object",
         "013-list-extraction",
         "014-nested-structures",
