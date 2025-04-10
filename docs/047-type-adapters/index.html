@@ -42,8 +42,8 @@
     "url": "https://structuredoutputsbyexample.com"
   },
   "mainEntityOfPage": "https://structuredoutputsbyexample.com/047-type-adapters/",
-  "datePublished": "2025-04-10T18:06:44+00:00",
-  "dateModified": "2025-04-10T18:06:44+00:00",
+  "datePublished": "2025-04-10T18:23:55+00:00",
+  "dateModified": "2025-04-10T18:23:55+00:00",
   "articleSection": "Performance and Optimization",
   "keywords": [
     "structured data",
@@ -306,7 +306,8 @@ class User(BaseModel):
     skills: List[str]
 UserListAdapter = TypeAdapter(List[User])
 def extract_users_from_text(text: str) -&gt; List[User]:
-raw_data = client.chat.completions.create(
+    # Get raw JSON data from LLM
+    raw_data = client.chat.completions.create(
         model=&quot;gpt-3.5-turbo&quot;,
         messages=[
             {
@@ -317,10 +318,13 @@ raw_data = client.chat.completions.create(
         response_format={&quot;type&quot;: &quot;json_object&quot;},
         temperature=0
     ).choices[0].message.content
-import json
+
+    # Parse JSON
+    import json
     try:
         data = json.loads(raw_data)
-users = UserListAdapter.validate_python(data.get(&quot;users&quot;, []))
+        # Use type adapter for validation
+        users = UserListAdapter.validate_python(data.get(&quot;users&quot;, []))
         return users
     except Exception as e:
         print(f&quot;Error parsing data: {e}&quot;)
@@ -405,7 +409,8 @@ CustomerAdapter = TypeAdapter(Customer)
 CustomerListAdapter = TypeAdapter(List[Customer])
 def process_customers(data: Dict[str, Any]) -&gt; List[Customer]:
     try:
-customers_data = data.get(&quot;results&quot;, {}).get(&quot;customers&quot;, [])
+        # Extract customer data from a complex API response
+        customers_data = data.get(&quot;results&quot;, {}).get(&quot;customers&quot;, [])
         return CustomerListAdapter.validate_python(customers_data)
     except Exception as e:
         print(f&quot;Validation error: {e}&quot;)
@@ -509,17 +514,9 @@ from openai import OpenAI</code></pre>
 
                 </div>
                 <div class="code">
-                    <pre><code class="language-python">def extract_users_from_text(text: str) -&gt; List[User]:</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Get raw JSON data from LLM</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">raw_data = client.chat.completions.create(
+                    <pre><code class="language-python">def extract_users_from_text(text: str) -&gt; List[User]:
+    # Get raw JSON data from LLM
+    raw_data = client.chat.completions.create(
         model=&quot;gpt-3.5-turbo&quot;,
         messages=[
             {
@@ -529,29 +526,14 @@ from openai import OpenAI</code></pre>
         ],
         response_format={&quot;type&quot;: &quot;json_object&quot;},
         temperature=0
-    ).choices[0].message.content</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Parse JSON</div>
+    ).choices[0].message.content
 
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">import json
+    # Parse JSON
+    import json
     try:
-        data = json.loads(raw_data)</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Use type adapter for validation</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">users = UserListAdapter.validate_python(data.get(&quot;users&quot;, []))
+        data = json.loads(raw_data)
+        # Use type adapter for validation
+        users = UserListAdapter.validate_python(data.get(&quot;users&quot;, []))
         return users
     except Exception as e:
         print(f&quot;Error parsing data: {e}&quot;)
@@ -734,17 +716,9 @@ CustomerListAdapter = TypeAdapter(List[Customer])</code></pre>
                 </div>
                 <div class="code">
                     <pre><code class="language-python">def process_customers(data: Dict[str, Any]) -&gt; List[Customer]:
-    try:</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Extract customer data from a complex API response</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">customers_data = data.get(&quot;results&quot;, {}).get(&quot;customers&quot;, [])
+    try:
+        # Extract customer data from a complex API response
+        customers_data = data.get(&quot;results&quot;, {}).get(&quot;customers&quot;, [])
         return CustomerListAdapter.validate_python(customers_data)
     except Exception as e:
         print(f&quot;Validation error: {e}&quot;)

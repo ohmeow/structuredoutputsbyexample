@@ -42,8 +42,8 @@
     "url": "https://structuredoutputsbyexample.com"
   },
   "mainEntityOfPage": "https://structuredoutputsbyexample.com/031-task-planning/",
-  "datePublished": "2025-04-10T18:06:44+00:00",
-  "dateModified": "2025-04-10T18:06:44+00:00",
+  "datePublished": "2025-04-10T18:23:55+00:00",
+  "dateModified": "2025-04-10T18:23:55+00:00",
   "articleSection": "Advanced Structures",
   "keywords": [
     "structured data",
@@ -332,7 +332,9 @@ while dep_graph:
                 raise ValueError(&quot;Circular dependency detected in tasks&quot;)
 
             result.extend(sorted(available))  # Add to execution order
-dep_graph = {
+
+            # Update dependency graph by removing completed tasks
+            dep_graph = {
                 task_id: (deps - available)
                 for task_id, deps in dep_graph.items()
                 if task_id not in available
@@ -346,13 +348,16 @@ dep_graph = {
         tasks_by_id = {task.id: task for task in self.task_graph}
         results = {}
 while len(results) &lt; len(self.task_graph):
-ready_tasks = [
+            # Identify tasks whose dependencies are all satisfied
+            ready_tasks = [
                 tasks_by_id[task_id]
                 for task_id in execution_order
                 if task_id not in results and
                 all(dep_id in results for dep_id in tasks_by_id[task_id].subtasks)
             ]
-new_results = await asyncio.gather(*[
+
+            # Process all ready tasks concurrently
+            new_results = await asyncio.gather(*[
                 task.execute(
                     with_results=TaskResults(
                         results=[
@@ -363,7 +368,9 @@ new_results = await asyncio.gather(*[
                 )
                 for task in ready_tasks
             ])
-for result in new_results:
+
+            # Save results for dependent tasks to use
+            for result in new_results:
                 results[result.task_id] = result
 
         return results
@@ -499,17 +506,10 @@ In a real implementation, this would perform actual work rather than return a pl
             if not available:
                 raise ValueError(&quot;Circular dependency detected in tasks&quot;)
 
-            result.extend(sorted(available))  # Add to execution order</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Update dependency graph by removing completed tasks</div>
+            result.extend(sorted(available))  # Add to execution order
 
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">dep_graph = {
+            # Update dependency graph by removing completed tasks
+            dep_graph = {
                 task_id: (deps - available)
                 for task_id, deps in dep_graph.items()
                 if task_id not in available
@@ -531,32 +531,17 @@ In a real implementation, this would perform actual work rather than return a pl
 
                 </div>
                 <div class="code">
-                    <pre><code class="language-python">while len(results) &lt; len(self.task_graph):</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Identify tasks whose dependencies are all satisfied</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">ready_tasks = [
+                    <pre><code class="language-python">while len(results) &lt; len(self.task_graph):
+            # Identify tasks whose dependencies are all satisfied
+            ready_tasks = [
                 tasks_by_id[task_id]
                 for task_id in execution_order
                 if task_id not in results and
                 all(dep_id in results for dep_id in tasks_by_id[task_id].subtasks)
-            ]</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Process all ready tasks concurrently</div>
+            ]
 
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">new_results = await asyncio.gather(*[
+            # Process all ready tasks concurrently
+            new_results = await asyncio.gather(*[
                 task.execute(
                     with_results=TaskResults(
                         results=[
@@ -566,17 +551,10 @@ In a real implementation, this would perform actual work rather than return a pl
                     )
                 )
                 for task in ready_tasks
-            ])</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Save results for dependent tasks to use</div>
+            ])
 
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">for result in new_results:
+            # Save results for dependent tasks to use
+            for result in new_results:
                 results[result.task_id] = result
 
         return results</code></pre>

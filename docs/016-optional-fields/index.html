@@ -45,8 +45,8 @@
     "url": "https://structuredoutputsbyexample.com"
   },
   "mainEntityOfPage": "https://structuredoutputsbyexample.com/016-optional-fields/",
-  "datePublished": "2025-04-10T18:06:44+00:00",
-  "dateModified": "2025-04-10T18:06:44+00:00",
+  "datePublished": "2025-04-10T18:23:55+00:00",
+  "dateModified": "2025-04-10T18:23:55+00:00",
   "articleSection": "Basic Extraction Patterns",
   "keywords": [
     "structured data",
@@ -305,7 +305,8 @@ from openai import OpenAI
 class Person(BaseModel):
     name: str
     age: int
-email: Optional[str] = None
+    # Optional fields with default value of None
+    email: Optional[str] = None
     phone: Optional[str] = None
     occupation: Optional[str] = None
 client = instructor.from_openai(OpenAI())
@@ -352,17 +353,9 @@ from openai import OpenAI</code></pre>
                 <div class="code">
                     <pre><code class="language-python">class Person(BaseModel):
     name: str
-    age: int</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Optional fields with default value of None</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">email: Optional[str] = None
+    age: int
+    # Optional fields with default value of None
+    email: Optional[str] = None
     phone: Optional[str] = None
     occupation: Optional[str] = None</code></pre>
                 </div>

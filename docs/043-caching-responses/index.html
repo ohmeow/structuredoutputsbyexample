@@ -42,8 +42,8 @@
     "url": "https://structuredoutputsbyexample.com"
   },
   "mainEntityOfPage": "https://structuredoutputsbyexample.com/043-caching-responses/",
-  "datePublished": "2025-04-10T18:06:44+00:00",
-  "dateModified": "2025-04-10T18:06:44+00:00",
+  "datePublished": "2025-04-10T18:23:55+00:00",
+  "dateModified": "2025-04-10T18:23:55+00:00",
   "articleSection": "Performance and Optimization",
   "keywords": [
     "structured data",
@@ -336,10 +336,16 @@ def instructor_cache(func):
 
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
-key = f&quot;{func.__name__}-{functools._make_key(args, kwargs, typed=False)}&quot;
-if (cached := cache.get(key)) is not None:
-return return_type.model_validate_json(cached)
-result = func(*args, **kwargs)
+        # Create a cache key from the function name and arguments
+        key = f&quot;{func.__name__}-{functools._make_key(args, kwargs, typed=False)}&quot;
+
+        # Check if result is already cached
+        if (cached := cache.get(key)) is not None:
+            # Deserialize from JSON based on the return type
+            return return_type.model_validate_json(cached)
+
+        # Call the function and cache its result
+        result = func(*args, **kwargs)
         serialized_result = result.model_dump_json()
         cache.set(key, serialized_result)
 
@@ -381,10 +387,16 @@ def redis_cache(func):
 
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
-key = f&quot;{func.__name__}-{functools._make_key(args, kwargs, typed=False)}&quot;
-if (cached := cache.get(key)) is not None:
-return return_type.model_validate_json(cached)
-result = func(*args, **kwargs)
+        # Create a cache key from the function name and arguments
+        key = f&quot;{func.__name__}-{functools._make_key(args, kwargs, typed=False)}&quot;
+
+        # Check if result is already cached
+        if (cached := cache.get(key)) is not None:
+            # Deserialize from JSON based on the return type
+            return return_type.model_validate_json(cached)
+
+        # Call the function and cache its result
+        result = func(*args, **kwargs)
         serialized_result = result.model_dump_json()
         cache.set(key, serialized_result)
 
@@ -521,47 +533,17 @@ from pydantic import BaseModel</code></pre>
         raise ValueError(&quot;The return type must be a Pydantic model&quot;)
 
     @functools.wraps(func)
-    def wrapper(*args, **kwargs):</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Create a cache key from the function name and arguments</div>
+    def wrapper(*args, **kwargs):
+        # Create a cache key from the function name and arguments
+        key = f&quot;{func.__name__}-{functools._make_key(args, kwargs, typed=False)}&quot;
 
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">key = f&quot;{func.__name__}-{functools._make_key(args, kwargs, typed=False)}&quot;</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Check if result is already cached</div>
+        # Check if result is already cached
+        if (cached := cache.get(key)) is not None:
+            # Deserialize from JSON based on the return type
+            return return_type.model_validate_json(cached)
 
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">if (cached := cache.get(key)) is not None:</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Deserialize from JSON based on the return type</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">return return_type.model_validate_json(cached)</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Call the function and cache its result</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">result = func(*args, **kwargs)
+        # Call the function and cache its result
+        result = func(*args, **kwargs)
         serialized_result = result.model_dump_json()
         cache.set(key, serialized_result)
 
@@ -665,47 +647,17 @@ from pydantic import BaseModel</code></pre>
         raise ValueError(&quot;The return type must be a Pydantic model&quot;)
 
     @functools.wraps(func)
-    def wrapper(*args, **kwargs):</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Create a cache key from the function name and arguments</div>
+    def wrapper(*args, **kwargs):
+        # Create a cache key from the function name and arguments
+        key = f&quot;{func.__name__}-{functools._make_key(args, kwargs, typed=False)}&quot;
 
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">key = f&quot;{func.__name__}-{functools._make_key(args, kwargs, typed=False)}&quot;</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Check if result is already cached</div>
+        # Check if result is already cached
+        if (cached := cache.get(key)) is not None:
+            # Deserialize from JSON based on the return type
+            return return_type.model_validate_json(cached)
 
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">if (cached := cache.get(key)) is not None:</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Deserialize from JSON based on the return type</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">return return_type.model_validate_json(cached)</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Call the function and cache its result</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">result = func(*args, **kwargs)
+        # Call the function and cache its result
+        result = func(*args, **kwargs)
         serialized_result = result.model_dump_json()
         cache.set(key, serialized_result)
 

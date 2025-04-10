@@ -42,8 +42,8 @@
     "url": "https://structuredoutputsbyexample.com"
   },
   "mainEntityOfPage": "https://structuredoutputsbyexample.com/045-batch-processing/",
-  "datePublished": "2025-04-10T18:06:44+00:00",
-  "dateModified": "2025-04-10T18:06:44+00:00",
+  "datePublished": "2025-04-10T18:23:55+00:00",
+  "dateModified": "2025-04-10T18:23:55+00:00",
   "articleSection": "Performance and Optimization",
   "keywords": [
     "structured data",
@@ -321,7 +321,9 @@ async def analyze_sentiment(text: str) -&gt; Tuple[str, SentimentAnalysis]:
         return text, result
 async def process_batch(texts: List[str]):
     tasks = [analyze_sentiment(text) for text in texts]  # Create tasks for all texts
-results = []
+
+    # Collect results as tasks complete (in any order)
+    results = []
     for task in asyncio.as_completed(tasks):
         original_text, sentiment = await task
         results.append({
@@ -414,27 +416,37 @@ async def batch_process(items: List[str],
     total = len(items)
 for i in range(0, total, chunk_size):
         chunk = items[i:i+chunk_size]
-async def process_with_sem(item):
+
+        # Create rate-limited processing function
+        async def process_with_sem(item):
             async with sem:
                 return await process_item(item)
-tasks = [process_with_sem(item) for item in chunk]
+
+        # Process current chunk of items
+        tasks = [process_with_sem(item) for item in chunk]
         chunk_results = await asyncio.gather(*tasks)
         results.extend(chunk_results)
-processed += len(chunk)
+
+        # Track and display progress
+        processed += len(chunk)
         print(f&quot;Progress: {processed}/{total} ({processed/total*100:.1f}%)&quot;)
-if output_file:
+
+        # Save intermediate results to prevent data loss
+        if output_file:
             with open(output_file, &quot;a&quot;) as f:
                 for result in chunk_results:
                     f.write(json.dumps(result) + &quot;\n&quot;)
 
     return results
 async def main():
-feedback_items = [
+    # Test with sample feedback data
+    feedback_items = [
         &quot;Your app crashes every time I try to upload a photo. Please fix this ASAP!&quot;,
         &quot;I love the new dark mode feature. It makes the app much easier on the eyes.&quot;,
         &quot;The checkout process is too complicated. I gave up trying to make a purchase.&quot;,
         &quot;Your customer service rep was very helpful in resolving my issue.&quot;
-]
+        # Examples of different types of feedback
+    ]
 
     results = await batch_process(
         items=feedback_items,
@@ -442,10 +454,14 @@ feedback_items = [
     )
 success_count = sum(1 for r in results if r[&quot;status&quot;] == &quot;success&quot;)
     print(f&quot;Successfully processed: {success_count}/{len(results)}&quot;)
-priorities = [r.get(&quot;priority&quot;, 0) for r in results if r[&quot;status&quot;] == &quot;success&quot;]
+
+    # Analyze average priority of feedback items
+    priorities = [r.get(&quot;priority&quot;, 0) for r in results if r[&quot;status&quot;] == &quot;success&quot;]
     if priorities:
         print(f&quot;Average priority: {sum(priorities)/len(priorities):.1f}&quot;)
-categories = {}
+
+    # Generate distribution of feedback categories
+    categories = {}
     for r in results:
         if r[&quot;status&quot;] == &quot;success&quot;:
             for cat in r.get(&quot;categories&quot;, []):
@@ -536,17 +552,10 @@ from typing import List, Tuple</code></pre>
                 </div>
                 <div class="code">
                     <pre><code class="language-python">async def process_batch(texts: List[str]):
-    tasks = [analyze_sentiment(text) for text in texts]  # Create tasks for all texts</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Collect results as tasks complete (in any order)</div>
+    tasks = [analyze_sentiment(text) for text in texts]  # Create tasks for all texts
 
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">results = []
+    # Collect results as tasks complete (in any order)
+    results = []
     for task in asyncio.as_completed(tasks):
         original_text, sentiment = await task
         results.append({
@@ -710,52 +719,24 @@ class FeedbackClassification(BaseModel):
                 </div>
                 <div class="code">
                     <pre><code class="language-python">for i in range(0, total, chunk_size):
-        chunk = items[i:i+chunk_size]</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Create rate-limited processing function</div>
+        chunk = items[i:i+chunk_size]
 
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">async def process_with_sem(item):
+        # Create rate-limited processing function
+        async def process_with_sem(item):
             async with sem:
-                return await process_item(item)</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Process current chunk of items</div>
+                return await process_item(item)
 
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">tasks = [process_with_sem(item) for item in chunk]
+        # Process current chunk of items
+        tasks = [process_with_sem(item) for item in chunk]
         chunk_results = await asyncio.gather(*tasks)
-        results.extend(chunk_results)</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Track and display progress</div>
+        results.extend(chunk_results)
 
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">processed += len(chunk)
-        print(f&quot;Progress: {processed}/{total} ({processed/total*100:.1f}%)&quot;)</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Save intermediate results to prevent data loss</div>
+        # Track and display progress
+        processed += len(chunk)
+        print(f&quot;Progress: {processed}/{total} ({processed/total*100:.1f}%)&quot;)
 
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">if output_file:
+        # Save intermediate results to prevent data loss
+        if output_file:
             with open(output_file, &quot;a&quot;) as f:
                 for result in chunk_results:
                     f.write(json.dumps(result) + &quot;\n&quot;)
@@ -770,31 +751,15 @@ class FeedbackClassification(BaseModel):
 
                 </div>
                 <div class="code">
-                    <pre><code class="language-python">async def main():</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Test with sample feedback data</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">feedback_items = [
+                    <pre><code class="language-python">async def main():
+    # Test with sample feedback data
+    feedback_items = [
         &quot;Your app crashes every time I try to upload a photo. Please fix this ASAP!&quot;,
         &quot;I love the new dark mode feature. It makes the app much easier on the eyes.&quot;,
         &quot;The checkout process is too complicated. I gave up trying to make a purchase.&quot;,
-        &quot;Your customer service rep was very helpful in resolving my issue.&quot;</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Examples of different types of feedback</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">]
+        &quot;Your customer service rep was very helpful in resolving my issue.&quot;
+        # Examples of different types of feedback
+    ]
 
     results = await batch_process(
         items=feedback_items,
@@ -810,29 +775,15 @@ class FeedbackClassification(BaseModel):
                 </div>
                 <div class="code">
                     <pre><code class="language-python">success_count = sum(1 for r in results if r[&quot;status&quot;] == &quot;success&quot;)
-    print(f&quot;Successfully processed: {success_count}/{len(results)}&quot;)</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Analyze average priority of feedback items</div>
+    print(f&quot;Successfully processed: {success_count}/{len(results)}&quot;)
 
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">priorities = [r.get(&quot;priority&quot;, 0) for r in results if r[&quot;status&quot;] == &quot;success&quot;]
+    # Analyze average priority of feedback items
+    priorities = [r.get(&quot;priority&quot;, 0) for r in results if r[&quot;status&quot;] == &quot;success&quot;]
     if priorities:
-        print(f&quot;Average priority: {sum(priorities)/len(priorities):.1f}&quot;)</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Generate distribution of feedback categories</div>
+        print(f&quot;Average priority: {sum(priorities)/len(priorities):.1f}&quot;)
 
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">categories = {}
+    # Generate distribution of feedback categories
+    categories = {}
     for r in results:
         if r[&quot;status&quot;] == &quot;success&quot;:
             for cat in r.get(&quot;categories&quot;, []):

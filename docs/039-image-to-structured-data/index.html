@@ -42,8 +42,8 @@
     "url": "https://structuredoutputsbyexample.com"
   },
   "mainEntityOfPage": "https://structuredoutputsbyexample.com/039-image-to-structured-data/",
-  "datePublished": "2025-04-10T18:06:44+00:00",
-  "dateModified": "2025-04-10T18:06:44+00:00",
+  "datePublished": "2025-04-10T18:23:55+00:00",
+  "dateModified": "2025-04-10T18:23:55+00:00",
   "articleSection": "Multimodal Inputs",
   "keywords": [
     "structured data",
@@ -350,7 +350,8 @@ class Recipe(BaseModel):
     steps: List[Step] = Field(description=&quot;Cooking steps in order&quot;)
     difficulty: str = Field(description=&quot;Recipe difficulty (easy, medium, hard)&quot;)
 def extract_recipe(image_path: str) -&gt; Recipe:
-image = instructor.Image.from_path(image_path)
+    # Create an Image object
+    image = instructor.Image.from_path(image_path)
 
     return client.chat.completions.create(
         model=&quot;gpt-4-vision-preview&quot;,
@@ -504,17 +505,9 @@ class Recipe(BaseModel):
 
                 </div>
                 <div class="code">
-                    <pre><code class="language-python">def extract_recipe(image_path: str) -&gt; Recipe:</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Create an Image object</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">image = instructor.Image.from_path(image_path)
+                    <pre><code class="language-python">def extract_recipe(image_path: str) -&gt; Recipe:
+    # Create an Image object
+    image = instructor.Image.from_path(image_path)
 
     return client.chat.completions.create(
         model=&quot;gpt-4-vision-preview&quot;,

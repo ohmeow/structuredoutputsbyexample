@@ -65,7 +65,7 @@ def extract_python_segments(file_path: Path) -> List[Dict[str, Any]]:
         stripped = line.rstrip()
 
         # Check if this is a comment line
-        is_comment = stripped.lstrip().startswith("#")
+        is_comment = stripped.startswith("#")
 
         # Start a new segment if necessary
         if current_segment is None or current_segment["is_comment"] != is_comment:

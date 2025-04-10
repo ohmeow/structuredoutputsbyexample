@@ -66,8 +66,8 @@ improving response time and making better use of the model&#x27;s capabilities..
     "url": "https://structuredoutputsbyexample.com"
   },
   "mainEntityOfPage": "https://structuredoutputsbyexample.com/044-parallel-extraction/",
-  "datePublished": "2025-04-10T18:06:44+00:00",
-  "dateModified": "2025-04-10T18:06:44+00:00",
+  "datePublished": "2025-04-10T18:23:55+00:00",
+  "dateModified": "2025-04-10T18:23:55+00:00",
   "articleSection": "Performance and Optimization",
   "keywords": [
     "structured data",
@@ -393,7 +393,8 @@ def extract_entities(text: str) -&gt; List[Union[Person, Company, Location]]:
     return list(results)
 
 def demonstrate_entity_extraction():
-text = &quot;&quot;&quot;
+    # Sample text containing multiple entity types
+    text = &quot;&quot;&quot;
     John Smith is a 35-year-old software engineer living in San Francisco, USA,
     a city with about 815,000 people. He works at TechCorp, a software development
     company founded in 2005 that specializes in AI applications. His colleague
@@ -402,12 +403,16 @@ text = &quot;&quot;&quot;
     &quot;&quot;&quot;
 
     entities = extract_entities(text)
-people = [e for e in entities if isinstance(e, Person)]
+
+    # Process different entity types
+    people = [e for e in entities if isinstance(e, Person)]
     companies = [e for e in entities if isinstance(e, Company)]
     locations = [e for e in entities if isinstance(e, Location)]
 
     print(f&quot;Found {len(people)} people, {len(companies)} companies, and {len(locations)} locations&quot;)
-for person in people:
+    
+    # Display extracted entities
+    for person in people:
         print(f&quot;Person: {person.name}, {person.age}, {person.occupation}&quot;)
     
     for company in companies:
@@ -569,17 +574,9 @@ class Location(BaseModel):
 
     return list(results)
 
-def demonstrate_entity_extraction():</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Sample text containing multiple entity types</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">text = &quot;&quot;&quot;
+def demonstrate_entity_extraction():
+    # Sample text containing multiple entity types
+    text = &quot;&quot;&quot;
     John Smith is a 35-year-old software engineer living in San Francisco, USA,
     a city with about 815,000 people. He works at TechCorp, a software development
     company founded in 2005 that specializes in AI applications. His colleague
@@ -587,31 +584,17 @@ def demonstrate_entity_extraction():</code></pre>
     a city of approximately 3.2 million people.
     &quot;&quot;&quot;
 
-    entities = extract_entities(text)</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Process different entity types</div>
+    entities = extract_entities(text)
 
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">people = [e for e in entities if isinstance(e, Person)]
+    # Process different entity types
+    people = [e for e in entities if isinstance(e, Person)]
     companies = [e for e in entities if isinstance(e, Company)]
     locations = [e for e in entities if isinstance(e, Location)]
 
-    print(f&quot;Found {len(people)} people, {len(companies)} companies, and {len(locations)} locations&quot;)</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Display extracted entities</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">for person in people:
+    print(f&quot;Found {len(people)} people, {len(companies)} companies, and {len(locations)} locations&quot;)
+    
+    # Display extracted entities
+    for person in people:
         print(f&quot;Person: {person.name}, {person.age}, {person.occupation}&quot;)
     
     for company in companies:

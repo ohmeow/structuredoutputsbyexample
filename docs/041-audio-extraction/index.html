@@ -42,8 +42,8 @@
     "url": "https://structuredoutputsbyexample.com"
   },
   "mainEntityOfPage": "https://structuredoutputsbyexample.com/041-audio-extraction/",
-  "datePublished": "2025-04-10T18:06:44+00:00",
-  "dateModified": "2025-04-10T18:06:44+00:00",
+  "datePublished": "2025-04-10T18:23:55+00:00",
+  "dateModified": "2025-04-10T18:23:55+00:00",
   "articleSection": "Multimodal Inputs",
   "keywords": [
     "structured data",
@@ -307,7 +307,8 @@ class AudioTranscription(BaseModel):
     confidence: float = Field(description=&quot;Confidence score for the transcription&quot;, ge=0.0, le=1.0)
 def transcribe_audio(audio_path: str) -&gt; AudioTranscription:
     &quot;&quot;&quot;Extract structured transcription from an audio file.&quot;&quot;&quot;
-audio = Audio.from_path(audio_path)
+    # Load the audio using Instructor&#x27;s Audio class
+    audio = Audio.from_path(audio_path)
 
     return client.chat.completions.create(
         model=&quot;gpt-4o-audio-preview&quot;,  # Audio-capable model
@@ -428,17 +429,9 @@ from instructor.multimodal import Audio</code></pre>
                 </div>
                 <div class="code">
                     <pre><code class="language-python">def transcribe_audio(audio_path: str) -&gt; AudioTranscription:
-    &quot;&quot;&quot;Extract structured transcription from an audio file.&quot;&quot;&quot;</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Load the audio using Instructor's Audio class</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">audio = Audio.from_path(audio_path)
+    &quot;&quot;&quot;Extract structured transcription from an audio file.&quot;&quot;&quot;
+    # Load the audio using Instructor&#x27;s Audio class
+    audio = Audio.from_path(audio_path)
 
     return client.chat.completions.create(
         model=&quot;gpt-4o-audio-preview&quot;,  # Audio-capable model

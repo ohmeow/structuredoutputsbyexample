@@ -42,8 +42,8 @@
     "url": "https://structuredoutputsbyexample.com"
   },
   "mainEntityOfPage": "https://structuredoutputsbyexample.com/030-dependency-trees/",
-  "datePublished": "2025-04-10T18:06:44+00:00",
-  "dateModified": "2025-04-10T18:06:44+00:00",
+  "datePublished": "2025-04-10T18:23:55+00:00",
+  "dateModified": "2025-04-10T18:23:55+00:00",
   "articleSection": "Advanced Structures",
   "keywords": [
     "structured data",
@@ -309,14 +309,22 @@ class DependencyTree(BaseModel):
 
     def get_execution_order(self) -&gt; list[str]:
         &quot;&quot;&quot;Returns topologically sorted execution order.&quot;&quot;&quot;
-dep_graph = {node.id: set(node.dependencies) for node in self.nodes}
+        # Build dependency graph
+        dep_graph = {node.id: set(node.dependencies) for node in self.nodes}
         result = []
-while dep_graph:
-roots = {node for node, deps in dep_graph.items() if not deps}
+
+        # Find nodes with no dependencies
+        while dep_graph:
+            # Find nodes with no dependencies
+            roots = {node for node, deps in dep_graph.items() if not deps}
             if not roots:
                 raise ValueError(&quot;Circular dependency detected&quot;)
-result.extend(sorted(roots))
-dep_graph = {
+
+            # Add these nodes to the result
+            result.extend(sorted(roots))
+
+            # Remove these nodes from the graph
+            dep_graph = {
                 node: (deps - roots)
                 for node, deps in dep_graph.items()
                 if node not in roots
@@ -400,60 +408,23 @@ from pydantic import BaseModel, Field</code></pre>
     nodes: list[DependencyNode]
 
     def get_execution_order(self) -&gt; list[str]:
-        &quot;&quot;&quot;Returns topologically sorted execution order.&quot;&quot;&quot;</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Build dependency graph</div>
+        &quot;&quot;&quot;Returns topologically sorted execution order.&quot;&quot;&quot;
+        # Build dependency graph
+        dep_graph = {node.id: set(node.dependencies) for node in self.nodes}
+        result = []
 
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">dep_graph = {node.id: set(node.dependencies) for node in self.nodes}
-        result = []</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Find nodes with no dependencies</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">while dep_graph:</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Find nodes with no dependencies</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">roots = {node for node, deps in dep_graph.items() if not deps}
+        # Find nodes with no dependencies
+        while dep_graph:
+            # Find nodes with no dependencies
+            roots = {node for node, deps in dep_graph.items() if not deps}
             if not roots:
-                raise ValueError(&quot;Circular dependency detected&quot;)</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Add these nodes to the result</div>
+                raise ValueError(&quot;Circular dependency detected&quot;)
 
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">result.extend(sorted(roots))</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Remove these nodes from the graph</div>
+            # Add these nodes to the result
+            result.extend(sorted(roots))
 
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">dep_graph = {
+            # Remove these nodes from the graph
+            dep_graph = {
                 node: (deps - roots)
                 for node, deps in dep_graph.items()
                 if node not in roots

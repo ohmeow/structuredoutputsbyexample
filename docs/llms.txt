@@ -34,7 +34,7 @@ Note: A more comprehensive version of this file / documentation is available at 
 ## Classification and Analysis
 
 - Simple Classification: Perform single-label classification with Instructor and structured outputs..
-- Multi-label Classification Example: This example demonstrates various approaches to multi-label classification using Instructor: 1.
+- Multi-label Classification: This example demonstrates various approaches to multi-label classification using Instructor: 1.
 
 ## Streaming
 

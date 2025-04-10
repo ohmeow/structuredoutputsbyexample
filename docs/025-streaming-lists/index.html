@@ -42,8 +42,8 @@
     "url": "https://structuredoutputsbyexample.com"
   },
   "mainEntityOfPage": "https://structuredoutputsbyexample.com/025-streaming-lists/",
-  "datePublished": "2025-04-10T18:06:44+00:00",
-  "dateModified": "2025-04-10T18:06:44+00:00",
+  "datePublished": "2025-04-10T18:23:55+00:00",
+  "dateModified": "2025-04-10T18:23:55+00:00",
   "articleSection": "Streaming",
   "keywords": [
     "structured data",
@@ -323,6 +323,7 @@ for i, person in enumerate(people_stream, 1):
     print(f&quot;Name: {person.name}&quot;)
     print(f&quot;Age: {person.age}&quot;)
     print(f&quot;Occupation: {person.occupation}&quot;)
+    # Note: Each person is fully complete when received
 from pydantic import BaseModel, Field
 from typing import List, Optional
 
@@ -379,22 +380,29 @@ print(&quot;Project task planning:&quot;)
 print(&quot;---------------------&quot;)
 
 for task in tasks_stream:
-all_tasks.append(task)
+    # Update statistics
+    all_tasks.append(task)
     total_hours += task.estimated_hours
     by_priority[task.priority.lower()] += 1
 
     if task.assigned_to:
         by_assignee[task.assigned_to] = by_assignee.get(task.assigned_to, 0) + 1
-print(f&quot;\nNew Task: {task.title}&quot;)
+
+    # Print the task
+    print(f&quot;\nNew Task: {task.title}&quot;)
     print(f&quot;Priority: {task.priority}&quot;)
     print(f&quot;Estimate: {task.estimated_hours} hours&quot;)
     print(f&quot;Assigned to: {task.assigned_to or &#x27;Unassigned&#x27;}&quot;)
-print(&quot;\nCurrent Sprint Stats:&quot;)
+
+    # Print current statistics
+    print(&quot;\nCurrent Sprint Stats:&quot;)
     print(f&quot;Tasks planned: {len(all_tasks)}&quot;)
     print(f&quot;Total hours: {total_hours:.1f}&quot;)
     print(f&quot;By priority: {by_priority}&quot;)
     print(f&quot;By assignee: {by_assignee}&quot;)
-time.sleep(0.5)
+
+    # Simulate a pause for real-time updates
+    time.sleep(0.5)
 
 print(&quot;\nSprint planning complete!&quot;)
 
@@ -526,10 +534,10 @@ for i, person in enumerate(people_stream, 1):
     print(f&quot;\nPerson {i}:&quot;)
     print(f&quot;Name: {person.name}&quot;)
     print(f&quot;Age: {person.age}&quot;)
-    print(f&quot;Occupation: {person.occupation}&quot;)</code></pre>
+    print(f&quot;Occupation: {person.occupation}&quot;)
+    # Note: Each person is fully complete when received</code></pre>
                 </div>
             </div>
-            <hr>
             <hr>
             <div class="row">
                 <div class="docs">
@@ -637,59 +645,30 @@ by_assignee = {}</code></pre>
                     <pre><code class="language-python">print(&quot;Project task planning:&quot;)
 print(&quot;---------------------&quot;)
 
-for task in tasks_stream:</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Update statistics</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">all_tasks.append(task)
+for task in tasks_stream:
+    # Update statistics
+    all_tasks.append(task)
     total_hours += task.estimated_hours
     by_priority[task.priority.lower()] += 1
 
     if task.assigned_to:
-        by_assignee[task.assigned_to] = by_assignee.get(task.assigned_to, 0) + 1</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Print the task</div>
+        by_assignee[task.assigned_to] = by_assignee.get(task.assigned_to, 0) + 1
 
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">print(f&quot;\nNew Task: {task.title}&quot;)
+    # Print the task
+    print(f&quot;\nNew Task: {task.title}&quot;)
     print(f&quot;Priority: {task.priority}&quot;)
     print(f&quot;Estimate: {task.estimated_hours} hours&quot;)
-    print(f&quot;Assigned to: {task.assigned_to or &#x27;Unassigned&#x27;}&quot;)</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Print current statistics</div>
+    print(f&quot;Assigned to: {task.assigned_to or &#x27;Unassigned&#x27;}&quot;)
 
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">print(&quot;\nCurrent Sprint Stats:&quot;)
+    # Print current statistics
+    print(&quot;\nCurrent Sprint Stats:&quot;)
     print(f&quot;Tasks planned: {len(all_tasks)}&quot;)
     print(f&quot;Total hours: {total_hours:.1f}&quot;)
     print(f&quot;By priority: {by_priority}&quot;)
-    print(f&quot;By assignee: {by_assignee}&quot;)</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Simulate a pause for real-time updates</div>
+    print(f&quot;By assignee: {by_assignee}&quot;)
 
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">time.sleep(0.5)
+    # Simulate a pause for real-time updates
+    time.sleep(0.5)
 
 print(&quot;\nSprint planning complete!&quot;)
 

@@ -42,8 +42,8 @@
     "url": "https://structuredoutputsbyexample.com"
   },
   "mainEntityOfPage": "https://structuredoutputsbyexample.com/040-table-extraction/",
-  "datePublished": "2025-04-10T18:06:44+00:00",
-  "dateModified": "2025-04-10T18:06:44+00:00",
+  "datePublished": "2025-04-10T18:23:55+00:00",
+  "dateModified": "2025-04-10T18:23:55+00:00",
   "articleSection": "Multimodal Inputs",
   "keywords": [
     "structured data",
@@ -375,11 +375,15 @@ def analyze_table_data(image_path: str):
     print(f&quot;Table Caption: {table.caption}&quot;)
     print(&quot;\nExtracted Table:&quot;)
     print(table.dataframe)
-if isinstance(table.dataframe, pd.DataFrame):
+
+    # Perform data analysis if it&#x27;s a pandas DataFrame
+    if isinstance(table.dataframe, pd.DataFrame):
         print(&quot;\nData Analysis:&quot;)
         print(f&quot;- Rows: {len(table.dataframe)}&quot;)
         print(f&quot;- Columns: {len(table.dataframe.columns)}&quot;)
-numeric_cols = table.dataframe.select_dtypes(include=[&quot;number&quot;]).columns
+
+        # Basic statistics if numeric columns exist
+        numeric_cols = table.dataframe.select_dtypes(include=[&quot;number&quot;]).columns
         if len(numeric_cols) &gt; 0:
             print(&quot;\nNumeric Column Statistics:&quot;)
             for col in numeric_cols:
@@ -572,30 +576,16 @@ Create an image object or use autodetect</div>
 
     print(f&quot;Table Caption: {table.caption}&quot;)
     print(&quot;\nExtracted Table:&quot;)
-    print(table.dataframe)</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Perform data analysis if it's a pandas DataFrame</div>
+    print(table.dataframe)
 
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">if isinstance(table.dataframe, pd.DataFrame):
+    # Perform data analysis if it&#x27;s a pandas DataFrame
+    if isinstance(table.dataframe, pd.DataFrame):
         print(&quot;\nData Analysis:&quot;)
         print(f&quot;- Rows: {len(table.dataframe)}&quot;)
-        print(f&quot;- Columns: {len(table.dataframe.columns)}&quot;)</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Basic statistics if numeric columns exist</div>
+        print(f&quot;- Columns: {len(table.dataframe.columns)}&quot;)
 
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">numeric_cols = table.dataframe.select_dtypes(include=[&quot;number&quot;]).columns
+        # Basic statistics if numeric columns exist
+        numeric_cols = table.dataframe.select_dtypes(include=[&quot;number&quot;]).columns
         if len(numeric_cols) &gt; 0:
             print(&quot;\nNumeric Column Statistics:&quot;)
             for col in numeric_cols:

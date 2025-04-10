@@ -3756,43 +3756,17 @@
           ],
           "target_line_range": [
             16,
-            18
+            23
           ]
         },
         {
-          "code": "class Person(BaseModel):\n    name: str\n    age: int\n",
-          "display_code": "class Person(BaseModel):\n    name: str\n    age: int\n",
+          "code": "class Person(BaseModel):\n    name: str\n    age: int\n    # Optional fields with default value of None\n    email: Optional[str] = None\n    phone: Optional[str] = None\n    occupation: Optional[str] = None\n\n",
+          "display_code": "class Person(BaseModel):\n    name: str\n    age: int\n    # Optional fields with default value of None\n    email: Optional[str] = None\n    phone: Optional[str] = None\n    occupation: Optional[str] = None\n\n",
           "annotation": "",
           "is_comment": false,
           "start_line": 16,
           "line_range": [
             16,
-            18
-          ]
-        },
-        {
-          "code": "    # Optional fields with default value of None\n",
-          "display_code": "",
-          "annotation": "Optional fields with default value of None",
-          "is_comment": true,
-          "start_line": 19,
-          "line_range": [
-            19,
-            19
-          ],
-          "target_line_range": [
-            20,
-            23
-          ]
-        },
-        {
-          "code": "    email: Optional[str] = None\n    phone: Optional[str] = None\n    occupation: Optional[str] = None\n\n",
-          "display_code": "    email: Optional[str] = None\n    phone: Optional[str] = None\n    occupation: Optional[str] = None\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 20,
-          "line_range": [
-            20,
             23
           ]
         },
@@ -4115,7 +4089,7 @@
     },
     {
       "id": "019-multi-label-classification",
-      "title": "Multi-label Classification Example",
+      "title": "Multi-label Classification",
       "description": "This example demonstrates various approaches to multi-label classification using Instructor:\n1. Basic multi-label classification with string labels\n2. Using Enums for predefined categories\n3. Classification with confidence scores\n4. Hierarchical classification with main and subcategories\n\nEach approach shows how to structure your Pydantic models for different classification needs.",
       "order": 19,
       "code_segments": [
@@ -4517,69 +4491,17 @@
           ],
           "target_line_range": [
             18,
-            27
+            39
           ]
         },
         {
-          "code": "def stream_user_info():\n    stream = client.chat.completions.create(\n        model=\"gpt-3.5-turbo\",\n        response_model=User,\n        stream=True,  # Enable streaming\n        messages=[\n            {\"role\": \"user\", \"content\": \"Generate a profile for a fictional user named Alice who is 28 years old.\"}\n        ]\n    )\n\n",
-          "display_code": "def stream_user_info():\n    stream = client.chat.completions.create(\n        model=\"gpt-3.5-turbo\",\n        response_model=User,\n        stream=True,  # Enable streaming\n        messages=[\n            {\"role\": \"user\", \"content\": \"Generate a profile for a fictional user named Alice who is 28 years old.\"}\n        ]\n    )\n\n",
+          "code": "def stream_user_info():\n    stream = client.chat.completions.create(\n        model=\"gpt-3.5-turbo\",\n        response_model=User,\n        stream=True,  # Enable streaming\n        messages=[\n            {\"role\": \"user\", \"content\": \"Generate a profile for a fictional user named Alice who is 28 years old.\"}\n        ]\n    )\n\n    # Each chunk contains the partial model constructed so far\n    for chunk in stream:\n        print(f\"Received chunk: {chunk}\")\n        \n    # Return the final complete object\n    return chunk\n\nuser = stream_user_info()\nprint(f\"\\nFinal result: {user}\")\n\nfrom instructor import Partial\n\n",
+          "display_code": "def stream_user_info():\n    stream = client.chat.completions.create(\n        model=\"gpt-3.5-turbo\",\n        response_model=User,\n        stream=True,  # Enable streaming\n        messages=[\n            {\"role\": \"user\", \"content\": \"Generate a profile for a fictional user named Alice who is 28 years old.\"}\n        ]\n    )\n\n    # Each chunk contains the partial model constructed so far\n    for chunk in stream:\n        print(f\"Received chunk: {chunk}\")\n        \n    # Return the final complete object\n    return chunk\n\nuser = stream_user_info()\nprint(f\"\\nFinal result: {user}\")\n\nfrom instructor import Partial\n\n",
           "annotation": "",
           "is_comment": false,
           "start_line": 18,
           "line_range": [
             18,
-            27
-          ]
-        },
-        {
-          "code": "    # Each chunk contains the partial model constructed so far\n",
-          "display_code": "",
-          "annotation": "Each chunk contains the partial model constructed so far",
-          "is_comment": true,
-          "start_line": 28,
-          "line_range": [
-            28,
-            28
-          ],
-          "target_line_range": [
-            29,
-            31
-          ]
-        },
-        {
-          "code": "    for chunk in stream:\n        print(f\"Received chunk: {chunk}\")\n        \n",
-          "display_code": "    for chunk in stream:\n        print(f\"Received chunk: {chunk}\")\n        \n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 29,
-          "line_range": [
-            29,
-            31
-          ]
-        },
-        {
-          "code": "    # Return the final complete object\n",
-          "display_code": "",
-          "annotation": "Return the final complete object",
-          "is_comment": true,
-          "start_line": 32,
-          "line_range": [
-            32,
-            32
-          ],
-          "target_line_range": [
-            33,
-            39
-          ]
-        },
-        {
-          "code": "    return chunk\n\nuser = stream_user_info()\nprint(f\"\\nFinal result: {user}\")\n\nfrom instructor import Partial\n\n",
-          "display_code": "    return chunk\n\nuser = stream_user_info()\nprint(f\"\\nFinal result: {user}\")\n\nfrom instructor import Partial\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 33,
-          "line_range": [
-            33,
             39
           ]
         },
@@ -4595,69 +4517,17 @@
           ],
           "target_line_range": [
             41,
-            49
+            56
           ]
         },
         {
-          "code": "def stream_user_with_partial():\n    user_stream = client.chat.completions.create_partial(\n        model=\"gpt-3.5-turbo\",\n        response_model=User,\n        messages=[\n            {\"role\": \"user\", \"content\": \"Generate a profile for a fictional user named Bob who is 35 years old and works as a software developer.\"}\n        ]\n    )\n\n",
-          "display_code": "def stream_user_with_partial():\n    user_stream = client.chat.completions.create_partial(\n        model=\"gpt-3.5-turbo\",\n        response_model=User,\n        messages=[\n            {\"role\": \"user\", \"content\": \"Generate a profile for a fictional user named Bob who is 35 years old and works as a software developer.\"}\n        ]\n    )\n\n",
+          "code": "def stream_user_with_partial():\n    user_stream = client.chat.completions.create_partial(\n        model=\"gpt-3.5-turbo\",\n        response_model=User,\n        messages=[\n            {\"role\": \"user\", \"content\": \"Generate a profile for a fictional user named Bob who is 35 years old and works as a software developer.\"}\n        ]\n    )\n\n    # Show progress as each field gets filled in\n    print(\"Streaming user data:\")\n\n    for partial_user in user_stream:\n        # Fields appear as they're generated by the model\n        print(f\"Current state: name={partial_user.name}, age={partial_user.age}, bio={partial_user.bio!r}\")\n\n",
+          "display_code": "def stream_user_with_partial():\n    user_stream = client.chat.completions.create_partial(\n        model=\"gpt-3.5-turbo\",\n        response_model=User,\n        messages=[\n            {\"role\": \"user\", \"content\": \"Generate a profile for a fictional user named Bob who is 35 years old and works as a software developer.\"}\n        ]\n    )\n\n    # Show progress as each field gets filled in\n    print(\"Streaming user data:\")\n\n    for partial_user in user_stream:\n        # Fields appear as they're generated by the model\n        print(f\"Current state: name={partial_user.name}, age={partial_user.age}, bio={partial_user.bio!r}\")\n\n",
           "annotation": "",
           "is_comment": false,
           "start_line": 41,
           "line_range": [
             41,
-            49
-          ]
-        },
-        {
-          "code": "    # Show progress as each field gets filled in\n",
-          "display_code": "",
-          "annotation": "Show progress as each field gets filled in",
-          "is_comment": true,
-          "start_line": 50,
-          "line_range": [
-            50,
-            50
-          ],
-          "target_line_range": [
-            51,
-            53
-          ]
-        },
-        {
-          "code": "    print(\"Streaming user data:\")\n\n    for partial_user in user_stream:\n",
-          "display_code": "    print(\"Streaming user data:\")\n\n    for partial_user in user_stream:\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 51,
-          "line_range": [
-            51,
-            53
-          ]
-        },
-        {
-          "code": "        # Fields appear as they're generated by the model\n",
-          "display_code": "",
-          "annotation": "Fields appear as they're generated by the model",
-          "is_comment": true,
-          "start_line": 54,
-          "line_range": [
-            54,
-            54
-          ],
-          "target_line_range": [
-            55,
-            56
-          ]
-        },
-        {
-          "code": "        print(f\"Current state: name={partial_user.name}, age={partial_user.age}, bio={partial_user.bio!r}\")\n\n",
-          "display_code": "        print(f\"Current state: name={partial_user.name}, age={partial_user.age}, bio={partial_user.bio!r}\")\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 55,
-          "line_range": [
-            55,
             56
           ]
         },
@@ -4699,69 +4569,17 @@
           ],
           "target_line_range": [
             66,
-            66
+            102
           ]
         },
         {
-          "code": "    def update(self, partial_user: Partial[User]):\n",
-          "display_code": "    def update(self, partial_user: Partial[User]):\n",
+          "code": "    def update(self, partial_user: Partial[User]):\n        # Calculate what percentage of fields are now populated\n        total_fields = len(User.model_fields)\n        populated = sum(1 for v in [partial_user.name, partial_user.age, partial_user.bio] if v is not None)\n        completion = int(populated / total_fields * 100)\n        \n        # Build a dictionary of only the fields that have values\n        data = {}\n        if partial_user.name is not None:\n            data[\"name\"] = partial_user.name\n        if partial_user.age is not None:\n            data[\"age\"] = partial_user.age\n        if partial_user.bio is not None:\n            data[\"bio\"] = partial_user.bio\n\n        self.progress = {\n            \"completion\": f\"{completion}%\",\n            \"data\": data\n        }\n\n        return self.progress\n\ndef stream_with_progress():\n    tracker = ProgressTracker()\n\n    user_stream = client.chat.completions.create_partial(\n        model=\"gpt-3.5-turbo\",\n        response_model=User,\n        messages=[\n            {\"role\": \"user\", \"content\": \"Generate a profile for a fictional user named Carol who is 42 years old.\"}\n        ]\n    )\n\n    for partial_user in user_stream:\n        progress = tracker.update(partial_user)\n        print(f\"Progress: {progress['completion']} - Current data: {progress['data']}\")\n\n",
+          "display_code": "    def update(self, partial_user: Partial[User]):\n        # Calculate what percentage of fields are now populated\n        total_fields = len(User.model_fields)\n        populated = sum(1 for v in [partial_user.name, partial_user.age, partial_user.bio] if v is not None)\n        completion = int(populated / total_fields * 100)\n        \n        # Build a dictionary of only the fields that have values\n        data = {}\n        if partial_user.name is not None:\n            data[\"name\"] = partial_user.name\n        if partial_user.age is not None:\n            data[\"age\"] = partial_user.age\n        if partial_user.bio is not None:\n            data[\"bio\"] = partial_user.bio\n\n        self.progress = {\n            \"completion\": f\"{completion}%\",\n            \"data\": data\n        }\n\n        return self.progress\n\ndef stream_with_progress():\n    tracker = ProgressTracker()\n\n    user_stream = client.chat.completions.create_partial(\n        model=\"gpt-3.5-turbo\",\n        response_model=User,\n        messages=[\n            {\"role\": \"user\", \"content\": \"Generate a profile for a fictional user named Carol who is 42 years old.\"}\n        ]\n    )\n\n    for partial_user in user_stream:\n        progress = tracker.update(partial_user)\n        print(f\"Progress: {progress['completion']} - Current data: {progress['data']}\")\n\n",
           "annotation": "",
           "is_comment": false,
           "start_line": 66,
           "line_range": [
             66,
-            66
-          ]
-        },
-        {
-          "code": "        # Calculate what percentage of fields are now populated\n",
-          "display_code": "",
-          "annotation": "Calculate what percentage of fields are now populated",
-          "is_comment": true,
-          "start_line": 67,
-          "line_range": [
-            67,
-            67
-          ],
-          "target_line_range": [
-            68,
-            71
-          ]
-        },
-        {
-          "code": "        total_fields = len(User.model_fields)\n        populated = sum(1 for v in [partial_user.name, partial_user.age, partial_user.bio] if v is not None)\n        completion = int(populated / total_fields * 100)\n        \n",
-          "display_code": "        total_fields = len(User.model_fields)\n        populated = sum(1 for v in [partial_user.name, partial_user.age, partial_user.bio] if v is not None)\n        completion = int(populated / total_fields * 100)\n        \n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 68,
-          "line_range": [
-            68,
-            71
-          ]
-        },
-        {
-          "code": "        # Build a dictionary of only the fields that have values\n",
-          "display_code": "",
-          "annotation": "Build a dictionary of only the fields that have values",
-          "is_comment": true,
-          "start_line": 72,
-          "line_range": [
-            72,
-            72
-          ],
-          "target_line_range": [
-            73,
-            102
-          ]
-        },
-        {
-          "code": "        data = {}\n        if partial_user.name is not None:\n            data[\"name\"] = partial_user.name\n        if partial_user.age is not None:\n            data[\"age\"] = partial_user.age\n        if partial_user.bio is not None:\n            data[\"bio\"] = partial_user.bio\n\n        self.progress = {\n            \"completion\": f\"{completion}%\",\n            \"data\": data\n        }\n\n        return self.progress\n\ndef stream_with_progress():\n    tracker = ProgressTracker()\n\n    user_stream = client.chat.completions.create_partial(\n        model=\"gpt-3.5-turbo\",\n        response_model=User,\n        messages=[\n            {\"role\": \"user\", \"content\": \"Generate a profile for a fictional user named Carol who is 42 years old.\"}\n        ]\n    )\n\n    for partial_user in user_stream:\n        progress = tracker.update(partial_user)\n        print(f\"Progress: {progress['completion']} - Current data: {progress['data']}\")\n\n",
-          "display_code": "        data = {}\n        if partial_user.name is not None:\n            data[\"name\"] = partial_user.name\n        if partial_user.age is not None:\n            data[\"age\"] = partial_user.age\n        if partial_user.bio is not None:\n            data[\"bio\"] = partial_user.bio\n\n        self.progress = {\n            \"completion\": f\"{completion}%\",\n            \"data\": data\n        }\n\n        return self.progress\n\ndef stream_with_progress():\n    tracker = ProgressTracker()\n\n    user_stream = client.chat.completions.create_partial(\n        model=\"gpt-3.5-turbo\",\n        response_model=User,\n        messages=[\n            {\"role\": \"user\", \"content\": \"Generate a profile for a fictional user named Carol who is 42 years old.\"}\n        ]\n    )\n\n    for partial_user in user_stream:\n        progress = tracker.update(partial_user)\n        print(f\"Progress: {progress['completion']} - Current data: {progress['data']}\")\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 73,
-          "line_range": [
-            73,
             102
           ]
         },
@@ -4803,69 +4621,17 @@
           ],
           "target_line_range": [
             109,
-            111
+            124
           ]
         },
         {
-          "code": "async def stream_async():\n    async_client = instructor.from_openai(AsyncOpenAI())\n\n",
-          "display_code": "async def stream_async():\n    async_client = instructor.from_openai(AsyncOpenAI())\n\n",
+          "code": "async def stream_async():\n    async_client = instructor.from_openai(AsyncOpenAI())\n\n    # Use async/await pattern for non-blocking streaming\n    user_stream = await async_client.chat.completions.create_partial(\n        model=\"gpt-3.5-turbo\",\n        response_model=User,\n        messages=[\n            {\"role\": \"user\", \"content\": \"Generate a profile for a fictional user named Dave who is 31 years old.\"}\n        ]\n    )\n\n    # Process stream with async for loop\n    async for partial_user in user_stream:\n        print(f\"Async stream update: {partial_user}\")\n\n",
+          "display_code": "async def stream_async():\n    async_client = instructor.from_openai(AsyncOpenAI())\n\n    # Use async/await pattern for non-blocking streaming\n    user_stream = await async_client.chat.completions.create_partial(\n        model=\"gpt-3.5-turbo\",\n        response_model=User,\n        messages=[\n            {\"role\": \"user\", \"content\": \"Generate a profile for a fictional user named Dave who is 31 years old.\"}\n        ]\n    )\n\n    # Process stream with async for loop\n    async for partial_user in user_stream:\n        print(f\"Async stream update: {partial_user}\")\n\n",
           "annotation": "",
           "is_comment": false,
           "start_line": 109,
           "line_range": [
             109,
-            111
-          ]
-        },
-        {
-          "code": "    # Use async/await pattern for non-blocking streaming\n",
-          "display_code": "",
-          "annotation": "Use async/await pattern for non-blocking streaming",
-          "is_comment": true,
-          "start_line": 112,
-          "line_range": [
-            112,
-            112
-          ],
-          "target_line_range": [
-            113,
-            120
-          ]
-        },
-        {
-          "code": "    user_stream = await async_client.chat.completions.create_partial(\n        model=\"gpt-3.5-turbo\",\n        response_model=User,\n        messages=[\n            {\"role\": \"user\", \"content\": \"Generate a profile for a fictional user named Dave who is 31 years old.\"}\n        ]\n    )\n\n",
-          "display_code": "    user_stream = await async_client.chat.completions.create_partial(\n        model=\"gpt-3.5-turbo\",\n        response_model=User,\n        messages=[\n            {\"role\": \"user\", \"content\": \"Generate a profile for a fictional user named Dave who is 31 years old.\"}\n        ]\n    )\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 113,
-          "line_range": [
-            113,
-            120
-          ]
-        },
-        {
-          "code": "    # Process stream with async for loop\n",
-          "display_code": "",
-          "annotation": "Process stream with async for loop",
-          "is_comment": true,
-          "start_line": 121,
-          "line_range": [
-            121,
-            121
-          ],
-          "target_line_range": [
-            122,
-            124
-          ]
-        },
-        {
-          "code": "    async for partial_user in user_stream:\n        print(f\"Async stream update: {partial_user}\")\n\n",
-          "display_code": "    async for partial_user in user_stream:\n        print(f\"Async stream update: {partial_user}\")\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 122,
-          "line_range": [
-            122,
             124
           ]
         },
@@ -5023,43 +4789,17 @@
           ],
           "target_line_range": [
             32,
-            37
+            39
           ]
         },
         {
-          "code": "print(\"Receiving people one at a time:\")\nfor i, person in enumerate(people_stream, 1):\n    print(f\"\\nPerson {i}:\")\n    print(f\"Name: {person.name}\")\n    print(f\"Age: {person.age}\")\n    print(f\"Occupation: {person.occupation}\")\n",
-          "display_code": "print(\"Receiving people one at a time:\")\nfor i, person in enumerate(people_stream, 1):\n    print(f\"\\nPerson {i}:\")\n    print(f\"Name: {person.name}\")\n    print(f\"Age: {person.age}\")\n    print(f\"Occupation: {person.occupation}\")\n",
+          "code": "print(\"Receiving people one at a time:\")\nfor i, person in enumerate(people_stream, 1):\n    print(f\"\\nPerson {i}:\")\n    print(f\"Name: {person.name}\")\n    print(f\"Age: {person.age}\")\n    print(f\"Occupation: {person.occupation}\")\n    # Note: Each person is fully complete when received\n\n",
+          "display_code": "print(\"Receiving people one at a time:\")\nfor i, person in enumerate(people_stream, 1):\n    print(f\"\\nPerson {i}:\")\n    print(f\"Name: {person.name}\")\n    print(f\"Age: {person.age}\")\n    print(f\"Occupation: {person.occupation}\")\n    # Note: Each person is fully complete when received\n\n",
           "annotation": "",
           "is_comment": false,
           "start_line": 32,
           "line_range": [
             32,
-            37
-          ]
-        },
-        {
-          "code": "    # Note: Each person is fully complete when received\n",
-          "display_code": "",
-          "annotation": "Note: Each person is fully complete when received",
-          "is_comment": true,
-          "start_line": 38,
-          "line_range": [
-            38,
-            38
-          ],
-          "target_line_range": [
-            39,
-            39
-          ]
-        },
-        {
-          "code": "\n",
-          "display_code": "\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 39,
-          "line_range": [
-            39,
             39
           ]
         },
@@ -5205,121 +4945,17 @@
           ],
           "target_line_range": [
             104,
-            107
+            151
           ]
         },
         {
-          "code": "print(\"Project task planning:\")\nprint(\"---------------------\")\n\nfor task in tasks_stream:\n",
-          "display_code": "print(\"Project task planning:\")\nprint(\"---------------------\")\n\nfor task in tasks_stream:\n",
+          "code": "print(\"Project task planning:\")\nprint(\"---------------------\")\n\nfor task in tasks_stream:\n    # Update statistics\n    all_tasks.append(task)\n    total_hours += task.estimated_hours\n    by_priority[task.priority.lower()] += 1\n\n    if task.assigned_to:\n        by_assignee[task.assigned_to] = by_assignee.get(task.assigned_to, 0) + 1\n\n    # Print the task\n    print(f\"\\nNew Task: {task.title}\")\n    print(f\"Priority: {task.priority}\")\n    print(f\"Estimate: {task.estimated_hours} hours\")\n    print(f\"Assigned to: {task.assigned_to or 'Unassigned'}\")\n\n    # Print current statistics\n    print(\"\\nCurrent Sprint Stats:\")\n    print(f\"Tasks planned: {len(all_tasks)}\")\n    print(f\"Total hours: {total_hours:.1f}\")\n    print(f\"By priority: {by_priority}\")\n    print(f\"By assignee: {by_assignee}\")\n\n    # Simulate a pause for real-time updates\n    time.sleep(0.5)\n\nprint(\"\\nSprint planning complete!\")\n\nfrom typing import Dict, List, Any, Generator, TypeVar, Generic\n\nT = TypeVar('T')\n\ndef combine_streams(streams: Dict[str, Generator[T, None, None]]) -> Generator[Dict[str, T], None, None]:\n    \"\"\"Combine multiple iterables with identification.\"\"\"\n    active_streams = streams.copy()\n    results = {key: None for key in streams}\n\n    while active_streams:\n        for key, stream in list(active_streams.items()):\n            try:\n                value = next(stream)\n                results[key] = value\n                yield results.copy()\n            except StopIteration:\n                del active_streams[key]\n\n",
+          "display_code": "print(\"Project task planning:\")\nprint(\"---------------------\")\n\nfor task in tasks_stream:\n    # Update statistics\n    all_tasks.append(task)\n    total_hours += task.estimated_hours\n    by_priority[task.priority.lower()] += 1\n\n    if task.assigned_to:\n        by_assignee[task.assigned_to] = by_assignee.get(task.assigned_to, 0) + 1\n\n    # Print the task\n    print(f\"\\nNew Task: {task.title}\")\n    print(f\"Priority: {task.priority}\")\n    print(f\"Estimate: {task.estimated_hours} hours\")\n    print(f\"Assigned to: {task.assigned_to or 'Unassigned'}\")\n\n    # Print current statistics\n    print(\"\\nCurrent Sprint Stats:\")\n    print(f\"Tasks planned: {len(all_tasks)}\")\n    print(f\"Total hours: {total_hours:.1f}\")\n    print(f\"By priority: {by_priority}\")\n    print(f\"By assignee: {by_assignee}\")\n\n    # Simulate a pause for real-time updates\n    time.sleep(0.5)\n\nprint(\"\\nSprint planning complete!\")\n\nfrom typing import Dict, List, Any, Generator, TypeVar, Generic\n\nT = TypeVar('T')\n\ndef combine_streams(streams: Dict[str, Generator[T, None, None]]) -> Generator[Dict[str, T], None, None]:\n    \"\"\"Combine multiple iterables with identification.\"\"\"\n    active_streams = streams.copy()\n    results = {key: None for key in streams}\n\n    while active_streams:\n        for key, stream in list(active_streams.items()):\n            try:\n                value = next(stream)\n                results[key] = value\n                yield results.copy()\n            except StopIteration:\n                del active_streams[key]\n\n",
           "annotation": "",
           "is_comment": false,
           "start_line": 104,
           "line_range": [
             104,
-            107
-          ]
-        },
-        {
-          "code": "    # Update statistics\n",
-          "display_code": "",
-          "annotation": "Update statistics",
-          "is_comment": true,
-          "start_line": 108,
-          "line_range": [
-            108,
-            108
-          ],
-          "target_line_range": [
-            109,
-            115
-          ]
-        },
-        {
-          "code": "    all_tasks.append(task)\n    total_hours += task.estimated_hours\n    by_priority[task.priority.lower()] += 1\n\n    if task.assigned_to:\n        by_assignee[task.assigned_to] = by_assignee.get(task.assigned_to, 0) + 1\n\n",
-          "display_code": "    all_tasks.append(task)\n    total_hours += task.estimated_hours\n    by_priority[task.priority.lower()] += 1\n\n    if task.assigned_to:\n        by_assignee[task.assigned_to] = by_assignee.get(task.assigned_to, 0) + 1\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 109,
-          "line_range": [
-            109,
-            115
-          ]
-        },
-        {
-          "code": "    # Print the task\n",
-          "display_code": "",
-          "annotation": "Print the task",
-          "is_comment": true,
-          "start_line": 116,
-          "line_range": [
-            116,
-            116
-          ],
-          "target_line_range": [
-            117,
-            121
-          ]
-        },
-        {
-          "code": "    print(f\"\\nNew Task: {task.title}\")\n    print(f\"Priority: {task.priority}\")\n    print(f\"Estimate: {task.estimated_hours} hours\")\n    print(f\"Assigned to: {task.assigned_to or 'Unassigned'}\")\n\n",
-          "display_code": "    print(f\"\\nNew Task: {task.title}\")\n    print(f\"Priority: {task.priority}\")\n    print(f\"Estimate: {task.estimated_hours} hours\")\n    print(f\"Assigned to: {task.assigned_to or 'Unassigned'}\")\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 117,
-          "line_range": [
-            117,
-            121
-          ]
-        },
-        {
-          "code": "    # Print current statistics\n",
-          "display_code": "",
-          "annotation": "Print current statistics",
-          "is_comment": true,
-          "start_line": 122,
-          "line_range": [
-            122,
-            122
-          ],
-          "target_line_range": [
-            123,
-            128
-          ]
-        },
-        {
-          "code": "    print(\"\\nCurrent Sprint Stats:\")\n    print(f\"Tasks planned: {len(all_tasks)}\")\n    print(f\"Total hours: {total_hours:.1f}\")\n    print(f\"By priority: {by_priority}\")\n    print(f\"By assignee: {by_assignee}\")\n\n",
-          "display_code": "    print(\"\\nCurrent Sprint Stats:\")\n    print(f\"Tasks planned: {len(all_tasks)}\")\n    print(f\"Total hours: {total_hours:.1f}\")\n    print(f\"By priority: {by_priority}\")\n    print(f\"By assignee: {by_assignee}\")\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 123,
-          "line_range": [
-            123,
-            128
-          ]
-        },
-        {
-          "code": "    # Simulate a pause for real-time updates\n",
-          "display_code": "",
-          "annotation": "Simulate a pause for real-time updates",
-          "is_comment": true,
-          "start_line": 129,
-          "line_range": [
-            129,
-            129
-          ],
-          "target_line_range": [
-            130,
-            151
-          ]
-        },
-        {
-          "code": "    time.sleep(0.5)\n\nprint(\"\\nSprint planning complete!\")\n\nfrom typing import Dict, List, Any, Generator, TypeVar, Generic\n\nT = TypeVar('T')\n\ndef combine_streams(streams: Dict[str, Generator[T, None, None]]) -> Generator[Dict[str, T], None, None]:\n    \"\"\"Combine multiple iterables with identification.\"\"\"\n    active_streams = streams.copy()\n    results = {key: None for key in streams}\n\n    while active_streams:\n        for key, stream in list(active_streams.items()):\n            try:\n                value = next(stream)\n                results[key] = value\n                yield results.copy()\n            except StopIteration:\n                del active_streams[key]\n\n",
-          "display_code": "    time.sleep(0.5)\n\nprint(\"\\nSprint planning complete!\")\n\nfrom typing import Dict, List, Any, Generator, TypeVar, Generic\n\nT = TypeVar('T')\n\ndef combine_streams(streams: Dict[str, Generator[T, None, None]]) -> Generator[Dict[str, T], None, None]:\n    \"\"\"Combine multiple iterables with identification.\"\"\"\n    active_streams = streams.copy()\n    results = {key: None for key in streams}\n\n    while active_streams:\n        for key, stream in list(active_streams.items()):\n            try:\n                value = next(stream)\n                results[key] = value\n                yield results.copy()\n            except StopIteration:\n                del active_streams[key]\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 130,
-          "line_range": [
-            130,
             151
           ]
         },
@@ -6059,95 +5695,17 @@
           ],
           "target_line_range": [
             55,
-            59
+            71
           ]
         },
         {
-          "code": "from graphviz import Digraph\n\ndef visualize_knowledge_graph(kg: KnowledgeGraph):\n    dot = Digraph(comment=\"Knowledge Graph\")\n\n",
-          "display_code": "from graphviz import Digraph\n\ndef visualize_knowledge_graph(kg: KnowledgeGraph):\n    dot = Digraph(comment=\"Knowledge Graph\")\n\n",
+          "code": "from graphviz import Digraph\n\ndef visualize_knowledge_graph(kg: KnowledgeGraph):\n    dot = Digraph(comment=\"Knowledge Graph\")\n\n    # Add nodes\n    for node in kg.nodes:\n        dot.node(str(node.id), node.label, color=node.color)\n\n    # Add edges\n    for edge in kg.edges:\n        dot.edge(str(edge.source), str(edge.target),\n                 label=edge.label, color=edge.color)\n\n    # Render the graph\n    dot.render(\"knowledge_graph.gv\", view=True)\n\n",
+          "display_code": "from graphviz import Digraph\n\ndef visualize_knowledge_graph(kg: KnowledgeGraph):\n    dot = Digraph(comment=\"Knowledge Graph\")\n\n    # Add nodes\n    for node in kg.nodes:\n        dot.node(str(node.id), node.label, color=node.color)\n\n    # Add edges\n    for edge in kg.edges:\n        dot.edge(str(edge.source), str(edge.target),\n                 label=edge.label, color=edge.color)\n\n    # Render the graph\n    dot.render(\"knowledge_graph.gv\", view=True)\n\n",
           "annotation": "",
           "is_comment": false,
           "start_line": 55,
           "line_range": [
             55,
-            59
-          ]
-        },
-        {
-          "code": "    # Add nodes\n",
-          "display_code": "",
-          "annotation": "Add nodes",
-          "is_comment": true,
-          "start_line": 60,
-          "line_range": [
-            60,
-            60
-          ],
-          "target_line_range": [
-            61,
-            63
-          ]
-        },
-        {
-          "code": "    for node in kg.nodes:\n        dot.node(str(node.id), node.label, color=node.color)\n\n",
-          "display_code": "    for node in kg.nodes:\n        dot.node(str(node.id), node.label, color=node.color)\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 61,
-          "line_range": [
-            61,
-            63
-          ]
-        },
-        {
-          "code": "    # Add edges\n",
-          "display_code": "",
-          "annotation": "Add edges",
-          "is_comment": true,
-          "start_line": 64,
-          "line_range": [
-            64,
-            64
-          ],
-          "target_line_range": [
-            65,
-            68
-          ]
-        },
-        {
-          "code": "    for edge in kg.edges:\n        dot.edge(str(edge.source), str(edge.target),\n                 label=edge.label, color=edge.color)\n\n",
-          "display_code": "    for edge in kg.edges:\n        dot.edge(str(edge.source), str(edge.target),\n                 label=edge.label, color=edge.color)\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 65,
-          "line_range": [
-            65,
-            68
-          ]
-        },
-        {
-          "code": "    # Render the graph\n",
-          "display_code": "",
-          "annotation": "Render the graph",
-          "is_comment": true,
-          "start_line": 69,
-          "line_range": [
-            69,
-            69
-          ],
-          "target_line_range": [
-            70,
-            71
-          ]
-        },
-        {
-          "code": "    dot.render(\"knowledge_graph.gv\", view=True)\n\n",
-          "display_code": "    dot.render(\"knowledge_graph.gv\", view=True)\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 70,
-          "line_range": [
-            70,
             71
           ]
         },
@@ -6330,147 +5888,17 @@
           ],
           "target_line_range": [
             21,
-            25
+            48
           ]
         },
         {
-          "code": "class DependencyTree(BaseModel):\n    nodes: list[DependencyNode]\n\n    def get_execution_order(self) -> list[str]:\n        \"\"\"Returns topologically sorted execution order.\"\"\"\n",
-          "display_code": "class DependencyTree(BaseModel):\n    nodes: list[DependencyNode]\n\n    def get_execution_order(self) -> list[str]:\n        \"\"\"Returns topologically sorted execution order.\"\"\"\n",
+          "code": "class DependencyTree(BaseModel):\n    nodes: list[DependencyNode]\n\n    def get_execution_order(self) -> list[str]:\n        \"\"\"Returns topologically sorted execution order.\"\"\"\n        # Build dependency graph\n        dep_graph = {node.id: set(node.dependencies) for node in self.nodes}\n        result = []\n\n        # Find nodes with no dependencies\n        while dep_graph:\n            # Find nodes with no dependencies\n            roots = {node for node, deps in dep_graph.items() if not deps}\n            if not roots:\n                raise ValueError(\"Circular dependency detected\")\n\n            # Add these nodes to the result\n            result.extend(sorted(roots))\n\n            # Remove these nodes from the graph\n            dep_graph = {\n                node: (deps - roots)\n                for node, deps in dep_graph.items()\n                if node not in roots\n            }\n\n        return result\n\n",
+          "display_code": "class DependencyTree(BaseModel):\n    nodes: list[DependencyNode]\n\n    def get_execution_order(self) -> list[str]:\n        \"\"\"Returns topologically sorted execution order.\"\"\"\n        # Build dependency graph\n        dep_graph = {node.id: set(node.dependencies) for node in self.nodes}\n        result = []\n\n        # Find nodes with no dependencies\n        while dep_graph:\n            # Find nodes with no dependencies\n            roots = {node for node, deps in dep_graph.items() if not deps}\n            if not roots:\n                raise ValueError(\"Circular dependency detected\")\n\n            # Add these nodes to the result\n            result.extend(sorted(roots))\n\n            # Remove these nodes from the graph\n            dep_graph = {\n                node: (deps - roots)\n                for node, deps in dep_graph.items()\n                if node not in roots\n            }\n\n        return result\n\n",
           "annotation": "",
           "is_comment": false,
           "start_line": 21,
           "line_range": [
             21,
-            25
-          ]
-        },
-        {
-          "code": "        # Build dependency graph\n",
-          "display_code": "",
-          "annotation": "Build dependency graph",
-          "is_comment": true,
-          "start_line": 26,
-          "line_range": [
-            26,
-            26
-          ],
-          "target_line_range": [
-            27,
-            29
-          ]
-        },
-        {
-          "code": "        dep_graph = {node.id: set(node.dependencies) for node in self.nodes}\n        result = []\n\n",
-          "display_code": "        dep_graph = {node.id: set(node.dependencies) for node in self.nodes}\n        result = []\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 27,
-          "line_range": [
-            27,
-            29
-          ]
-        },
-        {
-          "code": "        # Find nodes with no dependencies\n",
-          "display_code": "",
-          "annotation": "Find nodes with no dependencies",
-          "is_comment": true,
-          "start_line": 30,
-          "line_range": [
-            30,
-            30
-          ],
-          "target_line_range": [
-            31,
-            31
-          ]
-        },
-        {
-          "code": "        while dep_graph:\n",
-          "display_code": "        while dep_graph:\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 31,
-          "line_range": [
-            31,
-            31
-          ]
-        },
-        {
-          "code": "            # Find nodes with no dependencies\n",
-          "display_code": "",
-          "annotation": "Find nodes with no dependencies",
-          "is_comment": true,
-          "start_line": 32,
-          "line_range": [
-            32,
-            32
-          ],
-          "target_line_range": [
-            33,
-            36
-          ]
-        },
-        {
-          "code": "            roots = {node for node, deps in dep_graph.items() if not deps}\n            if not roots:\n                raise ValueError(\"Circular dependency detected\")\n\n",
-          "display_code": "            roots = {node for node, deps in dep_graph.items() if not deps}\n            if not roots:\n                raise ValueError(\"Circular dependency detected\")\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 33,
-          "line_range": [
-            33,
-            36
-          ]
-        },
-        {
-          "code": "            # Add these nodes to the result\n",
-          "display_code": "",
-          "annotation": "Add these nodes to the result",
-          "is_comment": true,
-          "start_line": 37,
-          "line_range": [
-            37,
-            37
-          ],
-          "target_line_range": [
-            38,
-            39
-          ]
-        },
-        {
-          "code": "            result.extend(sorted(roots))\n\n",
-          "display_code": "            result.extend(sorted(roots))\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 38,
-          "line_range": [
-            38,
-            39
-          ]
-        },
-        {
-          "code": "            # Remove these nodes from the graph\n",
-          "display_code": "",
-          "annotation": "Remove these nodes from the graph",
-          "is_comment": true,
-          "start_line": 40,
-          "line_range": [
-            40,
-            40
-          ],
-          "target_line_range": [
-            41,
-            48
-          ]
-        },
-        {
-          "code": "            dep_graph = {\n                node: (deps - roots)\n                for node, deps in dep_graph.items()\n                if node not in roots\n            }\n\n        return result\n\n",
-          "display_code": "            dep_graph = {\n                node: (deps - roots)\n                for node, deps in dep_graph.items()\n                if node not in roots\n            }\n\n        return result\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 41,
-          "line_range": [
-            41,
             48
           ]
         },
@@ -6757,43 +6185,17 @@
           ],
           "target_line_range": [
             50,
-            56
+            71
           ]
         },
         {
-          "code": "        while dep_graph:\n            available = {task_id for task_id, deps in dep_graph.items() if not deps}  # Tasks with no dependencies\n            if not available:\n                raise ValueError(\"Circular dependency detected in tasks\")\n\n            result.extend(sorted(available))  # Add to execution order\n\n",
-          "display_code": "        while dep_graph:\n            available = {task_id for task_id, deps in dep_graph.items() if not deps}  # Tasks with no dependencies\n            if not available:\n                raise ValueError(\"Circular dependency detected in tasks\")\n\n            result.extend(sorted(available))  # Add to execution order\n\n",
+          "code": "        while dep_graph:\n            available = {task_id for task_id, deps in dep_graph.items() if not deps}  # Tasks with no dependencies\n            if not available:\n                raise ValueError(\"Circular dependency detected in tasks\")\n\n            result.extend(sorted(available))  # Add to execution order\n\n            # Update dependency graph by removing completed tasks\n            dep_graph = {\n                task_id: (deps - available)\n                for task_id, deps in dep_graph.items()\n                if task_id not in available\n            }\n\n        return result\n\n    async def execute(self) -> dict[int, TaskResult]:\n        \"\"\"Execute all tasks in dependency order.\"\"\"\n        execution_order = self._get_execution_order()\n        tasks_by_id = {task.id: task for task in self.task_graph}\n        results = {}\n\n",
+          "display_code": "        while dep_graph:\n            available = {task_id for task_id, deps in dep_graph.items() if not deps}  # Tasks with no dependencies\n            if not available:\n                raise ValueError(\"Circular dependency detected in tasks\")\n\n            result.extend(sorted(available))  # Add to execution order\n\n            # Update dependency graph by removing completed tasks\n            dep_graph = {\n                task_id: (deps - available)\n                for task_id, deps in dep_graph.items()\n                if task_id not in available\n            }\n\n        return result\n\n    async def execute(self) -> dict[int, TaskResult]:\n        \"\"\"Execute all tasks in dependency order.\"\"\"\n        execution_order = self._get_execution_order()\n        tasks_by_id = {task.id: task for task in self.task_graph}\n        results = {}\n\n",
           "annotation": "",
           "is_comment": false,
           "start_line": 50,
           "line_range": [
             50,
-            56
-          ]
-        },
-        {
-          "code": "            # Update dependency graph by removing completed tasks\n",
-          "display_code": "",
-          "annotation": "Update dependency graph by removing completed tasks",
-          "is_comment": true,
-          "start_line": 57,
-          "line_range": [
-            57,
-            57
-          ],
-          "target_line_range": [
-            58,
-            71
-          ]
-        },
-        {
-          "code": "            dep_graph = {\n                task_id: (deps - available)\n                for task_id, deps in dep_graph.items()\n                if task_id not in available\n            }\n\n        return result\n\n    async def execute(self) -> dict[int, TaskResult]:\n        \"\"\"Execute all tasks in dependency order.\"\"\"\n        execution_order = self._get_execution_order()\n        tasks_by_id = {task.id: task for task in self.task_graph}\n        results = {}\n\n",
-          "display_code": "            dep_graph = {\n                task_id: (deps - available)\n                for task_id, deps in dep_graph.items()\n                if task_id not in available\n            }\n\n        return result\n\n    async def execute(self) -> dict[int, TaskResult]:\n        \"\"\"Execute all tasks in dependency order.\"\"\"\n        execution_order = self._get_execution_order()\n        tasks_by_id = {task.id: task for task in self.task_graph}\n        results = {}\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 58,
-          "line_range": [
-            58,
             71
           ]
         },
@@ -6809,95 +6211,17 @@
           ],
           "target_line_range": [
             73,
-            73
+            100
           ]
         },
         {
-          "code": "        while len(results) < len(self.task_graph):\n",
-          "display_code": "        while len(results) < len(self.task_graph):\n",
+          "code": "        while len(results) < len(self.task_graph):\n            # Identify tasks whose dependencies are all satisfied\n            ready_tasks = [\n                tasks_by_id[task_id]\n                for task_id in execution_order\n                if task_id not in results and\n                all(dep_id in results for dep_id in tasks_by_id[task_id].subtasks)\n            ]\n\n            # Process all ready tasks concurrently\n            new_results = await asyncio.gather(*[\n                task.execute(\n                    with_results=TaskResults(\n                        results=[\n                            results[dep_id]\n                            for dep_id in task.subtasks\n                        ]\n                    )\n                )\n                for task in ready_tasks\n            ])\n\n            # Save results for dependent tasks to use\n            for result in new_results:\n                results[result.task_id] = result\n\n        return results\n\n",
+          "display_code": "        while len(results) < len(self.task_graph):\n            # Identify tasks whose dependencies are all satisfied\n            ready_tasks = [\n                tasks_by_id[task_id]\n                for task_id in execution_order\n                if task_id not in results and\n                all(dep_id in results for dep_id in tasks_by_id[task_id].subtasks)\n            ]\n\n            # Process all ready tasks concurrently\n            new_results = await asyncio.gather(*[\n                task.execute(\n                    with_results=TaskResults(\n                        results=[\n                            results[dep_id]\n                            for dep_id in task.subtasks\n                        ]\n                    )\n                )\n                for task in ready_tasks\n            ])\n\n            # Save results for dependent tasks to use\n            for result in new_results:\n                results[result.task_id] = result\n\n        return results\n\n",
           "annotation": "",
           "is_comment": false,
           "start_line": 73,
           "line_range": [
             73,
-            73
-          ]
-        },
-        {
-          "code": "            # Identify tasks whose dependencies are all satisfied\n",
-          "display_code": "",
-          "annotation": "Identify tasks whose dependencies are all satisfied",
-          "is_comment": true,
-          "start_line": 74,
-          "line_range": [
-            74,
-            74
-          ],
-          "target_line_range": [
-            75,
-            81
-          ]
-        },
-        {
-          "code": "            ready_tasks = [\n                tasks_by_id[task_id]\n                for task_id in execution_order\n                if task_id not in results and\n                all(dep_id in results for dep_id in tasks_by_id[task_id].subtasks)\n            ]\n\n",
-          "display_code": "            ready_tasks = [\n                tasks_by_id[task_id]\n                for task_id in execution_order\n                if task_id not in results and\n                all(dep_id in results for dep_id in tasks_by_id[task_id].subtasks)\n            ]\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 75,
-          "line_range": [
-            75,
-            81
-          ]
-        },
-        {
-          "code": "            # Process all ready tasks concurrently\n",
-          "display_code": "",
-          "annotation": "Process all ready tasks concurrently",
-          "is_comment": true,
-          "start_line": 82,
-          "line_range": [
-            82,
-            82
-          ],
-          "target_line_range": [
-            83,
-            94
-          ]
-        },
-        {
-          "code": "            new_results = await asyncio.gather(*[\n                task.execute(\n                    with_results=TaskResults(\n                        results=[\n                            results[dep_id]\n                            for dep_id in task.subtasks\n                        ]\n                    )\n                )\n                for task in ready_tasks\n            ])\n\n",
-          "display_code": "            new_results = await asyncio.gather(*[\n                task.execute(\n                    with_results=TaskResults(\n                        results=[\n                            results[dep_id]\n                            for dep_id in task.subtasks\n                        ]\n                    )\n                )\n                for task in ready_tasks\n            ])\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 83,
-          "line_range": [
-            83,
-            94
-          ]
-        },
-        {
-          "code": "            # Save results for dependent tasks to use\n",
-          "display_code": "",
-          "annotation": "Save results for dependent tasks to use",
-          "is_comment": true,
-          "start_line": 95,
-          "line_range": [
-            95,
-            95
-          ],
-          "target_line_range": [
-            96,
-            100
-          ]
-        },
-        {
-          "code": "            for result in new_results:\n                results[result.task_id] = result\n\n        return results\n\n",
-          "display_code": "            for result in new_results:\n                results[result.task_id] = result\n\n        return results\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 96,
-          "line_range": [
-            96,
             100
           ]
         },
@@ -7934,43 +7258,17 @@
           ],
           "target_line_range": [
             14,
-            26
+            32
           ]
         },
         {
-          "code": "class Contact(BaseModel):\n    name: str = Field(description=\"Person's full name\")\n    email: str = Field(description=\"Person's email address\")\n    phone: str = Field(description=\"Person's phone number\")\n\n    @field_validator(\"email\")\n    def validate_email(cls, v):\n        if \"@\" not in v:\n            raise ValueError(\"Email must contain @ symbol\")\n        return v\n\n    @field_validator(\"phone\")\n    def validate_phone(cls, v):\n",
-          "display_code": "class Contact(BaseModel):\n    name: str = Field(description=\"Person's full name\")\n    email: str = Field(description=\"Person's email address\")\n    phone: str = Field(description=\"Person's phone number\")\n\n    @field_validator(\"email\")\n    def validate_email(cls, v):\n        if \"@\" not in v:\n            raise ValueError(\"Email must contain @ symbol\")\n        return v\n\n    @field_validator(\"phone\")\n    def validate_phone(cls, v):\n",
+          "code": "class Contact(BaseModel):\n    name: str = Field(description=\"Person's full name\")\n    email: str = Field(description=\"Person's email address\")\n    phone: str = Field(description=\"Person's phone number\")\n\n    @field_validator(\"email\")\n    def validate_email(cls, v):\n        if \"@\" not in v:\n            raise ValueError(\"Email must contain @ symbol\")\n        return v\n\n    @field_validator(\"phone\")\n    def validate_phone(cls, v):\n        # Remove all non-numeric characters\n        digits = ''.join(c for c in v if c.isdigit())\n        if len(digits) < 10:\n            raise ValueError(\"Phone number must have at least 10 digits\")\n        return v\n\n",
+          "display_code": "class Contact(BaseModel):\n    name: str = Field(description=\"Person's full name\")\n    email: str = Field(description=\"Person's email address\")\n    phone: str = Field(description=\"Person's phone number\")\n\n    @field_validator(\"email\")\n    def validate_email(cls, v):\n        if \"@\" not in v:\n            raise ValueError(\"Email must contain @ symbol\")\n        return v\n\n    @field_validator(\"phone\")\n    def validate_phone(cls, v):\n        # Remove all non-numeric characters\n        digits = ''.join(c for c in v if c.isdigit())\n        if len(digits) < 10:\n            raise ValueError(\"Phone number must have at least 10 digits\")\n        return v\n\n",
           "annotation": "",
           "is_comment": false,
           "start_line": 14,
           "line_range": [
             14,
-            26
-          ]
-        },
-        {
-          "code": "        # Remove all non-numeric characters\n",
-          "display_code": "",
-          "annotation": "Remove all non-numeric characters",
-          "is_comment": true,
-          "start_line": 27,
-          "line_range": [
-            27,
-            27
-          ],
-          "target_line_range": [
-            28,
-            32
-          ]
-        },
-        {
-          "code": "        digits = ''.join(c for c in v if c.isdigit())\n        if len(digits) < 10:\n            raise ValueError(\"Phone number must have at least 10 digits\")\n        return v\n\n",
-          "display_code": "        digits = ''.join(c for c in v if c.isdigit())\n        if len(digits) < 10:\n            raise ValueError(\"Phone number must have at least 10 digits\")\n        return v\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 28,
-          "line_range": [
-            28,
             32
           ]
         },
@@ -8543,43 +7841,17 @@
           ],
           "target_line_range": [
             96,
-            111
+            115
           ]
         },
         {
-          "code": "try:\n    result = client.chat.completions.create(\n        model=\"gpt-3.5-turbo\",\n        messages=[\n            {\n                \"role\": \"user\",\n                \"content\": \"Extract: Jane is 25 years old\"\n            }\n        ],\n        response_model=ImpossibleModel,\n        max_retries=2\n    )\nexcept InstructorRetryException as e:\n    print(f\"Failed after {e.n_attempts} attempts\")\n    print(f\"Last error message: {e.messages[-1]['content']}\")\n\n",
-          "display_code": "try:\n    result = client.chat.completions.create(\n        model=\"gpt-3.5-turbo\",\n        messages=[\n            {\n                \"role\": \"user\",\n                \"content\": \"Extract: Jane is 25 years old\"\n            }\n        ],\n        response_model=ImpossibleModel,\n        max_retries=2\n    )\nexcept InstructorRetryException as e:\n    print(f\"Failed after {e.n_attempts} attempts\")\n    print(f\"Last error message: {e.messages[-1]['content']}\")\n\n",
+          "code": "try:\n    result = client.chat.completions.create(\n        model=\"gpt-3.5-turbo\",\n        messages=[\n            {\n                \"role\": \"user\",\n                \"content\": \"Extract: Jane is 25 years old\"\n            }\n        ],\n        response_model=ImpossibleModel,\n        max_retries=2\n    )\nexcept InstructorRetryException as e:\n    print(f\"Failed after {e.n_attempts} attempts\")\n    print(f\"Last error message: {e.messages[-1]['content']}\")\n\n    # Implement fallback strategy here\n    fallback_result = {\"name\": \"Jane\", \"age\": 0}\n    print(f\"Using fallback: {fallback_result}\")\n\n",
+          "display_code": "try:\n    result = client.chat.completions.create(\n        model=\"gpt-3.5-turbo\",\n        messages=[\n            {\n                \"role\": \"user\",\n                \"content\": \"Extract: Jane is 25 years old\"\n            }\n        ],\n        response_model=ImpossibleModel,\n        max_retries=2\n    )\nexcept InstructorRetryException as e:\n    print(f\"Failed after {e.n_attempts} attempts\")\n    print(f\"Last error message: {e.messages[-1]['content']}\")\n\n    # Implement fallback strategy here\n    fallback_result = {\"name\": \"Jane\", \"age\": 0}\n    print(f\"Using fallback: {fallback_result}\")\n\n",
           "annotation": "",
           "is_comment": false,
           "start_line": 96,
           "line_range": [
             96,
-            111
-          ]
-        },
-        {
-          "code": "    # Implement fallback strategy here\n",
-          "display_code": "",
-          "annotation": "Implement fallback strategy here",
-          "is_comment": true,
-          "start_line": 112,
-          "line_range": [
-            112,
-            112
-          ],
-          "target_line_range": [
-            113,
-            115
-          ]
-        },
-        {
-          "code": "    fallback_result = {\"name\": \"Jane\", \"age\": 0}\n    print(f\"Using fallback: {fallback_result}\")\n\n",
-          "display_code": "    fallback_result = {\"name\": \"Jane\", \"age\": 0}\n    print(f\"Using fallback: {fallback_result}\")\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 113,
-          "line_range": [
-            113,
             115
           ]
         }
@@ -9371,43 +8643,17 @@
           ],
           "target_line_range": [
             104,
-            109
+            129
           ]
         },
         {
-          "code": "from typing_extensions import Annotated\nfrom pydantic import AfterValidator\nimport re\n\ndef validate_phone_number(v: str) -> str:\n    \"\"\"Validate phone number format.\"\"\"\n",
-          "display_code": "from typing_extensions import Annotated\nfrom pydantic import AfterValidator\nimport re\n\ndef validate_phone_number(v: str) -> str:\n    \"\"\"Validate phone number format.\"\"\"\n",
+          "code": "from typing_extensions import Annotated\nfrom pydantic import AfterValidator\nimport re\n\ndef validate_phone_number(v: str) -> str:\n    \"\"\"Validate phone number format.\"\"\"\n    # Remove all non-numeric characters\n    digits = ''.join(c for c in v if c.isdigit())\n    if len(digits) < 10:\n        raise ValueError(\"Phone number must have at least 10 digits\")\n    return v\n\ndef validate_zip_code(v: str) -> str:\n    \"\"\"Validate US zip code format.\"\"\"\n    pattern = r\"^\\d{5}(-\\d{4})?$\"\n    if not re.match(pattern, v):\n        raise ValueError(\"Invalid zip code format (must be 12345 or 12345-6789)\")\n    return v\n\nclass Address(BaseModel):\n    street: str\n    city: str\n    state: str\n    zip_code: Annotated[str, AfterValidator(validate_zip_code)]\n    phone: Annotated[str, AfterValidator(validate_phone_number)]\n\n",
+          "display_code": "from typing_extensions import Annotated\nfrom pydantic import AfterValidator\nimport re\n\ndef validate_phone_number(v: str) -> str:\n    \"\"\"Validate phone number format.\"\"\"\n    # Remove all non-numeric characters\n    digits = ''.join(c for c in v if c.isdigit())\n    if len(digits) < 10:\n        raise ValueError(\"Phone number must have at least 10 digits\")\n    return v\n\ndef validate_zip_code(v: str) -> str:\n    \"\"\"Validate US zip code format.\"\"\"\n    pattern = r\"^\\d{5}(-\\d{4})?$\"\n    if not re.match(pattern, v):\n        raise ValueError(\"Invalid zip code format (must be 12345 or 12345-6789)\")\n    return v\n\nclass Address(BaseModel):\n    street: str\n    city: str\n    state: str\n    zip_code: Annotated[str, AfterValidator(validate_zip_code)]\n    phone: Annotated[str, AfterValidator(validate_phone_number)]\n\n",
           "annotation": "",
           "is_comment": false,
           "start_line": 104,
           "line_range": [
             104,
-            109
-          ]
-        },
-        {
-          "code": "    # Remove all non-numeric characters\n",
-          "display_code": "",
-          "annotation": "Remove all non-numeric characters",
-          "is_comment": true,
-          "start_line": 110,
-          "line_range": [
-            110,
-            110
-          ],
-          "target_line_range": [
-            111,
-            129
-          ]
-        },
-        {
-          "code": "    digits = ''.join(c for c in v if c.isdigit())\n    if len(digits) < 10:\n        raise ValueError(\"Phone number must have at least 10 digits\")\n    return v\n\ndef validate_zip_code(v: str) -> str:\n    \"\"\"Validate US zip code format.\"\"\"\n    pattern = r\"^\\d{5}(-\\d{4})?$\"\n    if not re.match(pattern, v):\n        raise ValueError(\"Invalid zip code format (must be 12345 or 12345-6789)\")\n    return v\n\nclass Address(BaseModel):\n    street: str\n    city: str\n    state: str\n    zip_code: Annotated[str, AfterValidator(validate_zip_code)]\n    phone: Annotated[str, AfterValidator(validate_phone_number)]\n\n",
-          "display_code": "    digits = ''.join(c for c in v if c.isdigit())\n    if len(digits) < 10:\n        raise ValueError(\"Phone number must have at least 10 digits\")\n    return v\n\ndef validate_zip_code(v: str) -> str:\n    \"\"\"Validate US zip code format.\"\"\"\n    pattern = r\"^\\d{5}(-\\d{4})?$\"\n    if not re.match(pattern, v):\n        raise ValueError(\"Invalid zip code format (must be 12345 or 12345-6789)\")\n    return v\n\nclass Address(BaseModel):\n    street: str\n    city: str\n    state: str\n    zip_code: Annotated[str, AfterValidator(validate_zip_code)]\n    phone: Annotated[str, AfterValidator(validate_phone_number)]\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 111,
-          "line_range": [
-            111,
             129
           ]
         }
@@ -9939,43 +9185,17 @@
           ],
           "target_line_range": [
             76,
-            76
+            97
           ]
         },
         {
-          "code": "def extract_recipe(image_path: str) -> Recipe:\n",
-          "display_code": "def extract_recipe(image_path: str) -> Recipe:\n",
+          "code": "def extract_recipe(image_path: str) -> Recipe:\n    # Create an Image object\n    image = instructor.Image.from_path(image_path)\n\n    return client.chat.completions.create(\n        model=\"gpt-4-vision-preview\",\n        response_model=Recipe,\n        messages=[\n            {\n                \"role\": \"system\",\n                \"content\": \"Extract complete recipe information from the provided image.\"\n            },\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    \"Please extract the detailed recipe information from this image:\",\n                    image\n                ]\n            }\n        ]\n    )\n\n",
+          "display_code": "def extract_recipe(image_path: str) -> Recipe:\n    # Create an Image object\n    image = instructor.Image.from_path(image_path)\n\n    return client.chat.completions.create(\n        model=\"gpt-4-vision-preview\",\n        response_model=Recipe,\n        messages=[\n            {\n                \"role\": \"system\",\n                \"content\": \"Extract complete recipe information from the provided image.\"\n            },\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    \"Please extract the detailed recipe information from this image:\",\n                    image\n                ]\n            }\n        ]\n    )\n\n",
           "annotation": "",
           "is_comment": false,
           "start_line": 76,
           "line_range": [
             76,
-            76
-          ]
-        },
-        {
-          "code": "    # Create an Image object\n",
-          "display_code": "",
-          "annotation": "Create an Image object",
-          "is_comment": true,
-          "start_line": 77,
-          "line_range": [
-            77,
-            77
-          ],
-          "target_line_range": [
-            78,
-            97
-          ]
-        },
-        {
-          "code": "    image = instructor.Image.from_path(image_path)\n\n    return client.chat.completions.create(\n        model=\"gpt-4-vision-preview\",\n        response_model=Recipe,\n        messages=[\n            {\n                \"role\": \"system\",\n                \"content\": \"Extract complete recipe information from the provided image.\"\n            },\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    \"Please extract the detailed recipe information from this image:\",\n                    image\n                ]\n            }\n        ]\n    )\n\n",
-          "display_code": "    image = instructor.Image.from_path(image_path)\n\n    return client.chat.completions.create(\n        model=\"gpt-4-vision-preview\",\n        response_model=Recipe,\n        messages=[\n            {\n                \"role\": \"system\",\n                \"content\": \"Extract complete recipe information from the provided image.\"\n            },\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    \"Please extract the detailed recipe information from this image:\",\n                    image\n                ]\n            }\n        ]\n    )\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 78,
-          "line_range": [
-            78,
             97
           ]
         },
@@ -10236,69 +9456,17 @@
           ],
           "target_line_range": [
             97,
-            104
+            125
           ]
         },
         {
-          "code": "def analyze_table_data(image_path: str):\n    \"\"\"Extract and analyze a table from an image.\"\"\"\n    table = extract_table_from_image(image_path)\n\n    print(f\"Table Caption: {table.caption}\")\n    print(\"\\nExtracted Table:\")\n    print(table.dataframe)\n\n",
-          "display_code": "def analyze_table_data(image_path: str):\n    \"\"\"Extract and analyze a table from an image.\"\"\"\n    table = extract_table_from_image(image_path)\n\n    print(f\"Table Caption: {table.caption}\")\n    print(\"\\nExtracted Table:\")\n    print(table.dataframe)\n\n",
+          "code": "def analyze_table_data(image_path: str):\n    \"\"\"Extract and analyze a table from an image.\"\"\"\n    table = extract_table_from_image(image_path)\n\n    print(f\"Table Caption: {table.caption}\")\n    print(\"\\nExtracted Table:\")\n    print(table.dataframe)\n\n    # Perform data analysis if it's a pandas DataFrame\n    if isinstance(table.dataframe, pd.DataFrame):\n        print(\"\\nData Analysis:\")\n        print(f\"- Rows: {len(table.dataframe)}\")\n        print(f\"- Columns: {len(table.dataframe.columns)}\")\n\n        # Basic statistics if numeric columns exist\n        numeric_cols = table.dataframe.select_dtypes(include=[\"number\"]).columns\n        if len(numeric_cols) > 0:\n            print(\"\\nNumeric Column Statistics:\")\n            for col in numeric_cols:\n                col_data = table.dataframe[col]\n                print(\n                    f\"- {col}: Min={col_data.min()}, Max={col_data.max()}, Mean={col_data.mean():.2f}\"\n                )\n\n        return table.dataframe\n\n    return None\n\n\n",
+          "display_code": "def analyze_table_data(image_path: str):\n    \"\"\"Extract and analyze a table from an image.\"\"\"\n    table = extract_table_from_image(image_path)\n\n    print(f\"Table Caption: {table.caption}\")\n    print(\"\\nExtracted Table:\")\n    print(table.dataframe)\n\n    # Perform data analysis if it's a pandas DataFrame\n    if isinstance(table.dataframe, pd.DataFrame):\n        print(\"\\nData Analysis:\")\n        print(f\"- Rows: {len(table.dataframe)}\")\n        print(f\"- Columns: {len(table.dataframe.columns)}\")\n\n        # Basic statistics if numeric columns exist\n        numeric_cols = table.dataframe.select_dtypes(include=[\"number\"]).columns\n        if len(numeric_cols) > 0:\n            print(\"\\nNumeric Column Statistics:\")\n            for col in numeric_cols:\n                col_data = table.dataframe[col]\n                print(\n                    f\"- {col}: Min={col_data.min()}, Max={col_data.max()}, Mean={col_data.mean():.2f}\"\n                )\n\n        return table.dataframe\n\n    return None\n\n\n",
           "annotation": "",
           "is_comment": false,
           "start_line": 97,
           "line_range": [
             97,
-            104
-          ]
-        },
-        {
-          "code": "    # Perform data analysis if it's a pandas DataFrame\n",
-          "display_code": "",
-          "annotation": "Perform data analysis if it's a pandas DataFrame",
-          "is_comment": true,
-          "start_line": 105,
-          "line_range": [
-            105,
-            105
-          ],
-          "target_line_range": [
-            106,
-            110
-          ]
-        },
-        {
-          "code": "    if isinstance(table.dataframe, pd.DataFrame):\n        print(\"\\nData Analysis:\")\n        print(f\"- Rows: {len(table.dataframe)}\")\n        print(f\"- Columns: {len(table.dataframe.columns)}\")\n\n",
-          "display_code": "    if isinstance(table.dataframe, pd.DataFrame):\n        print(\"\\nData Analysis:\")\n        print(f\"- Rows: {len(table.dataframe)}\")\n        print(f\"- Columns: {len(table.dataframe.columns)}\")\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 106,
-          "line_range": [
-            106,
-            110
-          ]
-        },
-        {
-          "code": "        # Basic statistics if numeric columns exist\n",
-          "display_code": "",
-          "annotation": "Basic statistics if numeric columns exist",
-          "is_comment": true,
-          "start_line": 111,
-          "line_range": [
-            111,
-            111
-          ],
-          "target_line_range": [
-            112,
-            125
-          ]
-        },
-        {
-          "code": "        numeric_cols = table.dataframe.select_dtypes(include=[\"number\"]).columns\n        if len(numeric_cols) > 0:\n            print(\"\\nNumeric Column Statistics:\")\n            for col in numeric_cols:\n                col_data = table.dataframe[col]\n                print(\n                    f\"- {col}: Min={col_data.min()}, Max={col_data.max()}, Mean={col_data.mean():.2f}\"\n                )\n\n        return table.dataframe\n\n    return None\n\n\n",
-          "display_code": "        numeric_cols = table.dataframe.select_dtypes(include=[\"number\"]).columns\n        if len(numeric_cols) > 0:\n            print(\"\\nNumeric Column Statistics:\")\n            for col in numeric_cols:\n                col_data = table.dataframe[col]\n                print(\n                    f\"- {col}: Min={col_data.min()}, Max={col_data.max()}, Mean={col_data.mean():.2f}\"\n                )\n\n        return table.dataframe\n\n    return None\n\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 112,
-          "line_range": [
-            112,
             125
           ]
         },
@@ -10507,43 +9675,17 @@
           ],
           "target_line_range": [
             22,
-            23
+            40
           ]
         },
         {
-          "code": "def transcribe_audio(audio_path: str) -> AudioTranscription:\n    \"\"\"Extract structured transcription from an audio file.\"\"\"\n",
-          "display_code": "def transcribe_audio(audio_path: str) -> AudioTranscription:\n    \"\"\"Extract structured transcription from an audio file.\"\"\"\n",
+          "code": "def transcribe_audio(audio_path: str) -> AudioTranscription:\n    \"\"\"Extract structured transcription from an audio file.\"\"\"\n    # Load the audio using Instructor's Audio class\n    audio = Audio.from_path(audio_path)\n\n    return client.chat.completions.create(\n        model=\"gpt-4o-audio-preview\",  # Audio-capable model\n        response_model=AudioTranscription,\n        messages=[\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    \"Transcribe this audio file and identify the speaker and language:\",\n                    audio  # The Audio object is handled automatically\n                ]\n            }\n        ]\n    )\n\n",
+          "display_code": "def transcribe_audio(audio_path: str) -> AudioTranscription:\n    \"\"\"Extract structured transcription from an audio file.\"\"\"\n    # Load the audio using Instructor's Audio class\n    audio = Audio.from_path(audio_path)\n\n    return client.chat.completions.create(\n        model=\"gpt-4o-audio-preview\",  # Audio-capable model\n        response_model=AudioTranscription,\n        messages=[\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    \"Transcribe this audio file and identify the speaker and language:\",\n                    audio  # The Audio object is handled automatically\n                ]\n            }\n        ]\n    )\n\n",
           "annotation": "",
           "is_comment": false,
           "start_line": 22,
           "line_range": [
             22,
-            23
-          ]
-        },
-        {
-          "code": "    # Load the audio using Instructor's Audio class\n",
-          "display_code": "",
-          "annotation": "Load the audio using Instructor's Audio class",
-          "is_comment": true,
-          "start_line": 24,
-          "line_range": [
-            24,
-            24
-          ],
-          "target_line_range": [
-            25,
-            40
-          ]
-        },
-        {
-          "code": "    audio = Audio.from_path(audio_path)\n\n    return client.chat.completions.create(\n        model=\"gpt-4o-audio-preview\",  # Audio-capable model\n        response_model=AudioTranscription,\n        messages=[\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    \"Transcribe this audio file and identify the speaker and language:\",\n                    audio  # The Audio object is handled automatically\n                ]\n            }\n        ]\n    )\n\n",
-          "display_code": "    audio = Audio.from_path(audio_path)\n\n    return client.chat.completions.create(\n        model=\"gpt-4o-audio-preview\",  # Audio-capable model\n        response_model=AudioTranscription,\n        messages=[\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    \"Transcribe this audio file and identify the speaker and language:\",\n                    audio  # The Audio object is handled automatically\n                ]\n            }\n        ]\n    )\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 25,
-          "line_range": [
-            25,
             40
           ]
         },
@@ -10908,121 +10050,17 @@
           ],
           "target_line_range": [
             28,
-            29
+            59
           ]
         },
         {
-          "code": "def extract_from_pdf_page(pdf_path: str, page_number: int = 0) -> Document:\n    \"\"\"Extract structured information from a PDF page.\"\"\"\n",
-          "display_code": "def extract_from_pdf_page(pdf_path: str, page_number: int = 0) -> Document:\n    \"\"\"Extract structured information from a PDF page.\"\"\"\n",
+          "code": "def extract_from_pdf_page(pdf_path: str, page_number: int = 0) -> Document:\n    \"\"\"Extract structured information from a PDF page.\"\"\"\n    # Convert the PDF page to an image\n    images = convert_from_path(pdf_path, first_page=page_number+1, last_page=page_number+1)\n\n    # Save the image to a temporary file\n    with tempfile.NamedTemporaryFile(suffix='.jpg', delete=False) as temp:\n        temp_path = temp.name\n        images[0].save(temp_path, 'JPEG')\n\n    # Create an Image object\n    image = instructor.Image.from_path(temp_path)\n\n    # Extract information using vision capabilities\n    return client.chat.completions.create(\n        model=\"gpt-4-vision-preview\",\n        response_model=Document,\n        messages=[\n            {\n                \"role\": \"system\",\n                \"content\": \"Extract structured information from this document page.\"\n            },\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    \"Extract the complete document structure from this page:\",\n                    image\n                ]\n            }\n        ]\n    )\n\n",
+          "display_code": "def extract_from_pdf_page(pdf_path: str, page_number: int = 0) -> Document:\n    \"\"\"Extract structured information from a PDF page.\"\"\"\n    # Convert the PDF page to an image\n    images = convert_from_path(pdf_path, first_page=page_number+1, last_page=page_number+1)\n\n    # Save the image to a temporary file\n    with tempfile.NamedTemporaryFile(suffix='.jpg', delete=False) as temp:\n        temp_path = temp.name\n        images[0].save(temp_path, 'JPEG')\n\n    # Create an Image object\n    image = instructor.Image.from_path(temp_path)\n\n    # Extract information using vision capabilities\n    return client.chat.completions.create(\n        model=\"gpt-4-vision-preview\",\n        response_model=Document,\n        messages=[\n            {\n                \"role\": \"system\",\n                \"content\": \"Extract structured information from this document page.\"\n            },\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    \"Extract the complete document structure from this page:\",\n                    image\n                ]\n            }\n        ]\n    )\n\n",
           "annotation": "",
           "is_comment": false,
           "start_line": 28,
           "line_range": [
             28,
-            29
-          ]
-        },
-        {
-          "code": "    # Convert the PDF page to an image\n",
-          "display_code": "",
-          "annotation": "Convert the PDF page to an image",
-          "is_comment": true,
-          "start_line": 30,
-          "line_range": [
-            30,
-            30
-          ],
-          "target_line_range": [
-            31,
-            32
-          ]
-        },
-        {
-          "code": "    images = convert_from_path(pdf_path, first_page=page_number+1, last_page=page_number+1)\n\n",
-          "display_code": "    images = convert_from_path(pdf_path, first_page=page_number+1, last_page=page_number+1)\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 31,
-          "line_range": [
-            31,
-            32
-          ]
-        },
-        {
-          "code": "    # Save the image to a temporary file\n",
-          "display_code": "",
-          "annotation": "Save the image to a temporary file",
-          "is_comment": true,
-          "start_line": 33,
-          "line_range": [
-            33,
-            33
-          ],
-          "target_line_range": [
-            34,
-            37
-          ]
-        },
-        {
-          "code": "    with tempfile.NamedTemporaryFile(suffix='.jpg', delete=False) as temp:\n        temp_path = temp.name\n        images[0].save(temp_path, 'JPEG')\n\n",
-          "display_code": "    with tempfile.NamedTemporaryFile(suffix='.jpg', delete=False) as temp:\n        temp_path = temp.name\n        images[0].save(temp_path, 'JPEG')\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 34,
-          "line_range": [
-            34,
-            37
-          ]
-        },
-        {
-          "code": "    # Create an Image object\n",
-          "display_code": "",
-          "annotation": "Create an Image object",
-          "is_comment": true,
-          "start_line": 38,
-          "line_range": [
-            38,
-            38
-          ],
-          "target_line_range": [
-            39,
-            40
-          ]
-        },
-        {
-          "code": "    image = instructor.Image.from_path(temp_path)\n\n",
-          "display_code": "    image = instructor.Image.from_path(temp_path)\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 39,
-          "line_range": [
-            39,
-            40
-          ]
-        },
-        {
-          "code": "    # Extract information using vision capabilities\n",
-          "display_code": "",
-          "annotation": "Extract information using vision capabilities",
-          "is_comment": true,
-          "start_line": 41,
-          "line_range": [
-            41,
-            41
-          ],
-          "target_line_range": [
-            42,
-            59
-          ]
-        },
-        {
-          "code": "    return client.chat.completions.create(\n        model=\"gpt-4-vision-preview\",\n        response_model=Document,\n        messages=[\n            {\n                \"role\": \"system\",\n                \"content\": \"Extract structured information from this document page.\"\n            },\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    \"Extract the complete document structure from this page:\",\n                    image\n                ]\n            }\n        ]\n    )\n\n",
-          "display_code": "    return client.chat.completions.create(\n        model=\"gpt-4-vision-preview\",\n        response_model=Document,\n        messages=[\n            {\n                \"role\": \"system\",\n                \"content\": \"Extract structured information from this document page.\"\n            },\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    \"Extract the complete document structure from this page:\",\n                    image\n                ]\n            }\n        ]\n    )\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 42,
-          "line_range": [
-            42,
             59
           ]
         },
@@ -11038,69 +10076,17 @@
           ],
           "target_line_range": [
             61,
-            64
+            78
           ]
         },
         {
-          "code": "def process_pdf_document(pdf_path: str, max_pages: int = 5) -> List[Document]:\n    \"\"\"Process multiple pages from a PDF document.\"\"\"\n    results = []\n\n",
-          "display_code": "def process_pdf_document(pdf_path: str, max_pages: int = 5) -> List[Document]:\n    \"\"\"Process multiple pages from a PDF document.\"\"\"\n    results = []\n\n",
+          "code": "def process_pdf_document(pdf_path: str, max_pages: int = 5) -> List[Document]:\n    \"\"\"Process multiple pages from a PDF document.\"\"\"\n    results = []\n\n    # Get the number of pages\n    from pypdf import PdfReader\n    reader = PdfReader(pdf_path)\n    num_pages = len(reader.pages)\n    actual_pages = min(num_pages, max_pages)\n\n    # Process each page\n    for i in range(actual_pages):\n        page_result = extract_from_pdf_page(pdf_path, i)\n        results.append(page_result)\n        print(f\"Processed page {i+1}/{actual_pages}\")\n\n    return results\n\n",
+          "display_code": "def process_pdf_document(pdf_path: str, max_pages: int = 5) -> List[Document]:\n    \"\"\"Process multiple pages from a PDF document.\"\"\"\n    results = []\n\n    # Get the number of pages\n    from pypdf import PdfReader\n    reader = PdfReader(pdf_path)\n    num_pages = len(reader.pages)\n    actual_pages = min(num_pages, max_pages)\n\n    # Process each page\n    for i in range(actual_pages):\n        page_result = extract_from_pdf_page(pdf_path, i)\n        results.append(page_result)\n        print(f\"Processed page {i+1}/{actual_pages}\")\n\n    return results\n\n",
           "annotation": "",
           "is_comment": false,
           "start_line": 61,
           "line_range": [
             61,
-            64
-          ]
-        },
-        {
-          "code": "    # Get the number of pages\n",
-          "display_code": "",
-          "annotation": "Get the number of pages",
-          "is_comment": true,
-          "start_line": 65,
-          "line_range": [
-            65,
-            65
-          ],
-          "target_line_range": [
-            66,
-            70
-          ]
-        },
-        {
-          "code": "    from pypdf import PdfReader\n    reader = PdfReader(pdf_path)\n    num_pages = len(reader.pages)\n    actual_pages = min(num_pages, max_pages)\n\n",
-          "display_code": "    from pypdf import PdfReader\n    reader = PdfReader(pdf_path)\n    num_pages = len(reader.pages)\n    actual_pages = min(num_pages, max_pages)\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 66,
-          "line_range": [
-            66,
-            70
-          ]
-        },
-        {
-          "code": "    # Process each page\n",
-          "display_code": "",
-          "annotation": "Process each page",
-          "is_comment": true,
-          "start_line": 71,
-          "line_range": [
-            71,
-            71
-          ],
-          "target_line_range": [
-            72,
-            78
-          ]
-        },
-        {
-          "code": "    for i in range(actual_pages):\n        page_result = extract_from_pdf_page(pdf_path, i)\n        results.append(page_result)\n        print(f\"Processed page {i+1}/{actual_pages}\")\n\n    return results\n\n",
-          "display_code": "    for i in range(actual_pages):\n        page_result = extract_from_pdf_page(pdf_path, i)\n        results.append(page_result)\n        print(f\"Processed page {i+1}/{actual_pages}\")\n\n    return results\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 72,
-          "line_range": [
-            72,
             78
           ]
         },
@@ -11220,121 +10206,17 @@
           ],
           "target_line_range": [
             110,
-            111
+            141
           ]
         },
         {
-          "code": "def extract_invoice(pdf_path: str) -> Invoice:\n    \"\"\"Extract structured invoice data from a PDF.\"\"\"\n",
-          "display_code": "def extract_invoice(pdf_path: str) -> Invoice:\n    \"\"\"Extract structured invoice data from a PDF.\"\"\"\n",
+          "code": "def extract_invoice(pdf_path: str) -> Invoice:\n    \"\"\"Extract structured invoice data from a PDF.\"\"\"\n    # Convert first page to image\n    images = convert_from_path(pdf_path, first_page=1, last_page=1)\n\n    # Save to temp file\n    with tempfile.NamedTemporaryFile(suffix='.jpg', delete=False) as temp:\n        temp_path = temp.name\n        images[0].save(temp_path, 'JPEG')\n\n    # Create image object\n    image = instructor.Image.from_path(temp_path)\n\n    # Extract invoice data\n    return client.chat.completions.create(\n        model=\"gpt-4-vision-preview\",\n        response_model=Invoice,\n        messages=[\n            {\n                \"role\": \"system\",\n                \"content\": \"You are an invoice processing assistant that extracts structured data from invoice images.\"\n            },\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    \"Extract complete invoice details from this document:\",\n                    image\n                ]\n            }\n        ]\n    )\n\n",
+          "display_code": "def extract_invoice(pdf_path: str) -> Invoice:\n    \"\"\"Extract structured invoice data from a PDF.\"\"\"\n    # Convert first page to image\n    images = convert_from_path(pdf_path, first_page=1, last_page=1)\n\n    # Save to temp file\n    with tempfile.NamedTemporaryFile(suffix='.jpg', delete=False) as temp:\n        temp_path = temp.name\n        images[0].save(temp_path, 'JPEG')\n\n    # Create image object\n    image = instructor.Image.from_path(temp_path)\n\n    # Extract invoice data\n    return client.chat.completions.create(\n        model=\"gpt-4-vision-preview\",\n        response_model=Invoice,\n        messages=[\n            {\n                \"role\": \"system\",\n                \"content\": \"You are an invoice processing assistant that extracts structured data from invoice images.\"\n            },\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    \"Extract complete invoice details from this document:\",\n                    image\n                ]\n            }\n        ]\n    )\n\n",
           "annotation": "",
           "is_comment": false,
           "start_line": 110,
           "line_range": [
             110,
-            111
-          ]
-        },
-        {
-          "code": "    # Convert first page to image\n",
-          "display_code": "",
-          "annotation": "Convert first page to image",
-          "is_comment": true,
-          "start_line": 112,
-          "line_range": [
-            112,
-            112
-          ],
-          "target_line_range": [
-            113,
-            114
-          ]
-        },
-        {
-          "code": "    images = convert_from_path(pdf_path, first_page=1, last_page=1)\n\n",
-          "display_code": "    images = convert_from_path(pdf_path, first_page=1, last_page=1)\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 113,
-          "line_range": [
-            113,
-            114
-          ]
-        },
-        {
-          "code": "    # Save to temp file\n",
-          "display_code": "",
-          "annotation": "Save to temp file",
-          "is_comment": true,
-          "start_line": 115,
-          "line_range": [
-            115,
-            115
-          ],
-          "target_line_range": [
-            116,
-            119
-          ]
-        },
-        {
-          "code": "    with tempfile.NamedTemporaryFile(suffix='.jpg', delete=False) as temp:\n        temp_path = temp.name\n        images[0].save(temp_path, 'JPEG')\n\n",
-          "display_code": "    with tempfile.NamedTemporaryFile(suffix='.jpg', delete=False) as temp:\n        temp_path = temp.name\n        images[0].save(temp_path, 'JPEG')\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 116,
-          "line_range": [
-            116,
-            119
-          ]
-        },
-        {
-          "code": "    # Create image object\n",
-          "display_code": "",
-          "annotation": "Create image object",
-          "is_comment": true,
-          "start_line": 120,
-          "line_range": [
-            120,
-            120
-          ],
-          "target_line_range": [
-            121,
-            122
-          ]
-        },
-        {
-          "code": "    image = instructor.Image.from_path(temp_path)\n\n",
-          "display_code": "    image = instructor.Image.from_path(temp_path)\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 121,
-          "line_range": [
-            121,
-            122
-          ]
-        },
-        {
-          "code": "    # Extract invoice data\n",
-          "display_code": "",
-          "annotation": "Extract invoice data",
-          "is_comment": true,
-          "start_line": 123,
-          "line_range": [
-            123,
-            123
-          ],
-          "target_line_range": [
-            124,
-            141
-          ]
-        },
-        {
-          "code": "    return client.chat.completions.create(\n        model=\"gpt-4-vision-preview\",\n        response_model=Invoice,\n        messages=[\n            {\n                \"role\": \"system\",\n                \"content\": \"You are an invoice processing assistant that extracts structured data from invoice images.\"\n            },\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    \"Extract complete invoice details from this document:\",\n                    image\n                ]\n            }\n        ]\n    )\n\n",
-          "display_code": "    return client.chat.completions.create(\n        model=\"gpt-4-vision-preview\",\n        response_model=Invoice,\n        messages=[\n            {\n                \"role\": \"system\",\n                \"content\": \"You are an invoice processing assistant that extracts structured data from invoice images.\"\n            },\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    \"Extract complete invoice details from this document:\",\n                    image\n                ]\n            }\n        ]\n    )\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 124,
-          "line_range": [
-            124,
             141
           ]
         },
@@ -11673,121 +10555,17 @@
           ],
           "target_line_range": [
             57,
-            64
+            81
           ]
         },
         {
-          "code": "def instructor_cache(func):\n    \"\"\"Cache a function that returns a Pydantic model.\"\"\"\n    return_type = inspect.signature(func).return_annotation\n    if not issubclass(return_type, BaseModel):\n        raise ValueError(\"The return type must be a Pydantic model\")\n\n    @functools.wraps(func)\n    def wrapper(*args, **kwargs):\n",
-          "display_code": "def instructor_cache(func):\n    \"\"\"Cache a function that returns a Pydantic model.\"\"\"\n    return_type = inspect.signature(func).return_annotation\n    if not issubclass(return_type, BaseModel):\n        raise ValueError(\"The return type must be a Pydantic model\")\n\n    @functools.wraps(func)\n    def wrapper(*args, **kwargs):\n",
+          "code": "def instructor_cache(func):\n    \"\"\"Cache a function that returns a Pydantic model.\"\"\"\n    return_type = inspect.signature(func).return_annotation\n    if not issubclass(return_type, BaseModel):\n        raise ValueError(\"The return type must be a Pydantic model\")\n\n    @functools.wraps(func)\n    def wrapper(*args, **kwargs):\n        # Create a cache key from the function name and arguments\n        key = f\"{func.__name__}-{functools._make_key(args, kwargs, typed=False)}\"\n\n        # Check if result is already cached\n        if (cached := cache.get(key)) is not None:\n            # Deserialize from JSON based on the return type\n            return return_type.model_validate_json(cached)\n\n        # Call the function and cache its result\n        result = func(*args, **kwargs)\n        serialized_result = result.model_dump_json()\n        cache.set(key, serialized_result)\n\n        return result\n\n    return wrapper\n\n",
+          "display_code": "def instructor_cache(func):\n    \"\"\"Cache a function that returns a Pydantic model.\"\"\"\n    return_type = inspect.signature(func).return_annotation\n    if not issubclass(return_type, BaseModel):\n        raise ValueError(\"The return type must be a Pydantic model\")\n\n    @functools.wraps(func)\n    def wrapper(*args, **kwargs):\n        # Create a cache key from the function name and arguments\n        key = f\"{func.__name__}-{functools._make_key(args, kwargs, typed=False)}\"\n\n        # Check if result is already cached\n        if (cached := cache.get(key)) is not None:\n            # Deserialize from JSON based on the return type\n            return return_type.model_validate_json(cached)\n\n        # Call the function and cache its result\n        result = func(*args, **kwargs)\n        serialized_result = result.model_dump_json()\n        cache.set(key, serialized_result)\n\n        return result\n\n    return wrapper\n\n",
           "annotation": "",
           "is_comment": false,
           "start_line": 57,
           "line_range": [
             57,
-            64
-          ]
-        },
-        {
-          "code": "        # Create a cache key from the function name and arguments\n",
-          "display_code": "",
-          "annotation": "Create a cache key from the function name and arguments",
-          "is_comment": true,
-          "start_line": 65,
-          "line_range": [
-            65,
-            65
-          ],
-          "target_line_range": [
-            66,
-            67
-          ]
-        },
-        {
-          "code": "        key = f\"{func.__name__}-{functools._make_key(args, kwargs, typed=False)}\"\n\n",
-          "display_code": "        key = f\"{func.__name__}-{functools._make_key(args, kwargs, typed=False)}\"\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 66,
-          "line_range": [
-            66,
-            67
-          ]
-        },
-        {
-          "code": "        # Check if result is already cached\n",
-          "display_code": "",
-          "annotation": "Check if result is already cached",
-          "is_comment": true,
-          "start_line": 68,
-          "line_range": [
-            68,
-            68
-          ],
-          "target_line_range": [
-            69,
-            69
-          ]
-        },
-        {
-          "code": "        if (cached := cache.get(key)) is not None:\n",
-          "display_code": "        if (cached := cache.get(key)) is not None:\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 69,
-          "line_range": [
-            69,
-            69
-          ]
-        },
-        {
-          "code": "            # Deserialize from JSON based on the return type\n",
-          "display_code": "",
-          "annotation": "Deserialize from JSON based on the return type",
-          "is_comment": true,
-          "start_line": 70,
-          "line_range": [
-            70,
-            70
-          ],
-          "target_line_range": [
-            71,
-            72
-          ]
-        },
-        {
-          "code": "            return return_type.model_validate_json(cached)\n\n",
-          "display_code": "            return return_type.model_validate_json(cached)\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 71,
-          "line_range": [
-            71,
-            72
-          ]
-        },
-        {
-          "code": "        # Call the function and cache its result\n",
-          "display_code": "",
-          "annotation": "Call the function and cache its result",
-          "is_comment": true,
-          "start_line": 73,
-          "line_range": [
-            73,
-            73
-          ],
-          "target_line_range": [
-            74,
-            81
-          ]
-        },
-        {
-          "code": "        result = func(*args, **kwargs)\n        serialized_result = result.model_dump_json()\n        cache.set(key, serialized_result)\n\n        return result\n\n    return wrapper\n\n",
-          "display_code": "        result = func(*args, **kwargs)\n        serialized_result = result.model_dump_json()\n        cache.set(key, serialized_result)\n\n        return result\n\n    return wrapper\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 74,
-          "line_range": [
-            74,
             81
           ]
         },
@@ -11959,121 +10737,17 @@
           ],
           "target_line_range": [
             122,
-            129
+            146
           ]
         },
         {
-          "code": "def redis_cache(func):\n    \"\"\"Cache a function that returns a Pydantic model using Redis.\"\"\"\n    return_type = inspect.signature(func).return_annotation\n    if not issubclass(return_type, BaseModel):\n        raise ValueError(\"The return type must be a Pydantic model\")\n\n    @functools.wraps(func)\n    def wrapper(*args, **kwargs):\n",
-          "display_code": "def redis_cache(func):\n    \"\"\"Cache a function that returns a Pydantic model using Redis.\"\"\"\n    return_type = inspect.signature(func).return_annotation\n    if not issubclass(return_type, BaseModel):\n        raise ValueError(\"The return type must be a Pydantic model\")\n\n    @functools.wraps(func)\n    def wrapper(*args, **kwargs):\n",
+          "code": "def redis_cache(func):\n    \"\"\"Cache a function that returns a Pydantic model using Redis.\"\"\"\n    return_type = inspect.signature(func).return_annotation\n    if not issubclass(return_type, BaseModel):\n        raise ValueError(\"The return type must be a Pydantic model\")\n\n    @functools.wraps(func)\n    def wrapper(*args, **kwargs):\n        # Create a cache key from the function name and arguments\n        key = f\"{func.__name__}-{functools._make_key(args, kwargs, typed=False)}\"\n\n        # Check if result is already cached\n        if (cached := cache.get(key)) is not None:\n            # Deserialize from JSON based on the return type\n            return return_type.model_validate_json(cached)\n\n        # Call the function and cache its result\n        result = func(*args, **kwargs)\n        serialized_result = result.model_dump_json()\n        cache.set(key, serialized_result)\n\n        return result\n\n    return wrapper\n\n",
+          "display_code": "def redis_cache(func):\n    \"\"\"Cache a function that returns a Pydantic model using Redis.\"\"\"\n    return_type = inspect.signature(func).return_annotation\n    if not issubclass(return_type, BaseModel):\n        raise ValueError(\"The return type must be a Pydantic model\")\n\n    @functools.wraps(func)\n    def wrapper(*args, **kwargs):\n        # Create a cache key from the function name and arguments\n        key = f\"{func.__name__}-{functools._make_key(args, kwargs, typed=False)}\"\n\n        # Check if result is already cached\n        if (cached := cache.get(key)) is not None:\n            # Deserialize from JSON based on the return type\n            return return_type.model_validate_json(cached)\n\n        # Call the function and cache its result\n        result = func(*args, **kwargs)\n        serialized_result = result.model_dump_json()\n        cache.set(key, serialized_result)\n\n        return result\n\n    return wrapper\n\n",
           "annotation": "",
           "is_comment": false,
           "start_line": 122,
           "line_range": [
             122,
-            129
-          ]
-        },
-        {
-          "code": "        # Create a cache key from the function name and arguments\n",
-          "display_code": "",
-          "annotation": "Create a cache key from the function name and arguments",
-          "is_comment": true,
-          "start_line": 130,
-          "line_range": [
-            130,
-            130
-          ],
-          "target_line_range": [
-            131,
-            132
-          ]
-        },
-        {
-          "code": "        key = f\"{func.__name__}-{functools._make_key(args, kwargs, typed=False)}\"\n\n",
-          "display_code": "        key = f\"{func.__name__}-{functools._make_key(args, kwargs, typed=False)}\"\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 131,
-          "line_range": [
-            131,
-            132
-          ]
-        },
-        {
-          "code": "        # Check if result is already cached\n",
-          "display_code": "",
-          "annotation": "Check if result is already cached",
-          "is_comment": true,
-          "start_line": 133,
-          "line_range": [
-            133,
-            133
-          ],
-          "target_line_range": [
-            134,
-            134
-          ]
-        },
-        {
-          "code": "        if (cached := cache.get(key)) is not None:\n",
-          "display_code": "        if (cached := cache.get(key)) is not None:\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 134,
-          "line_range": [
-            134,
-            134
-          ]
-        },
-        {
-          "code": "            # Deserialize from JSON based on the return type\n",
-          "display_code": "",
-          "annotation": "Deserialize from JSON based on the return type",
-          "is_comment": true,
-          "start_line": 135,
-          "line_range": [
-            135,
-            135
-          ],
-          "target_line_range": [
-            136,
-            137
-          ]
-        },
-        {
-          "code": "            return return_type.model_validate_json(cached)\n\n",
-          "display_code": "            return return_type.model_validate_json(cached)\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 136,
-          "line_range": [
-            136,
-            137
-          ]
-        },
-        {
-          "code": "        # Call the function and cache its result\n",
-          "display_code": "",
-          "annotation": "Call the function and cache its result",
-          "is_comment": true,
-          "start_line": 138,
-          "line_range": [
-            138,
-            138
-          ],
-          "target_line_range": [
-            139,
-            146
-          ]
-        },
-        {
-          "code": "        result = func(*args, **kwargs)\n        serialized_result = result.model_dump_json()\n        cache.set(key, serialized_result)\n\n        return result\n\n    return wrapper\n\n",
-          "display_code": "        result = func(*args, **kwargs)\n        serialized_result = result.model_dump_json()\n        cache.set(key, serialized_result)\n\n        return result\n\n    return wrapper\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 139,
-          "line_range": [
-            139,
             146
           ]
         }
@@ -12334,95 +11008,17 @@
           ],
           "target_line_range": [
             88,
-            106
+            134
           ]
         },
         {
-          "code": "def extract_entities(text: str) -> List[Union[Person, Company, Location]]:\n    \"\"\"\n    Extract multiple entity types from a text simultaneously.\n    \n    This function identifies and structures information about people,\n    companies, and locations from unstructured text in a single pass.\n    \"\"\"\n    results = client.chat.completions.create(\n        model=\"gpt-4-turbo\",\n        messages=[\n            {\"role\": \"system\", \"content\": \"Extract all relevant entities from the text.\"},\n            {\"role\": \"user\", \"content\": text}\n        ],\n        response_model=Iterable[Person | Company | Location]\n    )\n\n    return list(results)\n\ndef demonstrate_entity_extraction():\n",
-          "display_code": "def extract_entities(text: str) -> List[Union[Person, Company, Location]]:\n    \"\"\"\n    Extract multiple entity types from a text simultaneously.\n    \n    This function identifies and structures information about people,\n    companies, and locations from unstructured text in a single pass.\n    \"\"\"\n    results = client.chat.completions.create(\n        model=\"gpt-4-turbo\",\n        messages=[\n            {\"role\": \"system\", \"content\": \"Extract all relevant entities from the text.\"},\n            {\"role\": \"user\", \"content\": text}\n        ],\n        response_model=Iterable[Person | Company | Location]\n    )\n\n    return list(results)\n\ndef demonstrate_entity_extraction():\n",
+          "code": "def extract_entities(text: str) -> List[Union[Person, Company, Location]]:\n    \"\"\"\n    Extract multiple entity types from a text simultaneously.\n    \n    This function identifies and structures information about people,\n    companies, and locations from unstructured text in a single pass.\n    \"\"\"\n    results = client.chat.completions.create(\n        model=\"gpt-4-turbo\",\n        messages=[\n            {\"role\": \"system\", \"content\": \"Extract all relevant entities from the text.\"},\n            {\"role\": \"user\", \"content\": text}\n        ],\n        response_model=Iterable[Person | Company | Location]\n    )\n\n    return list(results)\n\ndef demonstrate_entity_extraction():\n    # Sample text containing multiple entity types\n    text = \"\"\"\n    John Smith is a 35-year-old software engineer living in San Francisco, USA,\n    a city with about 815,000 people. He works at TechCorp, a software development\n    company founded in 2005 that specializes in AI applications. His colleague\n    Maria Rodriguez, 29, is a data scientist who recently moved from Madrid, Spain,\n    a city of approximately 3.2 million people.\n    \"\"\"\n\n    entities = extract_entities(text)\n\n    # Process different entity types\n    people = [e for e in entities if isinstance(e, Person)]\n    companies = [e for e in entities if isinstance(e, Company)]\n    locations = [e for e in entities if isinstance(e, Location)]\n\n    print(f\"Found {len(people)} people, {len(companies)} companies, and {len(locations)} locations\")\n    \n    # Display extracted entities\n    for person in people:\n        print(f\"Person: {person.name}, {person.age}, {person.occupation}\")\n    \n    for company in companies:\n        print(f\"Company: {company.name}, {company.industry}, founded in {company.year_founded}\")\n    \n    for location in locations:\n        print(f\"Location: {location.city}, {location.country}, pop. {location.population}\")\n\n",
+          "display_code": "def extract_entities(text: str) -> List[Union[Person, Company, Location]]:\n    \"\"\"\n    Extract multiple entity types from a text simultaneously.\n    \n    This function identifies and structures information about people,\n    companies, and locations from unstructured text in a single pass.\n    \"\"\"\n    results = client.chat.completions.create(\n        model=\"gpt-4-turbo\",\n        messages=[\n            {\"role\": \"system\", \"content\": \"Extract all relevant entities from the text.\"},\n            {\"role\": \"user\", \"content\": text}\n        ],\n        response_model=Iterable[Person | Company | Location]\n    )\n\n    return list(results)\n\ndef demonstrate_entity_extraction():\n    # Sample text containing multiple entity types\n    text = \"\"\"\n    John Smith is a 35-year-old software engineer living in San Francisco, USA,\n    a city with about 815,000 people. He works at TechCorp, a software development\n    company founded in 2005 that specializes in AI applications. His colleague\n    Maria Rodriguez, 29, is a data scientist who recently moved from Madrid, Spain,\n    a city of approximately 3.2 million people.\n    \"\"\"\n\n    entities = extract_entities(text)\n\n    # Process different entity types\n    people = [e for e in entities if isinstance(e, Person)]\n    companies = [e for e in entities if isinstance(e, Company)]\n    locations = [e for e in entities if isinstance(e, Location)]\n\n    print(f\"Found {len(people)} people, {len(companies)} companies, and {len(locations)} locations\")\n    \n    # Display extracted entities\n    for person in people:\n        print(f\"Person: {person.name}, {person.age}, {person.occupation}\")\n    \n    for company in companies:\n        print(f\"Company: {company.name}, {company.industry}, founded in {company.year_founded}\")\n    \n    for location in locations:\n        print(f\"Location: {location.city}, {location.country}, pop. {location.population}\")\n\n",
           "annotation": "",
           "is_comment": false,
           "start_line": 88,
           "line_range": [
             88,
-            106
-          ]
-        },
-        {
-          "code": "    # Sample text containing multiple entity types\n",
-          "display_code": "",
-          "annotation": "Sample text containing multiple entity types",
-          "is_comment": true,
-          "start_line": 107,
-          "line_range": [
-            107,
-            107
-          ],
-          "target_line_range": [
-            108,
-            117
-          ]
-        },
-        {
-          "code": "    text = \"\"\"\n    John Smith is a 35-year-old software engineer living in San Francisco, USA,\n    a city with about 815,000 people. He works at TechCorp, a software development\n    company founded in 2005 that specializes in AI applications. His colleague\n    Maria Rodriguez, 29, is a data scientist who recently moved from Madrid, Spain,\n    a city of approximately 3.2 million people.\n    \"\"\"\n\n    entities = extract_entities(text)\n\n",
-          "display_code": "    text = \"\"\"\n    John Smith is a 35-year-old software engineer living in San Francisco, USA,\n    a city with about 815,000 people. He works at TechCorp, a software development\n    company founded in 2005 that specializes in AI applications. His colleague\n    Maria Rodriguez, 29, is a data scientist who recently moved from Madrid, Spain,\n    a city of approximately 3.2 million people.\n    \"\"\"\n\n    entities = extract_entities(text)\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 108,
-          "line_range": [
-            108,
-            117
-          ]
-        },
-        {
-          "code": "    # Process different entity types\n",
-          "display_code": "",
-          "annotation": "Process different entity types",
-          "is_comment": true,
-          "start_line": 118,
-          "line_range": [
-            118,
-            118
-          ],
-          "target_line_range": [
-            119,
-            124
-          ]
-        },
-        {
-          "code": "    people = [e for e in entities if isinstance(e, Person)]\n    companies = [e for e in entities if isinstance(e, Company)]\n    locations = [e for e in entities if isinstance(e, Location)]\n\n    print(f\"Found {len(people)} people, {len(companies)} companies, and {len(locations)} locations\")\n    \n",
-          "display_code": "    people = [e for e in entities if isinstance(e, Person)]\n    companies = [e for e in entities if isinstance(e, Company)]\n    locations = [e for e in entities if isinstance(e, Location)]\n\n    print(f\"Found {len(people)} people, {len(companies)} companies, and {len(locations)} locations\")\n    \n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 119,
-          "line_range": [
-            119,
-            124
-          ]
-        },
-        {
-          "code": "    # Display extracted entities\n",
-          "display_code": "",
-          "annotation": "Display extracted entities",
-          "is_comment": true,
-          "start_line": 125,
-          "line_range": [
-            125,
-            125
-          ],
-          "target_line_range": [
-            126,
-            134
-          ]
-        },
-        {
-          "code": "    for person in people:\n        print(f\"Person: {person.name}, {person.age}, {person.occupation}\")\n    \n    for company in companies:\n        print(f\"Company: {company.name}, {company.industry}, founded in {company.year_founded}\")\n    \n    for location in locations:\n        print(f\"Location: {location.city}, {location.country}, pop. {location.population}\")\n\n",
-          "display_code": "    for person in people:\n        print(f\"Person: {person.name}, {person.age}, {person.occupation}\")\n    \n    for company in companies:\n        print(f\"Company: {company.name}, {company.industry}, founded in {company.year_founded}\")\n    \n    for location in locations:\n        print(f\"Location: {location.city}, {location.country}, pop. {location.population}\")\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 126,
-          "line_range": [
-            126,
             134
           ]
         },
@@ -12657,43 +11253,17 @@
           ],
           "target_line_range": [
             40,
-            42
+            55
           ]
         },
         {
-          "code": "async def process_batch(texts: List[str]):\n    tasks = [analyze_sentiment(text) for text in texts]  # Create tasks for all texts\n\n",
-          "display_code": "async def process_batch(texts: List[str]):\n    tasks = [analyze_sentiment(text) for text in texts]  # Create tasks for all texts\n\n",
+          "code": "async def process_batch(texts: List[str]):\n    tasks = [analyze_sentiment(text) for text in texts]  # Create tasks for all texts\n\n    # Collect results as tasks complete (in any order)\n    results = []\n    for task in asyncio.as_completed(tasks):\n        original_text, sentiment = await task\n        results.append({\n            \"text\": original_text,\n            \"sentiment\": sentiment.sentiment,\n            \"confidence\": sentiment.confidence,\n            \"reasoning\": sentiment.reasoning\n        })\n\n    return results\n\n",
+          "display_code": "async def process_batch(texts: List[str]):\n    tasks = [analyze_sentiment(text) for text in texts]  # Create tasks for all texts\n\n    # Collect results as tasks complete (in any order)\n    results = []\n    for task in asyncio.as_completed(tasks):\n        original_text, sentiment = await task\n        results.append({\n            \"text\": original_text,\n            \"sentiment\": sentiment.sentiment,\n            \"confidence\": sentiment.confidence,\n            \"reasoning\": sentiment.reasoning\n        })\n\n    return results\n\n",
           "annotation": "",
           "is_comment": false,
           "start_line": 40,
           "line_range": [
             40,
-            42
-          ]
-        },
-        {
-          "code": "    # Collect results as tasks complete (in any order)\n",
-          "display_code": "",
-          "annotation": "Collect results as tasks complete (in any order)",
-          "is_comment": true,
-          "start_line": 43,
-          "line_range": [
-            43,
-            43
-          ],
-          "target_line_range": [
-            44,
-            55
-          ]
-        },
-        {
-          "code": "    results = []\n    for task in asyncio.as_completed(tasks):\n        original_text, sentiment = await task\n        results.append({\n            \"text\": original_text,\n            \"sentiment\": sentiment.sentiment,\n            \"confidence\": sentiment.confidence,\n            \"reasoning\": sentiment.reasoning\n        })\n\n    return results\n\n",
-          "display_code": "    results = []\n    for task in asyncio.as_completed(tasks):\n        original_text, sentiment = await task\n        results.append({\n            \"text\": original_text,\n            \"sentiment\": sentiment.sentiment,\n            \"confidence\": sentiment.confidence,\n            \"reasoning\": sentiment.reasoning\n        })\n\n    return results\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 44,
-          "line_range": [
-            44,
             55
           ]
         },
@@ -12891,121 +11461,17 @@
           ],
           "target_line_range": [
             151,
-            153
+            175
           ]
         },
         {
-          "code": "    for i in range(0, total, chunk_size):\n        chunk = items[i:i+chunk_size]\n\n",
-          "display_code": "    for i in range(0, total, chunk_size):\n        chunk = items[i:i+chunk_size]\n\n",
+          "code": "    for i in range(0, total, chunk_size):\n        chunk = items[i:i+chunk_size]\n\n        # Create rate-limited processing function\n        async def process_with_sem(item):\n            async with sem:\n                return await process_item(item)\n\n        # Process current chunk of items\n        tasks = [process_with_sem(item) for item in chunk]\n        chunk_results = await asyncio.gather(*tasks)\n        results.extend(chunk_results)\n\n        # Track and display progress\n        processed += len(chunk)\n        print(f\"Progress: {processed}/{total} ({processed/total*100:.1f}%)\")\n\n        # Save intermediate results to prevent data loss\n        if output_file:\n            with open(output_file, \"a\") as f:\n                for result in chunk_results:\n                    f.write(json.dumps(result) + \"\\n\")\n\n    return results\n\n",
+          "display_code": "    for i in range(0, total, chunk_size):\n        chunk = items[i:i+chunk_size]\n\n        # Create rate-limited processing function\n        async def process_with_sem(item):\n            async with sem:\n                return await process_item(item)\n\n        # Process current chunk of items\n        tasks = [process_with_sem(item) for item in chunk]\n        chunk_results = await asyncio.gather(*tasks)\n        results.extend(chunk_results)\n\n        # Track and display progress\n        processed += len(chunk)\n        print(f\"Progress: {processed}/{total} ({processed/total*100:.1f}%)\")\n\n        # Save intermediate results to prevent data loss\n        if output_file:\n            with open(output_file, \"a\") as f:\n                for result in chunk_results:\n                    f.write(json.dumps(result) + \"\\n\")\n\n    return results\n\n",
           "annotation": "",
           "is_comment": false,
           "start_line": 151,
           "line_range": [
             151,
-            153
-          ]
-        },
-        {
-          "code": "        # Create rate-limited processing function\n",
-          "display_code": "",
-          "annotation": "Create rate-limited processing function",
-          "is_comment": true,
-          "start_line": 154,
-          "line_range": [
-            154,
-            154
-          ],
-          "target_line_range": [
-            155,
-            158
-          ]
-        },
-        {
-          "code": "        async def process_with_sem(item):\n            async with sem:\n                return await process_item(item)\n\n",
-          "display_code": "        async def process_with_sem(item):\n            async with sem:\n                return await process_item(item)\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 155,
-          "line_range": [
-            155,
-            158
-          ]
-        },
-        {
-          "code": "        # Process current chunk of items\n",
-          "display_code": "",
-          "annotation": "Process current chunk of items",
-          "is_comment": true,
-          "start_line": 159,
-          "line_range": [
-            159,
-            159
-          ],
-          "target_line_range": [
-            160,
-            163
-          ]
-        },
-        {
-          "code": "        tasks = [process_with_sem(item) for item in chunk]\n        chunk_results = await asyncio.gather(*tasks)\n        results.extend(chunk_results)\n\n",
-          "display_code": "        tasks = [process_with_sem(item) for item in chunk]\n        chunk_results = await asyncio.gather(*tasks)\n        results.extend(chunk_results)\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 160,
-          "line_range": [
-            160,
-            163
-          ]
-        },
-        {
-          "code": "        # Track and display progress\n",
-          "display_code": "",
-          "annotation": "Track and display progress",
-          "is_comment": true,
-          "start_line": 164,
-          "line_range": [
-            164,
-            164
-          ],
-          "target_line_range": [
-            165,
-            167
-          ]
-        },
-        {
-          "code": "        processed += len(chunk)\n        print(f\"Progress: {processed}/{total} ({processed/total*100:.1f}%)\")\n\n",
-          "display_code": "        processed += len(chunk)\n        print(f\"Progress: {processed}/{total} ({processed/total*100:.1f}%)\")\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 165,
-          "line_range": [
-            165,
-            167
-          ]
-        },
-        {
-          "code": "        # Save intermediate results to prevent data loss\n",
-          "display_code": "",
-          "annotation": "Save intermediate results to prevent data loss",
-          "is_comment": true,
-          "start_line": 168,
-          "line_range": [
-            168,
-            168
-          ],
-          "target_line_range": [
-            169,
-            175
-          ]
-        },
-        {
-          "code": "        if output_file:\n            with open(output_file, \"a\") as f:\n                for result in chunk_results:\n                    f.write(json.dumps(result) + \"\\n\")\n\n    return results\n\n",
-          "display_code": "        if output_file:\n            with open(output_file, \"a\") as f:\n                for result in chunk_results:\n                    f.write(json.dumps(result) + \"\\n\")\n\n    return results\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 169,
-          "line_range": [
-            169,
             175
           ]
         },
@@ -13021,69 +11487,17 @@
           ],
           "target_line_range": [
             177,
-            177
+            191
           ]
         },
         {
-          "code": "async def main():\n",
-          "display_code": "async def main():\n",
+          "code": "async def main():\n    # Test with sample feedback data\n    feedback_items = [\n        \"Your app crashes every time I try to upload a photo. Please fix this ASAP!\",\n        \"I love the new dark mode feature. It makes the app much easier on the eyes.\",\n        \"The checkout process is too complicated. I gave up trying to make a purchase.\",\n        \"Your customer service rep was very helpful in resolving my issue.\"\n        # Examples of different types of feedback\n    ]\n\n    results = await batch_process(\n        items=feedback_items,\n        output_file=\"feedback_results.jsonl\"\n    )\n\n",
+          "display_code": "async def main():\n    # Test with sample feedback data\n    feedback_items = [\n        \"Your app crashes every time I try to upload a photo. Please fix this ASAP!\",\n        \"I love the new dark mode feature. It makes the app much easier on the eyes.\",\n        \"The checkout process is too complicated. I gave up trying to make a purchase.\",\n        \"Your customer service rep was very helpful in resolving my issue.\"\n        # Examples of different types of feedback\n    ]\n\n    results = await batch_process(\n        items=feedback_items,\n        output_file=\"feedback_results.jsonl\"\n    )\n\n",
           "annotation": "",
           "is_comment": false,
           "start_line": 177,
           "line_range": [
             177,
-            177
-          ]
-        },
-        {
-          "code": "    # Test with sample feedback data\n",
-          "display_code": "",
-          "annotation": "Test with sample feedback data",
-          "is_comment": true,
-          "start_line": 178,
-          "line_range": [
-            178,
-            178
-          ],
-          "target_line_range": [
-            179,
-            183
-          ]
-        },
-        {
-          "code": "    feedback_items = [\n        \"Your app crashes every time I try to upload a photo. Please fix this ASAP!\",\n        \"I love the new dark mode feature. It makes the app much easier on the eyes.\",\n        \"The checkout process is too complicated. I gave up trying to make a purchase.\",\n        \"Your customer service rep was very helpful in resolving my issue.\"\n",
-          "display_code": "    feedback_items = [\n        \"Your app crashes every time I try to upload a photo. Please fix this ASAP!\",\n        \"I love the new dark mode feature. It makes the app much easier on the eyes.\",\n        \"The checkout process is too complicated. I gave up trying to make a purchase.\",\n        \"Your customer service rep was very helpful in resolving my issue.\"\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 179,
-          "line_range": [
-            179,
-            183
-          ]
-        },
-        {
-          "code": "        # Examples of different types of feedback\n",
-          "display_code": "",
-          "annotation": "Examples of different types of feedback",
-          "is_comment": true,
-          "start_line": 184,
-          "line_range": [
-            184,
-            184
-          ],
-          "target_line_range": [
-            185,
-            191
-          ]
-        },
-        {
-          "code": "    ]\n\n    results = await batch_process(\n        items=feedback_items,\n        output_file=\"feedback_results.jsonl\"\n    )\n\n",
-          "display_code": "    ]\n\n    results = await batch_process(\n        items=feedback_items,\n        output_file=\"feedback_results.jsonl\"\n    )\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 185,
-          "line_range": [
-            185,
             191
           ]
         },
@@ -13099,69 +11513,17 @@
           ],
           "target_line_range": [
             193,
-            195
+            214
           ]
         },
         {
-          "code": "    success_count = sum(1 for r in results if r[\"status\"] == \"success\")\n    print(f\"Successfully processed: {success_count}/{len(results)}\")\n\n",
-          "display_code": "    success_count = sum(1 for r in results if r[\"status\"] == \"success\")\n    print(f\"Successfully processed: {success_count}/{len(results)}\")\n\n",
+          "code": "    success_count = sum(1 for r in results if r[\"status\"] == \"success\")\n    print(f\"Successfully processed: {success_count}/{len(results)}\")\n\n    # Analyze average priority of feedback items\n    priorities = [r.get(\"priority\", 0) for r in results if r[\"status\"] == \"success\"]\n    if priorities:\n        print(f\"Average priority: {sum(priorities)/len(priorities):.1f}\")\n\n    # Generate distribution of feedback categories\n    categories = {}\n    for r in results:\n        if r[\"status\"] == \"success\":\n            for cat in r.get(\"categories\", []):\n                categories[cat] = categories.get(cat, 0) + 1\n\n    print(\"Category distribution:\")\n    for cat, count in categories.items():\n        print(f\"  {cat}: {count}\")\n\nif __name__ == \"__main__\":\n    asyncio.run(main())\n\n",
+          "display_code": "    success_count = sum(1 for r in results if r[\"status\"] == \"success\")\n    print(f\"Successfully processed: {success_count}/{len(results)}\")\n\n    # Analyze average priority of feedback items\n    priorities = [r.get(\"priority\", 0) for r in results if r[\"status\"] == \"success\"]\n    if priorities:\n        print(f\"Average priority: {sum(priorities)/len(priorities):.1f}\")\n\n    # Generate distribution of feedback categories\n    categories = {}\n    for r in results:\n        if r[\"status\"] == \"success\":\n            for cat in r.get(\"categories\", []):\n                categories[cat] = categories.get(cat, 0) + 1\n\n    print(\"Category distribution:\")\n    for cat, count in categories.items():\n        print(f\"  {cat}: {count}\")\n\nif __name__ == \"__main__\":\n    asyncio.run(main())\n\n",
           "annotation": "",
           "is_comment": false,
           "start_line": 193,
           "line_range": [
             193,
-            195
-          ]
-        },
-        {
-          "code": "    # Analyze average priority of feedback items\n",
-          "display_code": "",
-          "annotation": "Analyze average priority of feedback items",
-          "is_comment": true,
-          "start_line": 196,
-          "line_range": [
-            196,
-            196
-          ],
-          "target_line_range": [
-            197,
-            200
-          ]
-        },
-        {
-          "code": "    priorities = [r.get(\"priority\", 0) for r in results if r[\"status\"] == \"success\"]\n    if priorities:\n        print(f\"Average priority: {sum(priorities)/len(priorities):.1f}\")\n\n",
-          "display_code": "    priorities = [r.get(\"priority\", 0) for r in results if r[\"status\"] == \"success\"]\n    if priorities:\n        print(f\"Average priority: {sum(priorities)/len(priorities):.1f}\")\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 197,
-          "line_range": [
-            197,
-            200
-          ]
-        },
-        {
-          "code": "    # Generate distribution of feedback categories\n",
-          "display_code": "",
-          "annotation": "Generate distribution of feedback categories",
-          "is_comment": true,
-          "start_line": 201,
-          "line_range": [
-            201,
-            201
-          ],
-          "target_line_range": [
-            202,
-            214
-          ]
-        },
-        {
-          "code": "    categories = {}\n    for r in results:\n        if r[\"status\"] == \"success\":\n            for cat in r.get(\"categories\", []):\n                categories[cat] = categories.get(cat, 0) + 1\n\n    print(\"Category distribution:\")\n    for cat, count in categories.items():\n        print(f\"  {cat}: {count}\")\n\nif __name__ == \"__main__\":\n    asyncio.run(main())\n\n",
-          "display_code": "    categories = {}\n    for r in results:\n        if r[\"status\"] == \"success\":\n            for cat in r.get(\"categories\", []):\n                categories[cat] = categories.get(cat, 0) + 1\n\n    print(\"Category distribution:\")\n    for cat, count in categories.items():\n        print(f\"  {cat}: {count}\")\n\nif __name__ == \"__main__\":\n    asyncio.run(main())\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 202,
-          "line_range": [
-            202,
             214
           ]
         }
@@ -13823,95 +12185,17 @@
           ],
           "target_line_range": [
             24,
-            24
+            48
           ]
         },
         {
-          "code": "def extract_users_from_text(text: str) -> List[User]:\n",
-          "display_code": "def extract_users_from_text(text: str) -> List[User]:\n",
+          "code": "def extract_users_from_text(text: str) -> List[User]:\n    # Get raw JSON data from LLM\n    raw_data = client.chat.completions.create(\n        model=\"gpt-3.5-turbo\",\n        messages=[\n            {\n                \"role\": \"user\",\n                \"content\": f\"Extract all users from this text as a JSON array: {text}\"\n            }\n        ],\n        response_format={\"type\": \"json_object\"},\n        temperature=0\n    ).choices[0].message.content\n\n    # Parse JSON\n    import json\n    try:\n        data = json.loads(raw_data)\n        # Use type adapter for validation\n        users = UserListAdapter.validate_python(data.get(\"users\", []))\n        return users\n    except Exception as e:\n        print(f\"Error parsing data: {e}\")\n        return []\n\n",
+          "display_code": "def extract_users_from_text(text: str) -> List[User]:\n    # Get raw JSON data from LLM\n    raw_data = client.chat.completions.create(\n        model=\"gpt-3.5-turbo\",\n        messages=[\n            {\n                \"role\": \"user\",\n                \"content\": f\"Extract all users from this text as a JSON array: {text}\"\n            }\n        ],\n        response_format={\"type\": \"json_object\"},\n        temperature=0\n    ).choices[0].message.content\n\n    # Parse JSON\n    import json\n    try:\n        data = json.loads(raw_data)\n        # Use type adapter for validation\n        users = UserListAdapter.validate_python(data.get(\"users\", []))\n        return users\n    except Exception as e:\n        print(f\"Error parsing data: {e}\")\n        return []\n\n",
           "annotation": "",
           "is_comment": false,
           "start_line": 24,
           "line_range": [
             24,
-            24
-          ]
-        },
-        {
-          "code": "    # Get raw JSON data from LLM\n",
-          "display_code": "",
-          "annotation": "Get raw JSON data from LLM",
-          "is_comment": true,
-          "start_line": 25,
-          "line_range": [
-            25,
-            25
-          ],
-          "target_line_range": [
-            26,
-            37
-          ]
-        },
-        {
-          "code": "    raw_data = client.chat.completions.create(\n        model=\"gpt-3.5-turbo\",\n        messages=[\n            {\n                \"role\": \"user\",\n                \"content\": f\"Extract all users from this text as a JSON array: {text}\"\n            }\n        ],\n        response_format={\"type\": \"json_object\"},\n        temperature=0\n    ).choices[0].message.content\n\n",
-          "display_code": "    raw_data = client.chat.completions.create(\n        model=\"gpt-3.5-turbo\",\n        messages=[\n            {\n                \"role\": \"user\",\n                \"content\": f\"Extract all users from this text as a JSON array: {text}\"\n            }\n        ],\n        response_format={\"type\": \"json_object\"},\n        temperature=0\n    ).choices[0].message.content\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 26,
-          "line_range": [
-            26,
-            37
-          ]
-        },
-        {
-          "code": "    # Parse JSON\n",
-          "display_code": "",
-          "annotation": "Parse JSON",
-          "is_comment": true,
-          "start_line": 38,
-          "line_range": [
-            38,
-            38
-          ],
-          "target_line_range": [
-            39,
-            41
-          ]
-        },
-        {
-          "code": "    import json\n    try:\n        data = json.loads(raw_data)\n",
-          "display_code": "    import json\n    try:\n        data = json.loads(raw_data)\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 39,
-          "line_range": [
-            39,
-            41
-          ]
-        },
-        {
-          "code": "        # Use type adapter for validation\n",
-          "display_code": "",
-          "annotation": "Use type adapter for validation",
-          "is_comment": true,
-          "start_line": 42,
-          "line_range": [
-            42,
-            42
-          ],
-          "target_line_range": [
-            43,
-            48
-          ]
-        },
-        {
-          "code": "        users = UserListAdapter.validate_python(data.get(\"users\", []))\n        return users\n    except Exception as e:\n        print(f\"Error parsing data: {e}\")\n        return []\n\n",
-          "display_code": "        users = UserListAdapter.validate_python(data.get(\"users\", []))\n        return users\n    except Exception as e:\n        print(f\"Error parsing data: {e}\")\n        return []\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 43,
-          "line_range": [
-            43,
             48
           ]
         },
@@ -14187,43 +12471,17 @@
           ],
           "target_line_range": [
             148,
-            149
+            156
           ]
         },
         {
-          "code": "def process_customers(data: Dict[str, Any]) -> List[Customer]:\n    try:\n",
-          "display_code": "def process_customers(data: Dict[str, Any]) -> List[Customer]:\n    try:\n",
+          "code": "def process_customers(data: Dict[str, Any]) -> List[Customer]:\n    try:\n        # Extract customer data from a complex API response\n        customers_data = data.get(\"results\", {}).get(\"customers\", [])\n        return CustomerListAdapter.validate_python(customers_data)\n    except Exception as e:\n        print(f\"Validation error: {e}\")\n        return []\n\n",
+          "display_code": "def process_customers(data: Dict[str, Any]) -> List[Customer]:\n    try:\n        # Extract customer data from a complex API response\n        customers_data = data.get(\"results\", {}).get(\"customers\", [])\n        return CustomerListAdapter.validate_python(customers_data)\n    except Exception as e:\n        print(f\"Validation error: {e}\")\n        return []\n\n",
           "annotation": "",
           "is_comment": false,
           "start_line": 148,
           "line_range": [
             148,
-            149
-          ]
-        },
-        {
-          "code": "        # Extract customer data from a complex API response\n",
-          "display_code": "",
-          "annotation": "Extract customer data from a complex API response",
-          "is_comment": true,
-          "start_line": 150,
-          "line_range": [
-            150,
-            150
-          ],
-          "target_line_range": [
-            151,
-            156
-          ]
-        },
-        {
-          "code": "        customers_data = data.get(\"results\", {}).get(\"customers\", [])\n        return CustomerListAdapter.validate_python(customers_data)\n    except Exception as e:\n        print(f\"Validation error: {e}\")\n        return []\n\n",
-          "display_code": "        customers_data = data.get(\"results\", {}).get(\"customers\", [])\n        return CustomerListAdapter.validate_python(customers_data)\n    except Exception as e:\n        print(f\"Validation error: {e}\")\n        return []\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 151,
-          "line_range": [
-            151,
             156
           ]
         },
