@@ -3869,6 +3869,249 @@
       "section_title": "Basic Extraction Patterns"
     },
     {
+      "id": "048-templates",
+      "title": "Effective Prompt Templating with Jinja and Pydantic",
+      "description": "Learn to dynamically create prompts using Jinja templating and validate them with Pydantic",
+      "order": 48,
+      "code_segments": [
+        {
+          "code": "\n",
+          "display_code": "\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 3,
+          "line_range": [
+            3,
+            3
+          ]
+        },
+        {
+          "code": "# Import the necessary libraries\n",
+          "display_code": "",
+          "annotation": "Import the necessary libraries",
+          "is_comment": true,
+          "start_line": 4,
+          "line_range": [
+            4,
+            4
+          ],
+          "target_line_range": [
+            5,
+            9
+          ]
+        },
+        {
+          "code": "import openai\nimport instructor\nfrom pydantic import BaseModel\nfrom typing import List\n\n",
+          "display_code": "import openai\nimport instructor\nfrom pydantic import BaseModel\nfrom typing import List\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 5,
+          "line_range": [
+            5,
+            9
+          ]
+        },
+        {
+          "code": "# Define a simple User model with Pydantic\n",
+          "display_code": "",
+          "annotation": "Define a simple User model with Pydantic",
+          "is_comment": true,
+          "start_line": 10,
+          "line_range": [
+            10,
+            10
+          ],
+          "target_line_range": [
+            11,
+            15
+          ]
+        },
+        {
+          "code": "class User(BaseModel):\n    \"\"\"Extract user information from text.\"\"\"\n    name: str\n    age: int\n\n",
+          "display_code": "class User(BaseModel):\n    \"\"\"Extract user information from text.\"\"\"\n    name: str\n    age: int\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 11,
+          "line_range": [
+            11,
+            15
+          ]
+        },
+        {
+          "code": "# Patch the OpenAI client with Instructor\n",
+          "display_code": "",
+          "annotation": "Patch the OpenAI client with Instructor",
+          "is_comment": true,
+          "start_line": 16,
+          "line_range": [
+            16,
+            16
+          ],
+          "target_line_range": [
+            17,
+            18
+          ]
+        },
+        {
+          "code": "client = instructor.from_openai(openai.OpenAI())\n\n",
+          "display_code": "client = instructor.from_openai(openai.OpenAI())\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 17,
+          "line_range": [
+            17,
+            18
+          ]
+        },
+        {
+          "code": "# BASIC EXAMPLE: Simple template variable\n# Extract data using a template with Jinja variables\n# The template variable {{ data }} will be replaced with the value from context\n",
+          "display_code": "",
+          "annotation": "BASIC EXAMPLE: Simple template variable\nExtract data using a template with Jinja variables\nThe template variable {{ data }} will be replaced with the value from context",
+          "is_comment": true,
+          "start_line": 19,
+          "line_range": [
+            19,
+            21
+          ],
+          "target_line_range": [
+            22,
+            34
+          ]
+        },
+        {
+          "code": "user = client.chat.completions.create(\n    model=\"gpt-4o\",\n    messages=[\n        {\n            \"role\": \"user\",\n            \"content\": \"\"\"Extract the information from the\n        following text: `{{ data }}`\"\"\"\n        }\n    ],\n    response_model=User,\n    context={\"data\": \"John Doe is thirty years old\"}\n)\n\n",
+          "display_code": "user = client.chat.completions.create(\n    model=\"gpt-4o\",\n    messages=[\n        {\n            \"role\": \"user\",\n            \"content\": \"\"\"Extract the information from the\n        following text: `{{ data }}`\"\"\"\n        }\n    ],\n    response_model=User,\n    context={\"data\": \"John Doe is thirty years old\"}\n)\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 22,
+          "line_range": [
+            22,
+            34
+          ]
+        },
+        {
+          "code": "# Print the extracted structured data\n# Output:\n# Name: John Doe\n# Age: 30\n",
+          "display_code": "",
+          "annotation": "Print the extracted structured data\nOutput:\nName: John Doe\nAge: 30",
+          "is_comment": true,
+          "start_line": 35,
+          "line_range": [
+            35,
+            38
+          ],
+          "target_line_range": [
+            39,
+            41
+          ]
+        },
+        {
+          "code": "print(f\"Name: {user.name}\")\nprint(f\"Age: {user.age}\")\n\n",
+          "display_code": "print(f\"Name: {user.name}\")\nprint(f\"Age: {user.age}\")\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 39,
+          "line_range": [
+            39,
+            41
+          ]
+        },
+        {
+          "code": "# ADVANCED EXAMPLE: Using loops in templates\n# Define a model for citations with source references\n",
+          "display_code": "",
+          "annotation": "ADVANCED EXAMPLE: Using loops in templates\nDefine a model for citations with source references",
+          "is_comment": true,
+          "start_line": 42,
+          "line_range": [
+            42,
+            43
+          ],
+          "target_line_range": [
+            44,
+            52
+          ]
+        },
+        {
+          "code": "class Citation(BaseModel):\n    source_id: int\n    text: str\n\nclass Answer(BaseModel):\n    \"\"\"Extract answer with supporting citations\"\"\"\n    answer: str\n    citations: List[Citation]\n\n",
+          "display_code": "class Citation(BaseModel):\n    source_id: int\n    text: str\n\nclass Answer(BaseModel):\n    \"\"\"Extract answer with supporting citations\"\"\"\n    answer: str\n    citations: List[Citation]\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 44,
+          "line_range": [
+            44,
+            52
+          ]
+        },
+        {
+          "code": "# Extract data using a template with Jinja loops\n",
+          "display_code": "",
+          "annotation": "Extract data using a template with Jinja loops",
+          "is_comment": true,
+          "start_line": 53,
+          "line_range": [
+            53,
+            53
+          ],
+          "target_line_range": [
+            54,
+            92
+          ]
+        },
+        {
+          "code": "advanced_response = client.chat.completions.create(\n    model=\"gpt-4o\",\n    messages=[\n        {\n            \"role\": \"user\",\n            \"content\": \"\"\"\n            You are a {{ role }} answering the following question:\n            \n            <question>\n            {{ question }}\n            </question>\n            \n            Use the following sources to answer the question:\n            \n            <sources>\n            {% for source in sources %}\n            <source id=\"{{ source.id }}\">\n            {{ source.content }}\n            </source>\n            {% endfor %}\n            </sources>\n            \n            Provide a concise answer with citations to the relevant sources.\n            \"\"\"\n        }\n    ],\n    response_model=Answer,\n    context={\n        \"role\": \"research assistant\",\n        \"question\": \"What are the capitals of France and Japan?\",\n        \"sources\": [\n            {\"id\": 1, \"content\": \"Paris is the capital city of France.\"},\n            {\"id\": 2, \"content\": \"France is located in Western Europe.\"},\n            {\"id\": 3, \"content\": \"Tokyo is the capital city of Japan.\"},\n            {\"id\": 4, \"content\": \"Japan is an island country in East Asia.\"}\n        ]\n    }\n)\n\n",
+          "display_code": "advanced_response = client.chat.completions.create(\n    model=\"gpt-4o\",\n    messages=[\n        {\n            \"role\": \"user\",\n            \"content\": \"\"\"\n            You are a {{ role }} answering the following question:\n            \n            <question>\n            {{ question }}\n            </question>\n            \n            Use the following sources to answer the question:\n            \n            <sources>\n            {% for source in sources %}\n            <source id=\"{{ source.id }}\">\n            {{ source.content }}\n            </source>\n            {% endfor %}\n            </sources>\n            \n            Provide a concise answer with citations to the relevant sources.\n            \"\"\"\n        }\n    ],\n    response_model=Answer,\n    context={\n        \"role\": \"research assistant\",\n        \"question\": \"What are the capitals of France and Japan?\",\n        \"sources\": [\n            {\"id\": 1, \"content\": \"Paris is the capital city of France.\"},\n            {\"id\": 2, \"content\": \"France is located in Western Europe.\"},\n            {\"id\": 3, \"content\": \"Tokyo is the capital city of Japan.\"},\n            {\"id\": 4, \"content\": \"Japan is an island country in East Asia.\"}\n        ]\n    }\n)\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 54,
+          "line_range": [
+            54,
+            92
+          ]
+        },
+        {
+          "code": "# Print the advanced example results\n# Output:\n# Answer: The capital of France is Paris and the capital of Japan is Tokyo.\n# Citations:\n#   Source 1: Paris is the capital city of France.\n#   Source 2: France is located in Western Europe.\n#   Source 3: Tokyo is the capital city of Japan.\n#   Source 4: Japan is an island country in East Asia.\n",
+          "display_code": "",
+          "annotation": "Print the advanced example results\nOutput:\nAnswer: The capital of France is Paris and the capital of Japan is Tokyo.\nCitations:\nSource 1: Paris is the capital city of France.\nSource 2: France is located in Western Europe.\nSource 3: Tokyo is the capital city of Japan.\nSource 4: Japan is an island country in East Asia.",
+          "is_comment": true,
+          "start_line": 93,
+          "line_range": [
+            93,
+            100
+          ],
+          "target_line_range": [
+            101,
+            105
+          ]
+        },
+        {
+          "code": "print(f\"Answer: {advanced_response.answer}\")\nprint(\"Citations:\")\nfor citation in advanced_response.citations:\n    print(f\"  Source {citation.source_id}: {citation.text}\")\n\n",
+          "display_code": "print(f\"Answer: {advanced_response.answer}\")\nprint(\"Citations:\")\nfor citation in advanced_response.citations:\n    print(f\"  Source {citation.source_id}: {citation.text}\")\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 101,
+          "line_range": [
+            101,
+            105
+          ]
+        }
+      ],
+      "shell_segments": [
+        {
+          "explanation": "First, install Instructor and any dependencies",
+          "command": "pip install instructor pydantic",
+          "output": ""
+        },
+        {
+          "explanation": "Run the Python script",
+          "command": "python templates.py",
+          "output": ""
+        }
+      ],
+      "image_data": [],
+      "documentation_links": [],
+      "section_id": "003-basic-extraction",
+      "section_title": "Basic Extraction Patterns"
+    },
+    {
       "id": "018-simple-classification",
       "title": "Simple Classification",
       "description": "Perform single-label classification with Instructor and structured outputs.",
@@ -12863,6 +13106,7 @@
       "description": "Common patterns for extracting structured data",
       "order": 3,
       "examples": [
+        "048-templates",
         "012-simple-object",
         "013-list-extraction",
         "014-nested-structures",

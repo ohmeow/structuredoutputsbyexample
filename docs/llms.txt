@@ -30,6 +30,7 @@ Note: A more comprehensive version of this file / documentation is available at 
 - Simple Nested Structure: This example shows how to work with nested objects in Instructor..
 - Field Validation
 - Optional Fields: This example demonstrates how to handle optional or missing data in structured extractions: 1.
+- Effective Prompt Templating with Jinja and Pydantic: Learn to dynamically create prompts using Jinja templating and validate them with Pydantic.
 
 ## Classification and Analysis
 

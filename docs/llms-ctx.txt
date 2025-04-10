@@ -24,6 +24,7 @@ It's organized by sections, with each example's Python code and terminal command
   * Simple Nested Structure
   * Field Validation
   * Optional Fields
+  * Effective Prompt Templating with Jinja and Pydantic
 * Classification and Analysis
   * Simple Classification
   * Multi-label Classification
@@ -1209,6 +1210,91 @@ $ python optional-fields.py
 
 For more information, see the original documentation:
 - https://github.com/jxnl/instructor
+
+### Effective Prompt Templating with Jinja and Pydantic
+
+Learn to dynamically create prompts using Jinja templating and validate them with Pydantic
+
+```python
+import openai
+import instructor
+from pydantic import BaseModel
+from typing import List
+class User(BaseModel):
+    """Extract user information from text."""
+    name: str
+    age: int
+client = instructor.from_openai(openai.OpenAI())
+user = client.chat.completions.create(
+    model="gpt-4o",
+    messages=[
+        {
+            "role": "user",
+            "content": """Extract the information from the
+        following text: `{{ data }}`"""
+        }
+    ],
+    response_model=User,
+    context={"data": "John Doe is thirty years old"}
+)
+print(f"Name: {user.name}")
+print(f"Age: {user.age}")
+class Citation(BaseModel):
+    source_id: int
+    text: str
+
+class Answer(BaseModel):
+    """Extract answer with supporting citations"""
+    answer: str
+    citations: List[Citation]
+advanced_response = client.chat.completions.create(
+    model="gpt-4o",
+    messages=[
+        {
+            "role": "user",
+            "content": """
+            You are a {{ role }} answering the following question:
+            
+            <question>
+            {{ question }}
+            </question>
+            
+            Use the following sources to answer the question:
+            
+            <sources>
+            {% for source in sources %}
+            <source id="{{ source.id }}">
+            {{ source.content }}
+            </source>
+            {% endfor %}
+            </sources>
+            
+            Provide a concise answer with citations to the relevant sources.
+            """
+        }
+    ],
+    response_model=Answer,
+    context={
+        "role": "research assistant",
+        "question": "What are the capitals of France and Japan?",
+        "sources": [
+            {"id": 1, "content": "Paris is the capital city of France."},
+            {"id": 2, "content": "France is located in Western Europe."},
+            {"id": 3, "content": "Tokyo is the capital city of Japan."},
+            {"id": 4, "content": "Japan is an island country in East Asia."}
+        ]
+    }
+)
+print(f"Answer: {advanced_response.answer}")
+print("Citations:")
+for citation in advanced_response.citations:
+    print(f"  Source {citation.source_id}: {citation.text}")
+```
+
+```shell
+$ pip install instructor pydantic
+$ python templates.py
+```
 
 ## Classification and Analysis
 
