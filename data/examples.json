@@ -1550,148 +1550,174 @@
           ]
         },
         {
-          "code": "# Use Instructor with Google's Gemini models for structured data extraction.\n## pip install instructor google-generativeai jsonref#\n",
+          "code": "# Use Instructor with Google's Gemini models for structured data extraction.\n#\n# <b>pip install \"instructor[google-genai]\"</b>\n",
           "display_code": "",
-          "annotation": "Use Instructor with Google's Gemini models for structured data extraction.\npip install instructor google-generativeai jsonref#",
+          "annotation": "Use Instructor with Google's Gemini models for structured data extraction.\n\n<b>pip install \"instructor[google-genai]\"</b>",
           "is_comment": true,
           "start_line": 3,
           "line_range": [
             3,
-            4
+            5
           ],
           "target_line_range": [
-            5,
-            8
+            6,
+            10
           ]
         },
         {
-          "code": "import instructor\nimport google.generativeai as genai\nfrom pydantic import BaseModel\n\n",
-          "display_code": "import instructor\nimport google.generativeai as genai\nfrom pydantic import BaseModel\n\n",
+          "code": "import instructor\nfrom google import genai\nfrom pydantic import BaseModel\n\n\n",
+          "display_code": "import instructor\nfrom google import genai\nfrom pydantic import BaseModel\n\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 5,
+          "start_line": 6,
           "line_range": [
-            5,
-            8
+            6,
+            10
           ]
         },
         {
-          "code": "# Configure API key\n",
+          "code": "# <b>Initialize and patch the client</b>\n# <i>(with gemini api key)</i>\n",
           "display_code": "",
-          "annotation": "Configure API key",
+          "annotation": "<b>Initialize and patch the client</b>\n<i>(with gemini api key)</i>",
           "is_comment": true,
-          "start_line": 9,
+          "start_line": 11,
           "line_range": [
-            9,
-            9
+            11,
+            12
           ],
           "target_line_range": [
-            10,
-            15
-          ]
-        },
-        {
-          "code": "genai.configure(api_key=\"YOUR_API_KEY\")\n\nclass User(BaseModel):\n    name: str\n    age: int\n\n",
-          "display_code": "genai.configure(api_key=\"YOUR_API_KEY\")\n\nclass User(BaseModel):\n    name: str\n    age: int\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 10,
-          "line_range": [
-            10,
-            15
-          ]
-        },
-        {
-          "code": "# Create Gemini model\n",
-          "display_code": "",
-          "annotation": "Create Gemini model",
-          "is_comment": true,
-          "start_line": 16,
-          "line_range": [
-            16,
+            13,
             16
-          ],
-          "target_line_range": [
-            17,
-            18
           ]
         },
         {
-          "code": "model = genai.GenerativeModel(\"gemini-1.5-flash\")\n\n",
-          "display_code": "model = genai.GenerativeModel(\"gemini-1.5-flash\")\n\n",
+          "code": "API_KEY = \"YOUR_API_KEY\"\nclient = genai.Client(api_key=API_KEY)\nclient = instructor.from_genai(client, mode=instructor.Mode.GENAI_TOOLS)\n\n",
+          "display_code": "API_KEY = \"YOUR_API_KEY\"\nclient = genai.Client(api_key=API_KEY)\nclient = instructor.from_genai(client, mode=instructor.Mode.GENAI_TOOLS)\n\n",
           "annotation": "",
           "is_comment": false,
+          "start_line": 13,
+          "line_range": [
+            13,
+            16
+          ]
+        },
+        {
+          "code": "# <b>Initialize and patch the client</b>\n# <i>(with vertex)</i>\n",
+          "display_code": "",
+          "annotation": "<b>Initialize and patch the client</b>\n<i>(with vertex)</i>",
+          "is_comment": true,
           "start_line": 17,
           "line_range": [
             17,
             18
+          ],
+          "target_line_range": [
+            19,
+            22
           ]
         },
         {
-          "code": "# Patch with instructor (require specific mode)\n",
-          "display_code": "",
-          "annotation": "Patch with instructor (require specific mode)",
-          "is_comment": true,
+          "code": "client = genai.Client(vertexai=True, project=\"your-project-id\", location=\"us-central1\")\nclient = instructor.from_genai(client, mode=instructor.Mode.GENAI_TOOLS)\n\n\n",
+          "display_code": "client = genai.Client(vertexai=True, project=\"your-project-id\", location=\"us-central1\")\nclient = instructor.from_genai(client, mode=instructor.Mode.GENAI_TOOLS)\n\n\n",
+          "annotation": "",
+          "is_comment": false,
           "start_line": 19,
           "line_range": [
             19,
-            19
-          ],
-          "target_line_range": [
-            20,
-            24
+            22
           ]
         },
         {
-          "code": "client = instructor.from_gemini(\n    model,\n    mode=instructor.Mode.GEMINI_TOOLS  # or GEMINI_JSON\n)\n\n",
-          "display_code": "client = instructor.from_gemini(\n    model,\n    mode=instructor.Mode.GEMINI_TOOLS  # or GEMINI_JSON\n)\n\n",
+          "code": "# <b>Basic usage</b>\n#\n# Model suggestions:\n# - gemini-2.0-flash-lite (fastest)\n# - gemini-2.0-flash (faster)\n# - gemini-2.5-pro-preview-03-25 (best)\n",
+          "display_code": "",
+          "annotation": "<b>Basic usage</b>\n\nModel suggestions:\n- gemini-2.0-flash-lite (fastest)\n- gemini-2.0-flash (faster)\n- gemini-2.5-pro-preview-03-25 (best)",
+          "is_comment": true,
+          "start_line": 23,
+          "line_range": [
+            23,
+            28
+          ],
+          "target_line_range": [
+            29,
+            42
+          ]
+        },
+        {
+          "code": "class User(BaseModel):\n    name: str\n    age: int\n\n\nresponse = client.chat.completions.create(\n    model=\"gemini-2.0-flash-001\",\n    messages=[{\"role\": \"user\", \"content\": \"Extract: Jason is 25 years old\"}],\n    response_model=User,\n)\nprint(response)  # User(name='Jason', age=25)\nprint(f\"Name: {response.name}, Age: {response.age}\")  # Name: Jason , Age: 25\n\n\n",
+          "display_code": "class User(BaseModel):\n    name: str\n    age: int\n\n\nresponse = client.chat.completions.create(\n    model=\"gemini-2.0-flash-001\",\n    messages=[{\"role\": \"user\", \"content\": \"Extract: Jason is 25 years old\"}],\n    response_model=User,\n)\nprint(response)  # User(name='Jason', age=25)\nprint(f\"Name: {response.name}, Age: {response.age}\")  # Name: Jason , Age: 25\n\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 20,
+          "start_line": 29,
           "line_range": [
-            20,
-            24
+            29,
+            42
           ]
         },
         {
-          "code": "# Using generate_content method\n",
+          "code": "# <b>Ensure property ordering</b>\n# By default, the API orders properties alphabetically which may be a problem if, for \"example\", you want to include an `examples` attribute and ensure it appears first.\n# #\n# In that case, you can add a `Config` class with a `propertyOrdering` attribute and explicitly list the properties in the order they should appear.\n",
           "display_code": "",
-          "annotation": "Using generate_content method",
+          "annotation": "<b>Ensure property ordering</b>\nBy default, the API orders properties alphabetically which may be a problem if, for \"example\", you want to include an `examples` attribute and ensure it appears first.\n\nIn that case, you can add a `Config` class with a `propertyOrdering` attribute and explicitly list the properties in the order they should appear.",
           "is_comment": true,
-          "start_line": 25,
+          "start_line": 43,
           "line_range": [
-            25,
-            25
+            43,
+            46
           ],
           "target_line_range": [
-            26,
-            31
+            47,
+            63
           ]
         },
         {
-          "code": "user = client.generate_content(\n    response_model=User,\n    contents=\"Extract: John is 25 years old.\"\n)\n\nprint(f\"Name: {user.name}, Age: {user.age}\")\n",
-          "display_code": "user = client.generate_content(\n    response_model=User,\n    contents=\"Extract: John is 25 years old.\"\n)\n\nprint(f\"Name: {user.name}, Age: {user.age}\")\n",
+          "code": "class User(BaseModel):\n    name: str\n    age: int\n\n    class Config:\n        propertyOrdering = [\"name\", \"age\"]\n\n\nresponse = client.chat.completions.create(\n    model=\"gemini-2.0-flash-001\",\n    messages=[{\"role\": \"user\", \"content\": \"Extract: Jason is 25 years old\"}],\n    response_model=User,\n)\nprint(response)  # User(name='Jason', age=25)\nprint(f\"Name: {response.name}, Age: {response.age}\")  # Name: Jason, Age: 25\n\n\n",
+          "display_code": "class User(BaseModel):\n    name: str\n    age: int\n\n    class Config:\n        propertyOrdering = [\"name\", \"age\"]\n\n\nresponse = client.chat.completions.create(\n    model=\"gemini-2.0-flash-001\",\n    messages=[{\"role\": \"user\", \"content\": \"Extract: Jason is 25 years old\"}],\n    response_model=User,\n)\nprint(response)  # User(name='Jason', age=25)\nprint(f\"Name: {response.name}, Age: {response.age}\")  # Name: Jason, Age: 25\n\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 26,
+          "start_line": 47,
           "line_range": [
-            26,
-            31
+            47,
+            63
           ]
         },
         {
-          "code": "# Output: Name: John, Age: 25\n",
+          "code": "# <b>Including a system instruction</b>\n#\n# Use either the `system` parameter or add a system message\n",
           "display_code": "",
-          "annotation": "Output: Name: John, Age: 25",
+          "annotation": "<b>Including a system instruction</b>\n\nUse either the `system` parameter or add a system message",
           "is_comment": true,
-          "start_line": 32,
+          "start_line": 64,
           "line_range": [
-            32,
-            32
+            64,
+            66
           ],
           "target_line_range": [
-            33,
-            33
+            67,
+            84
+          ]
+        },
+        {
+          "code": "response = client.chat.completions.create(\n    model=\"gemini-2.0-flash-001\",\n    # system=\"Make everyone 10 years younger you find!\",\n    messages=[\n        {\n            \"role\": \"system\",\n            \"content\": \"Make everyone 10 years younger you find!\",\n        },\n        {\n            \"role\": \"user\",\n            \"content\": \"Extract: Jason is 25 years old\",\n        },\n    ],\n    response_model=User,\n)\nprint(response)  # User(name='Jason', age=15)\nprint(f\"Name: {response.name}, Age: {response.age}\")  # Name: Jason, Age: 15\n\n",
+          "display_code": "response = client.chat.completions.create(\n    model=\"gemini-2.0-flash-001\",\n    # system=\"Make everyone 10 years younger you find!\",\n    messages=[\n        {\n            \"role\": \"system\",\n            \"content\": \"Make everyone 10 years younger you find!\",\n        },\n        {\n            \"role\": \"user\",\n            \"content\": \"Extract: Jason is 25 years old\",\n        },\n    ],\n    response_model=User,\n)\nprint(response)  # User(name='Jason', age=15)\nprint(f\"Name: {response.name}, Age: {response.age}\")  # Name: Jason, Age: 15\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 67,
+          "line_range": [
+            67,
+            84
+          ]
+        },
+        {
+          "code": "# <b></b>\n",
+          "display_code": "",
+          "annotation": "<b></b>",
+          "is_comment": true,
+          "start_line": 85,
+          "line_range": [
+            85,
+            85
+          ],
+          "target_line_range": [
+            86,
+            86
           ]
         },
         {
@@ -1699,166 +1725,285 @@
           "display_code": "\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 33,
+          "start_line": 86,
           "line_range": [
-            33,
-            33
+            86,
+            86
           ]
         },
         {
-          "code": "# Gemini 1.5 Flash (faster)\n",
+          "code": "# # Gemini 1.5 Flash (faster)\n# flash_model = genai.GenerativeModel(\"gemini-1.5-flash\")\n# flash_client = instructor.from_gemini(flash_model, mode=instructor.Mode.GEMINI_TOOLS)\n",
           "display_code": "",
-          "annotation": "Gemini 1.5 Flash (faster)",
+          "annotation": "Gemini 1.5 Flash (faster)\nflash_model = genai.GenerativeModel(\"gemini-1.5-flash\")\nflash_client = instructor.from_gemini(flash_model, mode=instructor.Mode.GEMINI_TOOLS)",
           "is_comment": true,
-          "start_line": 34,
+          "start_line": 87,
           "line_range": [
-            34,
-            34
+            87,
+            89
           ],
           "target_line_range": [
-            35,
-            40
+            90,
+            90
           ]
         },
         {
-          "code": "flash_model = genai.GenerativeModel(\"gemini-1.5-flash\")\nflash_client = instructor.from_gemini(\n    flash_model,\n    mode=instructor.Mode.GEMINI_TOOLS\n)\n\n",
-          "display_code": "flash_model = genai.GenerativeModel(\"gemini-1.5-flash\")\nflash_client = instructor.from_gemini(\n    flash_model,\n    mode=instructor.Mode.GEMINI_TOOLS\n)\n\n",
+          "code": "\n",
+          "display_code": "\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 35,
+          "start_line": 90,
           "line_range": [
-            35,
-            40
+            90,
+            90
           ]
         },
         {
-          "code": "# Gemini 1.5 Pro (more capable)\n",
+          "code": "# # Gemini 1.5 Pro (more capable)\n# pro_model = genai.GenerativeModel(\"gemini-1.5-pro\")\n# pro_client = instructor.from_gemini(pro_model, mode=instructor.Mode.GEMINI_TOOLS)\n",
           "display_code": "",
-          "annotation": "Gemini 1.5 Pro (more capable)",
+          "annotation": "Gemini 1.5 Pro (more capable)\npro_model = genai.GenerativeModel(\"gemini-1.5-pro\")\npro_client = instructor.from_gemini(pro_model, mode=instructor.Mode.GEMINI_TOOLS)",
           "is_comment": true,
-          "start_line": 41,
+          "start_line": 91,
           "line_range": [
-            41,
-            41
-          ],
-          "target_line_range": [
-            42,
-            77
-          ]
-        },
-        {
-          "code": "pro_model = genai.GenerativeModel(\"gemini-1.5-pro\")\npro_client = instructor.from_gemini(\n    pro_model,\n    mode=instructor.Mode.GEMINI_TOOLS\n)\n\nuser = client.generate_content(\n    response_model=User,\n    contents=\"Extract: John is 25 years old.\",\n    generation_config={\n        \"system_instruction\": \"You are an expert at extracting structured data.\"\n    }\n)\n\nuser = client.generate_content(\n    response_model=User,\n    contents=[\n        {\"role\": \"user\", \"parts\": [\"Extract: John is 25 years old.\"]}\n    ]\n)\n\njson_client = instructor.from_gemini(\n    genai.GenerativeModel(\"gemini-1.5-flash\"),\n    mode=instructor.Mode.GEMINI_JSON\n)\n\nuser = json_client.generate_content(\n    response_model=User,\n    contents=\"Extract: John is 25 years old.\"\n)\n\nimport google.auth\nimport google.auth.transport.requests\nimport instructor\nfrom openai import OpenAI\n\n",
-          "display_code": "pro_model = genai.GenerativeModel(\"gemini-1.5-pro\")\npro_client = instructor.from_gemini(\n    pro_model,\n    mode=instructor.Mode.GEMINI_TOOLS\n)\n\nuser = client.generate_content(\n    response_model=User,\n    contents=\"Extract: John is 25 years old.\",\n    generation_config={\n        \"system_instruction\": \"You are an expert at extracting structured data.\"\n    }\n)\n\nuser = client.generate_content(\n    response_model=User,\n    contents=[\n        {\"role\": \"user\", \"parts\": [\"Extract: John is 25 years old.\"]}\n    ]\n)\n\njson_client = instructor.from_gemini(\n    genai.GenerativeModel(\"gemini-1.5-flash\"),\n    mode=instructor.Mode.GEMINI_JSON\n)\n\nuser = json_client.generate_content(\n    response_model=User,\n    contents=\"Extract: John is 25 years old.\"\n)\n\nimport google.auth\nimport google.auth.transport.requests\nimport instructor\nfrom openai import OpenAI\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 42,
-          "line_range": [
-            42,
-            77
-          ]
-        },
-        {
-          "code": "# Get Google auth credentials\n",
-          "display_code": "",
-          "annotation": "Get Google auth credentials",
-          "is_comment": true,
-          "start_line": 78,
-          "line_range": [
-            78,
-            78
-          ],
-          "target_line_range": [
-            79,
-            82
-          ]
-        },
-        {
-          "code": "creds, project = google.auth.default()\nauth_req = google.auth.transport.requests.Request()\ncreds.refresh(auth_req)\n\n",
-          "display_code": "creds, project = google.auth.default()\nauth_req = google.auth.transport.requests.Request()\ncreds.refresh(auth_req)\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 79,
-          "line_range": [
-            79,
-            82
-          ]
-        },
-        {
-          "code": "# Configure Vertex AI endpoint\n",
-          "display_code": "",
-          "annotation": "Configure Vertex AI endpoint",
-          "is_comment": true,
-          "start_line": 83,
-          "line_range": [
-            83,
-            83
-          ],
-          "target_line_range": [
-            84,
-            87
-          ]
-        },
-        {
-          "code": "PROJECT = 'your-project-id'\nLOCATION = 'us-central1'  # or your preferred region\nendpoint = f'https://{LOCATION}-aiplatform.googleapis.com/v1beta1/projects/{PROJECT}/locations/{LOCATION}/endpoints/openapi'\n\n",
-          "display_code": "PROJECT = 'your-project-id'\nLOCATION = 'us-central1'  # or your preferred region\nendpoint = f'https://{LOCATION}-aiplatform.googleapis.com/v1beta1/projects/{PROJECT}/locations/{LOCATION}/endpoints/openapi'\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 84,
-          "line_range": [
-            84,
-            87
-          ]
-        },
-        {
-          "code": "# Create patched OpenAI client pointing to Vertex AI\n",
-          "display_code": "",
-          "annotation": "Create patched OpenAI client pointing to Vertex AI",
-          "is_comment": true,
-          "start_line": 88,
-          "line_range": [
-            88,
-            88
-          ],
-          "target_line_range": [
-            89,
+            91,
             93
+          ],
+          "target_line_range": [
+            94,
+            94
           ]
         },
         {
-          "code": "client = instructor.from_openai(\n    OpenAI(base_url=endpoint, api_key=creds.token),\n    mode=instructor.Mode.JSON  # JSON mode required\n)\n\n",
-          "display_code": "client = instructor.from_openai(\n    OpenAI(base_url=endpoint, api_key=creds.token),\n    mode=instructor.Mode.JSON  # JSON mode required\n)\n\n",
+          "code": "\n",
+          "display_code": "\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 89,
-          "line_range": [
-            89,
-            93
-          ]
-        },
-        {
-          "code": "# Use OpenAI-style interface\n",
-          "display_code": "",
-          "annotation": "Use OpenAI-style interface",
-          "is_comment": true,
           "start_line": 94,
           "line_range": [
             94,
             94
+          ]
+        },
+        {
+          "code": "# user = client.generate_content(\n#     response_model=User,\n#     contents=\"Extract: John is 25 years old.\",\n#     generation_config={\n#         \"system_instruction\": \"You are an expert at extracting structured data.\"\n#     },\n# )\n",
+          "display_code": "",
+          "annotation": "user = client.generate_content(\nresponse_model=User,\ncontents=\"Extract: John is 25 years old.\",\ngeneration_config={\n\"system_instruction\": \"You are an expert at extracting structured data.\"\n},\n)",
+          "is_comment": true,
+          "start_line": 95,
+          "line_range": [
+            95,
+            101
           ],
           "target_line_range": [
-            95,
+            102,
             102
           ]
         },
         {
-          "code": "user = client.chat.completions.create(\n    model=\"google/gemini-1.5-flash\",\n    response_model=User,\n    messages=[\n        {\"role\": \"user\", \"content\": \"Extract: John is 25 years old.\"}\n    ]\n)\n\n",
-          "display_code": "user = client.chat.completions.create(\n    model=\"google/gemini-1.5-flash\",\n    response_model=User,\n    messages=[\n        {\"role\": \"user\", \"content\": \"Extract: John is 25 years old.\"}\n    ]\n)\n\n",
+          "code": "\n",
+          "display_code": "\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 95,
+          "start_line": 102,
           "line_range": [
-            95,
+            102,
             102
+          ]
+        },
+        {
+          "code": "# user = client.generate_content(\n#     response_model=User,\n#     contents=[{\"role\": \"user\", \"parts\": [\"Extract: John is 25 years old.\"]}],\n# )\n",
+          "display_code": "",
+          "annotation": "user = client.generate_content(\nresponse_model=User,\ncontents=[{\"role\": \"user\", \"parts\": [\"Extract: John is 25 years old.\"]}],\n)",
+          "is_comment": true,
+          "start_line": 103,
+          "line_range": [
+            103,
+            106
+          ],
+          "target_line_range": [
+            107,
+            107
+          ]
+        },
+        {
+          "code": "\n",
+          "display_code": "\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 107,
+          "line_range": [
+            107,
+            107
+          ]
+        },
+        {
+          "code": "# json_client = instructor.from_gemini(\n#     genai.GenerativeModel(\"gemini-1.5-flash\"), mode=instructor.Mode.GEMINI_JSON\n# )\n",
+          "display_code": "",
+          "annotation": "json_client = instructor.from_gemini(\ngenai.GenerativeModel(\"gemini-1.5-flash\"), mode=instructor.Mode.GEMINI_JSON\n)",
+          "is_comment": true,
+          "start_line": 108,
+          "line_range": [
+            108,
+            110
+          ],
+          "target_line_range": [
+            111,
+            111
+          ]
+        },
+        {
+          "code": "\n",
+          "display_code": "\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 111,
+          "line_range": [
+            111,
+            111
+          ]
+        },
+        {
+          "code": "# user = json_client.generate_content(\n#     response_model=User, contents=\"Extract: John is 25 years old.\"\n# )\n",
+          "display_code": "",
+          "annotation": "user = json_client.generate_content(\nresponse_model=User, contents=\"Extract: John is 25 years old.\"\n)",
+          "is_comment": true,
+          "start_line": 112,
+          "line_range": [
+            112,
+            114
+          ],
+          "target_line_range": [
+            115,
+            115
+          ]
+        },
+        {
+          "code": "\n",
+          "display_code": "\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 115,
+          "line_range": [
+            115,
+            115
+          ]
+        },
+        {
+          "code": "# import google.auth\n# import google.auth.transport.requests\n# import instructor\n# from openai import OpenAI\n",
+          "display_code": "",
+          "annotation": "import google.auth\nimport google.auth.transport.requests\nimport instructor\nfrom openai import OpenAI",
+          "is_comment": true,
+          "start_line": 116,
+          "line_range": [
+            116,
+            119
+          ],
+          "target_line_range": [
+            120,
+            120
+          ]
+        },
+        {
+          "code": "\n",
+          "display_code": "\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 120,
+          "line_range": [
+            120,
+            120
+          ]
+        },
+        {
+          "code": "# # Get Google auth credentials\n# creds, project = google.auth.default()\n# auth_req = google.auth.transport.requests.Request()\n# creds.refresh(auth_req)\n",
+          "display_code": "",
+          "annotation": "Get Google auth credentials\ncreds, project = google.auth.default()\nauth_req = google.auth.transport.requests.Request()\ncreds.refresh(auth_req)",
+          "is_comment": true,
+          "start_line": 121,
+          "line_range": [
+            121,
+            124
+          ],
+          "target_line_range": [
+            125,
+            125
+          ]
+        },
+        {
+          "code": "\n",
+          "display_code": "\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 125,
+          "line_range": [
+            125,
+            125
+          ]
+        },
+        {
+          "code": "# # Configure Vertex AI endpoint\n# PROJECT = \"your-project-id\"\n# LOCATION = \"us-central1\"  # or your preferred region\n# endpoint = f\"https://{LOCATION}-aiplatform.googleapis.com/v1beta1/projects/{PROJECT}/locations/{LOCATION}/endpoints/openapi\"\n",
+          "display_code": "",
+          "annotation": "Configure Vertex AI endpoint\nPROJECT = \"your-project-id\"\nLOCATION = \"us-central1\"  # or your preferred region\nendpoint = f\"https://{LOCATION}-aiplatform.googleapis.com/v1beta1/projects/{PROJECT}/locations/{LOCATION}/endpoints/openapi\"",
+          "is_comment": true,
+          "start_line": 126,
+          "line_range": [
+            126,
+            129
+          ],
+          "target_line_range": [
+            130,
+            130
+          ]
+        },
+        {
+          "code": "\n",
+          "display_code": "\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 130,
+          "line_range": [
+            130,
+            130
+          ]
+        },
+        {
+          "code": "# # Create patched OpenAI client pointing to Vertex AI\n# client = instructor.from_openai(\n#     OpenAI(base_url=endpoint, api_key=creds.token),\n#     mode=instructor.Mode.JSON,  # JSON mode required\n# )\n",
+          "display_code": "",
+          "annotation": "Create patched OpenAI client pointing to Vertex AI\nclient = instructor.from_openai(\nOpenAI(base_url=endpoint, api_key=creds.token),\nmode=instructor.Mode.JSON,  # JSON mode required\n)",
+          "is_comment": true,
+          "start_line": 131,
+          "line_range": [
+            131,
+            135
+          ],
+          "target_line_range": [
+            136,
+            136
+          ]
+        },
+        {
+          "code": "\n",
+          "display_code": "\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 136,
+          "line_range": [
+            136,
+            136
+          ]
+        },
+        {
+          "code": "# # Use OpenAI-style interface\n# user = client.chat.completions.create(\n#     model=\"google/gemini-1.5-flash\",\n#     response_model=User,\n#     messages=[{\"role\": \"user\", \"content\": \"Extract: John is 25 years old.\"}],\n# )\n",
+          "display_code": "",
+          "annotation": "Use OpenAI-style interface\nuser = client.chat.completions.create(\nmodel=\"google/gemini-1.5-flash\",\nresponse_model=User,\nmessages=[{\"role\": \"user\", \"content\": \"Extract: John is 25 years old.\"}],\n)",
+          "is_comment": true,
+          "start_line": 137,
+          "line_range": [
+            137,
+            142
+          ],
+          "target_line_range": [
+            136,
+            136
           ]
         }
       ],
@@ -1866,7 +2011,7 @@
         {
           "explanation": "Use Instructor with Google's Gemini models for structured data extraction.",
           "command": "# Install required packages",
-          "output": "$ pip install instructor google-generativeai jsonref"
+          "output": "$ pip install \"instructor[google-genai]\""
         }
       ],
       "image_data": [],
