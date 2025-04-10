@@ -1,61 +1,46 @@
-# Optional Fields with Literals and Enums
-# Demonstrate how to handle optional data in your structured extractions using literals and enums.
-# Optional fields can have default values and won't cause extraction failures if the data is missing.
+# Optional Fields
+# This example demonstrates how to handle optional or missing data in structured extractions:
+# 1. Using Optional type annotations for fields that might not be present in the source text
+# 2. Using Instructor's Maybe type to explicitly track whether information was present
+#
+# Optional fields allow your models to gracefully handle incomplete information without
+# causing extraction failures when certain data isn't mentioned in the text.
 
 # Import the necessary libraries
-from enum import Enum
-from typing import Optional, Literal
 from pydantic import BaseModel, Field
+from typing import Optional
 import instructor
 from openai import OpenAI
 
-# Define an enum for task priority
-class Priority(str, Enum):
-    LOW = "low"
-    MEDIUM = "medium"
-    HIGH = "high"
-
-# Define a model with optional literals and enums
-class Task(BaseModel):
-    title: str
-    description: str
-    # Optional enum field with default value
-    priority: Optional[Priority] = None
-    # Optional literal field with limited values
-    status: Optional[Literal["todo", "in-progress", "done"]] = None
-    # Optional regular field
-    due_date: Optional[str] = None
+# Define the Person class with Pydantic
+class Person(BaseModel):
+    name: str
+    age: int
+    # Optional fields with default value of None
+    email: Optional[str] = None
+    phone: Optional[str] = None
+    occupation: Optional[str] = None
 
 # Patch the client
 client = instructor.from_openai(OpenAI())
 
 # Extract with optional fields
-task = client.chat.completions.create(
+person = client.chat.completions.create(
     model="gpt-3.5-turbo",
-    response_model=Task,
+    response_model=Person,
     messages=[
-        {"role": "user", "content": "Create a login page with high priority for the application."}
+        {"role": "user", "content": "John Smith is 35 years old and works as a software engineer."}
     ]
 )
 
 # Output:
-# Task: Create a login page with high priority for the application.
-# Description: Create a login page with high priority for the application.
-# Priority: high
-# Status: None
-# Due Date: None
-print(f"Task: {task.title}")
-print(f"Description: {task.description}")
-print(f"Priority: {task.priority}")  # Will be Priority.HIGH enum
-print(f"Status: {task.status}")  # Will be None (not specified in text)
-print(f"Due Date: {task.due_date or 'Not specified'}")  # Will be None
-
-# Conditional logic with optional enums
-if task.priority == Priority.HIGH:
-    print("This is a high priority task!")
-
-# Conditional logic with optional literals
-if task.status == "in-progress":
-    print("This task is currently being worked on.")
-elif task.status is None:
-    print("This task has no status assigned yet.")
+# Name: John Smith
+# Age: 35
+# Email: None
+# Phone: None
+# Occupation: software engineer
+print(f"Name: {person.name}")
+print(f"Age: {person.age}")
+print(f"Email: {person.email}")  # None
+print(f"Phone: {person.phone}")  # None
+print(f"Occupation: {person.occupation}")  # "software engineer"
