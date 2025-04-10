@@ -5,8 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <!-- Primary Meta Tags -->
-    <title>Multi-label Classification - Structured Outputs by Example</title>
-    <meta name="description" content="Learn to work with structured outputs through annotated examples">
+    <title>Multi-label Classification Example - Structured Outputs by Example</title>
+    <meta name="description" content="This example demonstrates various approaches to multi-label classification using Instructor:
+1.">
     <meta name="author" content="Jason Liu">
     <meta name="keywords" content="structured outputs, LLM, Instructor, Pydantic, data extraction, structured data">
     
@@ -16,22 +17,24 @@
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://structuredoutputsbyexample.com/019-multi-label-classification/">
-    <meta property="og:title" content="Multi-label Classification - Structured Outputs by Example">
-    <meta property="og:description" content="Learn to work with structured outputs through annotated examples">
+    <meta property="og:title" content="Multi-label Classification Example - Structured Outputs by Example">
+    <meta property="og:description" content="This example demonstrates various approaches to multi-label classification using Instructor:
+1.">
     
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://structuredoutputsbyexample.com/019-multi-label-classification/">
-    <meta property="twitter:title" content="Multi-label Classification - Structured Outputs by Example">
-    <meta property="twitter:description" content="Learn to work with structured outputs through annotated examples">
+    <meta property="twitter:title" content="Multi-label Classification Example - Structured Outputs by Example">
+    <meta property="twitter:description" content="This example demonstrates various approaches to multi-label classification using Instructor:
+1.">
 
     <!-- Structured Data / JSON-LD -->
     <script type="application/ld+json">
     {
   "@context": "https://schema.org",
   "@type": "TechArticle",
-  "headline": "Multi-label Classification",
-  "description": "Learn to work with structured outputs through annotated examples",
+  "headline": "Multi-label Classification Example",
+  "description": "This example demonstrates various approaches to multi-label classification using Instructor:\n1.",
   "author": {
     "@type": "Person",
     "name": "Jason Liu"
@@ -42,8 +45,8 @@
     "url": "https://structuredoutputsbyexample.com"
   },
   "mainEntityOfPage": "https://structuredoutputsbyexample.com/019-multi-label-classification/",
-  "datePublished": "2025-04-10T02:14:01+00:00",
-  "dateModified": "2025-04-10T02:14:01+00:00",
+  "datePublished": "2025-04-10T02:23:30+00:00",
+  "dateModified": "2025-04-10T02:23:30+00:00",
   "articleSection": "Classification and Analysis",
   "keywords": [
     "structured data",
@@ -254,7 +257,7 @@
                     <div style="margin-bottom: 10px; color: #666; font-size: 0.9em;">
                         <a href="../" style="text-decoration: none; color: #666;">Classification and Analysis</a>
                     </div>
-                    <h1 style="margin: 0; margin-bottom: 10px;">Multi-label Classification</h1>
+                    <h1 style="margin: 0; margin-bottom: 10px;">Multi-label Classification Example</h1>
                 </div>
                 <div style="position: relative; margin-top: 10px; display: flex; gap: 8px;">
                     <button id="copy-all-python" style="background-color: #f1f8ff; border: 1px solid #c8e1ff; border-radius: 6px; padding: 6px 12px; font-size: 14px; color: #0066CC; cursor: pointer; display: flex; align-items: center; gap: 6px;">
@@ -270,18 +273,16 @@
                         Edit
                     </a>
                     <div id="all-python-code" style="display: none;">from pydantic import BaseModel, Field
-from typing import List
+from typing import List, Optional
+from enum import Enum
 import instructor
 from openai import OpenAI
-
+client = instructor.from_openai(OpenAI())
 class MultiLabelClassification(BaseModel):
     &quot;&quot;&quot;Multi-label classification of text content&quot;&quot;&quot;
-
     labels: List[str] = Field(
         description=&quot;List of applicable category labels for the text&quot;
     )
-client = instructor.from_openai(OpenAI())
-
 def classify_text(text: str) -&gt; MultiLabelClassification:
     return client.chat.completions.create(
         model=&quot;gpt-3.5-turbo&quot;,
@@ -306,19 +307,6 @@ def classify_text(text: str) -&gt; MultiLabelClassification:
             {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: f&quot;Text for classification: {text}&quot;}
         ]
     )
-article = &quot;&quot;&quot;
-    Bitcoin prices surged to a new all-time high today as several tech companies announced
-    plans to add the cryptocurrency to their balance sheets. Health officials warned that
-    the excitement might cause stress for some investors.
-&quot;&quot;&quot;
-
-result = classify_text(article)
-
-print(f&quot;Text: &#x27;{article}&#x27;&quot;)
-print(f&quot;Labels: {&#x27;, &#x27;.join(result.labels)}&quot;)
-from enum import Enum
-from pydantic import BaseModel, Field
-from typing import List
 class Category(str, Enum):
     BUSINESS = &quot;business&quot;
     TECHNOLOGY = &quot;technology&quot;
@@ -328,14 +316,11 @@ class Category(str, Enum):
     SPORTS = &quot;sports&quot;
     SCIENCE = &quot;science&quot;
     EDUCATION = &quot;education&quot;
-
 class EnumMultiLabelClassification(BaseModel):
     &quot;&quot;&quot;Multi-label classification using predefined categories&quot;&quot;&quot;
-
     categories: List[Category] = Field(
         description=&quot;List of applicable categories from the predefined set&quot;
     )
-
 def classify_with_enums(text: str) -&gt; EnumMultiLabelClassification:
     return client.chat.completions.create(
         model=&quot;gpt-3.5-turbo&quot;,
@@ -345,19 +330,6 @@ def classify_with_enums(text: str) -&gt; EnumMultiLabelClassification:
             {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: f&quot;Text for classification: {text}&quot;}
         ]
     )
-
-article = &quot;&quot;&quot;
-    New educational technology is transforming classrooms across the country.
-    Students are using AI-powered tools to enhance their learning experiences.
-&quot;&quot;&quot;
-
-result = classify_with_enums(article)
-
-print(f&quot;Text: &#x27;{article}&#x27;&quot;)
-print(f&quot;Categories: {&#x27;, &#x27;.join([c.value for c in result.categories])}&quot;)
-from pydantic import BaseModel, Field
-from typing import List, Dict
-
 class LabelWithConfidence(BaseModel):
     label: str
     confidence: float = Field(gt=0, le=1)  # Between 0 and 1
@@ -387,21 +359,6 @@ def classify_with_confidence(text: str) -&gt; ConfidenceClassification:
             {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: f&quot;Text for classification: {text}&quot;}
         ]
     )
-
-article = &quot;&quot;&quot;
-    The new smartphone features a built-in heart rate monitor that can alert users
-    about potential cardiac issues while they exercise.
-&quot;&quot;&quot;
-
-result = classify_with_confidence(article)
-
-print(f&quot;Text: &#x27;{article}&#x27;&quot;)
-print(&quot;Labels with confidence:&quot;)
-for label in result.labels:
-    print(f&quot;- {label.label}: {label.confidence:.2f}&quot;)
-from pydantic import BaseModel, Field
-from typing import List, Optional
-
 class SubCategory(BaseModel):
     name: str
     confidence: float = Field(gt=0, le=1)
@@ -415,7 +372,6 @@ class HierarchicalClassification(BaseModel):
     categories: List[MainCategory] = Field(
         description=&quot;Hierarchical categories with confidence scores&quot;
     )
-
 def classify_hierarchical(text: str) -&gt; HierarchicalClassification:
     return client.chat.completions.create(
         model=&quot;gpt-4&quot;,  # More complex tasks work better with GPT-4
@@ -437,37 +393,50 @@ def classify_hierarchical(text: str) -&gt; HierarchicalClassification:
             {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: f&quot;Text for classification: {text}&quot;}
         ]
     )
-
-article = &quot;&quot;&quot;
-    Researchers have developed a new AI algorithm that can detect early signs of
-    Alzheimer&#x27;s disease from brain scans with 94% accuracy. The deep learning software
-    could help doctors diagnose patients years earlier than current methods.
-&quot;&quot;&quot;
-
-result = classify_hierarchical(article)
-
-print(f&quot;Text: &#x27;{article}&#x27;&quot;)
-print(&quot;Classification:&quot;)
-for category in result.categories:
-    print(f&quot;- {category.name} ({category.confidence:.2f})&quot;)
-    for subcategory in category.subcategories:
-        print(f&quot;  - {subcategory.name} ({subcategory.confidence:.2f})&quot;)
+result = classify_text(&quot;Researchers have developed a new AI algorithm that can detect early signs of Alzheimer&#x27;s disease from brain scans with 94% accuracy. The deep learning software could help doctors diagnose patients years earlier than current methods.&quot;)
 </div>
                 </div>            </div>
+            <p style="margin: 20px 0 40px 0; color: #444; line-height: 1.6; font-size: 1.1em;">
+                This example demonstrates various approaches to multi-label classification using Instructor:
+1. Basic multi-label classification with string labels
+2. Using Enums for predefined categories
+3. Classification with confidence scores
+4. Hierarchical classification with main and subcategories
+
+Each approach shows how to structure your Pydantic models for different classification needs.
+            </p>
             <div class="row">
                 <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Extract multiple labels from text using Instructor.</div>
+                    <div style='font-size: 0.9em; color: #666;'>Import the necessary libraries</div>
 
                 </div>
                 <div class="code">
                     <pre><code class="language-python">from pydantic import BaseModel, Field
-from typing import List
+from typing import List, Optional
+from enum import Enum
 import instructor
-from openai import OpenAI
+from openai import OpenAI</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Initialize the instructor-enhanced OpenAI client</div>
 
-class MultiLabelClassification(BaseModel):
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">client = instructor.from_openai(OpenAI())</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Define a MultiLabelClassification model with Pydantic</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">class MultiLabelClassification(BaseModel):
     &quot;&quot;&quot;Multi-label classification of text content&quot;&quot;&quot;
-
     labels: List[str] = Field(
         description=&quot;List of applicable category labels for the text&quot;
     )</code></pre>
@@ -476,13 +445,11 @@ class MultiLabelClassification(BaseModel):
             <hr>
             <div class="row">
                 <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Patch the client</div>
+                    <div style='font-size: 0.9em; color: #666;'>Define a function to classify text</div>
 
                 </div>
                 <div class="code">
-                    <pre><code class="language-python">client = instructor.from_openai(OpenAI())
-
-def classify_text(text: str) -&gt; MultiLabelClassification:
+                    <pre><code class="language-python">def classify_text(text: str) -&gt; MultiLabelClassification:
     return client.chat.completions.create(
         model=&quot;gpt-3.5-turbo&quot;,
         response_model=MultiLabelClassification,
@@ -511,38 +478,7 @@ def classify_text(text: str) -&gt; MultiLabelClassification:
             <hr>
             <div class="row">
                 <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Test with an example</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">article = &quot;&quot;&quot;
-    Bitcoin prices surged to a new all-time high today as several tech companies announced
-    plans to add the cryptocurrency to their balance sheets. Health officials warned that
-    the excitement might cause stress for some investors.
-&quot;&quot;&quot;
-
-result = classify_text(article)
-
-print(f&quot;Text: &#x27;{article}&#x27;&quot;)
-print(f&quot;Labels: {&#x27;, &#x27;.join(result.labels)}&quot;)</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Example Output: Labels: Technology, Finance, Health</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">from enum import Enum
-from pydantic import BaseModel, Field
-from typing import List</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Define fixed categories as an enum</div>
+                    <div style='font-size: 0.9em; color: #666;'>Define a Category enum for predefined categories</div>
 
                 </div>
                 <div class="code">
@@ -554,16 +490,31 @@ from typing import List</code></pre>
     ENTERTAINMENT = &quot;entertainment&quot;
     SPORTS = &quot;sports&quot;
     SCIENCE = &quot;science&quot;
-    EDUCATION = &quot;education&quot;
+    EDUCATION = &quot;education&quot;</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Define a function to classify text with enums</div>
 
-class EnumMultiLabelClassification(BaseModel):
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">class EnumMultiLabelClassification(BaseModel):
     &quot;&quot;&quot;Multi-label classification using predefined categories&quot;&quot;&quot;
-
     categories: List[Category] = Field(
         description=&quot;List of applicable categories from the predefined set&quot;
-    )
+    )</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Define a function to classify text with enums</div>
 
-def classify_with_enums(text: str) -&gt; EnumMultiLabelClassification:
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">def classify_with_enums(text: str) -&gt; EnumMultiLabelClassification:
     return client.chat.completions.create(
         model=&quot;gpt-3.5-turbo&quot;,
         response_model=EnumMultiLabelClassification,
@@ -571,30 +522,17 @@ def classify_with_enums(text: str) -&gt; EnumMultiLabelClassification:
             {&quot;role&quot;: &quot;system&quot;, &quot;content&quot;: &quot;Classify the text into one or more predefined categories.&quot;},
             {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: f&quot;Text for classification: {text}&quot;}
         ]
-    )
-
-article = &quot;&quot;&quot;
-    New educational technology is transforming classrooms across the country.
-    Students are using AI-powered tools to enhance their learning experiences.
-&quot;&quot;&quot;
-
-result = classify_with_enums(article)
-
-print(f&quot;Text: &#x27;{article}&#x27;&quot;)
-print(f&quot;Categories: {&#x27;, &#x27;.join([c.value for c in result.categories])}&quot;)</code></pre>
+    )</code></pre>
                 </div>
             </div>
             <hr>
             <div class="row">
                 <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Example Output: Categories: technology, education</div>
+                    <div style='font-size: 0.9em; color: #666;'>Define a function to classify text with confidence scores</div>
 
                 </div>
                 <div class="code">
-                    <pre><code class="language-python">from pydantic import BaseModel, Field
-from typing import List, Dict
-
-class LabelWithConfidence(BaseModel):
+                    <pre><code class="language-python">class LabelWithConfidence(BaseModel):
     label: str
     confidence: float = Field(gt=0, le=1)  # Between 0 and 1
 
@@ -622,32 +560,17 @@ def classify_with_confidence(text: str) -&gt; ConfidenceClassification:
             },
             {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: f&quot;Text for classification: {text}&quot;}
         ]
-    )
-
-article = &quot;&quot;&quot;
-    The new smartphone features a built-in heart rate monitor that can alert users
-    about potential cardiac issues while they exercise.
-&quot;&quot;&quot;
-
-result = classify_with_confidence(article)
-
-print(f&quot;Text: &#x27;{article}&#x27;&quot;)
-print(&quot;Labels with confidence:&quot;)
-for label in result.labels:
-    print(f&quot;- {label.label}: {label.confidence:.2f}&quot;)</code></pre>
+    )</code></pre>
                 </div>
             </div>
             <hr>
             <div class="row">
                 <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Example Output:# Labels with confidence:# - Technology: 0.95# - Health: 0.85# - Sports: 0.62</div>
+                    <div style='font-size: 0.9em; color: #666;'>Define a function to classify text hierarchically</div>
 
                 </div>
                 <div class="code">
-                    <pre><code class="language-python">from pydantic import BaseModel, Field
-from typing import List, Optional
-
-class SubCategory(BaseModel):
+                    <pre><code class="language-python">class SubCategory(BaseModel):
     name: str
     confidence: float = Field(gt=0, le=1)
 
@@ -659,9 +582,17 @@ class MainCategory(BaseModel):
 class HierarchicalClassification(BaseModel):
     categories: List[MainCategory] = Field(
         description=&quot;Hierarchical categories with confidence scores&quot;
-    )
+    )</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Define a function to classify text hierarchically</div>
 
-def classify_hierarchical(text: str) -&gt; HierarchicalClassification:
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">def classify_hierarchical(text: str) -&gt; HierarchicalClassification:
     return client.chat.completions.create(
         model=&quot;gpt-4&quot;,  # More complex tasks work better with GPT-4
         response_model=HierarchicalClassification,
@@ -681,22 +612,19 @@ def classify_hierarchical(text: str) -&gt; HierarchicalClassification:
             },
             {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: f&quot;Text for classification: {text}&quot;}
         ]
-    )
+    )</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Test the multi-label classification
+Output:
+Labels: technology, science, health</div>
 
-article = &quot;&quot;&quot;
-    Researchers have developed a new AI algorithm that can detect early signs of
-    Alzheimer&#x27;s disease from brain scans with 94% accuracy. The deep learning software
-    could help doctors diagnose patients years earlier than current methods.
-&quot;&quot;&quot;
-
-result = classify_hierarchical(article)
-
-print(f&quot;Text: &#x27;{article}&#x27;&quot;)
-print(&quot;Classification:&quot;)
-for category in result.categories:
-    print(f&quot;- {category.name} ({category.confidence:.2f})&quot;)
-    for subcategory in category.subcategories:
-        print(f&quot;  - {subcategory.name} ({subcategory.confidence:.2f})&quot;)</code></pre>
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">result = classify_text(&quot;Researchers have developed a new AI algorithm that can detect early signs of Alzheimer&#x27;s disease from brain scans with 94% accuracy. The deep learning software could help doctors diagnose patients years earlier than current methods.&quot;)</code></pre>
                 </div>
             </div>
             <hr>

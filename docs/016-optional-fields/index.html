@@ -6,7 +6,8 @@
     
     <!-- Primary Meta Tags -->
     <title>Optional Fields - Structured Outputs by Example</title>
-    <meta name="description" content="Learn to work with structured outputs through annotated examples">
+    <meta name="description" content="This example demonstrates how to handle optional or missing data in structured extractions:
+1.">
     <meta name="author" content="Jason Liu">
     <meta name="keywords" content="structured outputs, LLM, Instructor, Pydantic, data extraction, structured data">
     
@@ -17,13 +18,15 @@
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://structuredoutputsbyexample.com/016-optional-fields/">
     <meta property="og:title" content="Optional Fields - Structured Outputs by Example">
-    <meta property="og:description" content="Learn to work with structured outputs through annotated examples">
+    <meta property="og:description" content="This example demonstrates how to handle optional or missing data in structured extractions:
+1.">
     
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://structuredoutputsbyexample.com/016-optional-fields/">
     <meta property="twitter:title" content="Optional Fields - Structured Outputs by Example">
-    <meta property="twitter:description" content="Learn to work with structured outputs through annotated examples">
+    <meta property="twitter:description" content="This example demonstrates how to handle optional or missing data in structured extractions:
+1.">
 
     <!-- Structured Data / JSON-LD -->
     <script type="application/ld+json">
@@ -31,7 +34,7 @@
   "@context": "https://schema.org",
   "@type": "TechArticle",
   "headline": "Optional Fields",
-  "description": "Learn to work with structured outputs through annotated examples",
+  "description": "This example demonstrates how to handle optional or missing data in structured extractions:\n1.",
   "author": {
     "@type": "Person",
     "name": "Jason Liu"
@@ -42,8 +45,8 @@
     "url": "https://structuredoutputsbyexample.com"
   },
   "mainEntityOfPage": "https://structuredoutputsbyexample.com/016-optional-fields/",
-  "datePublished": "2025-04-10T02:14:01+00:00",
-  "dateModified": "2025-04-10T02:14:01+00:00",
+  "datePublished": "2025-04-10T02:23:30+00:00",
+  "dateModified": "2025-04-10T02:23:30+00:00",
   "articleSection": "Basic Extraction Patterns",
   "keywords": [
     "structured data",
@@ -273,7 +276,6 @@
 from typing import Optional
 import instructor
 from openai import OpenAI
-
 class Person(BaseModel):
     name: str
     age: int
@@ -288,169 +290,41 @@ person = client.chat.completions.create(
         {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;John Smith is 35 years old and works as a software engineer.&quot;}
     ]
 )
-
 print(f&quot;Name: {person.name}&quot;)
 print(f&quot;Age: {person.age}&quot;)
 print(f&quot;Email: {person.email}&quot;)  # None
 print(f&quot;Phone: {person.phone}&quot;)  # None
 print(f&quot;Occupation: {person.occupation}&quot;)  # &quot;software engineer&quot;
-
-from pydantic import BaseModel, Field
-from typing import Optional
-
-class Product(BaseModel):
-    name: str
-    price: float
-currency: str = &quot;USD&quot;
-    in_stock: bool = True
-    category: Optional[str] = None
-    tags: list[str] = Field(default_factory=list)  # Empty list by default
-
-product = client.chat.completions.create(
-    model=&quot;gpt-3.5-turbo&quot;,
-    response_model=Product,
-    messages=[
-        {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Our new coffee mug costs 12.99 and is categorized under &#x27;Kitchen&#x27;.&quot;}
-    ]
-)
-
-print(f&quot;Product: {product.name}&quot;)
-print(f&quot;Price: {product.price} {product.currency}&quot;)  # USD is the default
-print(f&quot;In Stock: {product.in_stock}&quot;)  # True is the default
-print(f&quot;Category: {product.category}&quot;)  # &quot;Kitchen&quot;
-print(f&quot;Tags: {product.tags}&quot;)  # Empty list by default
-
-from pydantic import BaseModel, Field
-from typing import Optional
-
-class JobApplication(BaseModel):
-    name: str = Field(description=&quot;Applicant&#x27;s full name&quot;)
-    email: str = Field(description=&quot;Contact email address&quot;)
-phone: Optional[str] = Field(
-        None, description=&quot;Phone number in international format (optional)&quot;
-    )
-    years_experience: Optional[int] = Field(
-        None, description=&quot;Years of relevant work experience (optional)&quot;
-    )
-    portfolio_url: Optional[str] = Field(
-        None, description=&quot;Link to portfolio or personal website (optional)&quot;
-    )
-    cover_letter: Optional[str] = Field(
-        None, description=&quot;Brief cover letter or introduction (optional)&quot;
-    )
-
-application = client.chat.completions.create(
-    model=&quot;gpt-3.5-turbo&quot;,
-    response_model=JobApplication,
-    messages=[
-        {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;&quot;&quot;
-        Job application from Sarah Johnson:
-        I&#x27;m applying for the software developer position. My email is sarah.j@example.com
-        and I have 5 years of experience in frontend development. You can see my work
-        at https://sarahjohnson.dev
-        &quot;&quot;&quot;}
-    ]
-)
-
-print(f&quot;Applicant: {application.name}&quot;)
-print(f&quot;Email: {application.email}&quot;)
-print(f&quot;Phone: {application.phone or &#x27;Not provided&#x27;}&quot;)  # None -&gt; &#x27;Not provided&#x27;
-print(f&quot;Experience: {application.years_experience or &#x27;Not specified&#x27;} years&quot;)
-print(f&quot;Portfolio: {application.portfolio_url or &#x27;None provided&#x27;}&quot;)
-print(f&quot;Cover Letter: {application.cover_letter or &#x27;Not included&#x27;}&quot;)
-from pydantic import BaseModel, Field
-from instructor.dsl.maybe import Maybe
-import instructor
-from openai import OpenAI
-
-class Person(BaseModel):
-    name: str
-    age: int
-occupation: Maybe[str] = Field(default=None)
-    email: Maybe[str] = Field(default=None)
-    location: Maybe[str] = Field(default=None)
-client = instructor.from_openai(OpenAI())
-person = client.chat.completions.create(
-    model=&quot;gpt-3.5-turbo&quot;,
-    response_model=Person,
-    messages=[
-        {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;John Smith is 35 years old and works as a software engineer.&quot;}
-    ]
-)
-
-print(f&quot;Name: {person.name}&quot;)
-print(f&quot;Age: {person.age}&quot;)
-if person.occupation.exists:
-    print(f&quot;Occupation: {person.occupation.value}&quot;)
-else:
-    print(&quot;Occupation: Not mentioned&quot;)
-if person.email.exists:
-    print(f&quot;Email: {person.email.value}&quot;)
-else:
-    print(&quot;Email: Not mentioned&quot;)
-if person.location.exists:
-    print(f&quot;Location: {person.location.value}&quot;)
-else:
-    print(&quot;Location: Not mentioned&quot;)
-
-from pydantic import BaseModel, Field
-from typing import Optional, List
-
-class Address(BaseModel):
-    street: str
-    city: str
-    country: str
-    zip_code: Optional[str] = None
-
-class ContactInfo(BaseModel):
-    email: Optional[str] = None
-    phone: Optional[str] = None
-address: Optional[Address] = None
-
-class Person(BaseModel):
-    name: str
-    age: int
-    contact: Optional[ContactInfo] = None
-    hobbies: List[str] = Field(default_factory=list)
-
-person = client.chat.completions.create(
-    model=&quot;gpt-4&quot;,  # Better for complex structures
-    response_model=Person,
-    messages=[
-        {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;&quot;&quot;
-        Profile: Jane Smith, 42 years old.
-        She enjoys hiking, photography, and playing piano.
-        Contact her at jane.smith@example.com or at her home in
-        123 Maple Street, Toronto, Canada.
-        &quot;&quot;&quot;}
-    ]
-)
-
-print(f&quot;Name: {person.name}, Age: {person.age}&quot;)
-print(f&quot;Hobbies: {&#x27;, &#x27;.join(person.hobbies)}&quot;)
-
-if person.contact:
-    if person.contact.email:
-        print(f&quot;Email: {person.contact.email}&quot;)
-    if person.contact.phone:
-        print(f&quot;Phone: {person.contact.phone}&quot;)
-    if person.contact.address:
-        addr = person.contact.address
-        print(f&quot;Address: {addr.street}, {addr.city}, {addr.country}&quot;)
 </div>
                 </div>            </div>
+            <p style="margin: 20px 0 40px 0; color: #444; line-height: 1.6; font-size: 1.1em;">
+                This example demonstrates how to handle optional or missing data in structured extractions:
+1. Using Optional type annotations for fields that might not be present in the source text
+2. Using Instructor's Maybe type to explicitly track whether information was present
+
+Optional fields allow your models to gracefully handle incomplete information without
+causing extraction failures when certain data isn't mentioned in the text.
+            </p>
             <div class="row">
                 <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Handle missing or optional data in your structured extractions with Instructor.</div>
+                    <div style='font-size: 0.9em; color: #666;'>Import the necessary libraries</div>
 
                 </div>
                 <div class="code">
                     <pre><code class="language-python">from pydantic import BaseModel, Field
 from typing import Optional
 import instructor
-from openai import OpenAI
+from openai import OpenAI</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Define the Person class with Pydantic</div>
 
-class Person(BaseModel):
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">class Person(BaseModel):
     name: str
     age: int</code></pre>
                 </div>
@@ -490,246 +364,26 @@ class Person(BaseModel):
     messages=[
         {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;John Smith is 35 years old and works as a software engineer.&quot;}
     ]
-)
+)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Output:
+Name: John Smith
+Age: 35
+Email: None
+Phone: None
+Occupation: software engineer</div>
 
-print(f&quot;Name: {person.name}&quot;)
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">print(f&quot;Name: {person.name}&quot;)
 print(f&quot;Age: {person.age}&quot;)
 print(f&quot;Email: {person.email}&quot;)  # None
 print(f&quot;Phone: {person.phone}&quot;)  # None
-print(f&quot;Occupation: {person.occupation}&quot;)  # &quot;software engineer&quot;
-
-from pydantic import BaseModel, Field
-from typing import Optional
-
-class Product(BaseModel):
-    name: str
-    price: float</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Optional with custom defaults</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">currency: str = &quot;USD&quot;
-    in_stock: bool = True
-    category: Optional[str] = None
-    tags: list[str] = Field(default_factory=list)  # Empty list by default
-
-product = client.chat.completions.create(
-    model=&quot;gpt-3.5-turbo&quot;,
-    response_model=Product,
-    messages=[
-        {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Our new coffee mug costs 12.99 and is categorized under &#x27;Kitchen&#x27;.&quot;}
-    ]
-)
-
-print(f&quot;Product: {product.name}&quot;)
-print(f&quot;Price: {product.price} {product.currency}&quot;)  # USD is the default
-print(f&quot;In Stock: {product.in_stock}&quot;)  # True is the default
-print(f&quot;Category: {product.category}&quot;)  # &quot;Kitchen&quot;
-print(f&quot;Tags: {product.tags}&quot;)  # Empty list by default
-
-from pydantic import BaseModel, Field
-from typing import Optional
-
-class JobApplication(BaseModel):
-    name: str = Field(description=&quot;Applicant&#x27;s full name&quot;)
-    email: str = Field(description=&quot;Contact email address&quot;)</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Optional fields with descriptions</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">phone: Optional[str] = Field(
-        None, description=&quot;Phone number in international format (optional)&quot;
-    )
-    years_experience: Optional[int] = Field(
-        None, description=&quot;Years of relevant work experience (optional)&quot;
-    )
-    portfolio_url: Optional[str] = Field(
-        None, description=&quot;Link to portfolio or personal website (optional)&quot;
-    )
-    cover_letter: Optional[str] = Field(
-        None, description=&quot;Brief cover letter or introduction (optional)&quot;
-    )
-
-application = client.chat.completions.create(
-    model=&quot;gpt-3.5-turbo&quot;,
-    response_model=JobApplication,
-    messages=[
-        {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;&quot;&quot;
-        Job application from Sarah Johnson:
-        I&#x27;m applying for the software developer position. My email is sarah.j@example.com
-        and I have 5 years of experience in frontend development. You can see my work
-        at https://sarahjohnson.dev
-        &quot;&quot;&quot;}
-    ]
-)
-
-print(f&quot;Applicant: {application.name}&quot;)
-print(f&quot;Email: {application.email}&quot;)
-print(f&quot;Phone: {application.phone or &#x27;Not provided&#x27;}&quot;)  # None -&gt; &#x27;Not provided&#x27;
-print(f&quot;Experience: {application.years_experience or &#x27;Not specified&#x27;} years&quot;)
-print(f&quot;Portfolio: {application.portfolio_url or &#x27;None provided&#x27;}&quot;)
-print(f&quot;Cover Letter: {application.cover_letter or &#x27;Not included&#x27;}&quot;)</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Instructor provides a `Maybe` type that explicitly tracks whether fields were present in the source text:</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">from pydantic import BaseModel, Field
-from instructor.dsl.maybe import Maybe
-import instructor
-from openai import OpenAI
-
-class Person(BaseModel):
-    name: str
-    age: int</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Maybe fields track if the information was in the text</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">occupation: Maybe[str] = Field(default=None)
-    email: Maybe[str] = Field(default=None)
-    location: Maybe[str] = Field(default=None)</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Patch the client</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">client = instructor.from_openai(OpenAI())</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Extract with Maybe fields</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">person = client.chat.completions.create(
-    model=&quot;gpt-3.5-turbo&quot;,
-    response_model=Person,
-    messages=[
-        {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;John Smith is 35 years old and works as a software engineer.&quot;}
-    ]
-)
-
-print(f&quot;Name: {person.name}&quot;)
-print(f&quot;Age: {person.age}&quot;)</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Check if occupation was present</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">if person.occupation.exists:
-    print(f&quot;Occupation: {person.occupation.value}&quot;)
-else:
-    print(&quot;Occupation: Not mentioned&quot;)</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Check if email was present</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">if person.email.exists:
-    print(f&quot;Email: {person.email.value}&quot;)
-else:
-    print(&quot;Email: Not mentioned&quot;)</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Check if location was present</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">if person.location.exists:
-    print(f&quot;Location: {person.location.value}&quot;)
-else:
-    print(&quot;Location: Not mentioned&quot;)
-
-from pydantic import BaseModel, Field
-from typing import Optional, List
-
-class Address(BaseModel):
-    street: str
-    city: str
-    country: str
-    zip_code: Optional[str] = None
-
-class ContactInfo(BaseModel):
-    email: Optional[str] = None
-    phone: Optional[str] = None</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>An optional nested object</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">address: Optional[Address] = None
-
-class Person(BaseModel):
-    name: str
-    age: int
-    contact: Optional[ContactInfo] = None
-    hobbies: List[str] = Field(default_factory=list)
-
-person = client.chat.completions.create(
-    model=&quot;gpt-4&quot;,  # Better for complex structures
-    response_model=Person,
-    messages=[
-        {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;&quot;&quot;
-        Profile: Jane Smith, 42 years old.
-        She enjoys hiking, photography, and playing piano.
-        Contact her at jane.smith@example.com or at her home in
-        123 Maple Street, Toronto, Canada.
-        &quot;&quot;&quot;}
-    ]
-)
-
-print(f&quot;Name: {person.name}, Age: {person.age}&quot;)
-print(f&quot;Hobbies: {&#x27;, &#x27;.join(person.hobbies)}&quot;)
-
-if person.contact:
-    if person.contact.email:
-        print(f&quot;Email: {person.contact.email}&quot;)
-    if person.contact.phone:
-        print(f&quot;Phone: {person.contact.phone}&quot;)
-    if person.contact.address:
-        addr = person.contact.address
-        print(f&quot;Address: {addr.street}, {addr.city}, {addr.country}&quot;)</code></pre>
+print(f&quot;Occupation: {person.occupation}&quot;)  # &quot;software engineer&quot;</code></pre>
                 </div>
             </div>
             <hr>
@@ -773,7 +427,7 @@ if person.contact:
                     <span>← Previous:</span> <a href="../015-field-validation/">Field Validation</a>
                 </p>
                 <p class="next">
-                    <span>Next:</span> <a href="../017-literals-and-enums/">Literals and Enums</a> →
+                    <span>Next:</span> <a href="../017-working-with-enums/">Working with Enums</a> →
                 </p>
             </div>
         </main>

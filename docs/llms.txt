@@ -27,15 +27,14 @@ Note: A more comprehensive version of this file / documentation is available at 
 
 - Simple Object Extraction: Here we extract basic objects from text with Instructor.
 - List Extraction: You are also able to extract lists of objects from text with Instructor..
-- Simple Nested Structure: This example shows how to work with nested objects.
+- Simple Nested Structure: This example shows how to work with nested objects in Instructor..
 - Field Validation
-- Optional Fields
-- Literals and Enums: This example shows how to use literal types instead of enums for simpler code.
+- Optional Fields: This example demonstrates how to handle optional or missing data in structured extractions: 1.
 
 ## Classification and Analysis
 
-- Simple Classification
-- Multi-label Classification
+- Simple Classification: Perform single-label classification with Instructor and structured outputs..
+- Multi-label Classification Example: This example demonstrates various approaches to multi-label classification using Instructor: 1.
 
 ## Streaming
 
@@ -76,7 +75,7 @@ Note: A more comprehensive version of this file / documentation is available at 
 
 ## Miscellaneous Examples
 
-- Working with Enums
+- Working with Enums: Use enumerated types with Instructor for consistent, validated extractions.
 - Resources
 
 ## Resources

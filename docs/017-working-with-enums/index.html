@@ -6,7 +6,7 @@
     
     <!-- Primary Meta Tags -->
     <title>Working with Enums - Structured Outputs by Example</title>
-    <meta name="description" content="Learn to work with structured outputs through annotated examples">
+    <meta name="description" content="Use enumerated types with Instructor for consistent, validated extractions. Enums help enforce a fixed set of allowed values.">
     <meta name="author" content="Jason Liu">
     <meta name="keywords" content="structured outputs, LLM, Instructor, Pydantic, data extraction, structured data">
     
@@ -17,13 +17,13 @@
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://structuredoutputsbyexample.com/017-working-with-enums/">
     <meta property="og:title" content="Working with Enums - Structured Outputs by Example">
-    <meta property="og:description" content="Learn to work with structured outputs through annotated examples">
+    <meta property="og:description" content="Use enumerated types with Instructor for consistent, validated extractions. Enums help enforce a fixed set of allowed values.">
     
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://structuredoutputsbyexample.com/017-working-with-enums/">
     <meta property="twitter:title" content="Working with Enums - Structured Outputs by Example">
-    <meta property="twitter:description" content="Learn to work with structured outputs through annotated examples">
+    <meta property="twitter:description" content="Use enumerated types with Instructor for consistent, validated extractions. Enums help enforce a fixed set of allowed values.">
 
     <!-- Structured Data / JSON-LD -->
     <script type="application/ld+json">
@@ -31,7 +31,7 @@
   "@context": "https://schema.org",
   "@type": "TechArticle",
   "headline": "Working with Enums",
-  "description": "Learn to work with structured outputs through annotated examples",
+  "description": "Use enumerated types with Instructor for consistent, validated extractions. Enums help enforce a fixed set of allowed values.",
   "author": {
     "@type": "Person",
     "name": "Jason Liu"
@@ -42,8 +42,8 @@
     "url": "https://structuredoutputsbyexample.com"
   },
   "mainEntityOfPage": "https://structuredoutputsbyexample.com/017-working-with-enums/",
-  "datePublished": "2025-04-10T02:14:01+00:00",
-  "dateModified": "2025-04-10T02:14:01+00:00",
+  "datePublished": "2025-04-10T02:23:30+00:00",
+  "dateModified": "2025-04-10T02:23:30+00:00",
   "articleSection": "Miscellaneous Examples",
   "keywords": [
     "structured data",
@@ -279,7 +279,6 @@ class ProductCategory(str, Enum):
     HOME = &quot;home&quot;
     BOOKS = &quot;books&quot;
     TOYS = &quot;toys&quot;
-
 class Product(BaseModel):
     name: str
     price: float
@@ -292,189 +291,17 @@ product = client.chat.completions.create(
         {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Our new wireless headphones cost $79.99 and belong in our electronics department.&quot;}
     ]
 )
-
 print(f&quot;Product: {product.name}&quot;)
 print(f&quot;Price: ${product.price}&quot;)
 print(f&quot;Category: {product.category}&quot;)
-if product.category == ProductCategory.ELECTRONICS:
-    print(&quot;This is an electronic product.&quot;)
-
-from enum import Enum, auto
-from pydantic import BaseModel
-from typing import List
-class Priority(str, Enum):
-    LOW = &quot;low&quot;
-    MEDIUM = &quot;medium&quot;
-    HIGH = &quot;high&quot;
-    CRITICAL = &quot;critical&quot;
-class Status(str, Enum):
-    TODO = &quot;todo&quot;
-    IN_PROGRESS = &quot;in_progress&quot;
-    REVIEW = &quot;review&quot;
-    DONE = &quot;done&quot;
-
-class Task(BaseModel):
-    title: str
-    description: str
-    priority: Priority
-    status: Status
-    tags: List[str] = []
-
-task = client.chat.completions.create(
-    model=&quot;gpt-3.5-turbo&quot;,
-    response_model=Task,
-    messages=[
-        {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;&quot;&quot;
-        Task Details:
-        Title: Fix login page bug
-        Description: Users report seeing errors when trying to log in with special characters
-        Priority: High
-        Status: In Progress
-        Tags: bug, authentication, frontend
-        &quot;&quot;&quot;}
-    ]
-)
-
-print(f&quot;Task: {task.title}&quot;)
-print(f&quot;Description: {task.description}&quot;)
-print(f&quot;Priority: {task.priority}&quot;)  # Priority.HIGH
-print(f&quot;Status: {task.status}&quot;)  # Status.IN_PROGRESS
-print(f&quot;Tags: {&#x27;, &#x27;.join(task.tags)}&quot;)
-if task.priority in [Priority.HIGH, Priority.CRITICAL]:
-    print(&quot;This task requires immediate attention!&quot;)
-
-if task.status == Status.IN_PROGRESS:
-    print(&quot;This task is being worked on.&quot;)
-
-from enum import IntEnum
-from pydantic import BaseModel
-class SeverityLevel(IntEnum):
-    LOW = 1
-    MODERATE = 2
-    HIGH = 3
-    SEVERE = 4
-    CRITICAL = 5
-
-class SecurityIssue(BaseModel):
-    title: str
-    description: str
-    severity: SeverityLevel
-    affected_users: int
-
-issue = client.chat.completions.create(
-    model=&quot;gpt-3.5-turbo&quot;,
-    response_model=SecurityIssue,
-    messages=[
-        {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;&quot;&quot;
-        Security Alert:
-        Issue: Database Exposure
-        Details: Customer database was partially exposed due to misconfigured firewall
-        Severity: 4 (Severe)
-        Affected Users: 5,230
-        &quot;&quot;&quot;}
-    ]
-)
-
-print(f&quot;Issue: {issue.title}&quot;)
-print(f&quot;Description: {issue.description}&quot;)
-print(f&quot;Severity: {issue.severity.name} (Level {issue.severity.value})&quot;)  # &quot;SEVERE (Level 4)&quot;
-print(f&quot;Affected Users: {issue.affected_users}&quot;)
-if issue.severity &gt;= SeverityLevel.HIGH and issue.affected_users &gt; 1000:
-    print(&quot;This requires executive notification!&quot;)
-
-from enum import Enum
-from pydantic import BaseModel, Field
-
-class TicketType(str, Enum):
-    BUG = &quot;bug&quot;
-    FEATURE = &quot;feature&quot;
-    IMPROVEMENT = &quot;improvement&quot;
-    DOCUMENTATION = &quot;documentation&quot;
-    QUESTION = &quot;question&quot;
-
-class Ticket(BaseModel):
-    title: str
-    description: str
-ticket_type: TicketType = Field(
-        description=&quot;&quot;&quot;Type of ticket with these options:
-        - bug: Something is not working correctly
-        - feature: A new capability is requested
-        - improvement: Enhancement to an existing feature
-        - documentation: Updates to documentation
-        - question: Question about functionality&quot;&quot;&quot;
-    )
-
-ticket = client.chat.completions.create(
-    model=&quot;gpt-3.5-turbo&quot;,
-    response_model=Ticket,
-    messages=[
-        {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;&quot;&quot;
-        New Ticket:
-        Title: Add dark mode to application
-        Description: Users would like a dark theme option to reduce eye strain when using the app at night
-        &quot;&quot;&quot;}
-    ]
-)
-
-print(f&quot;Ticket: {ticket.title}&quot;)
-print(f&quot;Description: {ticket.description}&quot;)
-print(f&quot;Type: {ticket.ticket_type}&quot;)  # Should be TicketType.IMPROVEMENT or TicketType.FEATURE
-
-from enum import Flag, auto
-from pydantic import BaseModel, Field
-class Permissions(Flag):
-    NONE = 0
-    READ = auto()       # 1
-    WRITE = auto()      # 2
-    DELETE = auto()     # 4
-    ADMIN = auto()      # 8
-READ_WRITE = READ | WRITE                # 3
-    STANDARD = READ | WRITE | DELETE         # 7
-    ALL = READ | WRITE | DELETE | ADMIN      # 15
-
-class User(BaseModel):
-    name: str
-    role: str
-    permissions: Permissions = Field(
-        description=&quot;&quot;&quot;User permissions, can be a combination of:
-        - READ: Can view content
-        - WRITE: Can create and edit content
-        - DELETE: Can remove content
-        - ADMIN: Has administrative privileges
-        - Or predefined combinations like READ_WRITE, STANDARD, or ALL&quot;&quot;&quot;
-    )
-
-user = client.chat.completions.create(
-    model=&quot;gpt-4&quot;,  # Better for complex models
-    response_model=User,
-    messages=[
-        {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;&quot;&quot;
-        User Profile:
-        Name: Sarah Johnson
-        Role: Content Manager
-        Permissions: Can read, write, and delete content
-        &quot;&quot;&quot;}
-    ]
-)
-
-print(f&quot;User: {user.name}&quot;)
-print(f&quot;Role: {user.role}&quot;)
-print(f&quot;Permissions: {user.permissions.name}&quot;)  # Should be &quot;STANDARD&quot;
-if Permissions.READ in user.permissions:
-    print(&quot;User can read content&quot;)
-
-if Permissions.WRITE in user.permissions:
-    print(&quot;User can write content&quot;)
-
-if Permissions.ADMIN in user.permissions:
-    print(&quot;User has admin privileges&quot;)
-else:
-    print(&quot;User does not have admin privileges&quot;)
 </div>
                 </div>            </div>
+            <p style="margin: 20px 0 40px 0; color: #444; line-height: 1.6; font-size: 1.1em;">
+                Use enumerated types with Instructor for consistent, validated extractions. Enums help enforce a fixed set of allowed values.
+            </p>
             <div class="row">
                 <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Use enumerated types with Instructor for consistent, validated extractions. Enums help enforce a fixed set of allowed values.</div>
+                    <div style='font-size: 0.9em; color: #666;'>Import the necessary libraries</div>
 
                 </div>
                 <div class="code">
@@ -496,9 +323,17 @@ from openai import OpenAI</code></pre>
     CLOTHING = &quot;clothing&quot;
     HOME = &quot;home&quot;
     BOOKS = &quot;books&quot;
-    TOYS = &quot;toys&quot;
+    TOYS = &quot;toys&quot;</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Define a Product model with Pydantic and enum validation</div>
 
-class Product(BaseModel):
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">class Product(BaseModel):
     name: str
     price: float
     category: ProductCategory</code></pre>
@@ -527,276 +362,22 @@ class Product(BaseModel):
     messages=[
         {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Our new wireless headphones cost $79.99 and belong in our electronics department.&quot;}
     ]
-)
+)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Output:
+Product: Our new wireless headphones
+Price: $79.99
+Category: ProductCategory.ELECTRONICS</div>
 
-print(f&quot;Product: {product.name}&quot;)
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">print(f&quot;Product: {product.name}&quot;)
 print(f&quot;Price: ${product.price}&quot;)
 print(f&quot;Category: {product.category}&quot;)</code></pre>
-                </div>
-            </div>
-            <hr>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>You can use the enum for comparisons</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">if product.category == ProductCategory.ELECTRONICS:
-    print(&quot;This is an electronic product.&quot;)
-
-from enum import Enum, auto
-from pydantic import BaseModel
-from typing import List</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Define priority enum</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">class Priority(str, Enum):
-    LOW = &quot;low&quot;
-    MEDIUM = &quot;medium&quot;
-    HIGH = &quot;high&quot;
-    CRITICAL = &quot;critical&quot;</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Define status enum</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">class Status(str, Enum):
-    TODO = &quot;todo&quot;
-    IN_PROGRESS = &quot;in_progress&quot;
-    REVIEW = &quot;review&quot;
-    DONE = &quot;done&quot;
-
-class Task(BaseModel):
-    title: str
-    description: str
-    priority: Priority
-    status: Status
-    tags: List[str] = []
-
-task = client.chat.completions.create(
-    model=&quot;gpt-3.5-turbo&quot;,
-    response_model=Task,
-    messages=[
-        {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;&quot;&quot;
-        Task Details:
-        Title: Fix login page bug
-        Description: Users report seeing errors when trying to log in with special characters
-        Priority: High
-        Status: In Progress
-        Tags: bug, authentication, frontend
-        &quot;&quot;&quot;}
-    ]
-)
-
-print(f&quot;Task: {task.title}&quot;)
-print(f&quot;Description: {task.description}&quot;)
-print(f&quot;Priority: {task.priority}&quot;)  # Priority.HIGH
-print(f&quot;Status: {task.status}&quot;)  # Status.IN_PROGRESS
-print(f&quot;Tags: {&#x27;, &#x27;.join(task.tags)}&quot;)</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Use enums for conditional logic</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">if task.priority in [Priority.HIGH, Priority.CRITICAL]:
-    print(&quot;This task requires immediate attention!&quot;)
-
-if task.status == Status.IN_PROGRESS:
-    print(&quot;This task is being worked on.&quot;)
-
-from enum import IntEnum
-from pydantic import BaseModel</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Define an integer-based enum</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">class SeverityLevel(IntEnum):
-    LOW = 1
-    MODERATE = 2
-    HIGH = 3
-    SEVERE = 4
-    CRITICAL = 5
-
-class SecurityIssue(BaseModel):
-    title: str
-    description: str
-    severity: SeverityLevel
-    affected_users: int
-
-issue = client.chat.completions.create(
-    model=&quot;gpt-3.5-turbo&quot;,
-    response_model=SecurityIssue,
-    messages=[
-        {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;&quot;&quot;
-        Security Alert:
-        Issue: Database Exposure
-        Details: Customer database was partially exposed due to misconfigured firewall
-        Severity: 4 (Severe)
-        Affected Users: 5,230
-        &quot;&quot;&quot;}
-    ]
-)
-
-print(f&quot;Issue: {issue.title}&quot;)
-print(f&quot;Description: {issue.description}&quot;)
-print(f&quot;Severity: {issue.severity.name} (Level {issue.severity.value})&quot;)  # &quot;SEVERE (Level 4)&quot;
-print(f&quot;Affected Users: {issue.affected_users}&quot;)</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Use integer enum for thresholds</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">if issue.severity &gt;= SeverityLevel.HIGH and issue.affected_users &gt; 1000:
-    print(&quot;This requires executive notification!&quot;)
-
-from enum import Enum
-from pydantic import BaseModel, Field
-
-class TicketType(str, Enum):
-    BUG = &quot;bug&quot;
-    FEATURE = &quot;feature&quot;
-    IMPROVEMENT = &quot;improvement&quot;
-    DOCUMENTATION = &quot;documentation&quot;
-    QUESTION = &quot;question&quot;
-
-class Ticket(BaseModel):
-    title: str
-    description: str</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Add descriptions to help the LLM understand the enum</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">ticket_type: TicketType = Field(
-        description=&quot;&quot;&quot;Type of ticket with these options:
-        - bug: Something is not working correctly
-        - feature: A new capability is requested
-        - improvement: Enhancement to an existing feature
-        - documentation: Updates to documentation
-        - question: Question about functionality&quot;&quot;&quot;
-    )
-
-ticket = client.chat.completions.create(
-    model=&quot;gpt-3.5-turbo&quot;,
-    response_model=Ticket,
-    messages=[
-        {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;&quot;&quot;
-        New Ticket:
-        Title: Add dark mode to application
-        Description: Users would like a dark theme option to reduce eye strain when using the app at night
-        &quot;&quot;&quot;}
-    ]
-)
-
-print(f&quot;Ticket: {ticket.title}&quot;)
-print(f&quot;Description: {ticket.description}&quot;)
-print(f&quot;Type: {ticket.ticket_type}&quot;)  # Should be TicketType.IMPROVEMENT or TicketType.FEATURE
-
-from enum import Flag, auto
-from pydantic import BaseModel, Field</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Define a Flag enum for permissions</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">class Permissions(Flag):
-    NONE = 0
-    READ = auto()       # 1
-    WRITE = auto()      # 2
-    DELETE = auto()     # 4
-    ADMIN = auto()      # 8</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Combinations</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">READ_WRITE = READ | WRITE                # 3
-    STANDARD = READ | WRITE | DELETE         # 7
-    ALL = READ | WRITE | DELETE | ADMIN      # 15
-
-class User(BaseModel):
-    name: str
-    role: str
-    permissions: Permissions = Field(
-        description=&quot;&quot;&quot;User permissions, can be a combination of:
-        - READ: Can view content
-        - WRITE: Can create and edit content
-        - DELETE: Can remove content
-        - ADMIN: Has administrative privileges
-        - Or predefined combinations like READ_WRITE, STANDARD, or ALL&quot;&quot;&quot;
-    )
-
-user = client.chat.completions.create(
-    model=&quot;gpt-4&quot;,  # Better for complex models
-    response_model=User,
-    messages=[
-        {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;&quot;&quot;
-        User Profile:
-        Name: Sarah Johnson
-        Role: Content Manager
-        Permissions: Can read, write, and delete content
-        &quot;&quot;&quot;}
-    ]
-)
-
-print(f&quot;User: {user.name}&quot;)
-print(f&quot;Role: {user.role}&quot;)
-print(f&quot;Permissions: {user.permissions.name}&quot;)  # Should be &quot;STANDARD&quot;</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Check individual permissions</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">if Permissions.READ in user.permissions:
-    print(&quot;User can read content&quot;)
-
-if Permissions.WRITE in user.permissions:
-    print(&quot;User can write content&quot;)
-
-if Permissions.ADMIN in user.permissions:
-    print(&quot;User has admin privileges&quot;)
-else:
-    print(&quot;User does not have admin privileges&quot;)</code></pre>
                 </div>
             </div>
             <hr>

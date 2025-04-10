@@ -3256,7 +3256,7 @@
     {
       "id": "014-nested-structures",
       "title": "Simple Nested Structure",
-      "description": "This example shows how to work with nested objects",
+      "description": "This example shows how to work with nested objects in Instructor.",
       "order": 14,
       "code_segments": [
         {
@@ -3720,7 +3720,7 @@
     {
       "id": "016-optional-fields",
       "title": "Optional Fields",
-      "description": "",
+      "description": "This example demonstrates how to handle optional or missing data in structured extractions:\n1. Using Optional type annotations for fields that might not be present in the source text\n2. Using Instructor's Maybe type to explicitly track whether information was present\n\nOptional fields allow your models to gracefully handle incomplete information without\ncausing extraction failures when certain data isn't mentioned in the text.",
       "order": 16,
       "code_segments": [
         {
@@ -3728,36 +3728,62 @@
           "display_code": "\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 2,
+          "start_line": 8,
           "line_range": [
-            2,
-            2
+            8,
+            8
           ]
         },
         {
-          "code": "# Handle missing or optional data in your structured extractions with Instructor.\n",
+          "code": "# Import the necessary libraries\n",
           "display_code": "",
-          "annotation": "Handle missing or optional data in your structured extractions with Instructor.",
+          "annotation": "Import the necessary libraries",
           "is_comment": true,
-          "start_line": 3,
+          "start_line": 9,
           "line_range": [
-            3,
-            3
+            9,
+            9
           ],
           "target_line_range": [
-            4,
-            11
+            10,
+            14
           ]
         },
         {
-          "code": "from pydantic import BaseModel, Field\nfrom typing import Optional\nimport instructor\nfrom openai import OpenAI\n\nclass Person(BaseModel):\n    name: str\n    age: int\n",
-          "display_code": "from pydantic import BaseModel, Field\nfrom typing import Optional\nimport instructor\nfrom openai import OpenAI\n\nclass Person(BaseModel):\n    name: str\n    age: int\n",
+          "code": "from pydantic import BaseModel, Field\nfrom typing import Optional\nimport instructor\nfrom openai import OpenAI\n\n",
+          "display_code": "from pydantic import BaseModel, Field\nfrom typing import Optional\nimport instructor\nfrom openai import OpenAI\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 4,
+          "start_line": 10,
           "line_range": [
-            4,
-            11
+            10,
+            14
+          ]
+        },
+        {
+          "code": "# Define the Person class with Pydantic\n",
+          "display_code": "",
+          "annotation": "Define the Person class with Pydantic",
+          "is_comment": true,
+          "start_line": 15,
+          "line_range": [
+            15,
+            15
+          ],
+          "target_line_range": [
+            16,
+            18
+          ]
+        },
+        {
+          "code": "class Person(BaseModel):\n    name: str\n    age: int\n",
+          "display_code": "class Person(BaseModel):\n    name: str\n    age: int\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 16,
+          "line_range": [
+            16,
+            18
           ]
         },
         {
@@ -3765,14 +3791,14 @@
           "display_code": "",
           "annotation": "Optional fields with default value of None",
           "is_comment": true,
-          "start_line": 12,
+          "start_line": 19,
           "line_range": [
-            12,
-            12
+            19,
+            19
           ],
           "target_line_range": [
-            13,
-            16
+            20,
+            23
           ]
         },
         {
@@ -3780,10 +3806,10 @@
           "display_code": "    email: Optional[str] = None\n    phone: Optional[str] = None\n    occupation: Optional[str] = None\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 13,
+          "start_line": 20,
           "line_range": [
-            13,
-            16
+            20,
+            23
           ]
         },
         {
@@ -3791,14 +3817,14 @@
           "display_code": "",
           "annotation": "Patch the client",
           "is_comment": true,
-          "start_line": 17,
+          "start_line": 24,
           "line_range": [
-            17,
-            17
+            24,
+            24
           ],
           "target_line_range": [
-            18,
-            19
+            25,
+            26
           ]
         },
         {
@@ -3806,10 +3832,10 @@
           "display_code": "client = instructor.from_openai(OpenAI())\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 18,
+          "start_line": 25,
           "line_range": [
-            18,
-            19
+            25,
+            26
           ]
         },
         {
@@ -3817,285 +3843,51 @@
           "display_code": "",
           "annotation": "Extract with optional fields",
           "is_comment": true,
-          "start_line": 20,
+          "start_line": 27,
           "line_range": [
-            20,
-            20
+            27,
+            27
           ],
           "target_line_range": [
-            21,
-            40
+            28,
+            35
           ]
         },
         {
-          "code": "person = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    response_model=Person,\n    messages=[\n        {\"role\": \"user\", \"content\": \"John Smith is 35 years old and works as a software engineer.\"}\n    ]\n)\n\nprint(f\"Name: {person.name}\")\nprint(f\"Age: {person.age}\")\nprint(f\"Email: {person.email}\")  # None\nprint(f\"Phone: {person.phone}\")  # None\nprint(f\"Occupation: {person.occupation}\")  # \"software engineer\"\n\nfrom pydantic import BaseModel, Field\nfrom typing import Optional\n\nclass Product(BaseModel):\n    name: str\n    price: float\n",
-          "display_code": "person = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    response_model=Person,\n    messages=[\n        {\"role\": \"user\", \"content\": \"John Smith is 35 years old and works as a software engineer.\"}\n    ]\n)\n\nprint(f\"Name: {person.name}\")\nprint(f\"Age: {person.age}\")\nprint(f\"Email: {person.email}\")  # None\nprint(f\"Phone: {person.phone}\")  # None\nprint(f\"Occupation: {person.occupation}\")  # \"software engineer\"\n\nfrom pydantic import BaseModel, Field\nfrom typing import Optional\n\nclass Product(BaseModel):\n    name: str\n    price: float\n",
+          "code": "person = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    response_model=Person,\n    messages=[\n        {\"role\": \"user\", \"content\": \"John Smith is 35 years old and works as a software engineer.\"}\n    ]\n)\n\n",
+          "display_code": "person = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    response_model=Person,\n    messages=[\n        {\"role\": \"user\", \"content\": \"John Smith is 35 years old and works as a software engineer.\"}\n    ]\n)\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 21,
+          "start_line": 28,
           "line_range": [
-            21,
-            40
+            28,
+            35
           ]
         },
         {
-          "code": "    # Optional with custom defaults\n",
+          "code": "# Output:\n# Name: John Smith\n# Age: 35\n# Email: None\n# Phone: None\n# Occupation: software engineer\n",
           "display_code": "",
-          "annotation": "Optional with custom defaults",
+          "annotation": "Output:\nName: John Smith\nAge: 35\nEmail: None\nPhone: None\nOccupation: software engineer",
           "is_comment": true,
-          "start_line": 41,
+          "start_line": 36,
           "line_range": [
-            41,
+            36,
             41
           ],
           "target_line_range": [
             42,
-            67
+            46
           ]
         },
         {
-          "code": "    currency: str = \"USD\"\n    in_stock: bool = True\n    category: Optional[str] = None\n    tags: list[str] = Field(default_factory=list)  # Empty list by default\n\nproduct = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    response_model=Product,\n    messages=[\n        {\"role\": \"user\", \"content\": \"Our new coffee mug costs 12.99 and is categorized under 'Kitchen'.\"}\n    ]\n)\n\nprint(f\"Product: {product.name}\")\nprint(f\"Price: {product.price} {product.currency}\")  # USD is the default\nprint(f\"In Stock: {product.in_stock}\")  # True is the default\nprint(f\"Category: {product.category}\")  # \"Kitchen\"\nprint(f\"Tags: {product.tags}\")  # Empty list by default\n\nfrom pydantic import BaseModel, Field\nfrom typing import Optional\n\nclass JobApplication(BaseModel):\n    name: str = Field(description=\"Applicant's full name\")\n    email: str = Field(description=\"Contact email address\")\n\n",
-          "display_code": "    currency: str = \"USD\"\n    in_stock: bool = True\n    category: Optional[str] = None\n    tags: list[str] = Field(default_factory=list)  # Empty list by default\n\nproduct = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    response_model=Product,\n    messages=[\n        {\"role\": \"user\", \"content\": \"Our new coffee mug costs 12.99 and is categorized under 'Kitchen'.\"}\n    ]\n)\n\nprint(f\"Product: {product.name}\")\nprint(f\"Price: {product.price} {product.currency}\")  # USD is the default\nprint(f\"In Stock: {product.in_stock}\")  # True is the default\nprint(f\"Category: {product.category}\")  # \"Kitchen\"\nprint(f\"Tags: {product.tags}\")  # Empty list by default\n\nfrom pydantic import BaseModel, Field\nfrom typing import Optional\n\nclass JobApplication(BaseModel):\n    name: str = Field(description=\"Applicant's full name\")\n    email: str = Field(description=\"Contact email address\")\n\n",
+          "code": "print(f\"Name: {person.name}\")\nprint(f\"Age: {person.age}\")\nprint(f\"Email: {person.email}\")  # None\nprint(f\"Phone: {person.phone}\")  # None\nprint(f\"Occupation: {person.occupation}\")  # \"software engineer\"\n",
+          "display_code": "print(f\"Name: {person.name}\")\nprint(f\"Age: {person.age}\")\nprint(f\"Email: {person.email}\")  # None\nprint(f\"Phone: {person.phone}\")  # None\nprint(f\"Occupation: {person.occupation}\")  # \"software engineer\"\n",
           "annotation": "",
           "is_comment": false,
           "start_line": 42,
           "line_range": [
             42,
-            67
-          ]
-        },
-        {
-          "code": "    # Optional fields with descriptions\n",
-          "display_code": "",
-          "annotation": "Optional fields with descriptions",
-          "is_comment": true,
-          "start_line": 68,
-          "line_range": [
-            68,
-            68
-          ],
-          "target_line_range": [
-            69,
-            101
-          ]
-        },
-        {
-          "code": "    phone: Optional[str] = Field(\n        None, description=\"Phone number in international format (optional)\"\n    )\n    years_experience: Optional[int] = Field(\n        None, description=\"Years of relevant work experience (optional)\"\n    )\n    portfolio_url: Optional[str] = Field(\n        None, description=\"Link to portfolio or personal website (optional)\"\n    )\n    cover_letter: Optional[str] = Field(\n        None, description=\"Brief cover letter or introduction (optional)\"\n    )\n\napplication = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    response_model=JobApplication,\n    messages=[\n        {\"role\": \"user\", \"content\": \"\"\"\n        Job application from Sarah Johnson:\n        I'm applying for the software developer position. My email is sarah.j@example.com\n        and I have 5 years of experience in frontend development. You can see my work\n        at https://sarahjohnson.dev\n        \"\"\"}\n    ]\n)\n\nprint(f\"Applicant: {application.name}\")\nprint(f\"Email: {application.email}\")\nprint(f\"Phone: {application.phone or 'Not provided'}\")  # None -> 'Not provided'\nprint(f\"Experience: {application.years_experience or 'Not specified'} years\")\nprint(f\"Portfolio: {application.portfolio_url or 'None provided'}\")\nprint(f\"Cover Letter: {application.cover_letter or 'Not included'}\")\n\n",
-          "display_code": "    phone: Optional[str] = Field(\n        None, description=\"Phone number in international format (optional)\"\n    )\n    years_experience: Optional[int] = Field(\n        None, description=\"Years of relevant work experience (optional)\"\n    )\n    portfolio_url: Optional[str] = Field(\n        None, description=\"Link to portfolio or personal website (optional)\"\n    )\n    cover_letter: Optional[str] = Field(\n        None, description=\"Brief cover letter or introduction (optional)\"\n    )\n\napplication = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    response_model=JobApplication,\n    messages=[\n        {\"role\": \"user\", \"content\": \"\"\"\n        Job application from Sarah Johnson:\n        I'm applying for the software developer position. My email is sarah.j@example.com\n        and I have 5 years of experience in frontend development. You can see my work\n        at https://sarahjohnson.dev\n        \"\"\"}\n    ]\n)\n\nprint(f\"Applicant: {application.name}\")\nprint(f\"Email: {application.email}\")\nprint(f\"Phone: {application.phone or 'Not provided'}\")  # None -> 'Not provided'\nprint(f\"Experience: {application.years_experience or 'Not specified'} years\")\nprint(f\"Portfolio: {application.portfolio_url or 'None provided'}\")\nprint(f\"Cover Letter: {application.cover_letter or 'Not included'}\")\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 69,
-          "line_range": [
-            69,
-            101
-          ]
-        },
-        {
-          "code": "# Instructor provides a `Maybe` type that explicitly tracks whether fields were present in the source text:\n",
-          "display_code": "",
-          "annotation": "Instructor provides a `Maybe` type that explicitly tracks whether fields were present in the source text:",
-          "is_comment": true,
-          "start_line": 102,
-          "line_range": [
-            102,
-            102
-          ],
-          "target_line_range": [
-            103,
-            110
-          ]
-        },
-        {
-          "code": "from pydantic import BaseModel, Field\nfrom instructor.dsl.maybe import Maybe\nimport instructor\nfrom openai import OpenAI\n\nclass Person(BaseModel):\n    name: str\n    age: int\n",
-          "display_code": "from pydantic import BaseModel, Field\nfrom instructor.dsl.maybe import Maybe\nimport instructor\nfrom openai import OpenAI\n\nclass Person(BaseModel):\n    name: str\n    age: int\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 103,
-          "line_range": [
-            103,
-            110
-          ]
-        },
-        {
-          "code": "    # Maybe fields track if the information was in the text\n",
-          "display_code": "",
-          "annotation": "Maybe fields track if the information was in the text",
-          "is_comment": true,
-          "start_line": 111,
-          "line_range": [
-            111,
-            111
-          ],
-          "target_line_range": [
-            112,
-            115
-          ]
-        },
-        {
-          "code": "    occupation: Maybe[str] = Field(default=None)\n    email: Maybe[str] = Field(default=None)\n    location: Maybe[str] = Field(default=None)\n\n",
-          "display_code": "    occupation: Maybe[str] = Field(default=None)\n    email: Maybe[str] = Field(default=None)\n    location: Maybe[str] = Field(default=None)\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 112,
-          "line_range": [
-            112,
-            115
-          ]
-        },
-        {
-          "code": "# Patch the client\n",
-          "display_code": "",
-          "annotation": "Patch the client",
-          "is_comment": true,
-          "start_line": 116,
-          "line_range": [
-            116,
-            116
-          ],
-          "target_line_range": [
-            117,
-            118
-          ]
-        },
-        {
-          "code": "client = instructor.from_openai(OpenAI())\n\n",
-          "display_code": "client = instructor.from_openai(OpenAI())\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 117,
-          "line_range": [
-            117,
-            118
-          ]
-        },
-        {
-          "code": "# Extract with Maybe fields\n",
-          "display_code": "",
-          "annotation": "Extract with Maybe fields",
-          "is_comment": true,
-          "start_line": 119,
-          "line_range": [
-            119,
-            119
-          ],
-          "target_line_range": [
-            120,
-            130
-          ]
-        },
-        {
-          "code": "person = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    response_model=Person,\n    messages=[\n        {\"role\": \"user\", \"content\": \"John Smith is 35 years old and works as a software engineer.\"}\n    ]\n)\n\nprint(f\"Name: {person.name}\")\nprint(f\"Age: {person.age}\")\n\n",
-          "display_code": "person = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    response_model=Person,\n    messages=[\n        {\"role\": \"user\", \"content\": \"John Smith is 35 years old and works as a software engineer.\"}\n    ]\n)\n\nprint(f\"Name: {person.name}\")\nprint(f\"Age: {person.age}\")\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 120,
-          "line_range": [
-            120,
-            130
-          ]
-        },
-        {
-          "code": "# Check if occupation was present\n",
-          "display_code": "",
-          "annotation": "Check if occupation was present",
-          "is_comment": true,
-          "start_line": 131,
-          "line_range": [
-            131,
-            131
-          ],
-          "target_line_range": [
-            132,
-            136
-          ]
-        },
-        {
-          "code": "if person.occupation.exists:\n    print(f\"Occupation: {person.occupation.value}\")\nelse:\n    print(\"Occupation: Not mentioned\")\n\n",
-          "display_code": "if person.occupation.exists:\n    print(f\"Occupation: {person.occupation.value}\")\nelse:\n    print(\"Occupation: Not mentioned\")\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 132,
-          "line_range": [
-            132,
-            136
-          ]
-        },
-        {
-          "code": "# Check if email was present\n",
-          "display_code": "",
-          "annotation": "Check if email was present",
-          "is_comment": true,
-          "start_line": 137,
-          "line_range": [
-            137,
-            137
-          ],
-          "target_line_range": [
-            138,
-            142
-          ]
-        },
-        {
-          "code": "if person.email.exists:\n    print(f\"Email: {person.email.value}\")\nelse:\n    print(\"Email: Not mentioned\")\n\n",
-          "display_code": "if person.email.exists:\n    print(f\"Email: {person.email.value}\")\nelse:\n    print(\"Email: Not mentioned\")\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 138,
-          "line_range": [
-            138,
-            142
-          ]
-        },
-        {
-          "code": "# Check if location was present\n",
-          "display_code": "",
-          "annotation": "Check if location was present",
-          "is_comment": true,
-          "start_line": 143,
-          "line_range": [
-            143,
-            143
-          ],
-          "target_line_range": [
-            144,
-            161
-          ]
-        },
-        {
-          "code": "if person.location.exists:\n    print(f\"Location: {person.location.value}\")\nelse:\n    print(\"Location: Not mentioned\")\n\nfrom pydantic import BaseModel, Field\nfrom typing import Optional, List\n\nclass Address(BaseModel):\n    street: str\n    city: str\n    country: str\n    zip_code: Optional[str] = None\n\nclass ContactInfo(BaseModel):\n    email: Optional[str] = None\n    phone: Optional[str] = None\n\n",
-          "display_code": "if person.location.exists:\n    print(f\"Location: {person.location.value}\")\nelse:\n    print(\"Location: Not mentioned\")\n\nfrom pydantic import BaseModel, Field\nfrom typing import Optional, List\n\nclass Address(BaseModel):\n    street: str\n    city: str\n    country: str\n    zip_code: Optional[str] = None\n\nclass ContactInfo(BaseModel):\n    email: Optional[str] = None\n    phone: Optional[str] = None\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 144,
-          "line_range": [
-            144,
-            161
-          ]
-        },
-        {
-          "code": "    # An optional nested object\n",
-          "display_code": "",
-          "annotation": "An optional nested object",
-          "is_comment": true,
-          "start_line": 162,
-          "line_range": [
-            162,
-            162
-          ],
-          "target_line_range": [
-            163,
-            195
-          ]
-        },
-        {
-          "code": "    address: Optional[Address] = None\n\nclass Person(BaseModel):\n    name: str\n    age: int\n    contact: Optional[ContactInfo] = None\n    hobbies: List[str] = Field(default_factory=list)\n\nperson = client.chat.completions.create(\n    model=\"gpt-4\",  # Better for complex structures\n    response_model=Person,\n    messages=[\n        {\"role\": \"user\", \"content\": \"\"\"\n        Profile: Jane Smith, 42 years old.\n        She enjoys hiking, photography, and playing piano.\n        Contact her at jane.smith@example.com or at her home in\n        123 Maple Street, Toronto, Canada.\n        \"\"\"}\n    ]\n)\n\nprint(f\"Name: {person.name}, Age: {person.age}\")\nprint(f\"Hobbies: {', '.join(person.hobbies)}\")\n\nif person.contact:\n    if person.contact.email:\n        print(f\"Email: {person.contact.email}\")\n    if person.contact.phone:\n        print(f\"Phone: {person.contact.phone}\")\n    if person.contact.address:\n        addr = person.contact.address\n        print(f\"Address: {addr.street}, {addr.city}, {addr.country}\")\n\n",
-          "display_code": "    address: Optional[Address] = None\n\nclass Person(BaseModel):\n    name: str\n    age: int\n    contact: Optional[ContactInfo] = None\n    hobbies: List[str] = Field(default_factory=list)\n\nperson = client.chat.completions.create(\n    model=\"gpt-4\",  # Better for complex structures\n    response_model=Person,\n    messages=[\n        {\"role\": \"user\", \"content\": \"\"\"\n        Profile: Jane Smith, 42 years old.\n        She enjoys hiking, photography, and playing piano.\n        Contact her at jane.smith@example.com or at her home in\n        123 Maple Street, Toronto, Canada.\n        \"\"\"}\n    ]\n)\n\nprint(f\"Name: {person.name}, Age: {person.age}\")\nprint(f\"Hobbies: {', '.join(person.hobbies)}\")\n\nif person.contact:\n    if person.contact.email:\n        print(f\"Email: {person.contact.email}\")\n    if person.contact.phone:\n        print(f\"Phone: {person.contact.phone}\")\n    if person.contact.address:\n        addr = person.contact.address\n        print(f\"Address: {addr.street}, {addr.city}, {addr.country}\")\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 163,
-          "line_range": [
-            163,
-            195
+            46
           ]
         }
       ],
@@ -4119,104 +3911,104 @@
       "section_title": "Basic Extraction Patterns"
     },
     {
-      "id": "017-literals-and-enums",
-      "title": "Literals and Enums",
-      "description": "This example shows how to use literal types instead of enums for simpler code",
-      "order": 17,
+      "id": "018-simple-classification",
+      "title": "Simple Classification",
+      "description": "Perform single-label classification with Instructor and structured outputs.",
+      "order": 18,
       "code_segments": [
         {
-          "code": "\nimport instructor\nfrom openai import OpenAI\nfrom pydantic import BaseModel, Field\nfrom typing import Literal\n\n",
-          "display_code": "\nimport instructor\nfrom openai import OpenAI\nfrom pydantic import BaseModel, Field\nfrom typing import Literal\n\n",
+          "code": "\n",
+          "display_code": "\n",
           "annotation": "",
           "is_comment": false,
           "start_line": 3,
           "line_range": [
             3,
-            8
+            3
           ]
         },
         {
-          "code": "# Define a model with Literal types (preferred over enums for simplicity)\n",
+          "code": "# Import the necessary libraries\n",
           "display_code": "",
-          "annotation": "Define a model with Literal types (preferred over enums for simplicity)",
+          "annotation": "Import the necessary libraries",
           "is_comment": true,
-          "start_line": 9,
+          "start_line": 4,
           "line_range": [
-            9,
-            9
+            4,
+            4
           ],
           "target_line_range": [
-            10,
-            11
+            5,
+            9
           ]
         },
         {
-          "code": "class Task(BaseModel):\n    title: str\n",
-          "display_code": "class Task(BaseModel):\n    title: str\n",
+          "code": "from pydantic import BaseModel, Field\nfrom typing import Literal\nimport instructor\nfrom openai import OpenAI\n\n",
+          "display_code": "from pydantic import BaseModel, Field\nfrom typing import Literal\nimport instructor\nfrom openai import OpenAI\n\n",
           "annotation": "",
           "is_comment": false,
+          "start_line": 5,
+          "line_range": [
+            5,
+            9
+          ]
+        },
+        {
+          "code": "# Define a Classification model with Pydantic\n",
+          "display_code": "",
+          "annotation": "Define a Classification model with Pydantic",
+          "is_comment": true,
           "start_line": 10,
           "line_range": [
             10,
-            11
-          ]
-        },
-        {
-          "code": "    # Literal type restricts values to this exact set\n",
-          "display_code": "",
-          "annotation": "Literal type restricts values to this exact set",
-          "is_comment": true,
-          "start_line": 12,
-          "line_range": [
-            12,
-            12
+            10
           ],
           "target_line_range": [
-            13,
-            15
+            11,
+            17
           ]
         },
         {
-          "code": "    priority: Literal[\"low\", \"medium\", \"high\"] = Field(\n        description=\"Task priority level (low, medium, or high)\"\n    )\n",
-          "display_code": "    priority: Literal[\"low\", \"medium\", \"high\"] = Field(\n        description=\"Task priority level (low, medium, or high)\"\n    )\n",
+          "code": "class Classification(BaseModel):\n    \"\"\"A single-label classification for text as SPAM or NOT_SPAM\"\"\"\n\n    label: Literal[\"SPAM\", \"NOT_SPAM\"] = Field(\n        description=\"The classification label, either SPAM or NOT_SPAM\"\n    )\n\n",
+          "display_code": "class Classification(BaseModel):\n    \"\"\"A single-label classification for text as SPAM or NOT_SPAM\"\"\"\n\n    label: Literal[\"SPAM\", \"NOT_SPAM\"] = Field(\n        description=\"The classification label, either SPAM or NOT_SPAM\"\n    )\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 13,
+          "start_line": 11,
           "line_range": [
-            13,
-            15
+            11,
+            17
           ]
         },
         {
-          "code": "    # Another Literal type for status\n",
+          "code": "# Patch the client\n",
           "display_code": "",
-          "annotation": "Another Literal type for status",
+          "annotation": "Patch the client",
           "is_comment": true,
-          "start_line": 16,
+          "start_line": 18,
           "line_range": [
-            16,
-            16
+            18,
+            18
           ],
           "target_line_range": [
-            17,
+            19,
             20
           ]
         },
         {
-          "code": "    status: Literal[\"todo\", \"in_progress\", \"done\"] = Field(\n        description=\"Current task status\"\n    )\n\n",
-          "display_code": "    status: Literal[\"todo\", \"in_progress\", \"done\"] = Field(\n        description=\"Current task status\"\n    )\n\n",
+          "code": "client = instructor.from_openai(OpenAI())\n\n",
+          "display_code": "client = instructor.from_openai(OpenAI())\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 17,
+          "start_line": 19,
           "line_range": [
-            17,
+            19,
             20
           ]
         },
         {
-          "code": "# Setup client\n",
+          "code": "# Define a function to classify text\n",
           "display_code": "",
-          "annotation": "Setup client",
+          "annotation": "Define a function to classify text",
           "is_comment": true,
           "start_line": 21,
           "line_range": [
@@ -4225,213 +4017,18 @@
           ],
           "target_line_range": [
             22,
-            23
+            46
           ]
         },
         {
-          "code": "client = instructor.from_openai(OpenAI())\n\n",
-          "display_code": "client = instructor.from_openai(OpenAI())\n\n",
+          "code": "def classify_text(text: str) -> Classification:\n    return client.chat.completions.create(\n        model=\"gpt-3.5-turbo\",\n        response_model=Classification,\n        messages=[\n            {\n                \"role\": \"system\",\n                \"content\": \"\"\"\n                You are an email spam classifier. Classify the provided text as either SPAM or NOT_SPAM.\n\n                Examples of SPAM:\n                - \"Claim your free prize now!\"\n                - \"Make $1000 a day working from home\"\n                - \"Limited time offer - 90% discount\"\n\n                Examples of NOT_SPAM:\n                - \"Can we schedule a meeting tomorrow?\"\n                - \"Here's the report you requested\"\n                - \"Please review the attached document\"\n                \"\"\"\n            },\n            {\"role\": \"user\", \"content\": f\"Classify this text: {text}\"}\n        ]\n    )\n\n",
+          "display_code": "def classify_text(text: str) -> Classification:\n    return client.chat.completions.create(\n        model=\"gpt-3.5-turbo\",\n        response_model=Classification,\n        messages=[\n            {\n                \"role\": \"system\",\n                \"content\": \"\"\"\n                You are an email spam classifier. Classify the provided text as either SPAM or NOT_SPAM.\n\n                Examples of SPAM:\n                - \"Claim your free prize now!\"\n                - \"Make $1000 a day working from home\"\n                - \"Limited time offer - 90% discount\"\n\n                Examples of NOT_SPAM:\n                - \"Can we schedule a meeting tomorrow?\"\n                - \"Here's the report you requested\"\n                - \"Please review the attached document\"\n                \"\"\"\n            },\n            {\"role\": \"user\", \"content\": f\"Classify this text: {text}\"}\n        ]\n    )\n\n",
           "annotation": "",
           "is_comment": false,
           "start_line": 22,
           "line_range": [
             22,
-            23
-          ]
-        },
-        {
-          "code": "# Extract data with Literal validation\n",
-          "display_code": "",
-          "annotation": "Extract data with Literal validation",
-          "is_comment": true,
-          "start_line": 24,
-          "line_range": [
-            24,
-            24
-          ],
-          "target_line_range": [
-            25,
-            32
-          ]
-        },
-        {
-          "code": "task = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    response_model=Task,\n    messages=[\n        {\"role\": \"user\", \"content\": \"Fix login page bug - high priority, currently in progress\"}\n    ]\n)\n\n",
-          "display_code": "task = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    response_model=Task,\n    messages=[\n        {\"role\": \"user\", \"content\": \"Fix login page bug - high priority, currently in progress\"}\n    ]\n)\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 25,
-          "line_range": [
-            25,
-            32
-          ]
-        },
-        {
-          "code": "# Use the validated data\n",
-          "display_code": "",
-          "annotation": "Use the validated data",
-          "is_comment": true,
-          "start_line": 33,
-          "line_range": [
-            33,
-            33
-          ],
-          "target_line_range": [
-            34,
-            37
-          ]
-        },
-        {
-          "code": "print(f\"Task: {task.title}\")\nprint(f\"Priority: {task.priority}\")  # Will be \"high\"\nprint(f\"Status: {task.status}\")      # Will be \"in_progress\"\n\n",
-          "display_code": "print(f\"Task: {task.title}\")\nprint(f\"Priority: {task.priority}\")  # Will be \"high\"\nprint(f\"Status: {task.status}\")      # Will be \"in_progress\"\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 34,
-          "line_range": [
-            34,
-            37
-          ]
-        },
-        {
-          "code": "# Check values with simple string comparison\n",
-          "display_code": "",
-          "annotation": "Check values with simple string comparison",
-          "is_comment": true,
-          "start_line": 38,
-          "line_range": [
-            38,
-            38
-          ],
-          "target_line_range": [
-            39,
-            41
-          ]
-        },
-        {
-          "code": "if task.priority == \"high\":\n    print(\"This task requires immediate attention!\")\n\n",
-          "display_code": "if task.priority == \"high\":\n    print(\"This task requires immediate attention!\")\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 39,
-          "line_range": [
-            39,
-            41
-          ]
-        },
-        {
-          "code": "# For comparison, here's the enum approach (more verbose)\n# ======================================================\n",
-          "display_code": "",
-          "annotation": "For comparison, here's the enum approach (more verbose)\n======================================================",
-          "is_comment": true,
-          "start_line": 42,
-          "line_range": [
-            42,
-            43
-          ],
-          "target_line_range": [
-            44,
-            60
-          ]
-        },
-        {
-          "code": "import enum\n\nclass Priority(str, enum.Enum):\n    LOW = \"low\"\n    MEDIUM = \"medium\"\n    HIGH = \"high\"\n\nclass Status(str, enum.Enum):\n    TODO = \"todo\"\n    IN_PROGRESS = \"in_progress\"\n    DONE = \"done\"\n\nclass TaskWithEnums(BaseModel):\n    title: str\n    priority: Priority\n    status: Status\n\n",
-          "display_code": "import enum\n\nclass Priority(str, enum.Enum):\n    LOW = \"low\"\n    MEDIUM = \"medium\"\n    HIGH = \"high\"\n\nclass Status(str, enum.Enum):\n    TODO = \"todo\"\n    IN_PROGRESS = \"in_progress\"\n    DONE = \"done\"\n\nclass TaskWithEnums(BaseModel):\n    title: str\n    priority: Priority\n    status: Status\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 44,
-          "line_range": [
-            44,
-            60
-          ]
-        },
-        {
-          "code": "# Using enums requires more code and is harder to understand at a glance",
-          "display_code": "",
-          "annotation": "Using enums requires more code and is harder to understand at a glance",
-          "is_comment": true,
-          "start_line": 61,
-          "line_range": [
-            61,
-            61
-          ],
-          "target_line_range": [
-            44,
-            60
-          ]
-        }
-      ],
-      "shell_segments": [],
-      "image_data": [],
-      "documentation_links": [],
-      "section_id": "003-basic-extraction",
-      "section_title": "Basic Extraction Patterns"
-    },
-    {
-      "id": "018-simple-classification",
-      "title": "Simple Classification",
-      "description": "",
-      "order": 18,
-      "code_segments": [
-        {
-          "code": "\n",
-          "display_code": "\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 2,
-          "line_range": [
-            2,
-            2
-          ]
-        },
-        {
-          "code": "# Perform single-label classification with Instructor and structured outputs.\n",
-          "display_code": "",
-          "annotation": "Perform single-label classification with Instructor and structured outputs.",
-          "is_comment": true,
-          "start_line": 3,
-          "line_range": [
-            3,
-            3
-          ],
-          "target_line_range": [
-            4,
-            15
-          ]
-        },
-        {
-          "code": "from pydantic import BaseModel, Field\nfrom typing import Literal\nimport instructor\nfrom openai import OpenAI\n\nclass Classification(BaseModel):\n    \"\"\"A single-label classification for text as SPAM or NOT_SPAM\"\"\"\n\n    label: Literal[\"SPAM\", \"NOT_SPAM\"] = Field(\n        description=\"The classification label, either SPAM or NOT_SPAM\"\n    )\n\n",
-          "display_code": "from pydantic import BaseModel, Field\nfrom typing import Literal\nimport instructor\nfrom openai import OpenAI\n\nclass Classification(BaseModel):\n    \"\"\"A single-label classification for text as SPAM or NOT_SPAM\"\"\"\n\n    label: Literal[\"SPAM\", \"NOT_SPAM\"] = Field(\n        description=\"The classification label, either SPAM or NOT_SPAM\"\n    )\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 4,
-          "line_range": [
-            4,
-            15
-          ]
-        },
-        {
-          "code": "# Patch the client\n",
-          "display_code": "",
-          "annotation": "Patch the client",
-          "is_comment": true,
-          "start_line": 16,
-          "line_range": [
-            16,
-            16
-          ],
-          "target_line_range": [
-            17,
-            43
-          ]
-        },
-        {
-          "code": "client = instructor.from_openai(OpenAI())\n\ndef classify_text(text: str) -> Classification:\n    return client.chat.completions.create(\n        model=\"gpt-3.5-turbo\",\n        response_model=Classification,\n        messages=[\n            {\n                \"role\": \"system\",\n                \"content\": \"\"\"\n                You are an email spam classifier. Classify the provided text as either SPAM or NOT_SPAM.\n\n                Examples of SPAM:\n                - \"Claim your free prize now!\"\n                - \"Make $1000 a day working from home\"\n                - \"Limited time offer - 90% discount\"\n\n                Examples of NOT_SPAM:\n                - \"Can we schedule a meeting tomorrow?\"\n                - \"Here's the report you requested\"\n                - \"Please review the attached document\"\n                \"\"\"\n            },\n            {\"role\": \"user\", \"content\": f\"Classify this text: {text}\"}\n        ]\n    )\n\n",
-          "display_code": "client = instructor.from_openai(OpenAI())\n\ndef classify_text(text: str) -> Classification:\n    return client.chat.completions.create(\n        model=\"gpt-3.5-turbo\",\n        response_model=Classification,\n        messages=[\n            {\n                \"role\": \"system\",\n                \"content\": \"\"\"\n                You are an email spam classifier. Classify the provided text as either SPAM or NOT_SPAM.\n\n                Examples of SPAM:\n                - \"Claim your free prize now!\"\n                - \"Make $1000 a day working from home\"\n                - \"Limited time offer - 90% discount\"\n\n                Examples of NOT_SPAM:\n                - \"Can we schedule a meeting tomorrow?\"\n                - \"Here's the report you requested\"\n                - \"Please review the attached document\"\n                \"\"\"\n            },\n            {\"role\": \"user\", \"content\": f\"Classify this text: {text}\"}\n        ]\n    )\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 17,
-          "line_range": [
-            17,
-            43
+            46
           ]
         },
         {
@@ -4439,181 +4036,77 @@
           "display_code": "",
           "annotation": "Test with examples",
           "is_comment": true,
-          "start_line": 44,
+          "start_line": 47,
           "line_range": [
-            44,
-            44
+            47,
+            47
           ],
           "target_line_range": [
-            45,
-            52
+            48,
+            50
           ]
         },
         {
-          "code": "spam_text = \"URGENT: Your account has been compromised. Click here to verify details!\"\nlegit_text = \"Please review the meeting notes and provide your feedback by Friday.\"\n\nspam_result = classify_text(spam_text)\nlegit_result = classify_text(legit_text)\n\nprint(f\"Text: '{spam_text}'\")\nprint(f\"Classification: {spam_result.label}\")\n",
-          "display_code": "spam_text = \"URGENT: Your account has been compromised. Click here to verify details!\"\nlegit_text = \"Please review the meeting notes and provide your feedback by Friday.\"\n\nspam_result = classify_text(spam_text)\nlegit_result = classify_text(legit_text)\n\nprint(f\"Text: '{spam_text}'\")\nprint(f\"Classification: {spam_result.label}\")\n",
+          "code": "spam_text = \"URGENT: Your account has been compromised. Click here to verify details!\"\nlegit_text = \"Please review the meeting notes and provide your feedback by Friday.\"\n\n",
+          "display_code": "spam_text = \"URGENT: Your account has been compromised. Click here to verify details!\"\nlegit_text = \"Please review the meeting notes and provide your feedback by Friday.\"\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 45,
+          "start_line": 48,
           "line_range": [
-            45,
-            52
+            48,
+            50
           ]
         },
         {
-          "code": "# Output: Classification: SPAM\n",
+          "code": "# Output:\n# Legit classification: NOT_SPAM\n",
           "display_code": "",
-          "annotation": "Output: Classification: SPAM",
+          "annotation": "Output:\nLegit classification: NOT_SPAM",
           "is_comment": true,
+          "start_line": 51,
+          "line_range": [
+            51,
+            52
+          ],
+          "target_line_range": [
+            53,
+            54
+          ]
+        },
+        {
+          "code": "spam_result = classify_text(\"URGENT: Your account has been compromised. Click here to verify details!\")\n\n",
+          "display_code": "spam_result = classify_text(\"URGENT: Your account has been compromised. Click here to verify details!\")\n\n",
+          "annotation": "",
+          "is_comment": false,
           "start_line": 53,
           "line_range": [
             53,
-            53
+            54
+          ]
+        },
+        {
+          "code": "# Output:\n# Legit classification: NOT_SPAM\n",
+          "display_code": "",
+          "annotation": "Output:\nLegit classification: NOT_SPAM",
+          "is_comment": true,
+          "start_line": 55,
+          "line_range": [
+            55,
+            56
           ],
           "target_line_range": [
-            54,
-            56
+            57,
+            57
           ]
         },
         {
-          "code": "\nprint(f\"\\nText: '{legit_text}'\")\nprint(f\"Classification: {legit_result.label}\")\n",
-          "display_code": "\nprint(f\"\\nText: '{legit_text}'\")\nprint(f\"Classification: {legit_result.label}\")\n",
+          "code": "legit_result = classify_text(\"Please review the meeting notes and provide your feedback by Friday.\")\n",
+          "display_code": "legit_result = classify_text(\"Please review the meeting notes and provide your feedback by Friday.\")\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 54,
-          "line_range": [
-            54,
-            56
-          ]
-        },
-        {
-          "code": "# Output: Classification: NOT_SPAM\n",
-          "display_code": "",
-          "annotation": "Output: Classification: NOT_SPAM",
-          "is_comment": true,
           "start_line": 57,
           "line_range": [
             57,
             57
-          ],
-          "target_line_range": [
-            58,
-            87
-          ]
-        },
-        {
-          "code": "\nfrom pydantic import BaseModel, Field\nfrom typing import Literal\n\nclass ClassificationWithConfidence(BaseModel):\n    label: Literal[\"SPAM\", \"NOT_SPAM\"]\n    confidence: float = Field(\n        gt=0, le=1,  # Greater than 0, less than or equal to 1\n        description=\"Confidence score between 0 and 1 (higher = more confident)\"\n    )\n\ndef classify_with_confidence(text: str) -> ClassificationWithConfidence:\n    return client.chat.completions.create(\n        model=\"gpt-3.5-turbo\",\n        response_model=ClassificationWithConfidence,\n        messages=[\n            {\n                \"role\": \"system\",\n                \"content\": \"Classify the text as SPAM or NOT_SPAM with a confidence score.\"\n            },\n            {\"role\": \"user\", \"content\": f\"Classify this text: {text}\"}\n        ]\n    )\n\nborderline_text = \"Get your free account upgrade today. Limited availability.\"\nresult = classify_with_confidence(borderline_text)\n\nprint(f\"Text: '{borderline_text}'\")\nprint(f\"Classification: {result.label}\")\nprint(f\"Confidence: {result.confidence:.2f}\")\n",
-          "display_code": "\nfrom pydantic import BaseModel, Field\nfrom typing import Literal\n\nclass ClassificationWithConfidence(BaseModel):\n    label: Literal[\"SPAM\", \"NOT_SPAM\"]\n    confidence: float = Field(\n        gt=0, le=1,  # Greater than 0, less than or equal to 1\n        description=\"Confidence score between 0 and 1 (higher = more confident)\"\n    )\n\ndef classify_with_confidence(text: str) -> ClassificationWithConfidence:\n    return client.chat.completions.create(\n        model=\"gpt-3.5-turbo\",\n        response_model=ClassificationWithConfidence,\n        messages=[\n            {\n                \"role\": \"system\",\n                \"content\": \"Classify the text as SPAM or NOT_SPAM with a confidence score.\"\n            },\n            {\"role\": \"user\", \"content\": f\"Classify this text: {text}\"}\n        ]\n    )\n\nborderline_text = \"Get your free account upgrade today. Limited availability.\"\nresult = classify_with_confidence(borderline_text)\n\nprint(f\"Text: '{borderline_text}'\")\nprint(f\"Classification: {result.label}\")\nprint(f\"Confidence: {result.confidence:.2f}\")\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 58,
-          "line_range": [
-            58,
-            87
-          ]
-        },
-        {
-          "code": "# Example Output:\n# Classification: SPAM\n# Confidence: 0.75\n",
-          "display_code": "",
-          "annotation": "Example Output:\nClassification: SPAM\nConfidence: 0.75",
-          "is_comment": true,
-          "start_line": 88,
-          "line_range": [
-            88,
-            90
-          ],
-          "target_line_range": [
-            91,
-            127
-          ]
-        },
-        {
-          "code": "\nfrom pydantic import BaseModel, Field\nfrom typing import Literal\n\nclass DetailedClassification(BaseModel):\n    label: Literal[\"SPAM\", \"NOT_SPAM\"]\n    explanation: str = Field(\n        description=\"Detailed reasoning for this classification\"\n    )\n    spam_indicators: list[str] = Field(\n        default_factory=list,\n        description=\"List of specific elements that indicate spam, if any\"\n    )\n\ndef classify_with_details(text: str) -> DetailedClassification:\n    return client.chat.completions.create(\n        model=\"gpt-3.5-turbo\",\n        response_model=DetailedClassification,\n        messages=[\n            {\"role\": \"system\", \"content\": \"Classify the text and provide a detailed explanation.\"},\n            {\"role\": \"user\", \"content\": f\"Classify this text: {text}\"}\n        ]\n    )\n\ntext = \"CONGRATULATIONS! You've been selected to receive a free iPhone! Click now to claim: bit.ly/claim-prize\"\nresult = classify_with_details(text)\n\nprint(f\"Text: '{text}'\")\nprint(f\"Classification: {result.label}\")\nprint(f\"Explanation: {result.explanation}\")\nprint(\"Spam indicators:\")\nfor indicator in result.spam_indicators:\n    print(f\"- {indicator}\")\n\nfrom typing import List\n\ndef classify_batch(texts: List[str]) -> List[Classification]:\n",
-          "display_code": "\nfrom pydantic import BaseModel, Field\nfrom typing import Literal\n\nclass DetailedClassification(BaseModel):\n    label: Literal[\"SPAM\", \"NOT_SPAM\"]\n    explanation: str = Field(\n        description=\"Detailed reasoning for this classification\"\n    )\n    spam_indicators: list[str] = Field(\n        default_factory=list,\n        description=\"List of specific elements that indicate spam, if any\"\n    )\n\ndef classify_with_details(text: str) -> DetailedClassification:\n    return client.chat.completions.create(\n        model=\"gpt-3.5-turbo\",\n        response_model=DetailedClassification,\n        messages=[\n            {\"role\": \"system\", \"content\": \"Classify the text and provide a detailed explanation.\"},\n            {\"role\": \"user\", \"content\": f\"Classify this text: {text}\"}\n        ]\n    )\n\ntext = \"CONGRATULATIONS! You've been selected to receive a free iPhone! Click now to claim: bit.ly/claim-prize\"\nresult = classify_with_details(text)\n\nprint(f\"Text: '{text}'\")\nprint(f\"Classification: {result.label}\")\nprint(f\"Explanation: {result.explanation}\")\nprint(\"Spam indicators:\")\nfor indicator in result.spam_indicators:\n    print(f\"- {indicator}\")\n\nfrom typing import List\n\ndef classify_batch(texts: List[str]) -> List[Classification]:\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 91,
-          "line_range": [
-            91,
-            127
-          ]
-        },
-        {
-          "code": "    # Use a batch prompt to classify multiple texts at once\n",
-          "display_code": "",
-          "annotation": "Use a batch prompt to classify multiple texts at once",
-          "is_comment": true,
-          "start_line": 128,
-          "line_range": [
-            128,
-            128
-          ],
-          "target_line_range": [
-            129,
-            139
-          ]
-        },
-        {
-          "code": "    formatted_texts = \"\\n\\n\".join([f\"Text {i+1}: {text}\" for i, text in enumerate(texts)])\n\n    return client.chat.completions.create(\n        model=\"gpt-3.5-turbo\",\n        response_model=List[Classification],\n        messages=[\n            {\"role\": \"system\", \"content\": \"Classify each text as SPAM or NOT_SPAM.\"},\n            {\"role\": \"user\", \"content\": f\"Classify these texts:\\n\\n{formatted_texts}\"}\n        ]\n    )\n\n",
-          "display_code": "    formatted_texts = \"\\n\\n\".join([f\"Text {i+1}: {text}\" for i, text in enumerate(texts)])\n\n    return client.chat.completions.create(\n        model=\"gpt-3.5-turbo\",\n        response_model=List[Classification],\n        messages=[\n            {\"role\": \"system\", \"content\": \"Classify each text as SPAM or NOT_SPAM.\"},\n            {\"role\": \"user\", \"content\": f\"Classify these texts:\\n\\n{formatted_texts}\"}\n        ]\n    )\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 129,
-          "line_range": [
-            129,
-            139
-          ]
-        },
-        {
-          "code": "# Test with a batch of texts\n",
-          "display_code": "",
-          "annotation": "Test with a batch of texts",
-          "is_comment": true,
-          "start_line": 140,
-          "line_range": [
-            140,
-            140
-          ],
-          "target_line_range": [
-            141,
-            152
-          ]
-        },
-        {
-          "code": "texts = [\n    \"Your application has been approved. Sign the documents at your earliest convenience.\",\n    \"WINNER! You've been selected to receive $1000! Send your bank details now!\",\n    \"Meeting rescheduled to 3PM tomorrow. Same Zoom link.\"\n]\n\nresults = classify_batch(texts)\n\nfor i, (text, result) in enumerate(zip(texts, results)):\n    print(f\"Text {i+1}: '{text}'\")\n    print(f\"Classification: {result.label}\\n\")\n\n",
-          "display_code": "texts = [\n    \"Your application has been approved. Sign the documents at your earliest convenience.\",\n    \"WINNER! You've been selected to receive $1000! Send your bank details now!\",\n    \"Meeting rescheduled to 3PM tomorrow. Same Zoom link.\"\n]\n\nresults = classify_batch(texts)\n\nfor i, (text, result) in enumerate(zip(texts, results)):\n    print(f\"Text {i+1}: '{text}'\")\n    print(f\"Classification: {result.label}\\n\")\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 141,
-          "line_range": [
-            141,
-            152
-          ]
-        },
-        {
-          "code": "# Output:# Text 1: 'Your application has been approved. Sign the documents at your earliest convenience.'# Classification: NOT_SPAM## Text 2: 'WINNER! You've been selected to receive $1000! Send your bank details now!'# Classification: SPAM## Text 3: 'Meeting rescheduled to 3PM tomorrow. Same Zoom link.'# Classification: NOT_SPAM\n",
-          "display_code": "",
-          "annotation": "Output:# Text 1: 'Your application has been approved. Sign the documents at your earliest convenience.'# Classification: NOT_SPAM## Text 2: 'WINNER! You've been selected to receive $1000! Send your bank details now!'# Classification: SPAM## Text 3: 'Meeting rescheduled to 3PM tomorrow. Same Zoom link.'# Classification: NOT_SPAM",
-          "is_comment": true,
-          "start_line": 153,
-          "line_range": [
-            153,
-            153
-          ],
-          "target_line_range": [
-            154,
-            154
-          ]
-        },
-        {
-          "code": "\n",
-          "display_code": "\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 154,
-          "line_range": [
-            154,
-            154
           ]
         }
       ],
@@ -4638,103 +4131,129 @@
     },
     {
       "id": "019-multi-label-classification",
-      "title": "Multi-label Classification",
-      "description": "",
+      "title": "Multi-label Classification Example",
+      "description": "This example demonstrates various approaches to multi-label classification using Instructor:\n1. Basic multi-label classification with string labels\n2. Using Enums for predefined categories\n3. Classification with confidence scores\n4. Hierarchical classification with main and subcategories\n\nEach approach shows how to structure your Pydantic models for different classification needs.",
       "order": 19,
       "code_segments": [
         {
-          "code": "\n",
-          "display_code": "\n",
+          "code": "\n\n",
+          "display_code": "\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 2,
+          "start_line": 10,
           "line_range": [
-            2,
-            2
+            10,
+            11
           ]
         },
         {
-          "code": "# Extract multiple labels from text using Instructor.\n",
+          "code": "# Import the necessary libraries\n",
           "display_code": "",
-          "annotation": "Extract multiple labels from text using Instructor.",
+          "annotation": "Import the necessary libraries",
           "is_comment": true,
-          "start_line": 3,
+          "start_line": 12,
           "line_range": [
-            3,
-            3
+            12,
+            12
           ],
           "target_line_range": [
-            4,
-            15
+            13,
+            18
           ]
         },
         {
-          "code": "from pydantic import BaseModel, Field\nfrom typing import List\nimport instructor\nfrom openai import OpenAI\n\nclass MultiLabelClassification(BaseModel):\n    \"\"\"Multi-label classification of text content\"\"\"\n\n    labels: List[str] = Field(\n        description=\"List of applicable category labels for the text\"\n    )\n\n",
-          "display_code": "from pydantic import BaseModel, Field\nfrom typing import List\nimport instructor\nfrom openai import OpenAI\n\nclass MultiLabelClassification(BaseModel):\n    \"\"\"Multi-label classification of text content\"\"\"\n\n    labels: List[str] = Field(\n        description=\"List of applicable category labels for the text\"\n    )\n\n",
+          "code": "from pydantic import BaseModel, Field\nfrom typing import List, Optional\nfrom enum import Enum\nimport instructor\nfrom openai import OpenAI\n\n",
+          "display_code": "from pydantic import BaseModel, Field\nfrom typing import List, Optional\nfrom enum import Enum\nimport instructor\nfrom openai import OpenAI\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 4,
+          "start_line": 13,
           "line_range": [
-            4,
-            15
+            13,
+            18
           ]
         },
         {
-          "code": "# Patch the client\n",
+          "code": "# Initialize the instructor-enhanced OpenAI client\n",
           "display_code": "",
-          "annotation": "Patch the client",
+          "annotation": "Initialize the instructor-enhanced OpenAI client",
           "is_comment": true,
-          "start_line": 16,
+          "start_line": 19,
           "line_range": [
-            16,
-            16
+            19,
+            19
           ],
           "target_line_range": [
-            17,
-            43
+            20,
+            21
           ]
         },
         {
-          "code": "client = instructor.from_openai(OpenAI())\n\ndef classify_text(text: str) -> MultiLabelClassification:\n    return client.chat.completions.create(\n        model=\"gpt-3.5-turbo\",\n        response_model=MultiLabelClassification,\n        messages=[\n            {\n                \"role\": \"system\",\n                \"content\": \"\"\"\n                Classify the text into one or more of these categories:\n                - Technology\n                - Finance\n                - Health\n                - Sports\n                - Entertainment\n                - Politics\n                - Science\n                - Education\n\n                Return all categories that apply to the text.\n                \"\"\"\n            },\n            {\"role\": \"user\", \"content\": f\"Text for classification: {text}\"}\n        ]\n    )\n\n",
-          "display_code": "client = instructor.from_openai(OpenAI())\n\ndef classify_text(text: str) -> MultiLabelClassification:\n    return client.chat.completions.create(\n        model=\"gpt-3.5-turbo\",\n        response_model=MultiLabelClassification,\n        messages=[\n            {\n                \"role\": \"system\",\n                \"content\": \"\"\"\n                Classify the text into one or more of these categories:\n                - Technology\n                - Finance\n                - Health\n                - Sports\n                - Entertainment\n                - Politics\n                - Science\n                - Education\n\n                Return all categories that apply to the text.\n                \"\"\"\n            },\n            {\"role\": \"user\", \"content\": f\"Text for classification: {text}\"}\n        ]\n    )\n\n",
+          "code": "client = instructor.from_openai(OpenAI())\n\n",
+          "display_code": "client = instructor.from_openai(OpenAI())\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 17,
+          "start_line": 20,
           "line_range": [
-            17,
-            43
+            20,
+            21
           ]
         },
         {
-          "code": "# Test with an example\n",
+          "code": "# Define a MultiLabelClassification model with Pydantic\n",
           "display_code": "",
-          "annotation": "Test with an example",
+          "annotation": "Define a MultiLabelClassification model with Pydantic",
           "is_comment": true,
-          "start_line": 44,
+          "start_line": 22,
           "line_range": [
-            44,
-            44
+            22,
+            22
           ],
           "target_line_range": [
-            45,
+            23,
+            28
+          ]
+        },
+        {
+          "code": "class MultiLabelClassification(BaseModel):\n    \"\"\"Multi-label classification of text content\"\"\"\n    labels: List[str] = Field(\n        description=\"List of applicable category labels for the text\"\n    )\n\n",
+          "display_code": "class MultiLabelClassification(BaseModel):\n    \"\"\"Multi-label classification of text content\"\"\"\n    labels: List[str] = Field(\n        description=\"List of applicable category labels for the text\"\n    )\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 23,
+          "line_range": [
+            23,
+            28
+          ]
+        },
+        {
+          "code": "# Define a function to classify text\n",
+          "display_code": "",
+          "annotation": "Define a function to classify text",
+          "is_comment": true,
+          "start_line": 29,
+          "line_range": [
+            29,
+            29
+          ],
+          "target_line_range": [
+            30,
             54
           ]
         },
         {
-          "code": "article = \"\"\"\n    Bitcoin prices surged to a new all-time high today as several tech companies announced\n    plans to add the cryptocurrency to their balance sheets. Health officials warned that\n    the excitement might cause stress for some investors.\n\"\"\"\n\nresult = classify_text(article)\n\nprint(f\"Text: '{article}'\")\nprint(f\"Labels: {', '.join(result.labels)}\")\n",
-          "display_code": "article = \"\"\"\n    Bitcoin prices surged to a new all-time high today as several tech companies announced\n    plans to add the cryptocurrency to their balance sheets. Health officials warned that\n    the excitement might cause stress for some investors.\n\"\"\"\n\nresult = classify_text(article)\n\nprint(f\"Text: '{article}'\")\nprint(f\"Labels: {', '.join(result.labels)}\")\n",
+          "code": "def classify_text(text: str) -> MultiLabelClassification:\n    return client.chat.completions.create(\n        model=\"gpt-3.5-turbo\",\n        response_model=MultiLabelClassification,\n        messages=[\n            {\n                \"role\": \"system\",\n                \"content\": \"\"\"\n                Classify the text into one or more of these categories:\n                - Technology\n                - Finance\n                - Health\n                - Sports\n                - Entertainment\n                - Politics\n                - Science\n                - Education\n\n                Return all categories that apply to the text.\n                \"\"\"\n            },\n            {\"role\": \"user\", \"content\": f\"Text for classification: {text}\"}\n        ]\n    )\n\n",
+          "display_code": "def classify_text(text: str) -> MultiLabelClassification:\n    return client.chat.completions.create(\n        model=\"gpt-3.5-turbo\",\n        response_model=MultiLabelClassification,\n        messages=[\n            {\n                \"role\": \"system\",\n                \"content\": \"\"\"\n                Classify the text into one or more of these categories:\n                - Technology\n                - Finance\n                - Health\n                - Sports\n                - Entertainment\n                - Politics\n                - Science\n                - Education\n\n                Return all categories that apply to the text.\n                \"\"\"\n            },\n            {\"role\": \"user\", \"content\": f\"Text for classification: {text}\"}\n        ]\n    )\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 45,
+          "start_line": 30,
           "line_range": [
-            45,
+            30,
             54
           ]
         },
         {
-          "code": "# Example Output: Labels: Technology, Finance, Health\n",
+          "code": "# Define a Category enum for predefined categories\n",
           "display_code": "",
-          "annotation": "Example Output: Labels: Technology, Finance, Health",
+          "annotation": "Define a Category enum for predefined categories",
           "is_comment": true,
           "start_line": 55,
           "line_range": [
@@ -4743,122 +4262,174 @@
           ],
           "target_line_range": [
             56,
-            60
+            65
           ]
         },
         {
-          "code": "\nfrom enum import Enum\nfrom pydantic import BaseModel, Field\nfrom typing import List\n\n",
-          "display_code": "\nfrom enum import Enum\nfrom pydantic import BaseModel, Field\nfrom typing import List\n\n",
+          "code": "class Category(str, Enum):\n    BUSINESS = \"business\"\n    TECHNOLOGY = \"technology\"\n    POLITICS = \"politics\"\n    HEALTH = \"health\"\n    ENTERTAINMENT = \"entertainment\"\n    SPORTS = \"sports\"\n    SCIENCE = \"science\"\n    EDUCATION = \"education\"\n\n",
+          "display_code": "class Category(str, Enum):\n    BUSINESS = \"business\"\n    TECHNOLOGY = \"technology\"\n    POLITICS = \"politics\"\n    HEALTH = \"health\"\n    ENTERTAINMENT = \"entertainment\"\n    SPORTS = \"sports\"\n    SCIENCE = \"science\"\n    EDUCATION = \"education\"\n\n",
           "annotation": "",
           "is_comment": false,
           "start_line": 56,
           "line_range": [
             56,
-            60
+            65
           ]
         },
         {
-          "code": "# Define fixed categories as an enum\n",
+          "code": "# Define a function to classify text with enums\n",
           "display_code": "",
-          "annotation": "Define fixed categories as an enum",
+          "annotation": "Define a function to classify text with enums",
           "is_comment": true,
-          "start_line": 61,
+          "start_line": 66,
           "line_range": [
-            61,
-            61
+            66,
+            66
           ],
           "target_line_range": [
-            62,
-            97
+            67,
+            72
           ]
         },
         {
-          "code": "class Category(str, Enum):\n    BUSINESS = \"business\"\n    TECHNOLOGY = \"technology\"\n    POLITICS = \"politics\"\n    HEALTH = \"health\"\n    ENTERTAINMENT = \"entertainment\"\n    SPORTS = \"sports\"\n    SCIENCE = \"science\"\n    EDUCATION = \"education\"\n\nclass EnumMultiLabelClassification(BaseModel):\n    \"\"\"Multi-label classification using predefined categories\"\"\"\n\n    categories: List[Category] = Field(\n        description=\"List of applicable categories from the predefined set\"\n    )\n\ndef classify_with_enums(text: str) -> EnumMultiLabelClassification:\n    return client.chat.completions.create(\n        model=\"gpt-3.5-turbo\",\n        response_model=EnumMultiLabelClassification,\n        messages=[\n            {\"role\": \"system\", \"content\": \"Classify the text into one or more predefined categories.\"},\n            {\"role\": \"user\", \"content\": f\"Text for classification: {text}\"}\n        ]\n    )\n\narticle = \"\"\"\n    New educational technology is transforming classrooms across the country.\n    Students are using AI-powered tools to enhance their learning experiences.\n\"\"\"\n\nresult = classify_with_enums(article)\n\nprint(f\"Text: '{article}'\")\nprint(f\"Categories: {', '.join([c.value for c in result.categories])}\")\n",
-          "display_code": "class Category(str, Enum):\n    BUSINESS = \"business\"\n    TECHNOLOGY = \"technology\"\n    POLITICS = \"politics\"\n    HEALTH = \"health\"\n    ENTERTAINMENT = \"entertainment\"\n    SPORTS = \"sports\"\n    SCIENCE = \"science\"\n    EDUCATION = \"education\"\n\nclass EnumMultiLabelClassification(BaseModel):\n    \"\"\"Multi-label classification using predefined categories\"\"\"\n\n    categories: List[Category] = Field(\n        description=\"List of applicable categories from the predefined set\"\n    )\n\ndef classify_with_enums(text: str) -> EnumMultiLabelClassification:\n    return client.chat.completions.create(\n        model=\"gpt-3.5-turbo\",\n        response_model=EnumMultiLabelClassification,\n        messages=[\n            {\"role\": \"system\", \"content\": \"Classify the text into one or more predefined categories.\"},\n            {\"role\": \"user\", \"content\": f\"Text for classification: {text}\"}\n        ]\n    )\n\narticle = \"\"\"\n    New educational technology is transforming classrooms across the country.\n    Students are using AI-powered tools to enhance their learning experiences.\n\"\"\"\n\nresult = classify_with_enums(article)\n\nprint(f\"Text: '{article}'\")\nprint(f\"Categories: {', '.join([c.value for c in result.categories])}\")\n",
+          "code": "class EnumMultiLabelClassification(BaseModel):\n    \"\"\"Multi-label classification using predefined categories\"\"\"\n    categories: List[Category] = Field(\n        description=\"List of applicable categories from the predefined set\"\n    )\n\n",
+          "display_code": "class EnumMultiLabelClassification(BaseModel):\n    \"\"\"Multi-label classification using predefined categories\"\"\"\n    categories: List[Category] = Field(\n        description=\"List of applicable categories from the predefined set\"\n    )\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 62,
+          "start_line": 67,
           "line_range": [
-            62,
-            97
+            67,
+            72
           ]
         },
         {
-          "code": "# Example Output: Categories: technology, education\n",
+          "code": "# Define a function to classify text with enums\n",
           "display_code": "",
-          "annotation": "Example Output: Categories: technology, education",
+          "annotation": "Define a function to classify text with enums",
           "is_comment": true,
-          "start_line": 98,
+          "start_line": 73,
           "line_range": [
-            98,
-            98
+            73,
+            73
           ],
           "target_line_range": [
-            99,
-            144
+            74,
+            83
           ]
         },
         {
-          "code": "\nfrom pydantic import BaseModel, Field\nfrom typing import List, Dict\n\nclass LabelWithConfidence(BaseModel):\n    label: str\n    confidence: float = Field(gt=0, le=1)  # Between 0 and 1\n\nclass ConfidenceClassification(BaseModel):\n    labels: List[LabelWithConfidence] = Field(\n        description=\"List of applicable labels with confidence scores\"\n    )\n\ndef classify_with_confidence(text: str) -> ConfidenceClassification:\n    return client.chat.completions.create(\n        model=\"gpt-3.5-turbo\",\n        response_model=ConfidenceClassification,\n        messages=[\n            {\n                \"role\": \"system\",\n                \"content\": \"\"\"\n                Classify the text into these categories and provide confidence scores (0-1):\n                - Technology\n                - Finance\n                - Health\n                - Sports\n                - Entertainment\n                Only include categories that apply with a confidence score over 0.4.\n                \"\"\"\n            },\n            {\"role\": \"user\", \"content\": f\"Text for classification: {text}\"}\n        ]\n    )\n\narticle = \"\"\"\n    The new smartphone features a built-in heart rate monitor that can alert users\n    about potential cardiac issues while they exercise.\n\"\"\"\n\nresult = classify_with_confidence(article)\n\nprint(f\"Text: '{article}'\")\nprint(\"Labels with confidence:\")\nfor label in result.labels:\n    print(f\"- {label.label}: {label.confidence:.2f}\")\n\n",
-          "display_code": "\nfrom pydantic import BaseModel, Field\nfrom typing import List, Dict\n\nclass LabelWithConfidence(BaseModel):\n    label: str\n    confidence: float = Field(gt=0, le=1)  # Between 0 and 1\n\nclass ConfidenceClassification(BaseModel):\n    labels: List[LabelWithConfidence] = Field(\n        description=\"List of applicable labels with confidence scores\"\n    )\n\ndef classify_with_confidence(text: str) -> ConfidenceClassification:\n    return client.chat.completions.create(\n        model=\"gpt-3.5-turbo\",\n        response_model=ConfidenceClassification,\n        messages=[\n            {\n                \"role\": \"system\",\n                \"content\": \"\"\"\n                Classify the text into these categories and provide confidence scores (0-1):\n                - Technology\n                - Finance\n                - Health\n                - Sports\n                - Entertainment\n                Only include categories that apply with a confidence score over 0.4.\n                \"\"\"\n            },\n            {\"role\": \"user\", \"content\": f\"Text for classification: {text}\"}\n        ]\n    )\n\narticle = \"\"\"\n    The new smartphone features a built-in heart rate monitor that can alert users\n    about potential cardiac issues while they exercise.\n\"\"\"\n\nresult = classify_with_confidence(article)\n\nprint(f\"Text: '{article}'\")\nprint(\"Labels with confidence:\")\nfor label in result.labels:\n    print(f\"- {label.label}: {label.confidence:.2f}\")\n\n",
+          "code": "def classify_with_enums(text: str) -> EnumMultiLabelClassification:\n    return client.chat.completions.create(\n        model=\"gpt-3.5-turbo\",\n        response_model=EnumMultiLabelClassification,\n        messages=[\n            {\"role\": \"system\", \"content\": \"Classify the text into one or more predefined categories.\"},\n            {\"role\": \"user\", \"content\": f\"Text for classification: {text}\"}\n        ]\n    )\n\n",
+          "display_code": "def classify_with_enums(text: str) -> EnumMultiLabelClassification:\n    return client.chat.completions.create(\n        model=\"gpt-3.5-turbo\",\n        response_model=EnumMultiLabelClassification,\n        messages=[\n            {\"role\": \"system\", \"content\": \"Classify the text into one or more predefined categories.\"},\n            {\"role\": \"user\", \"content\": f\"Text for classification: {text}\"}\n        ]\n    )\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 99,
+          "start_line": 74,
           "line_range": [
-            99,
-            144
+            74,
+            83
           ]
         },
         {
-          "code": "# Example Output:# Labels with confidence:# - Technology: 0.95# - Health: 0.85# - Sports: 0.62\n",
+          "code": "# Define a function to classify text with confidence scores\n",
           "display_code": "",
-          "annotation": "Example Output:# Labels with confidence:# - Technology: 0.95# - Health: 0.85# - Sports: 0.62",
+          "annotation": "Define a function to classify text with confidence scores",
           "is_comment": true,
-          "start_line": 145,
+          "start_line": 84,
           "line_range": [
-            145,
-            145
+            84,
+            84
           ],
           "target_line_range": [
-            146,
-            200
+            85,
+            114
           ]
         },
         {
-          "code": "\nfrom pydantic import BaseModel, Field\nfrom typing import List, Optional\n\nclass SubCategory(BaseModel):\n    name: str\n    confidence: float = Field(gt=0, le=1)\n\nclass MainCategory(BaseModel):\n    name: str\n    confidence: float = Field(gt=0, le=1)\n    subcategories: List[SubCategory] = []\n\nclass HierarchicalClassification(BaseModel):\n    categories: List[MainCategory] = Field(\n        description=\"Hierarchical categories with confidence scores\"\n    )\n\ndef classify_hierarchical(text: str) -> HierarchicalClassification:\n    return client.chat.completions.create(\n        model=\"gpt-4\",  # More complex tasks work better with GPT-4\n        response_model=HierarchicalClassification,\n        messages=[\n            {\n                \"role\": \"system\",\n                \"content\": \"\"\"\n                Classify the text into main categories and subcategories:\n\n                Main categories:\n                - Technology (subcategories: Hardware, Software, AI, Internet)\n                - Science (subcategories: Physics, Biology, Chemistry, Astronomy)\n                - Health (subcategories: Fitness, Nutrition, Medical, Mental Health)\n\n                Return only relevant categories with confidence scores.\n                \"\"\"\n            },\n            {\"role\": \"user\", \"content\": f\"Text for classification: {text}\"}\n        ]\n    )\n\narticle = \"\"\"\n    Researchers have developed a new AI algorithm that can detect early signs of\n    Alzheimer's disease from brain scans with 94% accuracy. The deep learning software\n    could help doctors diagnose patients years earlier than current methods.\n\"\"\"\n\nresult = classify_hierarchical(article)\n\nprint(f\"Text: '{article}'\")\nprint(\"Classification:\")\nfor category in result.categories:\n    print(f\"- {category.name} ({category.confidence:.2f})\")\n    for subcategory in category.subcategories:\n        print(f\"  - {subcategory.name} ({subcategory.confidence:.2f})\")\n\n",
-          "display_code": "\nfrom pydantic import BaseModel, Field\nfrom typing import List, Optional\n\nclass SubCategory(BaseModel):\n    name: str\n    confidence: float = Field(gt=0, le=1)\n\nclass MainCategory(BaseModel):\n    name: str\n    confidence: float = Field(gt=0, le=1)\n    subcategories: List[SubCategory] = []\n\nclass HierarchicalClassification(BaseModel):\n    categories: List[MainCategory] = Field(\n        description=\"Hierarchical categories with confidence scores\"\n    )\n\ndef classify_hierarchical(text: str) -> HierarchicalClassification:\n    return client.chat.completions.create(\n        model=\"gpt-4\",  # More complex tasks work better with GPT-4\n        response_model=HierarchicalClassification,\n        messages=[\n            {\n                \"role\": \"system\",\n                \"content\": \"\"\"\n                Classify the text into main categories and subcategories:\n\n                Main categories:\n                - Technology (subcategories: Hardware, Software, AI, Internet)\n                - Science (subcategories: Physics, Biology, Chemistry, Astronomy)\n                - Health (subcategories: Fitness, Nutrition, Medical, Mental Health)\n\n                Return only relevant categories with confidence scores.\n                \"\"\"\n            },\n            {\"role\": \"user\", \"content\": f\"Text for classification: {text}\"}\n        ]\n    )\n\narticle = \"\"\"\n    Researchers have developed a new AI algorithm that can detect early signs of\n    Alzheimer's disease from brain scans with 94% accuracy. The deep learning software\n    could help doctors diagnose patients years earlier than current methods.\n\"\"\"\n\nresult = classify_hierarchical(article)\n\nprint(f\"Text: '{article}'\")\nprint(\"Classification:\")\nfor category in result.categories:\n    print(f\"- {category.name} ({category.confidence:.2f})\")\n    for subcategory in category.subcategories:\n        print(f\"  - {subcategory.name} ({subcategory.confidence:.2f})\")\n\n",
+          "code": "class LabelWithConfidence(BaseModel):\n    label: str\n    confidence: float = Field(gt=0, le=1)  # Between 0 and 1\n\nclass ConfidenceClassification(BaseModel):\n    labels: List[LabelWithConfidence] = Field(\n        description=\"List of applicable labels with confidence scores\"\n    )\n\ndef classify_with_confidence(text: str) -> ConfidenceClassification:\n    return client.chat.completions.create(\n        model=\"gpt-3.5-turbo\",\n        response_model=ConfidenceClassification,\n        messages=[\n            {\n                \"role\": \"system\",\n                \"content\": \"\"\"\n                Classify the text into these categories and provide confidence scores (0-1):\n                - Technology\n                - Finance\n                - Health\n                - Sports\n                - Entertainment\n                Only include categories that apply with a confidence score over 0.4.\n                \"\"\"\n            },\n            {\"role\": \"user\", \"content\": f\"Text for classification: {text}\"}\n        ]\n    )\n\n",
+          "display_code": "class LabelWithConfidence(BaseModel):\n    label: str\n    confidence: float = Field(gt=0, le=1)  # Between 0 and 1\n\nclass ConfidenceClassification(BaseModel):\n    labels: List[LabelWithConfidence] = Field(\n        description=\"List of applicable labels with confidence scores\"\n    )\n\ndef classify_with_confidence(text: str) -> ConfidenceClassification:\n    return client.chat.completions.create(\n        model=\"gpt-3.5-turbo\",\n        response_model=ConfidenceClassification,\n        messages=[\n            {\n                \"role\": \"system\",\n                \"content\": \"\"\"\n                Classify the text into these categories and provide confidence scores (0-1):\n                - Technology\n                - Finance\n                - Health\n                - Sports\n                - Entertainment\n                Only include categories that apply with a confidence score over 0.4.\n                \"\"\"\n            },\n            {\"role\": \"user\", \"content\": f\"Text for classification: {text}\"}\n        ]\n    )\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 146,
+          "start_line": 85,
           "line_range": [
-            146,
-            200
+            85,
+            114
           ]
         },
         {
-          "code": "# Example Output:# Classification:# - Technology (0.90)#   - AI (0.95)#   - Software (0.80)# - Health (0.85)#   - Medical (0.90)# - Science (0.75)#   - Biology (0.70)\n",
+          "code": "# Define a function to classify text hierarchically\n",
           "display_code": "",
-          "annotation": "Example Output:# Classification:# - Technology (0.90)#   - AI (0.95)#   - Software (0.80)# - Health (0.85)#   - Medical (0.90)# - Science (0.75)#   - Biology (0.70)",
+          "annotation": "Define a function to classify text hierarchically",
           "is_comment": true,
-          "start_line": 201,
+          "start_line": 115,
           "line_range": [
-            201,
-            201
+            115,
+            115
           ],
           "target_line_range": [
-            202,
-            202
+            116,
+            129
           ]
         },
         {
-          "code": "\n",
-          "display_code": "\n",
+          "code": "class SubCategory(BaseModel):\n    name: str\n    confidence: float = Field(gt=0, le=1)\n\nclass MainCategory(BaseModel):\n    name: str\n    confidence: float = Field(gt=0, le=1)\n    subcategories: List[SubCategory] = []\n\nclass HierarchicalClassification(BaseModel):\n    categories: List[MainCategory] = Field(\n        description=\"Hierarchical categories with confidence scores\"\n    )\n\n",
+          "display_code": "class SubCategory(BaseModel):\n    name: str\n    confidence: float = Field(gt=0, le=1)\n\nclass MainCategory(BaseModel):\n    name: str\n    confidence: float = Field(gt=0, le=1)\n    subcategories: List[SubCategory] = []\n\nclass HierarchicalClassification(BaseModel):\n    categories: List[MainCategory] = Field(\n        description=\"Hierarchical categories with confidence scores\"\n    )\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 202,
+          "start_line": 116,
           "line_range": [
-            202,
-            202
+            116,
+            129
+          ]
+        },
+        {
+          "code": "# Define a function to classify text hierarchically\n",
+          "display_code": "",
+          "annotation": "Define a function to classify text hierarchically",
+          "is_comment": true,
+          "start_line": 130,
+          "line_range": [
+            130,
+            130
+          ],
+          "target_line_range": [
+            131,
+            152
+          ]
+        },
+        {
+          "code": "def classify_hierarchical(text: str) -> HierarchicalClassification:\n    return client.chat.completions.create(\n        model=\"gpt-4\",  # More complex tasks work better with GPT-4\n        response_model=HierarchicalClassification,\n        messages=[\n            {\n                \"role\": \"system\",\n                \"content\": \"\"\"\n                Classify the text into main categories and subcategories:\n\n                Main categories:\n                - Technology (subcategories: Hardware, Software, AI, Internet)\n                - Science (subcategories: Physics, Biology, Chemistry, Astronomy)\n                - Health (subcategories: Fitness, Nutrition, Medical, Mental Health)\n\n                Return only relevant categories with confidence scores.\n                \"\"\"\n            },\n            {\"role\": \"user\", \"content\": f\"Text for classification: {text}\"}\n        ]\n    )\n\n",
+          "display_code": "def classify_hierarchical(text: str) -> HierarchicalClassification:\n    return client.chat.completions.create(\n        model=\"gpt-4\",  # More complex tasks work better with GPT-4\n        response_model=HierarchicalClassification,\n        messages=[\n            {\n                \"role\": \"system\",\n                \"content\": \"\"\"\n                Classify the text into main categories and subcategories:\n\n                Main categories:\n                - Technology (subcategories: Hardware, Software, AI, Internet)\n                - Science (subcategories: Physics, Biology, Chemistry, Astronomy)\n                - Health (subcategories: Fitness, Nutrition, Medical, Mental Health)\n\n                Return only relevant categories with confidence scores.\n                \"\"\"\n            },\n            {\"role\": \"user\", \"content\": f\"Text for classification: {text}\"}\n        ]\n    )\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 131,
+          "line_range": [
+            131,
+            152
+          ]
+        },
+        {
+          "code": "# Test the multi-label classification\n# Output:\n# Labels: technology, science, health\n",
+          "display_code": "",
+          "annotation": "Test the multi-label classification\nOutput:\nLabels: technology, science, health",
+          "is_comment": true,
+          "start_line": 153,
+          "line_range": [
+            153,
+            155
+          ],
+          "target_line_range": [
+            156,
+            156
+          ]
+        },
+        {
+          "code": "result = classify_text(\"Researchers have developed a new AI algorithm that can detect early signs of Alzheimer's disease from brain scans with 94% accuracy. The deep learning software could help doctors diagnose patients years earlier than current methods.\")\n",
+          "display_code": "result = classify_text(\"Researchers have developed a new AI algorithm that can detect early signs of Alzheimer's disease from brain scans with 94% accuracy. The deep learning software could help doctors diagnose patients years earlier than current methods.\")\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 156,
+          "line_range": [
+            156,
+            156
           ]
         }
       ],
@@ -14747,7 +14318,7 @@
     {
       "id": "017-working-with-enums",
       "title": "Working with Enums",
-      "description": "",
+      "description": "Use enumerated types with Instructor for consistent, validated extractions. Enums help enforce a fixed set of allowed values.",
       "order": 17,
       "code_segments": [
         {
@@ -14755,25 +14326,25 @@
           "display_code": "\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 2,
-          "line_range": [
-            2,
-            2
-          ]
-        },
-        {
-          "code": "# Use enumerated types with Instructor for consistent, validated extractions. Enums help enforce a fixed set of allowed values.\n",
-          "display_code": "",
-          "annotation": "Use enumerated types with Instructor for consistent, validated extractions. Enums help enforce a fixed set of allowed values.",
-          "is_comment": true,
           "start_line": 3,
           "line_range": [
             3,
             3
+          ]
+        },
+        {
+          "code": "# Import the necessary libraries\n",
+          "display_code": "",
+          "annotation": "Import the necessary libraries",
+          "is_comment": true,
+          "start_line": 4,
+          "line_range": [
+            4,
+            4
           ],
           "target_line_range": [
-            4,
-            8
+            5,
+            9
           ]
         },
         {
@@ -14781,10 +14352,10 @@
           "display_code": "from enum import Enum\nfrom pydantic import BaseModel\nimport instructor\nfrom openai import OpenAI\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 4,
+          "start_line": 5,
           "line_range": [
-            4,
-            8
+            5,
+            9
           ]
         },
         {
@@ -14792,25 +14363,51 @@
           "display_code": "",
           "annotation": "Define an enum for product categories",
           "is_comment": true,
-          "start_line": 9,
-          "line_range": [
-            9,
-            9
-          ],
-          "target_line_range": [
-            10,
-            21
-          ]
-        },
-        {
-          "code": "class ProductCategory(str, Enum):\n    ELECTRONICS = \"electronics\"\n    CLOTHING = \"clothing\"\n    HOME = \"home\"\n    BOOKS = \"books\"\n    TOYS = \"toys\"\n\nclass Product(BaseModel):\n    name: str\n    price: float\n    category: ProductCategory\n\n",
-          "display_code": "class ProductCategory(str, Enum):\n    ELECTRONICS = \"electronics\"\n    CLOTHING = \"clothing\"\n    HOME = \"home\"\n    BOOKS = \"books\"\n    TOYS = \"toys\"\n\nclass Product(BaseModel):\n    name: str\n    price: float\n    category: ProductCategory\n\n",
-          "annotation": "",
-          "is_comment": false,
           "start_line": 10,
           "line_range": [
             10,
-            21
+            10
+          ],
+          "target_line_range": [
+            11,
+            17
+          ]
+        },
+        {
+          "code": "class ProductCategory(str, Enum):\n    ELECTRONICS = \"electronics\"\n    CLOTHING = \"clothing\"\n    HOME = \"home\"\n    BOOKS = \"books\"\n    TOYS = \"toys\"\n\n",
+          "display_code": "class ProductCategory(str, Enum):\n    ELECTRONICS = \"electronics\"\n    CLOTHING = \"clothing\"\n    HOME = \"home\"\n    BOOKS = \"books\"\n    TOYS = \"toys\"\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 11,
+          "line_range": [
+            11,
+            17
+          ]
+        },
+        {
+          "code": "# Define a Product model with Pydantic and enum validation\n",
+          "display_code": "",
+          "annotation": "Define a Product model with Pydantic and enum validation",
+          "is_comment": true,
+          "start_line": 18,
+          "line_range": [
+            18,
+            18
+          ],
+          "target_line_range": [
+            19,
+            23
+          ]
+        },
+        {
+          "code": "class Product(BaseModel):\n    name: str\n    price: float\n    category: ProductCategory\n\n",
+          "display_code": "class Product(BaseModel):\n    name: str\n    price: float\n    category: ProductCategory\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 19,
+          "line_range": [
+            19,
+            23
           ]
         },
         {
@@ -14818,14 +14415,14 @@
           "display_code": "",
           "annotation": "Patch the client",
           "is_comment": true,
-          "start_line": 22,
+          "start_line": 24,
           "line_range": [
-            22,
-            22
+            24,
+            24
           ],
           "target_line_range": [
-            23,
-            24
+            25,
+            26
           ]
         },
         {
@@ -14833,10 +14430,10 @@
           "display_code": "client = instructor.from_openai(OpenAI())\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 23,
+          "start_line": 25,
           "line_range": [
-            23,
-            24
+            25,
+            26
           ]
         },
         {
@@ -14844,311 +14441,51 @@
           "display_code": "",
           "annotation": "Extract with enum validation",
           "is_comment": true,
-          "start_line": 25,
+          "start_line": 27,
           "line_range": [
-            25,
-            25
+            27,
+            27
           ],
           "target_line_range": [
-            26,
-            36
+            28,
+            35
           ]
         },
         {
-          "code": "product = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    response_model=Product,\n    messages=[\n        {\"role\": \"user\", \"content\": \"Our new wireless headphones cost $79.99 and belong in our electronics department.\"}\n    ]\n)\n\nprint(f\"Product: {product.name}\")\nprint(f\"Price: ${product.price}\")\nprint(f\"Category: {product.category}\")\n",
-          "display_code": "product = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    response_model=Product,\n    messages=[\n        {\"role\": \"user\", \"content\": \"Our new wireless headphones cost $79.99 and belong in our electronics department.\"}\n    ]\n)\n\nprint(f\"Product: {product.name}\")\nprint(f\"Price: ${product.price}\")\nprint(f\"Category: {product.category}\")\n",
+          "code": "product = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    response_model=Product,\n    messages=[\n        {\"role\": \"user\", \"content\": \"Our new wireless headphones cost $79.99 and belong in our electronics department.\"}\n    ]\n)\n\n",
+          "display_code": "product = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    response_model=Product,\n    messages=[\n        {\"role\": \"user\", \"content\": \"Our new wireless headphones cost $79.99 and belong in our electronics department.\"}\n    ]\n)\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 26,
+          "start_line": 28,
           "line_range": [
-            26,
-            36
+            28,
+            35
           ]
         },
         {
-          "code": "# Will be ProductCategory.ELECTRONICS, not just a string\n",
+          "code": "# Output:\n# Product: Our new wireless headphones\n# Price: $79.99\n# Category: ProductCategory.ELECTRONICS\n",
           "display_code": "",
-          "annotation": "Will be ProductCategory.ELECTRONICS, not just a string",
+          "annotation": "Output:\nProduct: Our new wireless headphones\nPrice: $79.99\nCategory: ProductCategory.ELECTRONICS",
           "is_comment": true,
-          "start_line": 37,
+          "start_line": 36,
           "line_range": [
-            37,
-            37
-          ],
-          "target_line_range": [
-            38,
-            38
-          ]
-        },
-        {
-          "code": "\n",
-          "display_code": "\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 38,
-          "line_range": [
-            38,
-            38
-          ]
-        },
-        {
-          "code": "# You can use the enum for comparisons\n",
-          "display_code": "",
-          "annotation": "You can use the enum for comparisons",
-          "is_comment": true,
-          "start_line": 39,
-          "line_range": [
-            39,
+            36,
             39
           ],
           "target_line_range": [
             40,
-            46
+            42
           ]
         },
         {
-          "code": "if product.category == ProductCategory.ELECTRONICS:\n    print(\"This is an electronic product.\")\n\nfrom enum import Enum, auto\nfrom pydantic import BaseModel\nfrom typing import List\n\n",
-          "display_code": "if product.category == ProductCategory.ELECTRONICS:\n    print(\"This is an electronic product.\")\n\nfrom enum import Enum, auto\nfrom pydantic import BaseModel\nfrom typing import List\n\n",
+          "code": "print(f\"Product: {product.name}\")\nprint(f\"Price: ${product.price}\")\nprint(f\"Category: {product.category}\")",
+          "display_code": "print(f\"Product: {product.name}\")\nprint(f\"Price: ${product.price}\")\nprint(f\"Category: {product.category}\")",
           "annotation": "",
           "is_comment": false,
           "start_line": 40,
           "line_range": [
             40,
-            46
-          ]
-        },
-        {
-          "code": "# Define priority enum\n",
-          "display_code": "",
-          "annotation": "Define priority enum",
-          "is_comment": true,
-          "start_line": 47,
-          "line_range": [
-            47,
-            47
-          ],
-          "target_line_range": [
-            48,
-            53
-          ]
-        },
-        {
-          "code": "class Priority(str, Enum):\n    LOW = \"low\"\n    MEDIUM = \"medium\"\n    HIGH = \"high\"\n    CRITICAL = \"critical\"\n\n",
-          "display_code": "class Priority(str, Enum):\n    LOW = \"low\"\n    MEDIUM = \"medium\"\n    HIGH = \"high\"\n    CRITICAL = \"critical\"\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 48,
-          "line_range": [
-            48,
-            53
-          ]
-        },
-        {
-          "code": "# Define status enum\n",
-          "display_code": "",
-          "annotation": "Define status enum",
-          "is_comment": true,
-          "start_line": 54,
-          "line_range": [
-            54,
-            54
-          ],
-          "target_line_range": [
-            55,
-            88
-          ]
-        },
-        {
-          "code": "class Status(str, Enum):\n    TODO = \"todo\"\n    IN_PROGRESS = \"in_progress\"\n    REVIEW = \"review\"\n    DONE = \"done\"\n\nclass Task(BaseModel):\n    title: str\n    description: str\n    priority: Priority\n    status: Status\n    tags: List[str] = []\n\ntask = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    response_model=Task,\n    messages=[\n        {\"role\": \"user\", \"content\": \"\"\"\n        Task Details:\n        Title: Fix login page bug\n        Description: Users report seeing errors when trying to log in with special characters\n        Priority: High\n        Status: In Progress\n        Tags: bug, authentication, frontend\n        \"\"\"}\n    ]\n)\n\nprint(f\"Task: {task.title}\")\nprint(f\"Description: {task.description}\")\nprint(f\"Priority: {task.priority}\")  # Priority.HIGH\nprint(f\"Status: {task.status}\")  # Status.IN_PROGRESS\nprint(f\"Tags: {', '.join(task.tags)}\")\n\n",
-          "display_code": "class Status(str, Enum):\n    TODO = \"todo\"\n    IN_PROGRESS = \"in_progress\"\n    REVIEW = \"review\"\n    DONE = \"done\"\n\nclass Task(BaseModel):\n    title: str\n    description: str\n    priority: Priority\n    status: Status\n    tags: List[str] = []\n\ntask = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    response_model=Task,\n    messages=[\n        {\"role\": \"user\", \"content\": \"\"\"\n        Task Details:\n        Title: Fix login page bug\n        Description: Users report seeing errors when trying to log in with special characters\n        Priority: High\n        Status: In Progress\n        Tags: bug, authentication, frontend\n        \"\"\"}\n    ]\n)\n\nprint(f\"Task: {task.title}\")\nprint(f\"Description: {task.description}\")\nprint(f\"Priority: {task.priority}\")  # Priority.HIGH\nprint(f\"Status: {task.status}\")  # Status.IN_PROGRESS\nprint(f\"Tags: {', '.join(task.tags)}\")\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 55,
-          "line_range": [
-            55,
-            88
-          ]
-        },
-        {
-          "code": "# Use enums for conditional logic\n",
-          "display_code": "",
-          "annotation": "Use enums for conditional logic",
-          "is_comment": true,
-          "start_line": 89,
-          "line_range": [
-            89,
-            89
-          ],
-          "target_line_range": [
-            90,
-            98
-          ]
-        },
-        {
-          "code": "if task.priority in [Priority.HIGH, Priority.CRITICAL]:\n    print(\"This task requires immediate attention!\")\n\nif task.status == Status.IN_PROGRESS:\n    print(\"This task is being worked on.\")\n\nfrom enum import IntEnum\nfrom pydantic import BaseModel\n\n",
-          "display_code": "if task.priority in [Priority.HIGH, Priority.CRITICAL]:\n    print(\"This task requires immediate attention!\")\n\nif task.status == Status.IN_PROGRESS:\n    print(\"This task is being worked on.\")\n\nfrom enum import IntEnum\nfrom pydantic import BaseModel\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 90,
-          "line_range": [
-            90,
-            98
-          ]
-        },
-        {
-          "code": "# Define an integer-based enum\n",
-          "display_code": "",
-          "annotation": "Define an integer-based enum",
-          "is_comment": true,
-          "start_line": 99,
-          "line_range": [
-            99,
-            99
-          ],
-          "target_line_range": [
-            100,
-            131
-          ]
-        },
-        {
-          "code": "class SeverityLevel(IntEnum):\n    LOW = 1\n    MODERATE = 2\n    HIGH = 3\n    SEVERE = 4\n    CRITICAL = 5\n\nclass SecurityIssue(BaseModel):\n    title: str\n    description: str\n    severity: SeverityLevel\n    affected_users: int\n\nissue = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    response_model=SecurityIssue,\n    messages=[\n        {\"role\": \"user\", \"content\": \"\"\"\n        Security Alert:\n        Issue: Database Exposure\n        Details: Customer database was partially exposed due to misconfigured firewall\n        Severity: 4 (Severe)\n        Affected Users: 5,230\n        \"\"\"}\n    ]\n)\n\nprint(f\"Issue: {issue.title}\")\nprint(f\"Description: {issue.description}\")\nprint(f\"Severity: {issue.severity.name} (Level {issue.severity.value})\")  # \"SEVERE (Level 4)\"\nprint(f\"Affected Users: {issue.affected_users}\")\n\n",
-          "display_code": "class SeverityLevel(IntEnum):\n    LOW = 1\n    MODERATE = 2\n    HIGH = 3\n    SEVERE = 4\n    CRITICAL = 5\n\nclass SecurityIssue(BaseModel):\n    title: str\n    description: str\n    severity: SeverityLevel\n    affected_users: int\n\nissue = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    response_model=SecurityIssue,\n    messages=[\n        {\"role\": \"user\", \"content\": \"\"\"\n        Security Alert:\n        Issue: Database Exposure\n        Details: Customer database was partially exposed due to misconfigured firewall\n        Severity: 4 (Severe)\n        Affected Users: 5,230\n        \"\"\"}\n    ]\n)\n\nprint(f\"Issue: {issue.title}\")\nprint(f\"Description: {issue.description}\")\nprint(f\"Severity: {issue.severity.name} (Level {issue.severity.value})\")  # \"SEVERE (Level 4)\"\nprint(f\"Affected Users: {issue.affected_users}\")\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 100,
-          "line_range": [
-            100,
-            131
-          ]
-        },
-        {
-          "code": "# Use integer enum for thresholds\n",
-          "display_code": "",
-          "annotation": "Use integer enum for thresholds",
-          "is_comment": true,
-          "start_line": 132,
-          "line_range": [
-            132,
-            132
-          ],
-          "target_line_range": [
-            133,
-            149
-          ]
-        },
-        {
-          "code": "if issue.severity >= SeverityLevel.HIGH and issue.affected_users > 1000:\n    print(\"This requires executive notification!\")\n\nfrom enum import Enum\nfrom pydantic import BaseModel, Field\n\nclass TicketType(str, Enum):\n    BUG = \"bug\"\n    FEATURE = \"feature\"\n    IMPROVEMENT = \"improvement\"\n    DOCUMENTATION = \"documentation\"\n    QUESTION = \"question\"\n\nclass Ticket(BaseModel):\n    title: str\n    description: str\n\n",
-          "display_code": "if issue.severity >= SeverityLevel.HIGH and issue.affected_users > 1000:\n    print(\"This requires executive notification!\")\n\nfrom enum import Enum\nfrom pydantic import BaseModel, Field\n\nclass TicketType(str, Enum):\n    BUG = \"bug\"\n    FEATURE = \"feature\"\n    IMPROVEMENT = \"improvement\"\n    DOCUMENTATION = \"documentation\"\n    QUESTION = \"question\"\n\nclass Ticket(BaseModel):\n    title: str\n    description: str\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 133,
-          "line_range": [
-            133,
-            149
-          ]
-        },
-        {
-          "code": "    # Add descriptions to help the LLM understand the enum\n",
-          "display_code": "",
-          "annotation": "Add descriptions to help the LLM understand the enum",
-          "is_comment": true,
-          "start_line": 150,
-          "line_range": [
-            150,
-            150
-          ],
-          "target_line_range": [
-            151,
-            178
-          ]
-        },
-        {
-          "code": "    ticket_type: TicketType = Field(\n        description=\"\"\"Type of ticket with these options:\n        - bug: Something is not working correctly\n        - feature: A new capability is requested\n        - improvement: Enhancement to an existing feature\n        - documentation: Updates to documentation\n        - question: Question about functionality\"\"\"\n    )\n\nticket = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    response_model=Ticket,\n    messages=[\n        {\"role\": \"user\", \"content\": \"\"\"\n        New Ticket:\n        Title: Add dark mode to application\n        Description: Users would like a dark theme option to reduce eye strain when using the app at night\n        \"\"\"}\n    ]\n)\n\nprint(f\"Ticket: {ticket.title}\")\nprint(f\"Description: {ticket.description}\")\nprint(f\"Type: {ticket.ticket_type}\")  # Should be TicketType.IMPROVEMENT or TicketType.FEATURE\n\nfrom enum import Flag, auto\nfrom pydantic import BaseModel, Field\n\n",
-          "display_code": "    ticket_type: TicketType = Field(\n        description=\"\"\"Type of ticket with these options:\n        - bug: Something is not working correctly\n        - feature: A new capability is requested\n        - improvement: Enhancement to an existing feature\n        - documentation: Updates to documentation\n        - question: Question about functionality\"\"\"\n    )\n\nticket = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    response_model=Ticket,\n    messages=[\n        {\"role\": \"user\", \"content\": \"\"\"\n        New Ticket:\n        Title: Add dark mode to application\n        Description: Users would like a dark theme option to reduce eye strain when using the app at night\n        \"\"\"}\n    ]\n)\n\nprint(f\"Ticket: {ticket.title}\")\nprint(f\"Description: {ticket.description}\")\nprint(f\"Type: {ticket.ticket_type}\")  # Should be TicketType.IMPROVEMENT or TicketType.FEATURE\n\nfrom enum import Flag, auto\nfrom pydantic import BaseModel, Field\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 151,
-          "line_range": [
-            151,
-            178
-          ]
-        },
-        {
-          "code": "# Define a Flag enum for permissions\n",
-          "display_code": "",
-          "annotation": "Define a Flag enum for permissions",
-          "is_comment": true,
-          "start_line": 179,
-          "line_range": [
-            179,
-            179
-          ],
-          "target_line_range": [
-            180,
-            186
-          ]
-        },
-        {
-          "code": "class Permissions(Flag):\n    NONE = 0\n    READ = auto()       # 1\n    WRITE = auto()      # 2\n    DELETE = auto()     # 4\n    ADMIN = auto()      # 8\n\n",
-          "display_code": "class Permissions(Flag):\n    NONE = 0\n    READ = auto()       # 1\n    WRITE = auto()      # 2\n    DELETE = auto()     # 4\n    ADMIN = auto()      # 8\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 180,
-          "line_range": [
-            180,
-            186
-          ]
-        },
-        {
-          "code": "    # Combinations\n",
-          "display_code": "",
-          "annotation": "Combinations",
-          "is_comment": true,
-          "start_line": 187,
-          "line_range": [
-            187,
-            187
-          ],
-          "target_line_range": [
-            188,
-            220
-          ]
-        },
-        {
-          "code": "    READ_WRITE = READ | WRITE                # 3\n    STANDARD = READ | WRITE | DELETE         # 7\n    ALL = READ | WRITE | DELETE | ADMIN      # 15\n\nclass User(BaseModel):\n    name: str\n    role: str\n    permissions: Permissions = Field(\n        description=\"\"\"User permissions, can be a combination of:\n        - READ: Can view content\n        - WRITE: Can create and edit content\n        - DELETE: Can remove content\n        - ADMIN: Has administrative privileges\n        - Or predefined combinations like READ_WRITE, STANDARD, or ALL\"\"\"\n    )\n\nuser = client.chat.completions.create(\n    model=\"gpt-4\",  # Better for complex models\n    response_model=User,\n    messages=[\n        {\"role\": \"user\", \"content\": \"\"\"\n        User Profile:\n        Name: Sarah Johnson\n        Role: Content Manager\n        Permissions: Can read, write, and delete content\n        \"\"\"}\n    ]\n)\n\nprint(f\"User: {user.name}\")\nprint(f\"Role: {user.role}\")\nprint(f\"Permissions: {user.permissions.name}\")  # Should be \"STANDARD\"\n\n",
-          "display_code": "    READ_WRITE = READ | WRITE                # 3\n    STANDARD = READ | WRITE | DELETE         # 7\n    ALL = READ | WRITE | DELETE | ADMIN      # 15\n\nclass User(BaseModel):\n    name: str\n    role: str\n    permissions: Permissions = Field(\n        description=\"\"\"User permissions, can be a combination of:\n        - READ: Can view content\n        - WRITE: Can create and edit content\n        - DELETE: Can remove content\n        - ADMIN: Has administrative privileges\n        - Or predefined combinations like READ_WRITE, STANDARD, or ALL\"\"\"\n    )\n\nuser = client.chat.completions.create(\n    model=\"gpt-4\",  # Better for complex models\n    response_model=User,\n    messages=[\n        {\"role\": \"user\", \"content\": \"\"\"\n        User Profile:\n        Name: Sarah Johnson\n        Role: Content Manager\n        Permissions: Can read, write, and delete content\n        \"\"\"}\n    ]\n)\n\nprint(f\"User: {user.name}\")\nprint(f\"Role: {user.role}\")\nprint(f\"Permissions: {user.permissions.name}\")  # Should be \"STANDARD\"\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 188,
-          "line_range": [
-            188,
-            220
-          ]
-        },
-        {
-          "code": "# Check individual permissions\n",
-          "display_code": "",
-          "annotation": "Check individual permissions",
-          "is_comment": true,
-          "start_line": 221,
-          "line_range": [
-            221,
-            221
-          ],
-          "target_line_range": [
-            222,
-            232
-          ]
-        },
-        {
-          "code": "if Permissions.READ in user.permissions:\n    print(\"User can read content\")\n\nif Permissions.WRITE in user.permissions:\n    print(\"User can write content\")\n\nif Permissions.ADMIN in user.permissions:\n    print(\"User has admin privileges\")\nelse:\n    print(\"User does not have admin privileges\")\n\n",
-          "display_code": "if Permissions.READ in user.permissions:\n    print(\"User can read content\")\n\nif Permissions.WRITE in user.permissions:\n    print(\"User can write content\")\n\nif Permissions.ADMIN in user.permissions:\n    print(\"User has admin privileges\")\nelse:\n    print(\"User does not have admin privileges\")\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 222,
-          "line_range": [
-            222,
-            232
+            42
           ]
         }
       ],

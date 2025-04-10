@@ -6,7 +6,7 @@
     
     <!-- Primary Meta Tags -->
     <title>Simple Classification - Structured Outputs by Example</title>
-    <meta name="description" content="Learn to work with structured outputs through annotated examples">
+    <meta name="description" content="Perform single-label classification with Instructor and structured outputs.">
     <meta name="author" content="Jason Liu">
     <meta name="keywords" content="structured outputs, LLM, Instructor, Pydantic, data extraction, structured data">
     
@@ -17,13 +17,13 @@
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://structuredoutputsbyexample.com/018-simple-classification/">
     <meta property="og:title" content="Simple Classification - Structured Outputs by Example">
-    <meta property="og:description" content="Learn to work with structured outputs through annotated examples">
+    <meta property="og:description" content="Perform single-label classification with Instructor and structured outputs.">
     
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://structuredoutputsbyexample.com/018-simple-classification/">
     <meta property="twitter:title" content="Simple Classification - Structured Outputs by Example">
-    <meta property="twitter:description" content="Learn to work with structured outputs through annotated examples">
+    <meta property="twitter:description" content="Perform single-label classification with Instructor and structured outputs.">
 
     <!-- Structured Data / JSON-LD -->
     <script type="application/ld+json">
@@ -31,7 +31,7 @@
   "@context": "https://schema.org",
   "@type": "TechArticle",
   "headline": "Simple Classification",
-  "description": "Learn to work with structured outputs through annotated examples",
+  "description": "Perform single-label classification with Instructor and structured outputs.",
   "author": {
     "@type": "Person",
     "name": "Jason Liu"
@@ -42,8 +42,8 @@
     "url": "https://structuredoutputsbyexample.com"
   },
   "mainEntityOfPage": "https://structuredoutputsbyexample.com/018-simple-classification/",
-  "datePublished": "2025-04-10T02:14:01+00:00",
-  "dateModified": "2025-04-10T02:14:01+00:00",
+  "datePublished": "2025-04-10T02:23:30+00:00",
+  "dateModified": "2025-04-10T02:23:30+00:00",
   "articleSection": "Classification and Analysis",
   "keywords": [
     "structured data",
@@ -273,7 +273,6 @@
 from typing import Literal
 import instructor
 from openai import OpenAI
-
 class Classification(BaseModel):
     &quot;&quot;&quot;A single-label classification for text as SPAM or NOT_SPAM&quot;&quot;&quot;
 
@@ -281,7 +280,6 @@ class Classification(BaseModel):
         description=&quot;The classification label, either SPAM or NOT_SPAM&quot;
     )
 client = instructor.from_openai(OpenAI())
-
 def classify_text(text: str) -&gt; Classification:
     return client.chat.completions.create(
         model=&quot;gpt-3.5-turbo&quot;,
@@ -308,114 +306,33 @@ def classify_text(text: str) -&gt; Classification:
     )
 spam_text = &quot;URGENT: Your account has been compromised. Click here to verify details!&quot;
 legit_text = &quot;Please review the meeting notes and provide your feedback by Friday.&quot;
-
-spam_result = classify_text(spam_text)
-legit_result = classify_text(legit_text)
-
-print(f&quot;Text: &#x27;{spam_text}&#x27;&quot;)
-print(f&quot;Classification: {spam_result.label}&quot;)
-print(f&quot;\nText: &#x27;{legit_text}&#x27;&quot;)
-print(f&quot;Classification: {legit_result.label}&quot;)
-from pydantic import BaseModel, Field
-from typing import Literal
-
-class ClassificationWithConfidence(BaseModel):
-    label: Literal[&quot;SPAM&quot;, &quot;NOT_SPAM&quot;]
-    confidence: float = Field(
-        gt=0, le=1,  # Greater than 0, less than or equal to 1
-        description=&quot;Confidence score between 0 and 1 (higher = more confident)&quot;
-    )
-
-def classify_with_confidence(text: str) -&gt; ClassificationWithConfidence:
-    return client.chat.completions.create(
-        model=&quot;gpt-3.5-turbo&quot;,
-        response_model=ClassificationWithConfidence,
-        messages=[
-            {
-                &quot;role&quot;: &quot;system&quot;,
-                &quot;content&quot;: &quot;Classify the text as SPAM or NOT_SPAM with a confidence score.&quot;
-            },
-            {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: f&quot;Classify this text: {text}&quot;}
-        ]
-    )
-
-borderline_text = &quot;Get your free account upgrade today. Limited availability.&quot;
-result = classify_with_confidence(borderline_text)
-
-print(f&quot;Text: &#x27;{borderline_text}&#x27;&quot;)
-print(f&quot;Classification: {result.label}&quot;)
-print(f&quot;Confidence: {result.confidence:.2f}&quot;)
-from pydantic import BaseModel, Field
-from typing import Literal
-
-class DetailedClassification(BaseModel):
-    label: Literal[&quot;SPAM&quot;, &quot;NOT_SPAM&quot;]
-    explanation: str = Field(
-        description=&quot;Detailed reasoning for this classification&quot;
-    )
-    spam_indicators: list[str] = Field(
-        default_factory=list,
-        description=&quot;List of specific elements that indicate spam, if any&quot;
-    )
-
-def classify_with_details(text: str) -&gt; DetailedClassification:
-    return client.chat.completions.create(
-        model=&quot;gpt-3.5-turbo&quot;,
-        response_model=DetailedClassification,
-        messages=[
-            {&quot;role&quot;: &quot;system&quot;, &quot;content&quot;: &quot;Classify the text and provide a detailed explanation.&quot;},
-            {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: f&quot;Classify this text: {text}&quot;}
-        ]
-    )
-
-text = &quot;CONGRATULATIONS! You&#x27;ve been selected to receive a free iPhone! Click now to claim: bit.ly/claim-prize&quot;
-result = classify_with_details(text)
-
-print(f&quot;Text: &#x27;{text}&#x27;&quot;)
-print(f&quot;Classification: {result.label}&quot;)
-print(f&quot;Explanation: {result.explanation}&quot;)
-print(&quot;Spam indicators:&quot;)
-for indicator in result.spam_indicators:
-    print(f&quot;- {indicator}&quot;)
-
-from typing import List
-
-def classify_batch(texts: List[str]) -&gt; List[Classification]:
-formatted_texts = &quot;\n\n&quot;.join([f&quot;Text {i+1}: {text}&quot; for i, text in enumerate(texts)])
-
-    return client.chat.completions.create(
-        model=&quot;gpt-3.5-turbo&quot;,
-        response_model=List[Classification],
-        messages=[
-            {&quot;role&quot;: &quot;system&quot;, &quot;content&quot;: &quot;Classify each text as SPAM or NOT_SPAM.&quot;},
-            {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: f&quot;Classify these texts:\n\n{formatted_texts}&quot;}
-        ]
-    )
-texts = [
-    &quot;Your application has been approved. Sign the documents at your earliest convenience.&quot;,
-    &quot;WINNER! You&#x27;ve been selected to receive $1000! Send your bank details now!&quot;,
-    &quot;Meeting rescheduled to 3PM tomorrow. Same Zoom link.&quot;
-]
-
-results = classify_batch(texts)
-
-for i, (text, result) in enumerate(zip(texts, results)):
-    print(f&quot;Text {i+1}: &#x27;{text}&#x27;&quot;)
-    print(f&quot;Classification: {result.label}\n&quot;)
+spam_result = classify_text(&quot;URGENT: Your account has been compromised. Click here to verify details!&quot;)
+legit_result = classify_text(&quot;Please review the meeting notes and provide your feedback by Friday.&quot;)
 </div>
                 </div>            </div>
+            <p style="margin: 20px 0 40px 0; color: #444; line-height: 1.6; font-size: 1.1em;">
+                Perform single-label classification with Instructor and structured outputs.
+            </p>
             <div class="row">
                 <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Perform single-label classification with Instructor and structured outputs.</div>
+                    <div style='font-size: 0.9em; color: #666;'>Import the necessary libraries</div>
 
                 </div>
                 <div class="code">
                     <pre><code class="language-python">from pydantic import BaseModel, Field
 from typing import Literal
 import instructor
-from openai import OpenAI
+from openai import OpenAI</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Define a Classification model with Pydantic</div>
 
-class Classification(BaseModel):
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">class Classification(BaseModel):
     &quot;&quot;&quot;A single-label classification for text as SPAM or NOT_SPAM&quot;&quot;&quot;
 
     label: Literal[&quot;SPAM&quot;, &quot;NOT_SPAM&quot;] = Field(
@@ -430,9 +347,17 @@ class Classification(BaseModel):
 
                 </div>
                 <div class="code">
-                    <pre><code class="language-python">client = instructor.from_openai(OpenAI())
+                    <pre><code class="language-python">client = instructor.from_openai(OpenAI())</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Define a function to classify text</div>
 
-def classify_text(text: str) -&gt; Classification:
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">def classify_text(text: str) -&gt; Classification:
     return client.chat.completions.create(
         model=&quot;gpt-3.5-turbo&quot;,
         response_model=Classification,
@@ -466,148 +391,29 @@ def classify_text(text: str) -&gt; Classification:
                 </div>
                 <div class="code">
                     <pre><code class="language-python">spam_text = &quot;URGENT: Your account has been compromised. Click here to verify details!&quot;
-legit_text = &quot;Please review the meeting notes and provide your feedback by Friday.&quot;
-
-spam_result = classify_text(spam_text)
-legit_result = classify_text(legit_text)
-
-print(f&quot;Text: &#x27;{spam_text}&#x27;&quot;)
-print(f&quot;Classification: {spam_result.label}&quot;)</code></pre>
+legit_text = &quot;Please review the meeting notes and provide your feedback by Friday.&quot;</code></pre>
                 </div>
             </div>
             <hr>
             <div class="row">
                 <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Output: Classification: SPAM</div>
+                    <div style='font-size: 0.9em; color: #666;'>Output:
+Legit classification: NOT_SPAM</div>
 
                 </div>
                 <div class="code">
-                    <pre><code class="language-python">print(f&quot;\nText: &#x27;{legit_text}&#x27;&quot;)
-print(f&quot;Classification: {legit_result.label}&quot;)</code></pre>
+                    <pre><code class="language-python">spam_result = classify_text(&quot;URGENT: Your account has been compromised. Click here to verify details!&quot;)</code></pre>
                 </div>
             </div>
             <hr>
             <div class="row">
                 <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Output: Classification: NOT_SPAM</div>
+                    <div style='font-size: 0.9em; color: #666;'>Output:
+Legit classification: NOT_SPAM</div>
 
                 </div>
                 <div class="code">
-                    <pre><code class="language-python">from pydantic import BaseModel, Field
-from typing import Literal
-
-class ClassificationWithConfidence(BaseModel):
-    label: Literal[&quot;SPAM&quot;, &quot;NOT_SPAM&quot;]
-    confidence: float = Field(
-        gt=0, le=1,  # Greater than 0, less than or equal to 1
-        description=&quot;Confidence score between 0 and 1 (higher = more confident)&quot;
-    )
-
-def classify_with_confidence(text: str) -&gt; ClassificationWithConfidence:
-    return client.chat.completions.create(
-        model=&quot;gpt-3.5-turbo&quot;,
-        response_model=ClassificationWithConfidence,
-        messages=[
-            {
-                &quot;role&quot;: &quot;system&quot;,
-                &quot;content&quot;: &quot;Classify the text as SPAM or NOT_SPAM with a confidence score.&quot;
-            },
-            {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: f&quot;Classify this text: {text}&quot;}
-        ]
-    )
-
-borderline_text = &quot;Get your free account upgrade today. Limited availability.&quot;
-result = classify_with_confidence(borderline_text)
-
-print(f&quot;Text: &#x27;{borderline_text}&#x27;&quot;)
-print(f&quot;Classification: {result.label}&quot;)
-print(f&quot;Confidence: {result.confidence:.2f}&quot;)</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Example Output:
-Classification: SPAM
-Confidence: 0.75</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">from pydantic import BaseModel, Field
-from typing import Literal
-
-class DetailedClassification(BaseModel):
-    label: Literal[&quot;SPAM&quot;, &quot;NOT_SPAM&quot;]
-    explanation: str = Field(
-        description=&quot;Detailed reasoning for this classification&quot;
-    )
-    spam_indicators: list[str] = Field(
-        default_factory=list,
-        description=&quot;List of specific elements that indicate spam, if any&quot;
-    )
-
-def classify_with_details(text: str) -&gt; DetailedClassification:
-    return client.chat.completions.create(
-        model=&quot;gpt-3.5-turbo&quot;,
-        response_model=DetailedClassification,
-        messages=[
-            {&quot;role&quot;: &quot;system&quot;, &quot;content&quot;: &quot;Classify the text and provide a detailed explanation.&quot;},
-            {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: f&quot;Classify this text: {text}&quot;}
-        ]
-    )
-
-text = &quot;CONGRATULATIONS! You&#x27;ve been selected to receive a free iPhone! Click now to claim: bit.ly/claim-prize&quot;
-result = classify_with_details(text)
-
-print(f&quot;Text: &#x27;{text}&#x27;&quot;)
-print(f&quot;Classification: {result.label}&quot;)
-print(f&quot;Explanation: {result.explanation}&quot;)
-print(&quot;Spam indicators:&quot;)
-for indicator in result.spam_indicators:
-    print(f&quot;- {indicator}&quot;)
-
-from typing import List
-
-def classify_batch(texts: List[str]) -&gt; List[Classification]:</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Use a batch prompt to classify multiple texts at once</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">formatted_texts = &quot;\n\n&quot;.join([f&quot;Text {i+1}: {text}&quot; for i, text in enumerate(texts)])
-
-    return client.chat.completions.create(
-        model=&quot;gpt-3.5-turbo&quot;,
-        response_model=List[Classification],
-        messages=[
-            {&quot;role&quot;: &quot;system&quot;, &quot;content&quot;: &quot;Classify each text as SPAM or NOT_SPAM.&quot;},
-            {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: f&quot;Classify these texts:\n\n{formatted_texts}&quot;}
-        ]
-    )</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Test with a batch of texts</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">texts = [
-    &quot;Your application has been approved. Sign the documents at your earliest convenience.&quot;,
-    &quot;WINNER! You&#x27;ve been selected to receive $1000! Send your bank details now!&quot;,
-    &quot;Meeting rescheduled to 3PM tomorrow. Same Zoom link.&quot;
-]
-
-results = classify_batch(texts)
-
-for i, (text, result) in enumerate(zip(texts, results)):
-    print(f&quot;Text {i+1}: &#x27;{text}&#x27;&quot;)
-    print(f&quot;Classification: {result.label}\n&quot;)</code></pre>
+                    <pre><code class="language-python">legit_result = classify_text(&quot;Please review the meeting notes and provide your feedback by Friday.&quot;)</code></pre>
                 </div>
             </div>
             <hr>
@@ -648,10 +454,10 @@ for i, (text, result) in enumerate(zip(texts, results)):
             </ul>
             <div class="navigation">
                 <p class="prev">
-                    <span>← Previous:</span> <a href="../017-literals-and-enums/">Literals and Enums</a>
+                    <span>← Previous:</span> <a href="../017-working-with-enums/">Working with Enums</a>
                 </p>
                 <p class="next">
-                    <span>Next:</span> <a href="../019-multi-label-classification/">Multi-label Classification</a> →
+                    <span>Next:</span> <a href="../019-multi-label-classification/">Multi-label Classification Example</a> →
                 </p>
             </div>
         </main>

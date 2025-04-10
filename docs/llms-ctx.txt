@@ -24,10 +24,9 @@ It's organized by sections, with each example's Python code and terminal command
   * Simple Nested Structure
   * Field Validation
   * Optional Fields
-  * Literals and Enums
 * Classification and Analysis
   * Simple Classification
-  * Multi-label Classification
+  * Multi-label Classification Example
 * Streaming
   * Streaming Basics
   * Streaming Lists
@@ -997,7 +996,7 @@ For more information, see the original documentation:
 
 ### Simple Nested Structure
 
-This example shows how to work with nested objects
+This example shows how to work with nested objects in Instructor.
 
 ```python
 import instructor
@@ -1199,12 +1198,18 @@ For more information, see the original documentation:
 
 ### Optional Fields
 
+This example demonstrates how to handle optional or missing data in structured extractions:
+1. Using Optional type annotations for fields that might not be present in the source text
+2. Using Instructor's Maybe type to explicitly track whether information was present
+
+Optional fields allow your models to gracefully handle incomplete information without
+causing extraction failures when certain data isn't mentioned in the text.
+
 ```python
 from pydantic import BaseModel, Field
 from typing import Optional
 import instructor
 from openai import OpenAI
-
 class Person(BaseModel):
     name: str
     age: int
@@ -1219,155 +1224,11 @@ person = client.chat.completions.create(
         {"role": "user", "content": "John Smith is 35 years old and works as a software engineer."}
     ]
 )
-
 print(f"Name: {person.name}")
 print(f"Age: {person.age}")
 print(f"Email: {person.email}")  # None
 print(f"Phone: {person.phone}")  # None
 print(f"Occupation: {person.occupation}")  # "software engineer"
-
-from pydantic import BaseModel, Field
-from typing import Optional
-
-class Product(BaseModel):
-    name: str
-    price: float
-currency: str = "USD"
-    in_stock: bool = True
-    category: Optional[str] = None
-    tags: list[str] = Field(default_factory=list)  # Empty list by default
-
-product = client.chat.completions.create(
-    model="gpt-3.5-turbo",
-    response_model=Product,
-    messages=[
-        {"role": "user", "content": "Our new coffee mug costs 12.99 and is categorized under 'Kitchen'."}
-    ]
-)
-
-print(f"Product: {product.name}")
-print(f"Price: {product.price} {product.currency}")  # USD is the default
-print(f"In Stock: {product.in_stock}")  # True is the default
-print(f"Category: {product.category}")  # "Kitchen"
-print(f"Tags: {product.tags}")  # Empty list by default
-
-from pydantic import BaseModel, Field
-from typing import Optional
-
-class JobApplication(BaseModel):
-    name: str = Field(description="Applicant's full name")
-    email: str = Field(description="Contact email address")
-phone: Optional[str] = Field(
-        None, description="Phone number in international format (optional)"
-    )
-    years_experience: Optional[int] = Field(
-        None, description="Years of relevant work experience (optional)"
-    )
-    portfolio_url: Optional[str] = Field(
-        None, description="Link to portfolio or personal website (optional)"
-    )
-    cover_letter: Optional[str] = Field(
-        None, description="Brief cover letter or introduction (optional)"
-    )
-
-application = client.chat.completions.create(
-    model="gpt-3.5-turbo",
-    response_model=JobApplication,
-    messages=[
-        {"role": "user", "content": """
-        Job application from Sarah Johnson:
-        I'm applying for the software developer position. My email is sarah.j@example.com
-        and I have 5 years of experience in frontend development. You can see my work
-        at https://sarahjohnson.dev
-        """}
-    ]
-)
-
-print(f"Applicant: {application.name}")
-print(f"Email: {application.email}")
-print(f"Phone: {application.phone or 'Not provided'}")  # None -> 'Not provided'
-print(f"Experience: {application.years_experience or 'Not specified'} years")
-print(f"Portfolio: {application.portfolio_url or 'None provided'}")
-print(f"Cover Letter: {application.cover_letter or 'Not included'}")
-from pydantic import BaseModel, Field
-from instructor.dsl.maybe import Maybe
-import instructor
-from openai import OpenAI
-
-class Person(BaseModel):
-    name: str
-    age: int
-occupation: Maybe[str] = Field(default=None)
-    email: Maybe[str] = Field(default=None)
-    location: Maybe[str] = Field(default=None)
-client = instructor.from_openai(OpenAI())
-person = client.chat.completions.create(
-    model="gpt-3.5-turbo",
-    response_model=Person,
-    messages=[
-        {"role": "user", "content": "John Smith is 35 years old and works as a software engineer."}
-    ]
-)
-
-print(f"Name: {person.name}")
-print(f"Age: {person.age}")
-if person.occupation.exists:
-    print(f"Occupation: {person.occupation.value}")
-else:
-    print("Occupation: Not mentioned")
-if person.email.exists:
-    print(f"Email: {person.email.value}")
-else:
-    print("Email: Not mentioned")
-if person.location.exists:
-    print(f"Location: {person.location.value}")
-else:
-    print("Location: Not mentioned")
-
-from pydantic import BaseModel, Field
-from typing import Optional, List
-
-class Address(BaseModel):
-    street: str
-    city: str
-    country: str
-    zip_code: Optional[str] = None
-
-class ContactInfo(BaseModel):
-    email: Optional[str] = None
-    phone: Optional[str] = None
-address: Optional[Address] = None
-
-class Person(BaseModel):
-    name: str
-    age: int
-    contact: Optional[ContactInfo] = None
-    hobbies: List[str] = Field(default_factory=list)
-
-person = client.chat.completions.create(
-    model="gpt-4",  # Better for complex structures
-    response_model=Person,
-    messages=[
-        {"role": "user", "content": """
-        Profile: Jane Smith, 42 years old.
-        She enjoys hiking, photography, and playing piano.
-        Contact her at jane.smith@example.com or at her home in
-        123 Maple Street, Toronto, Canada.
-        """}
-    ]
-)
-
-print(f"Name: {person.name}, Age: {person.age}")
-print(f"Hobbies: {', '.join(person.hobbies)}")
-
-if person.contact:
-    if person.contact.email:
-        print(f"Email: {person.contact.email}")
-    if person.contact.phone:
-        print(f"Phone: {person.contact.phone}")
-    if person.contact.address:
-        addr = person.contact.address
-        print(f"Address: {addr.street}, {addr.city}, {addr.country}")
 ```
 
 ```shell
@@ -1378,66 +1239,19 @@ $ python optional-fields.py
 For more information, see the original documentation:
 - https://github.com/jxnl/instructor
 
-### Literals and Enums
-
-This example shows how to use literal types instead of enums for simpler code
-
-```python
-import instructor
-from openai import OpenAI
-from pydantic import BaseModel, Field
-from typing import Literal
-class Task(BaseModel):
-    title: str
-priority: Literal["low", "medium", "high"] = Field(
-        description="Task priority level (low, medium, or high)"
-    )
-status: Literal["todo", "in_progress", "done"] = Field(
-        description="Current task status"
-    )
-client = instructor.from_openai(OpenAI())
-task = client.chat.completions.create(
-    model="gpt-3.5-turbo",
-    response_model=Task,
-    messages=[
-        {"role": "user", "content": "Fix login page bug - high priority, currently in progress"}
-    ]
-)
-print(f"Task: {task.title}")
-print(f"Priority: {task.priority}")  # Will be "high"
-print(f"Status: {task.status}")      # Will be "in_progress"
-if task.priority == "high":
-    print("This task requires immediate attention!")
-import enum
-
-class Priority(str, enum.Enum):
-    LOW = "low"
-    MEDIUM = "medium"
-    HIGH = "high"
-
-class Status(str, enum.Enum):
-    TODO = "todo"
-    IN_PROGRESS = "in_progress"
-    DONE = "done"
-
-class TaskWithEnums(BaseModel):
-    title: str
-    priority: Priority
-    status: Status
-```
-
 ## Classification and Analysis
 
 Using structured outputs for classification tasks
 
 ### Simple Classification
 
+Perform single-label classification with Instructor and structured outputs.
+
 ```python
 from pydantic import BaseModel, Field
 from typing import Literal
 import instructor
 from openai import OpenAI
-
 class Classification(BaseModel):
     """A single-label classification for text as SPAM or NOT_SPAM"""
 
@@ -1445,7 +1259,6 @@ class Classification(BaseModel):
         description="The classification label, either SPAM or NOT_SPAM"
     )
 client = instructor.from_openai(OpenAI())
-
 def classify_text(text: str) -> Classification:
     return client.chat.completions.create(
         model="gpt-3.5-turbo",
@@ -1472,100 +1285,8 @@ def classify_text(text: str) -> Classification:
     )
 spam_text = "URGENT: Your account has been compromised. Click here to verify details!"
 legit_text = "Please review the meeting notes and provide your feedback by Friday."
-
-spam_result = classify_text(spam_text)
-legit_result = classify_text(legit_text)
-
-print(f"Text: '{spam_text}'")
-print(f"Classification: {spam_result.label}")
-print(f"\nText: '{legit_text}'")
-print(f"Classification: {legit_result.label}")
-from pydantic import BaseModel, Field
-from typing import Literal
-
-class ClassificationWithConfidence(BaseModel):
-    label: Literal["SPAM", "NOT_SPAM"]
-    confidence: float = Field(
-        gt=0, le=1,  # Greater than 0, less than or equal to 1
-        description="Confidence score between 0 and 1 (higher = more confident)"
-    )
-
-def classify_with_confidence(text: str) -> ClassificationWithConfidence:
-    return client.chat.completions.create(
-        model="gpt-3.5-turbo",
-        response_model=ClassificationWithConfidence,
-        messages=[
-            {
-                "role": "system",
-                "content": "Classify the text as SPAM or NOT_SPAM with a confidence score."
-            },
-            {"role": "user", "content": f"Classify this text: {text}"}
-        ]
-    )
-
-borderline_text = "Get your free account upgrade today. Limited availability."
-result = classify_with_confidence(borderline_text)
-
-print(f"Text: '{borderline_text}'")
-print(f"Classification: {result.label}")
-print(f"Confidence: {result.confidence:.2f}")
-from pydantic import BaseModel, Field
-from typing import Literal
-
-class DetailedClassification(BaseModel):
-    label: Literal["SPAM", "NOT_SPAM"]
-    explanation: str = Field(
-        description="Detailed reasoning for this classification"
-    )
-    spam_indicators: list[str] = Field(
-        default_factory=list,
-        description="List of specific elements that indicate spam, if any"
-    )
-
-def classify_with_details(text: str) -> DetailedClassification:
-    return client.chat.completions.create(
-        model="gpt-3.5-turbo",
-        response_model=DetailedClassification,
-        messages=[
-            {"role": "system", "content": "Classify the text and provide a detailed explanation."},
-            {"role": "user", "content": f"Classify this text: {text}"}
-        ]
-    )
-
-text = "CONGRATULATIONS! You've been selected to receive a free iPhone! Click now to claim: bit.ly/claim-prize"
-result = classify_with_details(text)
-
-print(f"Text: '{text}'")
-print(f"Classification: {result.label}")
-print(f"Explanation: {result.explanation}")
-print("Spam indicators:")
-for indicator in result.spam_indicators:
-    print(f"- {indicator}")
-
-from typing import List
-
-def classify_batch(texts: List[str]) -> List[Classification]:
-formatted_texts = "\n\n".join([f"Text {i+1}: {text}" for i, text in enumerate(texts)])
-
-    return client.chat.completions.create(
-        model="gpt-3.5-turbo",
-        response_model=List[Classification],
-        messages=[
-            {"role": "system", "content": "Classify each text as SPAM or NOT_SPAM."},
-            {"role": "user", "content": f"Classify these texts:\n\n{formatted_texts}"}
-        ]
-    )
-texts = [
-    "Your application has been approved. Sign the documents at your earliest convenience.",
-    "WINNER! You've been selected to receive $1000! Send your bank details now!",
-    "Meeting rescheduled to 3PM tomorrow. Same Zoom link."
-]
-
-results = classify_batch(texts)
-
-for i, (text, result) in enumerate(zip(texts, results)):
-    print(f"Text {i+1}: '{text}'")
-    print(f"Classification: {result.label}\n")
+spam_result = classify_text("URGENT: Your account has been compromised. Click here to verify details!")
+legit_result = classify_text("Please review the meeting notes and provide your feedback by Friday.")
 ```
 
 ```shell
@@ -1576,22 +1297,28 @@ $ python simple-classification.py
 For more information, see the original documentation:
 - https://github.com/jxnl/instructor
 
-### Multi-label Classification
+### Multi-label Classification Example
+
+This example demonstrates various approaches to multi-label classification using Instructor:
+1. Basic multi-label classification with string labels
+2. Using Enums for predefined categories
+3. Classification with confidence scores
+4. Hierarchical classification with main and subcategories
+
+Each approach shows how to structure your Pydantic models for different classification needs.
 
 ```python
 from pydantic import BaseModel, Field
-from typing import List
+from typing import List, Optional
+from enum import Enum
 import instructor
 from openai import OpenAI
-
+client = instructor.from_openai(OpenAI())
 class MultiLabelClassification(BaseModel):
     """Multi-label classification of text content"""
-
     labels: List[str] = Field(
         description="List of applicable category labels for the text"
     )
-client = instructor.from_openai(OpenAI())
-
 def classify_text(text: str) -> MultiLabelClassification:
     return client.chat.completions.create(
         model="gpt-3.5-turbo",
@@ -1616,19 +1343,6 @@ def classify_text(text: str) -> MultiLabelClassification:
             {"role": "user", "content": f"Text for classification: {text}"}
         ]
     )
-article = """
-    Bitcoin prices surged to a new all-time high today as several tech companies announced
-    plans to add the cryptocurrency to their balance sheets. Health officials warned that
-    the excitement might cause stress for some investors.
-"""
-
-result = classify_text(article)
-
-print(f"Text: '{article}'")
-print(f"Labels: {', '.join(result.labels)}")
-from enum import Enum
-from pydantic import BaseModel, Field
-from typing import List
 class Category(str, Enum):
     BUSINESS = "business"
     TECHNOLOGY = "technology"
@@ -1638,14 +1352,11 @@ class Category(str, Enum):
     SPORTS = "sports"
     SCIENCE = "science"
     EDUCATION = "education"
-
 class EnumMultiLabelClassification(BaseModel):
     """Multi-label classification using predefined categories"""
-
     categories: List[Category] = Field(
         description="List of applicable categories from the predefined set"
     )
-
 def classify_with_enums(text: str) -> EnumMultiLabelClassification:
     return client.chat.completions.create(
         model="gpt-3.5-turbo",
@@ -1655,19 +1366,6 @@ def classify_with_enums(text: str) -> EnumMultiLabelClassification:
             {"role": "user", "content": f"Text for classification: {text}"}
         ]
     )
-
-article = """
-    New educational technology is transforming classrooms across the country.
-    Students are using AI-powered tools to enhance their learning experiences.
-"""
-
-result = classify_with_enums(article)
-
-print(f"Text: '{article}'")
-print(f"Categories: {', '.join([c.value for c in result.categories])}")
-from pydantic import BaseModel, Field
-from typing import List, Dict
-
 class LabelWithConfidence(BaseModel):
     label: str
     confidence: float = Field(gt=0, le=1)  # Between 0 and 1
@@ -1697,21 +1395,6 @@ def classify_with_confidence(text: str) -> ConfidenceClassification:
             {"role": "user", "content": f"Text for classification: {text}"}
         ]
     )
-
-article = """
-    The new smartphone features a built-in heart rate monitor that can alert users
-    about potential cardiac issues while they exercise.
-"""
-
-result = classify_with_confidence(article)
-
-print(f"Text: '{article}'")
-print("Labels with confidence:")
-for label in result.labels:
-    print(f"- {label.label}: {label.confidence:.2f}")
-from pydantic import BaseModel, Field
-from typing import List, Optional
-
 class SubCategory(BaseModel):
     name: str
     confidence: float = Field(gt=0, le=1)
@@ -1725,7 +1408,6 @@ class HierarchicalClassification(BaseModel):
     categories: List[MainCategory] = Field(
         description="Hierarchical categories with confidence scores"
     )
-
 def classify_hierarchical(text: str) -> HierarchicalClassification:
     return client.chat.completions.create(
         model="gpt-4",  # More complex tasks work better with GPT-4
@@ -1747,21 +1429,7 @@ def classify_hierarchical(text: str) -> HierarchicalClassification:
             {"role": "user", "content": f"Text for classification: {text}"}
         ]
     )
-
-article = """
-    Researchers have developed a new AI algorithm that can detect early signs of
-    Alzheimer's disease from brain scans with 94% accuracy. The deep learning software
-    could help doctors diagnose patients years earlier than current methods.
-"""
-
-result = classify_hierarchical(article)
-
-print(f"Text: '{article}'")
-print("Classification:")
-for category in result.categories:
-    print(f"- {category.name} ({category.confidence:.2f})")
-    for subcategory in category.subcategories:
-        print(f"  - {subcategory.name} ({subcategory.confidence:.2f})")
+result = classify_text("Researchers have developed a new AI algorithm that can detect early signs of Alzheimer's disease from brain scans with 94% accuracy. The deep learning software could help doctors diagnose patients years earlier than current methods.")
 ```
 
 ```shell
@@ -4181,6 +3849,8 @@ Additional examples that don't fit into other categories
 
 ### Working with Enums
 
+Use enumerated types with Instructor for consistent, validated extractions. Enums help enforce a fixed set of allowed values.
+
 ```python
 from enum import Enum
 from pydantic import BaseModel
@@ -4192,7 +3862,6 @@ class ProductCategory(str, Enum):
     HOME = "home"
     BOOKS = "books"
     TOYS = "toys"
-
 class Product(BaseModel):
     name: str
     price: float
@@ -4205,184 +3874,9 @@ product = client.chat.completions.create(
         {"role": "user", "content": "Our new wireless headphones cost $79.99 and belong in our electronics department."}
     ]
 )
-
 print(f"Product: {product.name}")
 print(f"Price: ${product.price}")
 print(f"Category: {product.category}")
-if product.category == ProductCategory.ELECTRONICS:
-    print("This is an electronic product.")
-
-from enum import Enum, auto
-from pydantic import BaseModel
-from typing import List
-class Priority(str, Enum):
-    LOW = "low"
-    MEDIUM = "medium"
-    HIGH = "high"
-    CRITICAL = "critical"
-class Status(str, Enum):
-    TODO = "todo"
-    IN_PROGRESS = "in_progress"
-    REVIEW = "review"
-    DONE = "done"
-
-class Task(BaseModel):
-    title: str
-    description: str
-    priority: Priority
-    status: Status
-    tags: List[str] = []
-
-task = client.chat.completions.create(
-    model="gpt-3.5-turbo",
-    response_model=Task,
-    messages=[
-        {"role": "user", "content": """
-        Task Details:
-        Title: Fix login page bug
-        Description: Users report seeing errors when trying to log in with special characters
-        Priority: High
-        Status: In Progress
-        Tags: bug, authentication, frontend
-        """}
-    ]
-)
-
-print(f"Task: {task.title}")
-print(f"Description: {task.description}")
-print(f"Priority: {task.priority}")  # Priority.HIGH
-print(f"Status: {task.status}")  # Status.IN_PROGRESS
-print(f"Tags: {', '.join(task.tags)}")
-if task.priority in [Priority.HIGH, Priority.CRITICAL]:
-    print("This task requires immediate attention!")
-
-if task.status == Status.IN_PROGRESS:
-    print("This task is being worked on.")
-
-from enum import IntEnum
-from pydantic import BaseModel
-class SeverityLevel(IntEnum):
-    LOW = 1
-    MODERATE = 2
-    HIGH = 3
-    SEVERE = 4
-    CRITICAL = 5
-
-class SecurityIssue(BaseModel):
-    title: str
-    description: str
-    severity: SeverityLevel
-    affected_users: int
-
-issue = client.chat.completions.create(
-    model="gpt-3.5-turbo",
-    response_model=SecurityIssue,
-    messages=[
-        {"role": "user", "content": """
-        Security Alert:
-        Issue: Database Exposure
-        Details: Customer database was partially exposed due to misconfigured firewall
-        Severity: 4 (Severe)
-        Affected Users: 5,230
-        """}
-    ]
-)
-
-print(f"Issue: {issue.title}")
-print(f"Description: {issue.description}")
-print(f"Severity: {issue.severity.name} (Level {issue.severity.value})")  # "SEVERE (Level 4)"
-print(f"Affected Users: {issue.affected_users}")
-if issue.severity >= SeverityLevel.HIGH and issue.affected_users > 1000:
-    print("This requires executive notification!")
-
-from enum import Enum
-from pydantic import BaseModel, Field
-
-class TicketType(str, Enum):
-    BUG = "bug"
-    FEATURE = "feature"
-    IMPROVEMENT = "improvement"
-    DOCUMENTATION = "documentation"
-    QUESTION = "question"
-
-class Ticket(BaseModel):
-    title: str
-    description: str
-ticket_type: TicketType = Field(
-        description="""Type of ticket with these options:
-        - bug: Something is not working correctly
-        - feature: A new capability is requested
-        - improvement: Enhancement to an existing feature
-        - documentation: Updates to documentation
-        - question: Question about functionality"""
-    )
-
-ticket = client.chat.completions.create(
-    model="gpt-3.5-turbo",
-    response_model=Ticket,
-    messages=[
-        {"role": "user", "content": """
-        New Ticket:
-        Title: Add dark mode to application
-        Description: Users would like a dark theme option to reduce eye strain when using the app at night
-        """}
-    ]
-)
-
-print(f"Ticket: {ticket.title}")
-print(f"Description: {ticket.description}")
-print(f"Type: {ticket.ticket_type}")  # Should be TicketType.IMPROVEMENT or TicketType.FEATURE
-
-from enum import Flag, auto
-from pydantic import BaseModel, Field
-class Permissions(Flag):
-    NONE = 0
-    READ = auto()       # 1
-    WRITE = auto()      # 2
-    DELETE = auto()     # 4
-    ADMIN = auto()      # 8
-READ_WRITE = READ | WRITE                # 3
-    STANDARD = READ | WRITE | DELETE         # 7
-    ALL = READ | WRITE | DELETE | ADMIN      # 15
-
-class User(BaseModel):
-    name: str
-    role: str
-    permissions: Permissions = Field(
-        description="""User permissions, can be a combination of:
-        - READ: Can view content
-        - WRITE: Can create and edit content
-        - DELETE: Can remove content
-        - ADMIN: Has administrative privileges
-        - Or predefined combinations like READ_WRITE, STANDARD, or ALL"""
-    )
-
-user = client.chat.completions.create(
-    model="gpt-4",  # Better for complex models
-    response_model=User,
-    messages=[
-        {"role": "user", "content": """
-        User Profile:
-        Name: Sarah Johnson
-        Role: Content Manager
-        Permissions: Can read, write, and delete content
-        """}
-    ]
-)
-
-print(f"User: {user.name}")
-print(f"Role: {user.role}")
-print(f"Permissions: {user.permissions.name}")  # Should be "STANDARD"
-if Permissions.READ in user.permissions:
-    print("User can read content")
-
-if Permissions.WRITE in user.permissions:
-    print("User can write content")
-
-if Permissions.ADMIN in user.permissions:
-    print("User has admin privileges")
-else:
-    print("User does not have admin privileges")
 ```
 
 ```shell
