@@ -158,36 +158,6 @@ For more information, see the original documentation:
 
 ### Installing Instructor
 
-```shell
-$ # Install the base package
-$ pip install instructor
-$ # For OpenAI (included by default)
-$ pip install instructor
-$ 
-$ # For Anthropic
-$ pip install "instructor[anthropic]"
-$ 
-$ # For Google/Gemini
-$ pip install "instructor[google-generativeai]"
-$ 
-$ # For Cohere
-$ pip install "instructor[cohere]"
-$ 
-$ # For Mistral
-$ pip install "instructor[mistralai]"
-$ 
-$ # For multiple providers via LiteLLM
-$ pip install "instructor[litellm]"
-$ # OpenAI
-$ export OPENAI_API_KEY=your_openai_key
-$ 
-$ # Anthropic
-$ export ANTHROPIC_API_KEY=your_anthropic_key
-$ 
-$ # Google/Gemini
-$ export GOOGLE_API_KEY=your_google_key
-```
-
 For more information, see the original documentation:
 - https://github.com/jxnl/instructor
 

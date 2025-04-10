@@ -419,23 +419,7 @@
           ]
         }
       ],
-      "shell_segments": [
-        {
-          "explanation": "## Basic Installation",
-          "command": "# Install the base package",
-          "output": "$ pip install instructor"
-        },
-        {
-          "explanation": "Install with specific provider dependencies:",
-          "command": "# For OpenAI (included by default)",
-          "output": "$ pip install instructor\n$ \n$ # For Anthropic\n$ pip install \"instructor[anthropic]\"\n$ \n$ # For Google/Gemini\n$ pip install \"instructor[google-generativeai]\"\n$ \n$ # For Cohere\n$ pip install \"instructor[cohere]\"\n$ \n$ # For Mistral\n$ pip install \"instructor[mistralai]\"\n$ \n$ # For multiple providers via LiteLLM\n$ pip install \"instructor[litellm]\""
-        },
-        {
-          "explanation": "Set your API keys as environment variables:",
-          "command": "# OpenAI",
-          "output": "$ export OPENAI_API_KEY=your_openai_key\n$ \n$ # Anthropic\n$ export ANTHROPIC_API_KEY=your_anthropic_key\n$ \n$ # Google/Gemini\n$ export GOOGLE_API_KEY=your_google_key"
-        }
-      ],
+      "shell_segments": [],
       "image_data": [],
       "documentation_links": [
         "https://github.com/jxnl/instructor"
