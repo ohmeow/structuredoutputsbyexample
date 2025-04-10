@@ -1,18 +1,27 @@
 # Streaming Lists
+# Learn how to stream collections of objects one at a time with Instructor. This guide covers basic list streaming, real-time data processing, and advanced stream manipulation techniques.
+# Traditional list extractions require waiting for all items to be generated before processing can begin.
+# Streaming lists allows you to process each item as soon as it's ready, enabling more responsive applications and better user experiences.
 
-# Stream collections of objects one at a time with Instructor.
-from pydantic import BaseModel, Field
-from typing import List
+# Import necessary libraries
 import instructor
+import time
+import itertools
 from openai import OpenAI
+from pydantic import BaseModel, Field
+from typing import List, Dict, Optional, Generator, TypeVar, Generic, Iterator, Any
 
+# Define type variable for generic functions
+T = TypeVar('T')
+
+# Patch the client
+client = instructor.from_openai(OpenAI())
+
+# Basic list streaming example
 class Person(BaseModel):
     name: str
     age: int
     occupation: str
-
-# Patch the client
-client = instructor.from_openai(OpenAI())
 
 # Create a streaming iterable
 people_stream = client.chat.completions.create_iterable(
@@ -37,11 +46,25 @@ for i, person in enumerate(people_stream, 1):
     print(f"Occupation: {person.occupation}")
     # Note: Each person is fully complete when received
 
-# Example output:# Receiving people one at a time:## Person 1:# Name: Michael Chen# Age: 34# Occupation: software engineer## Person 2:# Name: Sarah Johnson# Age: 42# Occupation: teacher## Person 3:# Name: Robert Garcia# Age: 56# Occupation: doctor
+# Example output:
+# Receiving people one at a time:
+#
+# Person 1:
+# Name: Michael Chen
+# Age: 34
+# Occupation: software engineer
+#
+# Person 2:
+# Name: Sarah Johnson
+# Age: 42
+# Occupation: teacher
+#
+# Person 3:
+# Name: Robert Garcia
+# Age: 56
+# Occupation: doctor
 
-from pydantic import BaseModel, Field
-from typing import List, Optional
-
+# Streaming complex objects
 class Book(BaseModel):
     title: str
     author: str
@@ -72,9 +95,7 @@ for i, book in enumerate(books_stream, 1):
     print(f"Rating: {book.rating if book.rating is not None else 'Not rated'}")
     print(f"Summary: {book.summary}")
 
-from typing import List, Dict, Any
-import time
-
+# Real-time data processing with streams
 class Task(BaseModel):
     title: str
     priority: str
@@ -131,10 +152,7 @@ for task in tasks_stream:
 
 print("\nSprint planning complete!")
 
-from typing import Dict, List, Any, Generator, TypeVar, Generic
-
-T = TypeVar('T')
-
+# Combining multiple streams
 def combine_streams(streams: Dict[str, Generator[T, None, None]]) -> Generator[Dict[str, T], None, None]:
     """Combine multiple iterables with identification."""
     active_streams = streams.copy()
@@ -181,9 +199,7 @@ for i, result in enumerate(combine_streams(streams), 1):
         else:
             print(f"  {category.upper()}: No documents yet")
 
-from typing import List, Optional, Iterator
-import itertools
-
+# Stream limiting with itertools
 class NewsHeadline(BaseModel):
     title: str
     source: str

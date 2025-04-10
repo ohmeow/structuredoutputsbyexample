@@ -1,19 +1,25 @@
 # Field Validation
+# Learn how to apply validation rules to ensure high-quality data extraction with Instructor. This guide covers built-in validators, pattern matching, and custom validation functions.
+# Data extraction without validation can lead to incorrect or inconsistent results.
+# Instructor leverages Pydantic's validation system to ensure extracted data meets your specific requirements.
 
-# Apply validation rules to ensure high-quality data extraction with Instructor.
-from pydantic import BaseModel, Field
+# Import necessary libraries
 import instructor
+import re
 from openai import OpenAI
+from pydantic import BaseModel, Field, field_validator
+from typing import Optional
+from datetime import date
 
-# Define a model with validation rules
+# Patch the client
+client = instructor.from_openai(OpenAI())
+
+# Basic validation example
 class Product(BaseModel):
     name: str = Field(min_length=3, max_length=50)
     price: float = Field(gt=0)  # must be greater than 0
     quantity: int = Field(ge=0)  # must be greater than or equal to 0
     category: str
-
-# Patch the client
-client = instructor.from_openai(OpenAI())
 
 # Extract with validation
 product = client.chat.completions.create(
@@ -29,8 +35,7 @@ print(f"Price: ${product.price}")
 print(f"Quantity: {product.quantity}")
 print(f"Category: {product.category}")
 
-from pydantic import BaseModel, Field
-
+# Numerical range validation
 class PersonStats(BaseModel):
     name: str
     age: int = Field(ge=0, lt=120)  # 0 ≤ age < 120
@@ -59,16 +64,14 @@ print(f"Height: {person.height} cm")
 print(f"Weight: {person.weight} kg")
 print(f"Body Temperature: {person.body_temperature}°C")
 
-from pydantic import BaseModel, Field, field_validator
-import re
-
+# Pattern matching and custom field validation
 class ContactInfo(BaseModel):
     name: str
     email: str = Field(pattern=r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$')
     phone: str = Field(pattern=r'^\+?[1-9]\d{1,14}$')  # E.164 phone format
     website: str = Field(pattern=r'^https?://(?:www\.)?[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(?:/[^\s]*)?$')
 
-# Additional custom validation
+    # Additional custom validation
     @field_validator('name')
     def validate_name(cls, v):
         if len(v.split()) < 2:
@@ -95,9 +98,7 @@ print(f"Email: {contact.email}")
 print(f"Phone: {contact.phone}")
 print(f"Website: {contact.website}")
 
-# Instructor automatically retries with validation errors:
-from pydantic import BaseModel, Field
-
+# Automatic retry with validation errors
 class User(BaseModel):
     name: str
     age: int = Field(ge=18, le=100)  # Must be between 18 and 100
@@ -118,10 +119,7 @@ print(f"Name: {user.name}")
 print(f"Age: {user.age}")  # Should be adjusted to valid range
 print(f"Email: {user.email}")  # Should include a valid domain
 
-from pydantic import BaseModel, Field, field_validator
-from datetime import date
-from typing import Optional
-
+# Complex interdependent field validation
 class Reservation(BaseModel):
     guest_name: str
     check_in_date: date

@@ -1,12 +1,19 @@
 # Working with Enums
+# Learn how to use enumerated types with Instructor for consistent, validated extractions. This guide covers string enums, integer enums, and flag enums.
+# Free-text extraction can lead to inconsistent values that don't match your application's expected formats.
+# Enums help enforce a fixed set of allowed values, increasing reliability and enabling rich type-based behavior.
 
-# Use enumerated types with Instructor for consistent, validated extractions. Enums help enforce a fixed set of allowed values.
-from enum import Enum
-from pydantic import BaseModel
+# Import necessary libraries
 import instructor
+from enum import Enum, IntEnum, Flag, auto
 from openai import OpenAI
+from pydantic import BaseModel, Field
+from typing import List
 
-# Define an enum for product categories
+# Patch the client
+client = instructor.from_openai(OpenAI())
+
+# Basic string enum example
 class ProductCategory(str, Enum):
     ELECTRONICS = "electronics"
     CLOTHING = "clothing"
@@ -18,9 +25,6 @@ class Product(BaseModel):
     name: str
     price: float
     category: ProductCategory
-
-# Patch the client
-client = instructor.from_openai(OpenAI())
 
 # Extract with enum validation
 product = client.chat.completions.create(
@@ -40,18 +44,13 @@ print(f"Category: {product.category}")
 if product.category == ProductCategory.ELECTRONICS:
     print("This is an electronic product.")
 
-from enum import Enum, auto
-from pydantic import BaseModel
-from typing import List
-
-# Define priority enum
+# Multiple enum example
 class Priority(str, Enum):
     LOW = "low"
     MEDIUM = "medium"
     HIGH = "high"
     CRITICAL = "critical"
 
-# Define status enum
 class Status(str, Enum):
     TODO = "todo"
     IN_PROGRESS = "in_progress"
@@ -93,10 +92,7 @@ if task.priority in [Priority.HIGH, Priority.CRITICAL]:
 if task.status == Status.IN_PROGRESS:
     print("This task is being worked on.")
 
-from enum import IntEnum
-from pydantic import BaseModel
-
-# Define an integer-based enum
+# Integer enum example
 class SeverityLevel(IntEnum):
     LOW = 1
     MODERATE = 2
@@ -133,9 +129,7 @@ print(f"Affected Users: {issue.affected_users}")
 if issue.severity >= SeverityLevel.HIGH and issue.affected_users > 1000:
     print("This requires executive notification!")
 
-from enum import Enum
-from pydantic import BaseModel, Field
-
+# Adding descriptions to help the LLM understand enums
 class TicketType(str, Enum):
     BUG = "bug"
     FEATURE = "feature"
@@ -173,10 +167,7 @@ print(f"Ticket: {ticket.title}")
 print(f"Description: {ticket.description}")
 print(f"Type: {ticket.ticket_type}")  # Should be TicketType.IMPROVEMENT or TicketType.FEATURE
 
-from enum import Flag, auto
-from pydantic import BaseModel, Field
-
-# Define a Flag enum for permissions
+# Flag enum for permission combinations
 class Permissions(Flag):
     NONE = 0
     READ = auto()       # 1

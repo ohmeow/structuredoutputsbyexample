@@ -1,11 +1,13 @@
 # Hooks and Callbacks
+# Learn how to use hooks and callbacks to extend Instructor's functionality. This guide demonstrates custom behavior implementation for logging, monitoring, and error handling.
+# Standard extraction pipelines offer limited visibility into what happens during processing and few opportunities for custom behaviors.
+# Instructor's hooks system lets you intercept and handle events during completions and parsing, enabling powerful extensions for debugging, monitoring, and more.
 
-# Use hooks and callbacks to extend Instructor's functionality. Enables custom behavior for testing, mocking, logging, and error handling.
-
-# Instructor provides a powerful hooks system that allows you to intercept and handle events during the completion and parsing process. Hooks can be used for logging, error handling, and custom behaviors.
+# Import necessary libraries
 import instructor
 import openai
 import pprint
+import time
 from pydantic import BaseModel
 
 # Initialize the client with instructor
@@ -15,6 +17,9 @@ client = instructor.from_openai(openai.OpenAI())
 class User(BaseModel):
     name: str
     age: int
+
+# Basic hooks example
+print("\n=== Basic Hooks Example ===")
 
 # Define hook handlers
 def log_completion_kwargs(*args, **kwargs):
@@ -50,22 +55,25 @@ user = client.chat.completions.create(
 
 print("Extracted user:", user)
 
+# Hooks management
+print("\n=== Hook Management ===")
+
 # Removing a specific hook
 client.off("completion:kwargs", log_completion_kwargs)
+print("Removed completion:kwargs hook")
 
 # Clearing all hooks for a specific event
 client.clear("completion:error")
+print("Cleared all hooks for completion:error")
 
 # Clearing all hooks
 client.clear()
+print("Cleared all hooks")
 
-# You can also use hooks for more advanced use cases such as telemetry or performance monitoring:
-import time
-import instructor
-import openai
-from pydantic import BaseModel
+# Advanced example: Performance monitoring with hooks
+print("\n=== Advanced Example: Performance Monitoring ===")
 
-# Initialize the client with instructor
+# Initialize a new client
 client = instructor.from_openai(openai.OpenAI())
 
 # Track performance metrics
@@ -77,9 +85,11 @@ class Metrics:
         self.request_start_time = None
 
     def start_request(self, *args, **kwargs):
+        """Record when a request starts."""
         self.request_start_time = time.time()
 
     def end_request(self, response):
+        """Calculate request duration and record token usage."""
         if self.request_start_time is not None:
             elapsed = time.time() - self.request_start_time
             self.request_times.append(elapsed)
@@ -87,10 +97,12 @@ class Metrics:
             print(f"Request completed in {elapsed:.2f}s, {response.usage.total_tokens} tokens")
 
     def record_error(self, error):
+        """Track errors that occur during requests."""
         self.error_count += 1
         print(f"Error recorded: {str(error)}")
 
     def report(self):
+        """Generate a performance report from collected metrics."""
         if not self.request_times:
             return "No requests recorded."
 
@@ -143,4 +155,14 @@ performance_report = metrics.report()
 print("\nPerformance Report:")
 for key, value in performance_report.items():
     print(f"  {key}: {value}")
+
+# Common use cases for hooks
+print("\n=== Common Use Cases for Hooks ===")
+print("1. Logging: Track requests and responses for debugging")
+print("2. Telemetry: Measure performance metrics like latency and token usage")
+print("3. Error Handling: Centralize error processing and recovery strategies")
+print("4. Retries: Implement custom retry logic for specific error conditions")
+print("5. Testing: Mock responses during development and testing")
+print("6. Caching: Implement response caching to reduce API calls")
+print("7. Rate Limiting: Add custom rate limiting to avoid quota issues")
 

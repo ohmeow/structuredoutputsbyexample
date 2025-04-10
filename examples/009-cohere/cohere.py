@@ -1,11 +1,14 @@
 # Cohere Integration
+# Learn how to use Instructor with Cohere's models for structured data extraction. This guide covers model selection, parameters, and conversation handling.
+# Cohere provides powerful language models with a focus on enterprise applications.
+# Instructor makes it easy to extract structured data from Cohere models with type safety and validation.
 
-# Use Instructor with Cohere's models for structured data extraction.
-## pip install instructor cohere#
+# Import necessary libraries
 import instructor
 import cohere
 from pydantic import BaseModel
 
+# Define a simple model for extraction
 class User(BaseModel):
     name: str
     age: int
@@ -13,10 +16,10 @@ class User(BaseModel):
 # Create Cohere client
 co = cohere.Client("YOUR_API_KEY")  # or set CO_API_KEY env variable
 
-# Patch with instructor
+# Patch with instructor - default JSON mode
 client = instructor.from_cohere(co)
 
-# Using chat method
+# Basic extraction example
 user = client.chat.completions.create(
     model="command-r-plus",  # or other Cohere models
     response_model=User,
@@ -28,6 +31,7 @@ user = client.chat.completions.create(
 print(f"Name: {user.name}, Age: {user.age}")
 # Output: Name: John, Age: 25
 
+# Different model options
 # Command model
 user = client.chat.completions.create(
     model="command",
@@ -55,6 +59,7 @@ user = client.chat.completions.create(
     ]
 )
 
+# Using temperature to control randomness
 user = client.chat.completions.create(
     model="command-r-plus",
     temperature=0.2,  # Lower for more consistent results
@@ -64,6 +69,7 @@ user = client.chat.completions.create(
     ]
 )
 
+# Using preamble (similar to system message)
 user = client.chat.completions.create(
     model="command-r-plus",
     response_model=User,
@@ -73,6 +79,7 @@ user = client.chat.completions.create(
     ]
 )
 
+# Multi-turn conversation
 user = client.chat.completions.create(
     model="command-r-plus",
     response_model=User,
@@ -83,11 +90,12 @@ user = client.chat.completions.create(
     ]
 )
 
+# Client configurations
 # Default JSON mode
-client = instructor.from_cohere(co)
+default_client = instructor.from_cohere(co)
 
 # Explicit JSON mode
-client = instructor.from_cohere(
+json_client = instructor.from_cohere(
     co,
     mode=instructor.Mode.JSON
 )

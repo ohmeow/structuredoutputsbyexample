@@ -1,8 +1,9 @@
 # Task Planning
+# Learn how to generate structured task plans from natural language prompts using Instructor. This guide demonstrates creating step-by-step solutions with dependencies and proper execution order.
+# Complex problems often require breaking down into manageable subtasks with specific relationships and execution sequences.
+# Instructor enables creation of sophisticated task planning systems that analyze problems and produce structured, executable plans.
 
-# Generate structured task plans from natural language prompts. Instructor helps create step-by-step solutions with dependencies and execution order.
-
-# Instructor can be used to create sophisticated task planning systems that break down complex problems into manageable subtasks. This example shows how to implement a task planner with dependencies and execute them in the correct order.
+# Import necessary libraries
 import asyncio
 import instructor
 from openai import OpenAI
@@ -28,8 +29,8 @@ class Task(BaseModel):
         description="IDs of subtasks that must be completed before this task"
     )
 
-# This method executes a single task and returns its result
-# In a real implementation, this would perform actual work rather than return a placeholder
+    # This method executes a single task and returns its result
+    # In a real implementation, this would perform actual work rather than return a placeholder
     async def execute(self, with_results: TaskResults) -> TaskResult:
         """Execute this task and return the result."""
         return TaskResult(task_id=self.id, result=f"Result for task: {self.task}")
@@ -46,7 +47,7 @@ class TaskPlan(BaseModel):
         dep_graph = {task.id: set(task.subtasks) for task in self.task_graph}
         result = []
 
-# Find and order tasks based on their dependencies
+        # Find and order tasks based on their dependencies
         while dep_graph:
             available = {task_id for task_id, deps in dep_graph.items() if not deps}  # Tasks with no dependencies
             if not available:
@@ -69,7 +70,7 @@ class TaskPlan(BaseModel):
         tasks_by_id = {task.id: task for task in self.task_graph}
         results = {}
 
-# Execute tasks in dependency order, processing parallel tasks when possible
+        # Execute tasks in dependency order, processing parallel tasks when possible
         while len(results) < len(self.task_graph):
             # Identify tasks whose dependencies are all satisfied
             ready_tasks = [

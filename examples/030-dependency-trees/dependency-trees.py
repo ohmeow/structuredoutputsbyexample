@@ -1,8 +1,9 @@
 # Dependency Trees
+# Learn how to model hierarchical dependencies using Instructor. This guide demonstrates extracting and analyzing dependency relationships for process management and system planning.
+# Complex projects and systems often involve intricate dependency relationships that are difficult to identify and manage manually.
+# Dependency trees help visualize prerequisite relationships, enabling better scheduling, bottleneck identification, and critical path analysis.
 
-# Model hierarchical dependencies using Instructor. This technique helps identify bottlenecks and critical paths in processes and systems.
-
-# Dependency trees represent relationships where some items depend on others. Instructor can extract these structures for tasks like workflow management, build systems, or data processing pipelines.
+# Import necessary libraries
 import instructor
 from openai import OpenAI
 from pydantic import BaseModel, Field
@@ -77,4 +78,13 @@ Building a web application requires:
 dependencies = extract_dependencies(project)
 execution_order = dependencies.get_execution_order()
 print("Execution order:", execution_order)
+
+# Print detailed dependency information
+print("\nDetailed task dependencies:")
+for node in dependencies.nodes:
+    if node.dependencies:
+        deps = ", ".join(node.dependencies)
+        print(f"{node.id}: {node.description} - depends on: {deps}")
+    else:
+        print(f"{node.id}: {node.description} - no dependencies")
 

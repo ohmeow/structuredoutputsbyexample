@@ -1,8 +1,9 @@
-# Vision
+# Vision Inputs
+# Learn how to process and extract structured data from images with Instructor. This guide demonstrates unified handling of vision inputs across different providers.
+# Multimodal models enable extraction of structured data from images, but handling image inputs can be complex with different requirements across providers.
+# Instructor simplifies vision inputs with a unified Image class that automatically manages format details for each provider.
 
-# Process and extract data from images with Instructor. Supports automatic detection of image paths and URLs for multimodal extraction.
-
-# Instructor provides simple, unified handling of vision inputs across different LLM providers through its `Image` class, which automatically handles the details of image formatting for each provider.
+# Import necessary libraries
 import instructor
 from openai import OpenAI
 from pydantic import BaseModel, Field
@@ -17,9 +18,9 @@ class ImageContent(BaseModel):
     objects: List[str] = Field(description="List of main objects in the image")
     colors: List[str] = Field(description="Dominant colors in the image")
 
-# Creating an Image object from a file path
-# Load images from local files for analysis
+# Method 1: Creating an Image object from a file path
 def analyze_image_from_file(file_path: str) -> ImageContent:
+    """Load and analyze an image from a local file path."""
     image = instructor.Image.from_path(file_path)
 
     return client.chat.completions.create(
@@ -36,9 +37,9 @@ def analyze_image_from_file(file_path: str) -> ImageContent:
         ]
     )
 
-# Creating an Image object from a URL
-# Load images from URLs for analysis
+# Method 2: Creating an Image object from a URL
 def analyze_image_from_url(image_url: str) -> ImageContent:
+    """Load and analyze an image from a URL."""
     image = instructor.Image.from_url(image_url)
 
     return client.chat.completions.create(
@@ -55,8 +56,9 @@ def analyze_image_from_url(image_url: str) -> ImageContent:
         ]
     )
 
-# Using autodetect_images for convenience
+# Method 3: Using autodetect_images for convenience
 def analyze_with_autodetect(image_path_or_url: str) -> ImageContent:
+    """Automatically detect and analyze an image from a path or URL."""
     return client.chat.completions.create(
         model="gpt-4-vision-preview",
         response_model=ImageContent,
@@ -72,9 +74,54 @@ def analyze_with_autodetect(image_path_or_url: str) -> ImageContent:
         autodetect_images=True  # Automatically converts paths/URLs to Image objects
     )
 
+# Example usage with more structured outputs
+class ProductDetails(BaseModel):
+    """Model for extracting specific product details from product images."""
+    product_name: str = Field(description="The name or title of the product")
+    brand: str = Field(description="The brand of the product")
+    category: str = Field(description="Product category (e.g., electronics, clothing)")
+    key_features: List[str] = Field(description="Main features or selling points")
+    target_audience: str = Field(description="Who this product is primarily designed for")
+
+def extract_product_info(image_path_or_url: str) -> ProductDetails:
+    """Extract structured product information from a product image."""
+    return client.chat.completions.create(
+        model="gpt-4-vision-preview",
+        response_model=ProductDetails,
+        messages=[
+            {
+                "role": "system",
+                "content": "Extract detailed product information from the provided image"
+            },
+            {
+                "role": "user",
+                "content": [
+                    "What product is shown in this image? Extract key details:",
+                    image_path_or_url
+                ]
+            }
+        ],
+        autodetect_images=True
+    )
+
 # Example usage
-result = analyze_with_autodetect("https://example.com/image.jpg")
-print(f"Description: {result.description}")
-print(f"Objects: {', '.join(result.objects)}")
-print(f"Colors: {', '.join(result.colors)}")
+if __name__ == "__main__":
+    # Example with a sample image URL (replace with a valid image URL for testing)
+    sample_url = "https://example.com/image.jpg"
+    
+    # Basic image analysis
+    result = analyze_with_autodetect(sample_url)
+    print("Basic Image Analysis:")
+    print(f"Description: {result.description}")
+    print(f"Objects: {', '.join(result.objects)}")
+    print(f"Colors: {', '.join(result.colors)}")
+    
+    # Product-specific extraction
+    # product_info = extract_product_info(sample_url)
+    # print("\nProduct Information Extraction:")
+    # print(f"Product: {product_info.product_name}")
+    # print(f"Brand: {product_info.brand}")
+    # print(f"Category: {product_info.category}")
+    # print(f"Key Features: {', '.join(product_info.key_features)}")
+    # print(f"Target Audience: {product_info.target_audience}")
 

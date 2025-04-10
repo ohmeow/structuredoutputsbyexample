@@ -1,20 +1,23 @@
 # List Extraction
+# Learn how to extract multiple items in a list from text using Instructor. This guide covers basic list extraction, complex nested structures, and streaming extraction.
+# Real-world data often contains multiple items of the same type that need to be extracted together.
+# Instructor makes it easy to extract lists of structured data with proper typing and validation.
 
-# Extract multiple items in a list from text with Instructor.
-from pydantic import BaseModel
+# Import necessary libraries
+import instructor
+from openai import OpenAI
+from typing import List, Optional
+from pydantic import BaseModel, Field
 
+# Define a simple model for extraction
 class Person(BaseModel):
     name: str
     age: int
 
-import instructor
-from openai import OpenAI
-from typing import List
-
 # Patch the client
 client = instructor.from_openai(OpenAI())
 
-# Extract a list of people
+# Basic list extraction example
 people = client.chat.completions.create(
     model="gpt-3.5-turbo",
     response_model=List[Person],  # Note the List wrapper
@@ -31,9 +34,12 @@ people = client.chat.completions.create(
 # Print each person
 for person in people:
     print(f"{person.name} is {person.age} years old")
+# Output:
+# John is 30 years old
+# Mary is 25 years old
+# Bob is 45 years old
 
-# Output:# John is 30 years old# Mary is 25 years old# Bob is 45 years old
-
+# Extracting from natural language text
 people = client.chat.completions.create(
     model="gpt-3.5-turbo",
     response_model=List[Person],
@@ -48,19 +54,19 @@ people = client.chat.completions.create(
 
 for i, person in enumerate(people, 1):
     print(f"Person {i}: {person.name}, {person.age}")
+# Output:
+# Person 1: John Smith, 32
+# Person 2: Sarah Johnson, 28
+# Person 3: Michael Chen, 35
 
-# Output:# Person 1: John Smith, 32# Person 2: Sarah Johnson, 28# Person 3: Michael Chen, 35
-
-from pydantic import BaseModel, Field
-from typing import List, Optional
-
+# Complex list extraction with nested structures
 class Address(BaseModel):
     street: str
     city: str
     state: Optional[str] = None
     country: str
 
-class Person(BaseModel):
+class PersonWithAddresses(BaseModel):
     name: str
     age: int
     occupation: str = Field(description="The person's job or profession")
@@ -68,7 +74,7 @@ class Person(BaseModel):
 
 people = client.chat.completions.create(
     model="gpt-4",  # More complex extraction works better with more capable models
-    response_model=List[Person],
+    response_model=List[PersonWithAddresses],
     messages=[
         {"role": "user", "content": """
         Our company employees include:
@@ -91,18 +97,7 @@ for person in people:
         print(f"  Address {i}: {addr.street}, {addr.city}, {addr.country}")
     print()
 
-import instructor
-from openai import OpenAI
-from typing import List
-from pydantic import BaseModel
-
-class Person(BaseModel):
-    name: str
-    age: int
-
-# Patch the client
-client = instructor.from_openai(OpenAI())
-
+# Streaming list extraction
 # Extract with streaming using create_iterable
 people_stream = client.chat.completions.create_iterable(
     model="gpt-3.5-turbo",
@@ -120,6 +115,8 @@ people_stream = client.chat.completions.create_iterable(
 # Process each item as it's completed
 for person in people_stream:
     print(f"Received: {person.name} is {person.age} years old")
-
-# Output will appear one at a time as each is completed:# Received: John is 30 years old# Received: Mary is 25 years old# Received: Bob is 45 years old
+# Output will appear one at a time as each is completed:
+# Received: John is 30 years old
+# Received: Mary is 25 years old
+# Received: Bob is 45 years old
 

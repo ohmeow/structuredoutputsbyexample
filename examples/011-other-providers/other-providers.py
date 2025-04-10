@@ -1,19 +1,26 @@
 # Other Provider Integrations
+# Explore additional LLM provider integrations with Instructor beyond the major ones. This guide demonstrates how to use Instructor with various alternative providers.
+# The LLM ecosystem is diverse with many providers offering specialized models and capabilities.
+# Instructor provides a consistent interface across these providers, making it easy to switch between them or use multiple providers.
 
-# Instructor supports many LLM providers beyond the major ones. Here's a quick overview of some additional providers.
+# Import necessary libraries
 import instructor
-from litellm import completion
 from pydantic import BaseModel
+from openai import OpenAI
+from litellm import completion
+from vertexai.preview.generative_models import GenerativeModel
 
+# Define a simple model for extraction - used with all providers
 class User(BaseModel):
     name: str
     age: int
 
-# Patch LiteLLM completion function
-client = instructor.from_litellm(completion)
+# LiteLLM Integration
+# Patch LiteLLM completion function to support many providers
+litellm_client = instructor.from_litellm(completion)
 
 # Use with any provider supported by LiteLLM
-user = client.chat.completions.create(
+litellm_user = litellm_client.chat.completions.create(
     model="gpt-3.5-turbo",  # or any other provider/model combination
     response_model=User,
     messages=[
@@ -21,41 +28,27 @@ user = client.chat.completions.create(
     ]
 )
 
-import instructor
-from pydantic import BaseModel
-from vertexai.preview.generative_models import GenerativeModel
-
-class User(BaseModel):
-    name: str
-    age: int
-
+# Google Vertex AI Integration (direct)
 # Create a model
-model = GenerativeModel("gemini-1.5-flash")
+vertex_model = GenerativeModel("gemini-1.5-flash")
 
 # Patch with instructor
-client = instructor.from_vertexai(model)
+vertex_client = instructor.from_vertexai(vertex_model)
 
 # Extract data
-user = client.generate_content(
+vertex_user = vertex_client.generate_content(
     response_model=User,
     contents="Extract the user info: John is 25 years old."
 )
 
-import instructor
-from openai import OpenAI
-from pydantic import BaseModel
-
-class User(BaseModel):
-    name: str
-    age: int
-
+# Perplexity AI Integration
 # Create OpenAI client with Perplexity base URL
-client = instructor.from_perplexity(
+perplexity_client = instructor.from_perplexity(
     OpenAI(base_url="https://api.perplexity.ai", api_key="YOUR_API_KEY")
 )
 
 # Extract data
-user = client.chat.completions.create(
+perplexity_user = perplexity_client.chat.completions.create(
     model="sonar",  # or other Perplexity models
     response_model=User,
     messages=[
@@ -63,21 +56,14 @@ user = client.chat.completions.create(
     ]
 )
 
-import instructor
-from openai import OpenAI
-from pydantic import BaseModel
-
-class User(BaseModel):
-    name: str
-    age: int
-
+# Fireworks AI Integration
 # Create OpenAI client with Fireworks base URL
-client = instructor.from_fireworks(
+fireworks_client = instructor.from_fireworks(
     OpenAI(base_url="https://api.fireworks.ai/inference/v1", api_key="YOUR_API_KEY")
 )
 
 # Extract data
-user = client.chat.completions.create(
+fireworks_user = fireworks_client.chat.completions.create(
     model="accounts/fireworks/models/mixtral-8x7b-instruct",
     response_model=User,
     messages=[
@@ -85,21 +71,14 @@ user = client.chat.completions.create(
     ]
 )
 
-import instructor
-from openai import OpenAI
-from pydantic import BaseModel
-
-class User(BaseModel):
-    name: str
-    age: int
-
+# Anyscale Integration
 # Create OpenAI client with Anyscale base URL
-client = instructor.from_anyscale(
+anyscale_client = instructor.from_anyscale(
     OpenAI(base_url="https://api.endpoints.anyscale.com/v1", api_key="YOUR_API_KEY")
 )
 
 # Extract data
-user = client.chat.completions.create(
+anyscale_user = anyscale_client.chat.completions.create(
     model="meta-llama/Llama-3-8b-instruct",
     response_model=User,
     messages=[
@@ -107,21 +86,14 @@ user = client.chat.completions.create(
     ]
 )
 
-import instructor
-from openai import OpenAI
-from pydantic import BaseModel
-
-class User(BaseModel):
-    name: str
-    age: int
-
+# Together AI Integration
 # Create OpenAI client with Together base URL
-client = instructor.from_together(
+together_client = instructor.from_together(
     OpenAI(base_url="https://api.together.xyz/v1", api_key="YOUR_API_KEY")
 )
 
 # Extract data
-user = client.chat.completions.create(
+together_user = together_client.chat.completions.create(
     model="togethercomputer/llama-3-8b-instructk",
     response_model=User,
     messages=[
@@ -129,21 +101,14 @@ user = client.chat.completions.create(
     ]
 )
 
-import instructor
-from openai import OpenAI
-from pydantic import BaseModel
-
-class User(BaseModel):
-    name: str
-    age: int
-
+# OpenRouter Integration
 # Create OpenAI client with OpenRouter base URL
-client = instructor.from_openrouter(
+openrouter_client = instructor.from_openrouter(
     OpenAI(base_url="https://openrouter.ai/api/v1", api_key="YOUR_API_KEY")
 )
 
 # Extract data - access to many models
-user = client.chat.completions.create(
+openrouter_user = openrouter_client.chat.completions.create(
     model="google/gemma-7b-instruct", # Or any other model on OpenRouter
     response_model=User,
     messages=[

@@ -1,16 +1,17 @@
 # Your First Extraction
-
 # Create your first structured extraction with Instructor. Learn the step-by-step process from model definition to validated response.
+# Traditional LLM responses are unstructured and difficult to integrate with applications.
+# Instructor simplifies this by enabling structured extractions with type safety and validation.
 
-# Extract structured data from text using Instructor and a Pydantic model.
+# Import necessary libraries
 from pydantic import BaseModel
+import instructor
+from openai import OpenAI
 
+# Define a Pydantic model for the structured output
 class Person(BaseModel):
     name: str
     age: int
-
-import instructor
-from openai import OpenAI
 
 # Patch the client
 client = instructor.from_openai(OpenAI())
@@ -24,6 +25,6 @@ person = client.chat.completions.create(
     ]
 )
 
-print(f"Name: {person.name}, Age: {person.age}")
 # Output: Name: John Doe, Age: 30
+print(f"Name: {person.name}, Age: {person.age}")
 

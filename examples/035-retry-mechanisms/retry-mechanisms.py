@@ -1,16 +1,19 @@
 # Retry Mechanisms
+# Learn how to build robust extraction pipelines with automatic retry mechanisms in Instructor. This guide covers basic retry configuration, advanced retry strategies, and fallback mechanisms.
+# Language models occasionally produce outputs that fail validation, especially with complex schemas or strict validation rules.
+# Instructor's retry mechanisms enable graceful handling of validation failures to create more reliable and robust applications.
 
-# Build robust extraction pipelines with automatic retry mechanisms. Instructor provides tools for creating reliable production applications.
-
-# Instructor provides flexible retry mechanisms for handling validation failures. This helps create more robust applications that can recover from parsing errors or validation issues.
+# Import necessary libraries
 import instructor
 from openai import OpenAI
 from pydantic import BaseModel, Field, field_validator
+from tenacity import Retrying, stop_after_attempt, wait_fixed
+from instructor.exceptions import InstructorRetryException
 
 # Initialize the client with instructor
 client = instructor.from_openai(OpenAI())
 
-# Define a model with validation
+# Basic retry configuration example
 class Profile(BaseModel):
     username: str = Field(description="Username without spaces")
     age: int = Field(description="Age in years", ge=13)
@@ -34,18 +37,10 @@ profile = client.chat.completions.create(
     max_retries=3  # Try up to 3 more times if validation fails
 )
 
+print("Basic retry example:")
 print(profile.model_dump_json(indent=2))
 
-# For more advanced retry logic, you can use the Tenacity library:
-import instructor
-from openai import OpenAI
-from pydantic import BaseModel, field_validator
-from tenacity import Retrying, stop_after_attempt, wait_fixed
-
-# Initialize the client with instructor
-client = instructor.from_openai(OpenAI())
-
-# Define a model with validation
+# Advanced retry configuration with Tenacity
 class User(BaseModel):
     name: str
     age: int
@@ -72,18 +67,10 @@ user = client.chat.completions.create(
     )
 )
 
+print("\nAdvanced retry with Tenacity:")
 print(user.model_dump_json(indent=2))
 
-# You can also catch retry exceptions to handle persistent failures:
-import instructor
-from openai import OpenAI
-from pydantic import BaseModel, field_validator
-from instructor.exceptions import InstructorRetryException
-
-# Initialize the client with instructor
-client = instructor.from_openai(OpenAI())
-
-# Define a model with validation that will always fail
+# Handling persistent failures with fallback strategies
 class ImpossibleModel(BaseModel):
     name: str
     age: int
@@ -94,6 +81,7 @@ class ImpossibleModel(BaseModel):
 
 # Handle retry exceptions
 try:
+    print("\nTrying a model that will always fail validation:")
     result = client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[
@@ -112,4 +100,13 @@ except InstructorRetryException as e:
     # Implement fallback strategy here
     fallback_result = {"name": "Jane", "age": 0}
     print(f"Using fallback: {fallback_result}")
+
+# Retry best practices
+print("\nRetry Best Practices:")
+print("1. Start with a reasonable max_retries value (2-3 is often sufficient)")
+print("2. Include clear validation error messages to guide the model")
+print("3. Implement fallback strategies for handling persistent failures")
+print("4. Use Tenacity for more advanced retry control (exponential backoff, etc.)")
+print("5. Log validation errors to identify common failure patterns")
+print("6. Consider adding system prompts that explain validation requirements")
 

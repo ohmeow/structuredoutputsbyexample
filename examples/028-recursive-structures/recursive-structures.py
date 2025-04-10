@@ -1,11 +1,12 @@
 # Recursive Structures
+# Learn how to create and work with self-referential data structures using Instructor. This guide demonstrates extraction of hierarchical data like directory trees, organizational charts, and nested comments.
+# Traditional data extraction often struggles with representing nested, self-referential data structures.
+# Instructor makes it easy to define and extract recursive models with proper typing and validation.
 
-# Create and work with self-referential data structures using Instructor. Enables extraction of hierarchical data like organizational charts and family trees.
-
-# Instructor supports defining and extracting recursive data structures, where a model can reference itself in its definition. This is particularly useful for representing hierarchical data like file systems, org charts, or nested comments.
+# Import necessary libraries
 import instructor
-from openai import OpenAI
 import enum
+from openai import OpenAI
 from pydantic import BaseModel, Field
 
 # Initialize the client with instructor
@@ -65,4 +66,10 @@ root
 '''
 
 result = parse_directory_structure(directory_structure)
+
+# Print the result (you could add a pretty printer here)
+print(f"Root folder: {result.root.name}")
+print("Contains:")
+for child in result.root.children:
+    print(f"  - {child.node_type}: {child.name} with {len(child.children)} children")
 

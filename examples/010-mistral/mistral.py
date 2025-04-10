@@ -1,11 +1,16 @@
 # Mistral Integration
+# Learn how to use Instructor with Mistral AI models for structured data extraction. This guide covers model selection, parameters, and async functionality.
+# Mistral AI provides high-quality open models with strong capabilities for understanding and generating text.
+# Instructor makes it easy to extract structured data from Mistral models with type safety and validation.
 
-# Use Instructor with Mistral AI models for structured data extraction.
-## pip install instructor mistralai#
+# Import necessary libraries
 import instructor
+import asyncio
 from mistralai.client import MistralClient
+from mistralai.async_client import MistralAsyncClient
 from pydantic import BaseModel
 
+# Define a simple model for extraction
 class User(BaseModel):
     name: str
     age: int
@@ -13,10 +18,10 @@ class User(BaseModel):
 # Create Mistral client
 mistral_client = MistralClient(api_key="YOUR_API_KEY")
 
-# Patch with instructor
+# Patch with instructor - default JSON mode
 client = instructor.from_mistral(mistral_client)
 
-# Using chat method
+# Basic extraction example
 user = client.chat.completions.create(
     model="mistral-large-latest",
     response_model=User,
@@ -28,6 +33,7 @@ user = client.chat.completions.create(
 print(f"Name: {user.name}, Age: {user.age}")
 # Output: Name: John, Age: 25
 
+# Different model options
 # Mistral Small
 user = client.chat.completions.create(
     model="mistral-small-latest",
@@ -55,6 +61,7 @@ user = client.chat.completions.create(
     ]
 )
 
+# Using system message
 user = client.chat.completions.create(
     model="mistral-large-latest",
     response_model=User,
@@ -64,6 +71,7 @@ user = client.chat.completions.create(
     ]
 )
 
+# Using temperature to control randomness
 user = client.chat.completions.create(
     model="mistral-large-latest",
     temperature=0.2,  # Lower for more consistent results
@@ -73,6 +81,7 @@ user = client.chat.completions.create(
     ]
 )
 
+# Multi-turn conversation
 user = client.chat.completions.create(
     model="mistral-large-latest",
     response_model=User,
@@ -83,24 +92,23 @@ user = client.chat.completions.create(
     ]
 )
 
+# Client configurations
 # Default JSON mode
-client = instructor.from_mistral(mistral_client)
+default_client = instructor.from_mistral(mistral_client)
 
 # Explicit JSON mode
-client = instructor.from_mistral(
+json_client = instructor.from_mistral(
     mistral_client,
     mode=instructor.Mode.JSON
 )
 
 # Using MD_JSON mode
-client = instructor.from_mistral(
+md_json_client = instructor.from_mistral(
     mistral_client,
     mode=instructor.Mode.MD_JSON
 )
 
-import asyncio
-from mistralai.async_client import MistralAsyncClient
-
+# Async functionality
 async_client = instructor.from_mistral(
     MistralAsyncClient(api_key="YOUR_API_KEY")
 )

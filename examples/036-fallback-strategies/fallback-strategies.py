@@ -1,16 +1,20 @@
 # Fallback Strategies
+# Learn how to implement fallback strategies for handling missing or invalid information with Instructor. This guide covers multiple approaches to creating robust extraction pipelines.
+# Even with retries, LLM extractions can sometimes fail due to ambiguous inputs, conflicting requirements, or genuinely missing information.
+# Fallback strategies provide graceful degradation paths when primary extraction methods fail, ensuring your applications remain reliable.
 
-# Implement fallback strategies for handling missing or invalid information. Instructor helps provide default values when extraction is uncertain.
-
-# When working with LLMs, it's important to have fallback strategies for handling persistent failures or unexpected issues. Instructor provides several ways to implement robust fallback mechanisms.
+# Import necessary libraries
 import instructor
 from openai import OpenAI
 from pydantic import BaseModel, Field, ValidationError
 from instructor.exceptions import InstructorRetryException
+from typing import Optional, Dict, Any
+from enum import Enum
 
 # Initialize the client with instructor
 client = instructor.from_openai(OpenAI())
 
+# Approach 1: Model hierarchy fallback
 # Define primary model with strict validation
 class DetailedUserProfile(BaseModel):
     name: str = Field(description="User's full name")
@@ -55,18 +59,10 @@ def extract_user_with_fallback(text: str):
 # Example usage
 text = "John is 25 years old"
 user = extract_user_with_fallback(text)
+print("Approach 1: Model hierarchy fallback")
 print(user.model_dump_json(indent=2))
 
-# Another approach is to use optional fields for less reliable information:
-from typing import Optional
-import instructor
-from openai import OpenAI
-from pydantic import BaseModel, Field
-
-# Initialize the client with instructor
-client = instructor.from_openai(OpenAI())
-
-# Define model with optional fields
+# Approach 2: Optional fields for less reliable information
 class FlexibleProfile(BaseModel):
     name: str = Field(description="Person's name")
     age: Optional[int] = Field(None, description="Person's age if mentioned")
@@ -85,17 +81,10 @@ profile = client.chat.completions.create(
     response_model=FlexibleProfile
 )
 
+print("\nApproach 2: Optional fields")
 print(profile.model_dump_json(indent=2))
 
-# For critical applications, you can implement a more comprehensive fallback strategy:
-import instructor
-from openai import OpenAI
-from pydantic import BaseModel, Field, ValidationError
-from enum import Enum
-
-# Initialize the client with instructor
-client = instructor.from_openai(OpenAI())
-
+# Approach 3: Comprehensive fallback strategy with status tracking
 # Define extraction result status
 class ExtractionStatus(str, Enum):
     SUCCESS = "success"
@@ -127,7 +116,7 @@ def extract_with_robustness(text: str) -> ExtractionResult:
             status=ExtractionStatus.SUCCESS,
             data=result.model_dump()
         )
-# Attempt to salvage partial data when extraction fails
+    # Attempt to salvage partial data when extraction fails
     except InstructorRetryException as e:
         try:
             partial_data = {}
@@ -159,4 +148,25 @@ def extract_with_robustness(text: str) -> ExtractionResult:
                 data={},
                 error_message=f"Complete extraction failure: {str(nested_error)}"
             )
+
+# Example with the robust extraction approach
+contact_text = """
+name: Alice Smith
+email: alice@example
+phone: incomplete
+"""
+
+result = extract_with_robustness(contact_text)
+print("\nApproach 3: Comprehensive fallback with status tracking")
+print(f"Status: {result.status}")
+print(f"Data: {result.data}")
+print(f"Error: {result.error_message}")
+
+# Summary of fallback approaches
+print("\nFallback Strategy Summary:")
+print("1. Model Hierarchy: Fall back to simpler models when complex extraction fails")
+print("2. Optional Fields: Use Optional types for information that might be missing")
+print("3. Status Tracking: Return extraction status with partial results when possible")
+print("4. Combining Approaches: Mix these strategies for maximum robustness")
+print("5. Consider provider fallbacks: Try different models or even different LLM providers")
 

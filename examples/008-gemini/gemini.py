@@ -1,17 +1,23 @@
 # Gemini Integration
+# Learn how to use Instructor with Google's Gemini models for structured data extraction. This guide covers model selection, parameters, and alternative integration methods.
+# Google's Gemini models offer powerful capabilities for understanding and processing natural language.
+# Instructor allows you to extract structured data from Gemini models with type safety and validation.
 
-# Use Instructor with Google's Gemini models for structured data extraction.
-## pip install instructor google-generativeai jsonref#
+# Import necessary libraries
 import instructor
 import google.generativeai as genai
+import google.auth
+import google.auth.transport.requests
+from openai import OpenAI
 from pydantic import BaseModel
 
-# Configure API key
-genai.configure(api_key="YOUR_API_KEY")
-
+# Define a simple model for extraction
 class User(BaseModel):
     name: str
     age: int
+
+# Configure API key
+genai.configure(api_key="YOUR_API_KEY")
 
 # Create Gemini model
 model = genai.GenerativeModel("gemini-1.5-flash")
@@ -31,6 +37,7 @@ user = client.generate_content(
 print(f"Name: {user.name}, Age: {user.age}")
 # Output: Name: John, Age: 25
 
+# Different model options
 # Gemini 1.5 Flash (faster)
 flash_model = genai.GenerativeModel("gemini-1.5-flash")
 flash_client = instructor.from_gemini(
@@ -45,6 +52,7 @@ pro_client = instructor.from_gemini(
     mode=instructor.Mode.GEMINI_TOOLS
 )
 
+# Using system instructions
 user = client.generate_content(
     response_model=User,
     contents="Extract: John is 25 years old.",
@@ -53,6 +61,7 @@ user = client.generate_content(
     }
 )
 
+# Using chat format
 user = client.generate_content(
     response_model=User,
     contents=[
@@ -60,6 +69,7 @@ user = client.generate_content(
     ]
 )
 
+# Using JSON mode instead of tools mode
 json_client = instructor.from_gemini(
     genai.GenerativeModel("gemini-1.5-flash"),
     mode=instructor.Mode.GEMINI_JSON
@@ -70,11 +80,7 @@ user = json_client.generate_content(
     contents="Extract: John is 25 years old."
 )
 
-import google.auth
-import google.auth.transport.requests
-import instructor
-from openai import OpenAI
-
+# Alternative: Using Vertex AI with OpenAI-compatible interface
 # Get Google auth credentials
 creds, project = google.auth.default()
 auth_req = google.auth.transport.requests.Request()
@@ -86,13 +92,13 @@ LOCATION = 'us-central1'  # or your preferred region
 endpoint = f'https://{LOCATION}-aiplatform.googleapis.com/v1beta1/projects/{PROJECT}/locations/{LOCATION}/endpoints/openapi'
 
 # Create patched OpenAI client pointing to Vertex AI
-client = instructor.from_openai(
+vertex_client = instructor.from_openai(
     OpenAI(base_url=endpoint, api_key=creds.token),
     mode=instructor.Mode.JSON  # JSON mode required
 )
 
 # Use OpenAI-style interface
-user = client.chat.completions.create(
+user = vertex_client.chat.completions.create(
     model="google/gemini-1.5-flash",
     response_model=User,
     messages=[

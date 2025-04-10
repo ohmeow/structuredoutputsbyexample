@@ -1,14 +1,20 @@
 # OpenAI Integration
+# Learn how to use Instructor with OpenAI's models for structured data extraction. This guide covers model selection, parameters, and async functionality.
+# OpenAI offers various models with different capabilities and pricing tiers.
+# Instructor works seamlessly with all OpenAI models, allowing you to choose the right one for your needs.
 
-# Instructor works seamlessly with OpenAI models. Here's how to use it with different OpenAI features.
+# Import necessary libraries
 import instructor
-from openai import OpenAI
+import asyncio
+from openai import OpenAI, AsyncOpenAI
 from pydantic import BaseModel
 
+# Define a simple model for extraction
 class User(BaseModel):
     name: str
     age: int
 
+# Initialize the instructor-patched client
 client = instructor.from_openai(OpenAI())
 
 # GPT-3.5 Turbo (cheaper, faster)
@@ -29,6 +35,7 @@ user = client.chat.completions.create(
     ]
 )
 
+# Using system messages to guide extraction
 user = client.chat.completions.create(
     model="gpt-3.5-turbo",
     response_model=User,
@@ -48,13 +55,13 @@ user = client.chat.completions.create(
     ]
 )
 
-# Instructor defaults to using OpenAI's function calling format, but you can use JSON mode too:
-client = instructor.from_openai(
+# Using JSON mode instead of function calling
+json_client = instructor.from_openai(
     OpenAI(),
     mode=instructor.Mode.JSON
 )
 
-user = client.chat.completions.create(
+user = json_client.chat.completions.create(
     model="gpt-3.5-turbo",
     response_model=User,
     messages=[
@@ -62,9 +69,7 @@ user = client.chat.completions.create(
     ]
 )
 
-import asyncio
-from openai import AsyncOpenAI
-
+# Async client for non-blocking operations
 async_client = instructor.from_openai(AsyncOpenAI())
 
 async def extract_user():
