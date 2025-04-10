@@ -419,7 +419,43 @@
           ]
         }
       ],
-      "shell_segments": [],
+      "shell_segments": [
+        {
+          "explanation": "Install the base package",
+          "command": "pip install instructor",
+          "output": ""
+        },
+        {
+          "explanation": "OpenAI (included by default)",
+          "command": "pip install instructor",
+          "output": "$ export OPENAI_API_KEY=your_openai_key"
+        },
+        {
+          "explanation": "Anthropic",
+          "command": "pip install \"instructor[anthropic]\"",
+          "output": "$ export ANTHROPIC_API_KEY=your_anthropic_key"
+        },
+        {
+          "explanation": "Google/Gemini",
+          "command": "pip install \"instructor[google-generativeai]\"",
+          "output": "export GOOGLE_API_KEY=your_google_key"
+        },
+        {
+          "explanation": "Cohere",
+          "command": "pip install \"instructor[cohere]\"",
+          "output": "$ export COHERE_API_KEY=your_cohere_key"
+        },
+        {
+          "explanation": "Mistral",
+          "command": "pip install \"instructor[mistralai]\"",
+          "output": "$ export MISTRAL_API_KEY=your_mistral_key"
+        },
+        {
+          "explanation": "Multiple providers via LiteLLM",
+          "command": "pip install \"instructor[litellm]\"",
+          "output": ""
+        }
+      ],
       "image_data": [],
       "documentation_links": [
         "https://github.com/jxnl/instructor"
@@ -3870,7 +3906,7 @@
     },
     {
       "id": "048-templates",
-      "title": "Effective Prompt Templating with Jinja and Pydantic",
+      "title": "Prompt Templates",
       "description": "Learn to dynamically create prompts using Jinja templating and validate them with Pydantic",
       "order": 48,
       "code_segments": [
@@ -4068,29 +4104,29 @@
           ]
         },
         {
-          "code": "# Print the advanced example results\n# Output:\n# Answer: The capital of France is Paris and the capital of Japan is Tokyo.\n# Citations:\n#   Source 1: Paris is the capital city of France.\n#   Source 2: France is located in Western Europe.\n#   Source 3: Tokyo is the capital city of Japan.\n#   Source 4: Japan is an island country in East Asia.\n",
+          "code": "# Print the advanced example results\n",
           "display_code": "",
-          "annotation": "Print the advanced example results\nOutput:\nAnswer: The capital of France is Paris and the capital of Japan is Tokyo.\nCitations:\nSource 1: Paris is the capital city of France.\nSource 2: France is located in Western Europe.\nSource 3: Tokyo is the capital city of Japan.\nSource 4: Japan is an island country in East Asia.",
+          "annotation": "Print the advanced example results",
           "is_comment": true,
           "start_line": 93,
           "line_range": [
             93,
-            100
+            93
           ],
           "target_line_range": [
-            101,
-            105
+            94,
+            100
           ]
         },
         {
-          "code": "print(f\"Answer: {advanced_response.answer}\")\nprint(\"Citations:\")\nfor citation in advanced_response.citations:\n    print(f\"  Source {citation.source_id}: {citation.text}\")\n\n",
-          "display_code": "print(f\"Answer: {advanced_response.answer}\")\nprint(\"Citations:\")\nfor citation in advanced_response.citations:\n    print(f\"  Source {citation.source_id}: {citation.text}\")\n\n",
+          "code": "for citation in advanced_response.citations:\n    print(f\"  Source {citation.source_id}: {citation.text}\")\n    # Source 1: Paris is the capital city of France.\n    # Source 2: France is located in Western Europe.\n    # Source 3: Tokyo is the capital city of Japan.\n    # Source 4: Japan is an island country in East Asia.\n\n",
+          "display_code": "for citation in advanced_response.citations:\n    print(f\"  Source {citation.source_id}: {citation.text}\")\n    # Source 1: Paris is the capital city of France.\n    # Source 2: France is located in Western Europe.\n    # Source 3: Tokyo is the capital city of Japan.\n    # Source 4: Japan is an island country in East Asia.\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 101,
+          "start_line": 94,
           "line_range": [
-            101,
-            105
+            94,
+            100
           ]
         }
       ],
@@ -4110,6 +4146,1595 @@
       "documentation_links": [],
       "section_id": "003-basic-extraction",
       "section_title": "Basic Extraction Patterns"
+    },
+    {
+      "id": "038-vision-inputs",
+      "title": "Vision",
+      "description": "",
+      "order": 38,
+      "code_segments": [
+        {
+          "code": "\n",
+          "display_code": "\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 2,
+          "line_range": [
+            2,
+            2
+          ]
+        },
+        {
+          "code": "# Process and extract data from images with Instructor. Supports automatic detection of image paths and URLs for multimodal extraction.\n",
+          "display_code": "",
+          "annotation": "Process and extract data from images with Instructor. Supports automatic detection of image paths and URLs for multimodal extraction.",
+          "is_comment": true,
+          "start_line": 3,
+          "line_range": [
+            3,
+            3
+          ],
+          "target_line_range": [
+            4,
+            4
+          ]
+        },
+        {
+          "code": "\n",
+          "display_code": "\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 4,
+          "line_range": [
+            4,
+            4
+          ]
+        },
+        {
+          "code": "# Instructor provides simple, unified handling of vision inputs across different LLM providers through its `Image` class, which automatically handles the details of image formatting for each provider.\n",
+          "display_code": "",
+          "annotation": "Instructor provides simple, unified handling of vision inputs across different LLM providers through its `Image` class, which automatically handles the details of image formatting for each provider.",
+          "is_comment": true,
+          "start_line": 5,
+          "line_range": [
+            5,
+            5
+          ],
+          "target_line_range": [
+            6,
+            10
+          ]
+        },
+        {
+          "code": "import instructor\nfrom openai import OpenAI\nfrom pydantic import BaseModel, Field\nfrom typing import List\n\n",
+          "display_code": "import instructor\nfrom openai import OpenAI\nfrom pydantic import BaseModel, Field\nfrom typing import List\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 6,
+          "line_range": [
+            6,
+            10
+          ]
+        },
+        {
+          "code": "# Initialize the client with instructor\n",
+          "display_code": "",
+          "annotation": "Initialize the client with instructor",
+          "is_comment": true,
+          "start_line": 11,
+          "line_range": [
+            11,
+            11
+          ],
+          "target_line_range": [
+            12,
+            13
+          ]
+        },
+        {
+          "code": "client = instructor.from_openai(OpenAI())\n\n",
+          "display_code": "client = instructor.from_openai(OpenAI())\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 12,
+          "line_range": [
+            12,
+            13
+          ]
+        },
+        {
+          "code": "# Define a model for image analysis\n",
+          "display_code": "",
+          "annotation": "Define a model for image analysis",
+          "is_comment": true,
+          "start_line": 14,
+          "line_range": [
+            14,
+            14
+          ],
+          "target_line_range": [
+            15,
+            19
+          ]
+        },
+        {
+          "code": "class ImageContent(BaseModel):\n    description: str = Field(description=\"A detailed description of the image\")\n    objects: List[str] = Field(description=\"List of main objects in the image\")\n    colors: List[str] = Field(description=\"Dominant colors in the image\")\n\n",
+          "display_code": "class ImageContent(BaseModel):\n    description: str = Field(description=\"A detailed description of the image\")\n    objects: List[str] = Field(description=\"List of main objects in the image\")\n    colors: List[str] = Field(description=\"Dominant colors in the image\")\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 15,
+          "line_range": [
+            15,
+            19
+          ]
+        },
+        {
+          "code": "# Creating an Image object from a file path\n# Load images from local files for analysis\n",
+          "display_code": "",
+          "annotation": "Creating an Image object from a file path\nLoad images from local files for analysis",
+          "is_comment": true,
+          "start_line": 20,
+          "line_range": [
+            20,
+            21
+          ],
+          "target_line_range": [
+            22,
+            38
+          ]
+        },
+        {
+          "code": "def analyze_image_from_file(file_path: str) -> ImageContent:\n    image = instructor.Image.from_path(file_path)\n\n    return client.chat.completions.create(\n        model=\"gpt-4-vision-preview\",\n        response_model=ImageContent,\n        messages=[\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    \"Describe this image in detail:\",\n                    image  # The Image object is handled automatically\n                ]\n            }\n        ]\n    )\n\n",
+          "display_code": "def analyze_image_from_file(file_path: str) -> ImageContent:\n    image = instructor.Image.from_path(file_path)\n\n    return client.chat.completions.create(\n        model=\"gpt-4-vision-preview\",\n        response_model=ImageContent,\n        messages=[\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    \"Describe this image in detail:\",\n                    image  # The Image object is handled automatically\n                ]\n            }\n        ]\n    )\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 22,
+          "line_range": [
+            22,
+            38
+          ]
+        },
+        {
+          "code": "# Creating an Image object from a URL\n# Load images from URLs for analysis\n",
+          "display_code": "",
+          "annotation": "Creating an Image object from a URL\nLoad images from URLs for analysis",
+          "is_comment": true,
+          "start_line": 39,
+          "line_range": [
+            39,
+            40
+          ],
+          "target_line_range": [
+            41,
+            57
+          ]
+        },
+        {
+          "code": "def analyze_image_from_url(image_url: str) -> ImageContent:\n    image = instructor.Image.from_url(image_url)\n\n    return client.chat.completions.create(\n        model=\"gpt-4-vision-preview\",\n        response_model=ImageContent,\n        messages=[\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    \"Describe this image in detail:\",\n                    image\n                ]\n            }\n        ]\n    )\n\n",
+          "display_code": "def analyze_image_from_url(image_url: str) -> ImageContent:\n    image = instructor.Image.from_url(image_url)\n\n    return client.chat.completions.create(\n        model=\"gpt-4-vision-preview\",\n        response_model=ImageContent,\n        messages=[\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    \"Describe this image in detail:\",\n                    image\n                ]\n            }\n        ]\n    )\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 41,
+          "line_range": [
+            41,
+            57
+          ]
+        },
+        {
+          "code": "# Using autodetect_images for convenience\n",
+          "display_code": "",
+          "annotation": "Using autodetect_images for convenience",
+          "is_comment": true,
+          "start_line": 58,
+          "line_range": [
+            58,
+            58
+          ],
+          "target_line_range": [
+            59,
+            74
+          ]
+        },
+        {
+          "code": "def analyze_with_autodetect(image_path_or_url: str) -> ImageContent:\n    return client.chat.completions.create(\n        model=\"gpt-4-vision-preview\",\n        response_model=ImageContent,\n        messages=[\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    \"Describe this image in detail:\",\n                    image_path_or_url  # Will be automatically detected as an image\n                ]\n            }\n        ],\n        autodetect_images=True  # Automatically converts paths/URLs to Image objects\n    )\n\n",
+          "display_code": "def analyze_with_autodetect(image_path_or_url: str) -> ImageContent:\n    return client.chat.completions.create(\n        model=\"gpt-4-vision-preview\",\n        response_model=ImageContent,\n        messages=[\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    \"Describe this image in detail:\",\n                    image_path_or_url  # Will be automatically detected as an image\n                ]\n            }\n        ],\n        autodetect_images=True  # Automatically converts paths/URLs to Image objects\n    )\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 59,
+          "line_range": [
+            59,
+            74
+          ]
+        },
+        {
+          "code": "# Example usage\n",
+          "display_code": "",
+          "annotation": "Example usage",
+          "is_comment": true,
+          "start_line": 75,
+          "line_range": [
+            75,
+            75
+          ],
+          "target_line_range": [
+            76,
+            80
+          ]
+        },
+        {
+          "code": "result = analyze_with_autodetect(\"https://example.com/image.jpg\")\nprint(f\"Description: {result.description}\")\nprint(f\"Objects: {', '.join(result.objects)}\")\nprint(f\"Colors: {', '.join(result.colors)}\")\n\n",
+          "display_code": "result = analyze_with_autodetect(\"https://example.com/image.jpg\")\nprint(f\"Description: {result.description}\")\nprint(f\"Objects: {', '.join(result.objects)}\")\nprint(f\"Colors: {', '.join(result.colors)}\")\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 76,
+          "line_range": [
+            76,
+            80
+          ]
+        }
+      ],
+      "shell_segments": [
+        {
+          "explanation": "First, install Instructor and any dependencies",
+          "command": "pip install instructor pydantic",
+          "output": ""
+        },
+        {
+          "explanation": "Run the Python script",
+          "command": "python vision-inputs.py",
+          "output": ""
+        }
+      ],
+      "image_data": [],
+      "documentation_links": [
+        "https://github.com/jxnl/instructor"
+      ],
+      "section_id": "008-multimodal",
+      "section_title": "Multimodal Inputs"
+    },
+    {
+      "id": "039-image-to-structured-data",
+      "title": "Image Extraction",
+      "description": "",
+      "order": 39,
+      "code_segments": [
+        {
+          "code": "\n",
+          "display_code": "\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 2,
+          "line_range": [
+            2,
+            2
+          ]
+        },
+        {
+          "code": "# Convert image content into structured data with Instructor. Enables integration with downstream processing pipelines for visual data.\n",
+          "display_code": "",
+          "annotation": "Convert image content into structured data with Instructor. Enables integration with downstream processing pipelines for visual data.",
+          "is_comment": true,
+          "start_line": 3,
+          "line_range": [
+            3,
+            3
+          ],
+          "target_line_range": [
+            4,
+            4
+          ]
+        },
+        {
+          "code": "\n",
+          "display_code": "\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 4,
+          "line_range": [
+            4,
+            4
+          ]
+        },
+        {
+          "code": "# Instructor excels at transforming images into structured data, combining vision capabilities with Pydantic models for reliable extraction.\n",
+          "display_code": "",
+          "annotation": "Instructor excels at transforming images into structured data, combining vision capabilities with Pydantic models for reliable extraction.",
+          "is_comment": true,
+          "start_line": 5,
+          "line_range": [
+            5,
+            5
+          ],
+          "target_line_range": [
+            6,
+            10
+          ]
+        },
+        {
+          "code": "import instructor\nfrom openai import OpenAI\nfrom pydantic import BaseModel, Field\nfrom typing import List, Optional\n\n",
+          "display_code": "import instructor\nfrom openai import OpenAI\nfrom pydantic import BaseModel, Field\nfrom typing import List, Optional\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 6,
+          "line_range": [
+            6,
+            10
+          ]
+        },
+        {
+          "code": "# Initialize the client with instructor\n",
+          "display_code": "",
+          "annotation": "Initialize the client with instructor",
+          "is_comment": true,
+          "start_line": 11,
+          "line_range": [
+            11,
+            11
+          ],
+          "target_line_range": [
+            12,
+            13
+          ]
+        },
+        {
+          "code": "client = instructor.from_openai(OpenAI())\n\n",
+          "display_code": "client = instructor.from_openai(OpenAI())\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 12,
+          "line_range": [
+            12,
+            13
+          ]
+        },
+        {
+          "code": "# Define a structured data model for product information\n",
+          "display_code": "",
+          "annotation": "Define a structured data model for product information",
+          "is_comment": true,
+          "start_line": 14,
+          "line_range": [
+            14,
+            14
+          ],
+          "target_line_range": [
+            15,
+            21
+          ]
+        },
+        {
+          "code": "class Product(BaseModel):\n    name: str = Field(description=\"Product name\")\n    price: float = Field(description=\"Product price in USD\")\n    description: str = Field(description=\"Brief product description\")\n    features: List[str] = Field(description=\"Key product features\")\n    brand: Optional[str] = Field(None, description=\"Brand name if visible\")\n\n",
+          "display_code": "class Product(BaseModel):\n    name: str = Field(description=\"Product name\")\n    price: float = Field(description=\"Product price in USD\")\n    description: str = Field(description=\"Brief product description\")\n    features: List[str] = Field(description=\"Key product features\")\n    brand: Optional[str] = Field(None, description=\"Brand name if visible\")\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 15,
+          "line_range": [
+            15,
+            21
+          ]
+        },
+        {
+          "code": "# Extract product information from an image\n",
+          "display_code": "",
+          "annotation": "Extract product information from an image",
+          "is_comment": true,
+          "start_line": 22,
+          "line_range": [
+            22,
+            22
+          ],
+          "target_line_range": [
+            23,
+            38
+          ]
+        },
+        {
+          "code": "def extract_product_info(image_path_or_url: str) -> Product:\n    return client.chat.completions.create(\n        model=\"gpt-4-vision-preview\",\n        response_model=Product,\n        messages=[\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    \"Extract detailed product information from this image:\",\n                    image_path_or_url\n                ]\n            }\n        ],\n        autodetect_images=True  # Automatically handle the image\n    )\n\n",
+          "display_code": "def extract_product_info(image_path_or_url: str) -> Product:\n    return client.chat.completions.create(\n        model=\"gpt-4-vision-preview\",\n        response_model=Product,\n        messages=[\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    \"Extract detailed product information from this image:\",\n                    image_path_or_url\n                ]\n            }\n        ],\n        autodetect_images=True  # Automatically handle the image\n    )\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 23,
+          "line_range": [
+            23,
+            38
+          ]
+        },
+        {
+          "code": "# Example usage\n",
+          "display_code": "",
+          "annotation": "Example usage",
+          "is_comment": true,
+          "start_line": 39,
+          "line_range": [
+            39,
+            39
+          ],
+          "target_line_range": [
+            40,
+            46
+          ]
+        },
+        {
+          "code": "product = extract_product_info(\"path/to/product_image.jpg\")\nprint(f\"Product: {product.name} (${product.price:.2f})\")\nprint(f\"Description: {product.description}\")\nprint(f\"Features: {', '.join(product.features)}\")\nif product.brand:\n    print(f\"Brand: {product.brand}\")\n\n",
+          "display_code": "product = extract_product_info(\"path/to/product_image.jpg\")\nprint(f\"Product: {product.name} (${product.price:.2f})\")\nprint(f\"Description: {product.description}\")\nprint(f\"Features: {', '.join(product.features)}\")\nif product.brand:\n    print(f\"Brand: {product.brand}\")\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 40,
+          "line_range": [
+            40,
+            46
+          ]
+        },
+        {
+          "code": "# You can extract more complex data structures from images:\n",
+          "display_code": "",
+          "annotation": "You can extract more complex data structures from images:",
+          "is_comment": true,
+          "start_line": 47,
+          "line_range": [
+            47,
+            47
+          ],
+          "target_line_range": [
+            48,
+            52
+          ]
+        },
+        {
+          "code": "from typing import List, Optional\nfrom pydantic import BaseModel, Field\nimport instructor\nfrom openai import OpenAI\n\n",
+          "display_code": "from typing import List, Optional\nfrom pydantic import BaseModel, Field\nimport instructor\nfrom openai import OpenAI\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 48,
+          "line_range": [
+            48,
+            52
+          ]
+        },
+        {
+          "code": "# Initialize the client with instructor\n",
+          "display_code": "",
+          "annotation": "Initialize the client with instructor",
+          "is_comment": true,
+          "start_line": 53,
+          "line_range": [
+            53,
+            53
+          ],
+          "target_line_range": [
+            54,
+            55
+          ]
+        },
+        {
+          "code": "client = instructor.from_openai(OpenAI())\n\n",
+          "display_code": "client = instructor.from_openai(OpenAI())\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 54,
+          "line_range": [
+            54,
+            55
+          ]
+        },
+        {
+          "code": "# Define a recipe structure\n",
+          "display_code": "",
+          "annotation": "Define a recipe structure",
+          "is_comment": true,
+          "start_line": 56,
+          "line_range": [
+            56,
+            56
+          ],
+          "target_line_range": [
+            57,
+            74
+          ]
+        },
+        {
+          "code": "class Ingredient(BaseModel):\n    name: str = Field(description=\"Ingredient name\")\n    quantity: str = Field(description=\"Amount needed, including units\")\n    optional: bool = Field(description=\"Whether this ingredient is optional\")\n\nclass Step(BaseModel):\n    instruction: str = Field(description=\"Cooking instruction\")\n    time_minutes: Optional[int] = Field(None, description=\"Time required for this step in minutes\")\n\nclass Recipe(BaseModel):\n    title: str = Field(description=\"Recipe title\")\n    servings: int = Field(description=\"Number of servings\")\n    prep_time_minutes: int = Field(description=\"Preparation time in minutes\")\n    cook_time_minutes: int = Field(description=\"Cooking time in minutes\")\n    ingredients: List[Ingredient] = Field(description=\"List of ingredients\")\n    steps: List[Step] = Field(description=\"Cooking steps in order\")\n    difficulty: str = Field(description=\"Recipe difficulty (easy, medium, hard)\")\n\n",
+          "display_code": "class Ingredient(BaseModel):\n    name: str = Field(description=\"Ingredient name\")\n    quantity: str = Field(description=\"Amount needed, including units\")\n    optional: bool = Field(description=\"Whether this ingredient is optional\")\n\nclass Step(BaseModel):\n    instruction: str = Field(description=\"Cooking instruction\")\n    time_minutes: Optional[int] = Field(None, description=\"Time required for this step in minutes\")\n\nclass Recipe(BaseModel):\n    title: str = Field(description=\"Recipe title\")\n    servings: int = Field(description=\"Number of servings\")\n    prep_time_minutes: int = Field(description=\"Preparation time in minutes\")\n    cook_time_minutes: int = Field(description=\"Cooking time in minutes\")\n    ingredients: List[Ingredient] = Field(description=\"List of ingredients\")\n    steps: List[Step] = Field(description=\"Cooking steps in order\")\n    difficulty: str = Field(description=\"Recipe difficulty (easy, medium, hard)\")\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 57,
+          "line_range": [
+            57,
+            74
+          ]
+        },
+        {
+          "code": "# Extract recipe from an image\n",
+          "display_code": "",
+          "annotation": "Extract recipe from an image",
+          "is_comment": true,
+          "start_line": 75,
+          "line_range": [
+            75,
+            75
+          ],
+          "target_line_range": [
+            76,
+            97
+          ]
+        },
+        {
+          "code": "def extract_recipe(image_path: str) -> Recipe:\n    # Create an Image object\n    image = instructor.Image.from_path(image_path)\n\n    return client.chat.completions.create(\n        model=\"gpt-4-vision-preview\",\n        response_model=Recipe,\n        messages=[\n            {\n                \"role\": \"system\",\n                \"content\": \"Extract complete recipe information from the provided image.\"\n            },\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    \"Please extract the detailed recipe information from this image:\",\n                    image\n                ]\n            }\n        ]\n    )\n\n",
+          "display_code": "def extract_recipe(image_path: str) -> Recipe:\n    # Create an Image object\n    image = instructor.Image.from_path(image_path)\n\n    return client.chat.completions.create(\n        model=\"gpt-4-vision-preview\",\n        response_model=Recipe,\n        messages=[\n            {\n                \"role\": \"system\",\n                \"content\": \"Extract complete recipe information from the provided image.\"\n            },\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    \"Please extract the detailed recipe information from this image:\",\n                    image\n                ]\n            }\n        ]\n    )\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 76,
+          "line_range": [
+            76,
+            97
+          ]
+        },
+        {
+          "code": "# The function would be used like this:\n# recipe = extract_recipe(\"path/to/recipe_card.jpg\")\n",
+          "display_code": "",
+          "annotation": "The function would be used like this:\nrecipe = extract_recipe(\"path/to/recipe_card.jpg\")",
+          "is_comment": true,
+          "start_line": 98,
+          "line_range": [
+            98,
+            99
+          ],
+          "target_line_range": [
+            100,
+            100
+          ]
+        },
+        {
+          "code": "\n",
+          "display_code": "\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 100,
+          "line_range": [
+            100,
+            100
+          ]
+        }
+      ],
+      "shell_segments": [
+        {
+          "explanation": "First, install Instructor and any dependencies",
+          "command": "pip install instructor pydantic",
+          "output": ""
+        },
+        {
+          "explanation": "Run the Python script",
+          "command": "python image-to-structured-data.py",
+          "output": ""
+        }
+      ],
+      "image_data": [],
+      "documentation_links": [
+        "https://github.com/jxnl/instructor"
+      ],
+      "section_id": "008-multimodal",
+      "section_title": "Multimodal Inputs"
+    },
+    {
+      "id": "040-table-extraction",
+      "title": "Table Extraction",
+      "description": "",
+      "order": 40,
+      "code_segments": [
+        {
+          "code": "\n",
+          "display_code": "\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 2,
+          "line_range": [
+            2,
+            2
+          ]
+        },
+        {
+          "code": "# Extract structured tabular data from text using Instructor. Add descriptive metadata like captions to enhance table representation.\n",
+          "display_code": "",
+          "annotation": "Extract structured tabular data from text using Instructor. Add descriptive metadata like captions to enhance table representation.",
+          "is_comment": true,
+          "start_line": 3,
+          "line_range": [
+            3,
+            3
+          ],
+          "target_line_range": [
+            4,
+            4
+          ]
+        },
+        {
+          "code": "\n",
+          "display_code": "\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 4,
+          "line_range": [
+            4,
+            4
+          ]
+        },
+        {
+          "code": "# Instructor makes it easy to extract structured tables from images and convert them to pandas dataframes for analysis.\n",
+          "display_code": "",
+          "annotation": "Instructor makes it easy to extract structured tables from images and convert them to pandas dataframes for analysis.",
+          "is_comment": true,
+          "start_line": 5,
+          "line_range": [
+            5,
+            5
+          ],
+          "target_line_range": [
+            6,
+            19
+          ]
+        },
+        {
+          "code": "import instructor\nfrom openai import OpenAI\nfrom pydantic import BaseModel, Field\nimport pandas as pd\nfrom typing import Annotated, Any\nfrom io import StringIO\nfrom pydantic import (\n    BaseModel,\n    BeforeValidator,\n    PlainSerializer,\n    InstanceOf,\n    WithJsonSchema,\n)\n\n",
+          "display_code": "import instructor\nfrom openai import OpenAI\nfrom pydantic import BaseModel, Field\nimport pandas as pd\nfrom typing import Annotated, Any\nfrom io import StringIO\nfrom pydantic import (\n    BaseModel,\n    BeforeValidator,\n    PlainSerializer,\n    InstanceOf,\n    WithJsonSchema,\n)\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 6,
+          "line_range": [
+            6,
+            19
+          ]
+        },
+        {
+          "code": "# Initialize the client with instructor (MD_JSON mode works well for tables)\n",
+          "display_code": "",
+          "annotation": "Initialize the client with instructor (MD_JSON mode works well for tables)",
+          "is_comment": true,
+          "start_line": 20,
+          "line_range": [
+            20,
+            20
+          ],
+          "target_line_range": [
+            21,
+            23
+          ]
+        },
+        {
+          "code": "client = instructor.from_openai(OpenAI(), mode=instructor.Mode.MD_JSON)\n\n\n",
+          "display_code": "client = instructor.from_openai(OpenAI(), mode=instructor.Mode.MD_JSON)\n\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 21,
+          "line_range": [
+            21,
+            23
+          ]
+        },
+        {
+          "code": "# Define functions to convert between dataframe and markdown\n",
+          "display_code": "",
+          "annotation": "Define functions to convert between dataframe and markdown",
+          "is_comment": true,
+          "start_line": 24,
+          "line_range": [
+            24,
+            24
+          ],
+          "target_line_range": [
+            25,
+            45
+          ]
+        },
+        {
+          "code": "def to_markdown(df: pd.DataFrame) -> str:\n    \"\"\"Convert a dataframe to markdown format.\"\"\"\n    return df.to_markdown()\n\n\ndef md_to_df(data: Any) -> Any:\n    \"\"\"Convert markdown table to a pandas dataframe.\"\"\"\n    if isinstance(data, str):\n        return (\n            pd.read_csv(\n                StringIO(data),\n                sep=\"|\",\n                index_col=1,\n            )\n            .dropna(axis=1, how=\"all\")\n            .iloc[1:]\n            .map(lambda x: x.strip())\n        )\n    return data\n\n\n",
+          "display_code": "def to_markdown(df: pd.DataFrame) -> str:\n    \"\"\"Convert a dataframe to markdown format.\"\"\"\n    return df.to_markdown()\n\n\ndef md_to_df(data: Any) -> Any:\n    \"\"\"Convert markdown table to a pandas dataframe.\"\"\"\n    if isinstance(data, str):\n        return (\n            pd.read_csv(\n                StringIO(data),\n                sep=\"|\",\n                index_col=1,\n            )\n            .dropna(axis=1, how=\"all\")\n            .iloc[1:]\n            .map(lambda x: x.strip())\n        )\n    return data\n\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 25,
+          "line_range": [
+            25,
+            45
+          ]
+        },
+        {
+          "code": "# Define a custom type for markdown dataframes\n",
+          "display_code": "",
+          "annotation": "Define a custom type for markdown dataframes",
+          "is_comment": true,
+          "start_line": 46,
+          "line_range": [
+            46,
+            46
+          ],
+          "target_line_range": [
+            47,
+            59
+          ]
+        },
+        {
+          "code": "MarkdownDataFrame = Annotated[\n    InstanceOf[pd.DataFrame],\n    BeforeValidator(md_to_df),\n    PlainSerializer(to_markdown),\n    WithJsonSchema(\n        {\n            \"type\": \"string\",\n            \"description\": \"The markdown representation of the table\",\n        }\n    ),\n]\n\n\n",
+          "display_code": "MarkdownDataFrame = Annotated[\n    InstanceOf[pd.DataFrame],\n    BeforeValidator(md_to_df),\n    PlainSerializer(to_markdown),\n    WithJsonSchema(\n        {\n            \"type\": \"string\",\n            \"description\": \"The markdown representation of the table\",\n        }\n    ),\n]\n\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 47,
+          "line_range": [
+            47,
+            59
+          ]
+        },
+        {
+          "code": "# Define the table model\n",
+          "display_code": "",
+          "annotation": "Define the table model",
+          "is_comment": true,
+          "start_line": 60,
+          "line_range": [
+            60,
+            60
+          ],
+          "target_line_range": [
+            61,
+            67
+          ]
+        },
+        {
+          "code": "class Table(BaseModel):\n    caption: str = Field(description=\"A descriptive caption for the table\")\n    dataframe: MarkdownDataFrame = Field(\n        description=\"The table data as a markdown table\"\n    )\n\n\n",
+          "display_code": "class Table(BaseModel):\n    caption: str = Field(description=\"A descriptive caption for the table\")\n    dataframe: MarkdownDataFrame = Field(\n        description=\"The table data as a markdown table\"\n    )\n\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 61,
+          "line_range": [
+            61,
+            67
+          ]
+        },
+        {
+          "code": "# Function to extract tables from images\n# Create an image object or use autodetect\n",
+          "display_code": "",
+          "annotation": "Function to extract tables from images\nCreate an image object or use autodetect",
+          "is_comment": true,
+          "start_line": 68,
+          "line_range": [
+            68,
+            69
+          ],
+          "target_line_range": [
+            70,
+            95
+          ]
+        },
+        {
+          "code": "def extract_table_from_image(image_path_or_url: str) -> Table:\n    \"\"\"Extract a table from an image and return it as a structured object.\"\"\"\n    if image_path_or_url.startswith((\"http://\", \"https://\")):\n        image = instructor.Image.from_url(image_path_or_url)\n    else:\n        image = instructor.Image.from_path(image_path_or_url)\n\n    return client.chat.completions.create(\n        model=\"gpt-4-vision-preview\",\n        response_model=Table,\n        max_tokens=1800,\n        messages=[\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    {\n                        \"type\": \"text\",\n                        \"text\": \"Extract the table from this image with a descriptive caption.\",\n                    },\n                    image,\n                ],\n            }\n        ],\n    )\n\n\n",
+          "display_code": "def extract_table_from_image(image_path_or_url: str) -> Table:\n    \"\"\"Extract a table from an image and return it as a structured object.\"\"\"\n    if image_path_or_url.startswith((\"http://\", \"https://\")):\n        image = instructor.Image.from_url(image_path_or_url)\n    else:\n        image = instructor.Image.from_path(image_path_or_url)\n\n    return client.chat.completions.create(\n        model=\"gpt-4-vision-preview\",\n        response_model=Table,\n        max_tokens=1800,\n        messages=[\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    {\n                        \"type\": \"text\",\n                        \"text\": \"Extract the table from this image with a descriptive caption.\",\n                    },\n                    image,\n                ],\n            }\n        ],\n    )\n\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 70,
+          "line_range": [
+            70,
+            95
+          ]
+        },
+        {
+          "code": "# Example usage\n",
+          "display_code": "",
+          "annotation": "Example usage",
+          "is_comment": true,
+          "start_line": 96,
+          "line_range": [
+            96,
+            96
+          ],
+          "target_line_range": [
+            97,
+            125
+          ]
+        },
+        {
+          "code": "def analyze_table_data(image_path: str):\n    \"\"\"Extract and analyze a table from an image.\"\"\"\n    table = extract_table_from_image(image_path)\n\n    print(f\"Table Caption: {table.caption}\")\n    print(\"\\nExtracted Table:\")\n    print(table.dataframe)\n\n    # Perform data analysis if it's a pandas DataFrame\n    if isinstance(table.dataframe, pd.DataFrame):\n        print(\"\\nData Analysis:\")\n        print(f\"- Rows: {len(table.dataframe)}\")\n        print(f\"- Columns: {len(table.dataframe.columns)}\")\n\n        # Basic statistics if numeric columns exist\n        numeric_cols = table.dataframe.select_dtypes(include=[\"number\"]).columns\n        if len(numeric_cols) > 0:\n            print(\"\\nNumeric Column Statistics:\")\n            for col in numeric_cols:\n                col_data = table.dataframe[col]\n                print(\n                    f\"- {col}: Min={col_data.min()}, Max={col_data.max()}, Mean={col_data.mean():.2f}\"\n                )\n\n        return table.dataframe\n\n    return None\n\n\n",
+          "display_code": "def analyze_table_data(image_path: str):\n    \"\"\"Extract and analyze a table from an image.\"\"\"\n    table = extract_table_from_image(image_path)\n\n    print(f\"Table Caption: {table.caption}\")\n    print(\"\\nExtracted Table:\")\n    print(table.dataframe)\n\n    # Perform data analysis if it's a pandas DataFrame\n    if isinstance(table.dataframe, pd.DataFrame):\n        print(\"\\nData Analysis:\")\n        print(f\"- Rows: {len(table.dataframe)}\")\n        print(f\"- Columns: {len(table.dataframe.columns)}\")\n\n        # Basic statistics if numeric columns exist\n        numeric_cols = table.dataframe.select_dtypes(include=[\"number\"]).columns\n        if len(numeric_cols) > 0:\n            print(\"\\nNumeric Column Statistics:\")\n            for col in numeric_cols:\n                col_data = table.dataframe[col]\n                print(\n                    f\"- {col}: Min={col_data.min()}, Max={col_data.max()}, Mean={col_data.mean():.2f}\"\n                )\n\n        return table.dataframe\n\n    return None\n\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 97,
+          "line_range": [
+            97,
+            125
+          ]
+        },
+        {
+          "code": "# This would be called as:# df = analyze_table_data(\"path/to/table_image.jpg\")# After this, you can use pandas operations on the dataframe# For multiple tables in a single image, you can use the iterable response:\n",
+          "display_code": "",
+          "annotation": "This would be called as:# df = analyze_table_data(\"path/to/table_image.jpg\")# After this, you can use pandas operations on the dataframe# For multiple tables in a single image, you can use the iterable response:",
+          "is_comment": true,
+          "start_line": 126,
+          "line_range": [
+            126,
+            126
+          ],
+          "target_line_range": [
+            127,
+            154
+          ]
+        },
+        {
+          "code": "def extract_multiple_tables(image_path_or_url: str) -> list[Table]:\n    \"\"\"Extract all tables from an image.\"\"\"\n    if image_path_or_url.startswith((\"http://\", \"https://\")):\n        image = instructor.Image.from_url(image_path_or_url)\n    else:\n        image = instructor.Image.from_path(image_path_or_url)\n\n    tables = client.chat.completions.create_iterable(\n        model=\"gpt-4-vision-preview\",\n        response_model=Table,\n        max_tokens=1800,\n        messages=[\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    {\n                        \"type\": \"text\",\n                        \"text\": \"Extract all tables from this image. Each table should be separate and have its own caption.\",\n                    },\n                    image,\n                ],\n            }\n        ],\n    )\n\n    return list(tables)\n\n\n",
+          "display_code": "def extract_multiple_tables(image_path_or_url: str) -> list[Table]:\n    \"\"\"Extract all tables from an image.\"\"\"\n    if image_path_or_url.startswith((\"http://\", \"https://\")):\n        image = instructor.Image.from_url(image_path_or_url)\n    else:\n        image = instructor.Image.from_path(image_path_or_url)\n\n    tables = client.chat.completions.create_iterable(\n        model=\"gpt-4-vision-preview\",\n        response_model=Table,\n        max_tokens=1800,\n        messages=[\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    {\n                        \"type\": \"text\",\n                        \"text\": \"Extract all tables from this image. Each table should be separate and have its own caption.\",\n                    },\n                    image,\n                ],\n            }\n        ],\n    )\n\n    return list(tables)\n\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 127,
+          "line_range": [
+            127,
+            154
+          ]
+        },
+        {
+          "code": "# Process multiple tables from one image\n# Convert to dataframe and return list of dataframes\n",
+          "display_code": "",
+          "annotation": "Process multiple tables from one image\nConvert to dataframe and return list of dataframes",
+          "is_comment": true,
+          "start_line": 155,
+          "line_range": [
+            155,
+            156
+          ],
+          "target_line_range": [
+            157,
+            168
+          ]
+        },
+        {
+          "code": "def analyze_multiple_tables(image_path: str):\n    \"\"\"Extract and analyze all tables from an image.\"\"\"\n    tables = extract_multiple_tables(image_path)\n\n    print(f\"Found {len(tables)} tables in the image.\")\n\n    for i, table in enumerate(tables):\n        print(f\"\\n--- Table {i+1}: {table.caption} ---\")\n        print(table.dataframe)\n\n        if isinstance(table.dataframe, pd.DataFrame):\n            yield table.dataframe\n",
+          "display_code": "def analyze_multiple_tables(image_path: str):\n    \"\"\"Extract and analyze all tables from an image.\"\"\"\n    tables = extract_multiple_tables(image_path)\n\n    print(f\"Found {len(tables)} tables in the image.\")\n\n    for i, table in enumerate(tables):\n        print(f\"\\n--- Table {i+1}: {table.caption} ---\")\n        print(table.dataframe)\n\n        if isinstance(table.dataframe, pd.DataFrame):\n            yield table.dataframe\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 157,
+          "line_range": [
+            157,
+            168
+          ]
+        }
+      ],
+      "shell_segments": [
+        {
+          "explanation": "First, install Instructor and any dependencies",
+          "command": "pip install instructor pydantic",
+          "output": ""
+        },
+        {
+          "explanation": "Run the Python script",
+          "command": "python table-extraction.py",
+          "output": ""
+        }
+      ],
+      "image_data": [],
+      "documentation_links": [
+        "https://github.com/jxnl/instructor"
+      ],
+      "section_id": "008-multimodal",
+      "section_title": "Multimodal Inputs"
+    },
+    {
+      "id": "041-audio-extraction",
+      "title": "Audio Extraction",
+      "description": "",
+      "order": 41,
+      "code_segments": [
+        {
+          "code": "\n",
+          "display_code": "\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 2,
+          "line_range": [
+            2,
+            2
+          ]
+        },
+        {
+          "code": "# Extract structured information from audio content using Instructor. Supports handling multilingual audio and transcription data.\n",
+          "display_code": "",
+          "annotation": "Extract structured information from audio content using Instructor. Supports handling multilingual audio and transcription data.",
+          "is_comment": true,
+          "start_line": 3,
+          "line_range": [
+            3,
+            3
+          ],
+          "target_line_range": [
+            4,
+            4
+          ]
+        },
+        {
+          "code": "\n",
+          "display_code": "\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 4,
+          "line_range": [
+            4,
+            4
+          ]
+        },
+        {
+          "code": "# Instructor supports extracting structured data from audio files using the `Audio` class, making it easy to process speech and audio content.\n",
+          "display_code": "",
+          "annotation": "Instructor supports extracting structured data from audio files using the `Audio` class, making it easy to process speech and audio content.",
+          "is_comment": true,
+          "start_line": 5,
+          "line_range": [
+            5,
+            5
+          ],
+          "target_line_range": [
+            6,
+            10
+          ]
+        },
+        {
+          "code": "import instructor\nfrom openai import OpenAI\nfrom pydantic import BaseModel, Field\nfrom instructor.multimodal import Audio\n\n",
+          "display_code": "import instructor\nfrom openai import OpenAI\nfrom pydantic import BaseModel, Field\nfrom instructor.multimodal import Audio\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 6,
+          "line_range": [
+            6,
+            10
+          ]
+        },
+        {
+          "code": "# Initialize the client with instructor\n",
+          "display_code": "",
+          "annotation": "Initialize the client with instructor",
+          "is_comment": true,
+          "start_line": 11,
+          "line_range": [
+            11,
+            11
+          ],
+          "target_line_range": [
+            12,
+            13
+          ]
+        },
+        {
+          "code": "client = instructor.from_openai(OpenAI())\n\n",
+          "display_code": "client = instructor.from_openai(OpenAI())\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 12,
+          "line_range": [
+            12,
+            13
+          ]
+        },
+        {
+          "code": "# Define a model for audio transcription\n",
+          "display_code": "",
+          "annotation": "Define a model for audio transcription",
+          "is_comment": true,
+          "start_line": 14,
+          "line_range": [
+            14,
+            14
+          ],
+          "target_line_range": [
+            15,
+            20
+          ]
+        },
+        {
+          "code": "class AudioTranscription(BaseModel):\n    text: str = Field(description=\"Full transcription of the audio\")\n    speaker: str = Field(description=\"Identity of the speaker if known\")\n    language: str = Field(description=\"Language spoken in the audio\")\n    confidence: float = Field(description=\"Confidence score for the transcription\", ge=0.0, le=1.0)\n\n",
+          "display_code": "class AudioTranscription(BaseModel):\n    text: str = Field(description=\"Full transcription of the audio\")\n    speaker: str = Field(description=\"Identity of the speaker if known\")\n    language: str = Field(description=\"Language spoken in the audio\")\n    confidence: float = Field(description=\"Confidence score for the transcription\", ge=0.0, le=1.0)\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 15,
+          "line_range": [
+            15,
+            20
+          ]
+        },
+        {
+          "code": "# Extract transcription from audio\n",
+          "display_code": "",
+          "annotation": "Extract transcription from audio",
+          "is_comment": true,
+          "start_line": 21,
+          "line_range": [
+            21,
+            21
+          ],
+          "target_line_range": [
+            22,
+            40
+          ]
+        },
+        {
+          "code": "def transcribe_audio(audio_path: str) -> AudioTranscription:\n    \"\"\"Extract structured transcription from an audio file.\"\"\"\n    # Load the audio using Instructor's Audio class\n    audio = Audio.from_path(audio_path)\n\n    return client.chat.completions.create(\n        model=\"gpt-4o-audio-preview\",  # Audio-capable model\n        response_model=AudioTranscription,\n        messages=[\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    \"Transcribe this audio file and identify the speaker and language:\",\n                    audio  # The Audio object is handled automatically\n                ]\n            }\n        ]\n    )\n\n",
+          "display_code": "def transcribe_audio(audio_path: str) -> AudioTranscription:\n    \"\"\"Extract structured transcription from an audio file.\"\"\"\n    # Load the audio using Instructor's Audio class\n    audio = Audio.from_path(audio_path)\n\n    return client.chat.completions.create(\n        model=\"gpt-4o-audio-preview\",  # Audio-capable model\n        response_model=AudioTranscription,\n        messages=[\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    \"Transcribe this audio file and identify the speaker and language:\",\n                    audio  # The Audio object is handled automatically\n                ]\n            }\n        ]\n    )\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 22,
+          "line_range": [
+            22,
+            40
+          ]
+        },
+        {
+          "code": "# Example usage# transcript = transcribe_audio(\"path/to/audio.wav\")# print(f\"Transcript: {transcript.text}\")# print(f\"Speaker: {transcript.speaker}\")# print(f\"Language: {transcript.language}\")# print(f\"Confidence: {transcript.confidence:.2f}\")\n",
+          "display_code": "",
+          "annotation": "Example usage# transcript = transcribe_audio(\"path/to/audio.wav\")# print(f\"Transcript: {transcript.text}\")# print(f\"Speaker: {transcript.speaker}\")# print(f\"Language: {transcript.language}\")# print(f\"Confidence: {transcript.confidence:.2f}\")",
+          "is_comment": true,
+          "start_line": 41,
+          "line_range": [
+            41,
+            41
+          ],
+          "target_line_range": [
+            42,
+            42
+          ]
+        },
+        {
+          "code": "\n",
+          "display_code": "\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 42,
+          "line_range": [
+            42,
+            42
+          ]
+        },
+        {
+          "code": "# For more specific information extraction from audio:\n",
+          "display_code": "",
+          "annotation": "For more specific information extraction from audio:",
+          "is_comment": true,
+          "start_line": 43,
+          "line_range": [
+            43,
+            43
+          ],
+          "target_line_range": [
+            44,
+            49
+          ]
+        },
+        {
+          "code": "from typing import List, Optional\nfrom pydantic import BaseModel, Field\nimport instructor\nfrom openai import OpenAI\nfrom instructor.multimodal import Audio\n\n",
+          "display_code": "from typing import List, Optional\nfrom pydantic import BaseModel, Field\nimport instructor\nfrom openai import OpenAI\nfrom instructor.multimodal import Audio\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 44,
+          "line_range": [
+            44,
+            49
+          ]
+        },
+        {
+          "code": "# Initialize the client with instructor\n",
+          "display_code": "",
+          "annotation": "Initialize the client with instructor",
+          "is_comment": true,
+          "start_line": 50,
+          "line_range": [
+            50,
+            50
+          ],
+          "target_line_range": [
+            51,
+            52
+          ]
+        },
+        {
+          "code": "client = instructor.from_openai(OpenAI())\n\n",
+          "display_code": "client = instructor.from_openai(OpenAI())\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 51,
+          "line_range": [
+            51,
+            52
+          ]
+        },
+        {
+          "code": "# Define a model for person information\n",
+          "display_code": "",
+          "annotation": "Define a model for person information",
+          "is_comment": true,
+          "start_line": 53,
+          "line_range": [
+            53,
+            53
+          ],
+          "target_line_range": [
+            54,
+            58
+          ]
+        },
+        {
+          "code": "class Person(BaseModel):\n    name: str = Field(description=\"Person's full name\")\n    age: int = Field(description=\"Person's age in years\")\n    occupation: Optional[str] = Field(None, description=\"Person's job or profession if mentioned\")\n\n",
+          "display_code": "class Person(BaseModel):\n    name: str = Field(description=\"Person's full name\")\n    age: int = Field(description=\"Person's age in years\")\n    occupation: Optional[str] = Field(None, description=\"Person's job or profession if mentioned\")\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 54,
+          "line_range": [
+            54,
+            58
+          ]
+        },
+        {
+          "code": "# Define a model for meeting information\n",
+          "display_code": "",
+          "annotation": "Define a model for meeting information",
+          "is_comment": true,
+          "start_line": 59,
+          "line_range": [
+            59,
+            59
+          ],
+          "target_line_range": [
+            60,
+            71
+          ]
+        },
+        {
+          "code": "class MeetingPoint(BaseModel):\n    topic: str = Field(description=\"Topic discussed\")\n    decision: Optional[str] = Field(None, description=\"Decision made on this topic\")\n    action_items: List[str] = Field(default_factory=list, description=\"Action items related to this topic\")\n\nclass Meeting(BaseModel):\n    title: str = Field(description=\"Meeting title or purpose\")\n    date: Optional[str] = Field(None, description=\"Meeting date if mentioned\")\n    participants: List[str] = Field(description=\"Names of meeting participants\")\n    key_points: List[MeetingPoint] = Field(description=\"Key discussion points and decisions\")\n    summary: str = Field(description=\"Brief summary of the meeting\")\n\n",
+          "display_code": "class MeetingPoint(BaseModel):\n    topic: str = Field(description=\"Topic discussed\")\n    decision: Optional[str] = Field(None, description=\"Decision made on this topic\")\n    action_items: List[str] = Field(default_factory=list, description=\"Action items related to this topic\")\n\nclass Meeting(BaseModel):\n    title: str = Field(description=\"Meeting title or purpose\")\n    date: Optional[str] = Field(None, description=\"Meeting date if mentioned\")\n    participants: List[str] = Field(description=\"Names of meeting participants\")\n    key_points: List[MeetingPoint] = Field(description=\"Key discussion points and decisions\")\n    summary: str = Field(description=\"Brief summary of the meeting\")\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 60,
+          "line_range": [
+            60,
+            71
+          ]
+        },
+        {
+          "code": "# Extract structured information from audio\n",
+          "display_code": "",
+          "annotation": "Extract structured information from audio",
+          "is_comment": true,
+          "start_line": 72,
+          "line_range": [
+            72,
+            72
+          ],
+          "target_line_range": [
+            73,
+            94
+          ]
+        },
+        {
+          "code": "def extract_meeting_info(audio_path: str) -> Meeting:\n    \"\"\"Extract structured meeting information from audio recording.\"\"\"\n    audio = Audio.from_path(audio_path)\n\n    return client.chat.completions.create(\n        model=\"gpt-4o-audio-preview\",\n        response_model=Meeting,\n        messages=[\n            {\n                \"role\": \"system\",\n                \"content\": \"Extract detailed meeting information from this audio recording.\"\n            },\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    \"Extract the complete meeting details from this recording:\",\n                    audio\n                ]\n            }\n        ]\n    )\n\n",
+          "display_code": "def extract_meeting_info(audio_path: str) -> Meeting:\n    \"\"\"Extract structured meeting information from audio recording.\"\"\"\n    audio = Audio.from_path(audio_path)\n\n    return client.chat.completions.create(\n        model=\"gpt-4o-audio-preview\",\n        response_model=Meeting,\n        messages=[\n            {\n                \"role\": \"system\",\n                \"content\": \"Extract detailed meeting information from this audio recording.\"\n            },\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    \"Extract the complete meeting details from this recording:\",\n                    audio\n                ]\n            }\n        ]\n    )\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 73,
+          "line_range": [
+            73,
+            94
+          ]
+        },
+        {
+          "code": "# Extract person information\n",
+          "display_code": "",
+          "annotation": "Extract person information",
+          "is_comment": true,
+          "start_line": 95,
+          "line_range": [
+            95,
+            95
+          ],
+          "target_line_range": [
+            96,
+            113
+          ]
+        },
+        {
+          "code": "def extract_person_from_audio(audio_path: str) -> Person:\n    \"\"\"Extract structured person information from audio.\"\"\"\n    audio = Audio.from_path(audio_path)\n\n    return client.chat.completions.create(\n        model=\"gpt-4o-audio-preview\",\n        response_model=Person,\n        messages=[\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    \"Extract the person's name, age, and occupation from this audio:\",\n                    audio\n                ]\n            }\n        ]\n    )\n\n",
+          "display_code": "def extract_person_from_audio(audio_path: str) -> Person:\n    \"\"\"Extract structured person information from audio.\"\"\"\n    audio = Audio.from_path(audio_path)\n\n    return client.chat.completions.create(\n        model=\"gpt-4o-audio-preview\",\n        response_model=Person,\n        messages=[\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    \"Extract the person's name, age, and occupation from this audio:\",\n                    audio\n                ]\n            }\n        ]\n    )\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 96,
+          "line_range": [
+            96,
+            113
+          ]
+        },
+        {
+          "code": "# Example usage# person = extract_person_from_audio(\"path/to/introduction.wav\")# print(f\"Name: {person.name}, Age: {person.age}\")# if person.occupation:#     print(f\"Occupation: {person.occupation}\")\n",
+          "display_code": "",
+          "annotation": "Example usage# person = extract_person_from_audio(\"path/to/introduction.wav\")# print(f\"Name: {person.name}, Age: {person.age}\")# if person.occupation:#     print(f\"Occupation: {person.occupation}\")",
+          "is_comment": true,
+          "start_line": 114,
+          "line_range": [
+            114,
+            114
+          ],
+          "target_line_range": [
+            115,
+            115
+          ]
+        },
+        {
+          "code": "\n",
+          "display_code": "\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 115,
+          "line_range": [
+            115,
+            115
+          ]
+        }
+      ],
+      "shell_segments": [
+        {
+          "explanation": "First, install Instructor and any dependencies",
+          "command": "pip install instructor pydantic",
+          "output": ""
+        },
+        {
+          "explanation": "Run the Python script",
+          "command": "python audio-extraction.py",
+          "output": ""
+        }
+      ],
+      "image_data": [],
+      "documentation_links": [
+        "https://github.com/jxnl/instructor"
+      ],
+      "section_id": "008-multimodal",
+      "section_title": "Multimodal Inputs"
+    },
+    {
+      "id": "042-pdf-extraction",
+      "title": "PDF Extraction",
+      "description": "",
+      "order": 42,
+      "code_segments": [
+        {
+          "code": "\n",
+          "display_code": "\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 2,
+          "line_range": [
+            2,
+            2
+          ]
+        },
+        {
+          "code": "# Extract structured data from PDF documents with Instructor. Enables integration of PDF processing into data extraction pipelines.\n",
+          "display_code": "",
+          "annotation": "Extract structured data from PDF documents with Instructor. Enables integration of PDF processing into data extraction pipelines.",
+          "is_comment": true,
+          "start_line": 3,
+          "line_range": [
+            3,
+            3
+          ],
+          "target_line_range": [
+            4,
+            4
+          ]
+        },
+        {
+          "code": "\n",
+          "display_code": "\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 4,
+          "line_range": [
+            4,
+            4
+          ]
+        },
+        {
+          "code": "# Instructor provides support for working with PDF documents through a combination of vision capabilities and structured extraction.\n",
+          "display_code": "",
+          "annotation": "Instructor provides support for working with PDF documents through a combination of vision capabilities and structured extraction.",
+          "is_comment": true,
+          "start_line": 5,
+          "line_range": [
+            5,
+            5
+          ],
+          "target_line_range": [
+            6,
+            12
+          ]
+        },
+        {
+          "code": "import instructor\nfrom openai import OpenAI\nfrom pydantic import BaseModel, Field\nfrom typing import List\nimport tempfile\nfrom pdf2image import convert_from_path\n\n",
+          "display_code": "import instructor\nfrom openai import OpenAI\nfrom pydantic import BaseModel, Field\nfrom typing import List\nimport tempfile\nfrom pdf2image import convert_from_path\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 6,
+          "line_range": [
+            6,
+            12
+          ]
+        },
+        {
+          "code": "# Initialize the client with instructor\n",
+          "display_code": "",
+          "annotation": "Initialize the client with instructor",
+          "is_comment": true,
+          "start_line": 13,
+          "line_range": [
+            13,
+            13
+          ],
+          "target_line_range": [
+            14,
+            15
+          ]
+        },
+        {
+          "code": "client = instructor.from_openai(OpenAI())\n\n",
+          "display_code": "client = instructor.from_openai(OpenAI())\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 14,
+          "line_range": [
+            14,
+            15
+          ]
+        },
+        {
+          "code": "# Define models for document extraction\n",
+          "display_code": "",
+          "annotation": "Define models for document extraction",
+          "is_comment": true,
+          "start_line": 16,
+          "line_range": [
+            16,
+            16
+          ],
+          "target_line_range": [
+            17,
+            26
+          ]
+        },
+        {
+          "code": "class Section(BaseModel):\n    title: str = Field(description=\"Section title\")\n    content: str = Field(description=\"Section content\")\n\nclass Document(BaseModel):\n    title: str = Field(description=\"Document title\")\n    author: str = Field(description=\"Document author\")\n    sections: List[Section] = Field(description=\"Document sections\")\n    summary: str = Field(description=\"Brief document summary\")\n\n",
+          "display_code": "class Section(BaseModel):\n    title: str = Field(description=\"Section title\")\n    content: str = Field(description=\"Section content\")\n\nclass Document(BaseModel):\n    title: str = Field(description=\"Document title\")\n    author: str = Field(description=\"Document author\")\n    sections: List[Section] = Field(description=\"Document sections\")\n    summary: str = Field(description=\"Brief document summary\")\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 17,
+          "line_range": [
+            17,
+            26
+          ]
+        },
+        {
+          "code": "# Extract content from a PDF page as an image\n",
+          "display_code": "",
+          "annotation": "Extract content from a PDF page as an image",
+          "is_comment": true,
+          "start_line": 27,
+          "line_range": [
+            27,
+            27
+          ],
+          "target_line_range": [
+            28,
+            59
+          ]
+        },
+        {
+          "code": "def extract_from_pdf_page(pdf_path: str, page_number: int = 0) -> Document:\n    \"\"\"Extract structured information from a PDF page.\"\"\"\n    # Convert the PDF page to an image\n    images = convert_from_path(pdf_path, first_page=page_number+1, last_page=page_number+1)\n\n    # Save the image to a temporary file\n    with tempfile.NamedTemporaryFile(suffix='.jpg', delete=False) as temp:\n        temp_path = temp.name\n        images[0].save(temp_path, 'JPEG')\n\n    # Create an Image object\n    image = instructor.Image.from_path(temp_path)\n\n    # Extract information using vision capabilities\n    return client.chat.completions.create(\n        model=\"gpt-4-vision-preview\",\n        response_model=Document,\n        messages=[\n            {\n                \"role\": \"system\",\n                \"content\": \"Extract structured information from this document page.\"\n            },\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    \"Extract the complete document structure from this page:\",\n                    image\n                ]\n            }\n        ]\n    )\n\n",
+          "display_code": "def extract_from_pdf_page(pdf_path: str, page_number: int = 0) -> Document:\n    \"\"\"Extract structured information from a PDF page.\"\"\"\n    # Convert the PDF page to an image\n    images = convert_from_path(pdf_path, first_page=page_number+1, last_page=page_number+1)\n\n    # Save the image to a temporary file\n    with tempfile.NamedTemporaryFile(suffix='.jpg', delete=False) as temp:\n        temp_path = temp.name\n        images[0].save(temp_path, 'JPEG')\n\n    # Create an Image object\n    image = instructor.Image.from_path(temp_path)\n\n    # Extract information using vision capabilities\n    return client.chat.completions.create(\n        model=\"gpt-4-vision-preview\",\n        response_model=Document,\n        messages=[\n            {\n                \"role\": \"system\",\n                \"content\": \"Extract structured information from this document page.\"\n            },\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    \"Extract the complete document structure from this page:\",\n                    image\n                ]\n            }\n        ]\n    )\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 28,
+          "line_range": [
+            28,
+            59
+          ]
+        },
+        {
+          "code": "# Process multiple pages\n",
+          "display_code": "",
+          "annotation": "Process multiple pages",
+          "is_comment": true,
+          "start_line": 60,
+          "line_range": [
+            60,
+            60
+          ],
+          "target_line_range": [
+            61,
+            78
+          ]
+        },
+        {
+          "code": "def process_pdf_document(pdf_path: str, max_pages: int = 5) -> List[Document]:\n    \"\"\"Process multiple pages from a PDF document.\"\"\"\n    results = []\n\n    # Get the number of pages\n    from pypdf import PdfReader\n    reader = PdfReader(pdf_path)\n    num_pages = len(reader.pages)\n    actual_pages = min(num_pages, max_pages)\n\n    # Process each page\n    for i in range(actual_pages):\n        page_result = extract_from_pdf_page(pdf_path, i)\n        results.append(page_result)\n        print(f\"Processed page {i+1}/{actual_pages}\")\n\n    return results\n\n",
+          "display_code": "def process_pdf_document(pdf_path: str, max_pages: int = 5) -> List[Document]:\n    \"\"\"Process multiple pages from a PDF document.\"\"\"\n    results = []\n\n    # Get the number of pages\n    from pypdf import PdfReader\n    reader = PdfReader(pdf_path)\n    num_pages = len(reader.pages)\n    actual_pages = min(num_pages, max_pages)\n\n    # Process each page\n    for i in range(actual_pages):\n        page_result = extract_from_pdf_page(pdf_path, i)\n        results.append(page_result)\n        print(f\"Processed page {i+1}/{actual_pages}\")\n\n    return results\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 61,
+          "line_range": [
+            61,
+            78
+          ]
+        },
+        {
+          "code": "# Example usage# documents = process_pdf_document(\"path/to/document.pdf\", max_pages=3)# for i, doc in enumerate(documents):#     print(f\"Page {i+1}: {doc.title} by {doc.author}\")#     print(f\"Summary: {doc.summary}\")#     print(f\"Sections: {len(doc.sections)}\")\n",
+          "display_code": "",
+          "annotation": "Example usage# documents = process_pdf_document(\"path/to/document.pdf\", max_pages=3)# for i, doc in enumerate(documents):#     print(f\"Page {i+1}: {doc.title} by {doc.author}\")#     print(f\"Summary: {doc.summary}\")#     print(f\"Sections: {len(doc.sections)}\")",
+          "is_comment": true,
+          "start_line": 79,
+          "line_range": [
+            79,
+            79
+          ],
+          "target_line_range": [
+            80,
+            80
+          ]
+        },
+        {
+          "code": "\n",
+          "display_code": "\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 80,
+          "line_range": [
+            80,
+            80
+          ]
+        },
+        {
+          "code": "# For more specific document types, you can create specialized models:\n",
+          "display_code": "",
+          "annotation": "For more specific document types, you can create specialized models:",
+          "is_comment": true,
+          "start_line": 81,
+          "line_range": [
+            81,
+            81
+          ],
+          "target_line_range": [
+            82,
+            88
+          ]
+        },
+        {
+          "code": "from typing import List, Optional\nfrom pydantic import BaseModel, Field\nimport instructor\nfrom openai import OpenAI\nfrom pdf2image import convert_from_path\nimport tempfile\n\n",
+          "display_code": "from typing import List, Optional\nfrom pydantic import BaseModel, Field\nimport instructor\nfrom openai import OpenAI\nfrom pdf2image import convert_from_path\nimport tempfile\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 82,
+          "line_range": [
+            82,
+            88
+          ]
+        },
+        {
+          "code": "# Initialize the client\n",
+          "display_code": "",
+          "annotation": "Initialize the client",
+          "is_comment": true,
+          "start_line": 89,
+          "line_range": [
+            89,
+            89
+          ],
+          "target_line_range": [
+            90,
+            91
+          ]
+        },
+        {
+          "code": "client = instructor.from_openai(OpenAI())\n\n",
+          "display_code": "client = instructor.from_openai(OpenAI())\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 90,
+          "line_range": [
+            90,
+            91
+          ]
+        },
+        {
+          "code": "# Define a model for invoice extraction\n",
+          "display_code": "",
+          "annotation": "Define a model for invoice extraction",
+          "is_comment": true,
+          "start_line": 92,
+          "line_range": [
+            92,
+            92
+          ],
+          "target_line_range": [
+            93,
+            108
+          ]
+        },
+        {
+          "code": "class LineItem(BaseModel):\n    description: str = Field(description=\"Description of the item or service\")\n    quantity: float = Field(description=\"Quantity of the item\")\n    unit_price: float = Field(description=\"Price per unit\")\n    amount: float = Field(description=\"Total amount for this line\")\n\nclass Invoice(BaseModel):\n    invoice_number: str = Field(description=\"Invoice identifier\")\n    date: str = Field(description=\"Invoice date\")\n    vendor: str = Field(description=\"Name of the vendor/seller\")\n    customer: str = Field(description=\"Name of the customer/buyer\")\n    items: List[LineItem] = Field(description=\"Line items in the invoice\")\n    subtotal: float = Field(description=\"Sum of all items before tax\")\n    tax: Optional[float] = Field(None, description=\"Tax amount\")\n    total: float = Field(description=\"Total invoice amount\")\n\n",
+          "display_code": "class LineItem(BaseModel):\n    description: str = Field(description=\"Description of the item or service\")\n    quantity: float = Field(description=\"Quantity of the item\")\n    unit_price: float = Field(description=\"Price per unit\")\n    amount: float = Field(description=\"Total amount for this line\")\n\nclass Invoice(BaseModel):\n    invoice_number: str = Field(description=\"Invoice identifier\")\n    date: str = Field(description=\"Invoice date\")\n    vendor: str = Field(description=\"Name of the vendor/seller\")\n    customer: str = Field(description=\"Name of the customer/buyer\")\n    items: List[LineItem] = Field(description=\"Line items in the invoice\")\n    subtotal: float = Field(description=\"Sum of all items before tax\")\n    tax: Optional[float] = Field(None, description=\"Tax amount\")\n    total: float = Field(description=\"Total invoice amount\")\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 93,
+          "line_range": [
+            93,
+            108
+          ]
+        },
+        {
+          "code": "# Extract invoice from PDF\n",
+          "display_code": "",
+          "annotation": "Extract invoice from PDF",
+          "is_comment": true,
+          "start_line": 109,
+          "line_range": [
+            109,
+            109
+          ],
+          "target_line_range": [
+            110,
+            141
+          ]
+        },
+        {
+          "code": "def extract_invoice(pdf_path: str) -> Invoice:\n    \"\"\"Extract structured invoice data from a PDF.\"\"\"\n    # Convert first page to image\n    images = convert_from_path(pdf_path, first_page=1, last_page=1)\n\n    # Save to temp file\n    with tempfile.NamedTemporaryFile(suffix='.jpg', delete=False) as temp:\n        temp_path = temp.name\n        images[0].save(temp_path, 'JPEG')\n\n    # Create image object\n    image = instructor.Image.from_path(temp_path)\n\n    # Extract invoice data\n    return client.chat.completions.create(\n        model=\"gpt-4-vision-preview\",\n        response_model=Invoice,\n        messages=[\n            {\n                \"role\": \"system\",\n                \"content\": \"You are an invoice processing assistant that extracts structured data from invoice images.\"\n            },\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    \"Extract complete invoice details from this document:\",\n                    image\n                ]\n            }\n        ]\n    )\n\n",
+          "display_code": "def extract_invoice(pdf_path: str) -> Invoice:\n    \"\"\"Extract structured invoice data from a PDF.\"\"\"\n    # Convert first page to image\n    images = convert_from_path(pdf_path, first_page=1, last_page=1)\n\n    # Save to temp file\n    with tempfile.NamedTemporaryFile(suffix='.jpg', delete=False) as temp:\n        temp_path = temp.name\n        images[0].save(temp_path, 'JPEG')\n\n    # Create image object\n    image = instructor.Image.from_path(temp_path)\n\n    # Extract invoice data\n    return client.chat.completions.create(\n        model=\"gpt-4-vision-preview\",\n        response_model=Invoice,\n        messages=[\n            {\n                \"role\": \"system\",\n                \"content\": \"You are an invoice processing assistant that extracts structured data from invoice images.\"\n            },\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    \"Extract complete invoice details from this document:\",\n                    image\n                ]\n            }\n        ]\n    )\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 110,
+          "line_range": [
+            110,
+            141
+          ]
+        },
+        {
+          "code": "# Example usage# invoice = extract_invoice(\"path/to/invoice.pdf\")# print(f\"Invoice #{invoice.invoice_number} from {invoice.vendor}\")# print(f\"Date: {invoice.date}\")# print(f\"Total: ${invoice.total:.2f}\")# print(\"Line items:\")# for item in invoice.items:#     print(f\"- {item.description}: {item.quantity} x ${item.unit_price:.2f} = ${item.amount:.2f}\")\n",
+          "display_code": "",
+          "annotation": "Example usage# invoice = extract_invoice(\"path/to/invoice.pdf\")# print(f\"Invoice #{invoice.invoice_number} from {invoice.vendor}\")# print(f\"Date: {invoice.date}\")# print(f\"Total: ${invoice.total:.2f}\")# print(\"Line items:\")# for item in invoice.items:#     print(f\"- {item.description}: {item.quantity} x ${item.unit_price:.2f} = ${item.amount:.2f}\")",
+          "is_comment": true,
+          "start_line": 142,
+          "line_range": [
+            142,
+            142
+          ],
+          "target_line_range": [
+            143,
+            143
+          ]
+        },
+        {
+          "code": "\n",
+          "display_code": "\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 143,
+          "line_range": [
+            143,
+            143
+          ]
+        }
+      ],
+      "shell_segments": [
+        {
+          "explanation": "First, install Instructor and any dependencies",
+          "command": "pip install instructor pydantic",
+          "output": ""
+        },
+        {
+          "explanation": "Run the Python script",
+          "command": "python pdf-extraction.py",
+          "output": ""
+        }
+      ],
+      "image_data": [],
+      "documentation_links": [
+        "https://github.com/jxnl/instructor"
+      ],
+      "section_id": "008-multimodal",
+      "section_title": "Multimodal Inputs"
     },
     {
       "id": "018-simple-classification",
@@ -8921,1595 +10546,6 @@
       "section_title": "Validation"
     },
     {
-      "id": "038-vision-inputs",
-      "title": "Vision",
-      "description": "",
-      "order": 38,
-      "code_segments": [
-        {
-          "code": "\n",
-          "display_code": "\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 2,
-          "line_range": [
-            2,
-            2
-          ]
-        },
-        {
-          "code": "# Process and extract data from images with Instructor. Supports automatic detection of image paths and URLs for multimodal extraction.\n",
-          "display_code": "",
-          "annotation": "Process and extract data from images with Instructor. Supports automatic detection of image paths and URLs for multimodal extraction.",
-          "is_comment": true,
-          "start_line": 3,
-          "line_range": [
-            3,
-            3
-          ],
-          "target_line_range": [
-            4,
-            4
-          ]
-        },
-        {
-          "code": "\n",
-          "display_code": "\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 4,
-          "line_range": [
-            4,
-            4
-          ]
-        },
-        {
-          "code": "# Instructor provides simple, unified handling of vision inputs across different LLM providers through its `Image` class, which automatically handles the details of image formatting for each provider.\n",
-          "display_code": "",
-          "annotation": "Instructor provides simple, unified handling of vision inputs across different LLM providers through its `Image` class, which automatically handles the details of image formatting for each provider.",
-          "is_comment": true,
-          "start_line": 5,
-          "line_range": [
-            5,
-            5
-          ],
-          "target_line_range": [
-            6,
-            10
-          ]
-        },
-        {
-          "code": "import instructor\nfrom openai import OpenAI\nfrom pydantic import BaseModel, Field\nfrom typing import List\n\n",
-          "display_code": "import instructor\nfrom openai import OpenAI\nfrom pydantic import BaseModel, Field\nfrom typing import List\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 6,
-          "line_range": [
-            6,
-            10
-          ]
-        },
-        {
-          "code": "# Initialize the client with instructor\n",
-          "display_code": "",
-          "annotation": "Initialize the client with instructor",
-          "is_comment": true,
-          "start_line": 11,
-          "line_range": [
-            11,
-            11
-          ],
-          "target_line_range": [
-            12,
-            13
-          ]
-        },
-        {
-          "code": "client = instructor.from_openai(OpenAI())\n\n",
-          "display_code": "client = instructor.from_openai(OpenAI())\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 12,
-          "line_range": [
-            12,
-            13
-          ]
-        },
-        {
-          "code": "# Define a model for image analysis\n",
-          "display_code": "",
-          "annotation": "Define a model for image analysis",
-          "is_comment": true,
-          "start_line": 14,
-          "line_range": [
-            14,
-            14
-          ],
-          "target_line_range": [
-            15,
-            19
-          ]
-        },
-        {
-          "code": "class ImageContent(BaseModel):\n    description: str = Field(description=\"A detailed description of the image\")\n    objects: List[str] = Field(description=\"List of main objects in the image\")\n    colors: List[str] = Field(description=\"Dominant colors in the image\")\n\n",
-          "display_code": "class ImageContent(BaseModel):\n    description: str = Field(description=\"A detailed description of the image\")\n    objects: List[str] = Field(description=\"List of main objects in the image\")\n    colors: List[str] = Field(description=\"Dominant colors in the image\")\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 15,
-          "line_range": [
-            15,
-            19
-          ]
-        },
-        {
-          "code": "# Creating an Image object from a file path\n# Load images from local files for analysis\n",
-          "display_code": "",
-          "annotation": "Creating an Image object from a file path\nLoad images from local files for analysis",
-          "is_comment": true,
-          "start_line": 20,
-          "line_range": [
-            20,
-            21
-          ],
-          "target_line_range": [
-            22,
-            38
-          ]
-        },
-        {
-          "code": "def analyze_image_from_file(file_path: str) -> ImageContent:\n    image = instructor.Image.from_path(file_path)\n\n    return client.chat.completions.create(\n        model=\"gpt-4-vision-preview\",\n        response_model=ImageContent,\n        messages=[\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    \"Describe this image in detail:\",\n                    image  # The Image object is handled automatically\n                ]\n            }\n        ]\n    )\n\n",
-          "display_code": "def analyze_image_from_file(file_path: str) -> ImageContent:\n    image = instructor.Image.from_path(file_path)\n\n    return client.chat.completions.create(\n        model=\"gpt-4-vision-preview\",\n        response_model=ImageContent,\n        messages=[\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    \"Describe this image in detail:\",\n                    image  # The Image object is handled automatically\n                ]\n            }\n        ]\n    )\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 22,
-          "line_range": [
-            22,
-            38
-          ]
-        },
-        {
-          "code": "# Creating an Image object from a URL\n# Load images from URLs for analysis\n",
-          "display_code": "",
-          "annotation": "Creating an Image object from a URL\nLoad images from URLs for analysis",
-          "is_comment": true,
-          "start_line": 39,
-          "line_range": [
-            39,
-            40
-          ],
-          "target_line_range": [
-            41,
-            57
-          ]
-        },
-        {
-          "code": "def analyze_image_from_url(image_url: str) -> ImageContent:\n    image = instructor.Image.from_url(image_url)\n\n    return client.chat.completions.create(\n        model=\"gpt-4-vision-preview\",\n        response_model=ImageContent,\n        messages=[\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    \"Describe this image in detail:\",\n                    image\n                ]\n            }\n        ]\n    )\n\n",
-          "display_code": "def analyze_image_from_url(image_url: str) -> ImageContent:\n    image = instructor.Image.from_url(image_url)\n\n    return client.chat.completions.create(\n        model=\"gpt-4-vision-preview\",\n        response_model=ImageContent,\n        messages=[\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    \"Describe this image in detail:\",\n                    image\n                ]\n            }\n        ]\n    )\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 41,
-          "line_range": [
-            41,
-            57
-          ]
-        },
-        {
-          "code": "# Using autodetect_images for convenience\n",
-          "display_code": "",
-          "annotation": "Using autodetect_images for convenience",
-          "is_comment": true,
-          "start_line": 58,
-          "line_range": [
-            58,
-            58
-          ],
-          "target_line_range": [
-            59,
-            74
-          ]
-        },
-        {
-          "code": "def analyze_with_autodetect(image_path_or_url: str) -> ImageContent:\n    return client.chat.completions.create(\n        model=\"gpt-4-vision-preview\",\n        response_model=ImageContent,\n        messages=[\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    \"Describe this image in detail:\",\n                    image_path_or_url  # Will be automatically detected as an image\n                ]\n            }\n        ],\n        autodetect_images=True  # Automatically converts paths/URLs to Image objects\n    )\n\n",
-          "display_code": "def analyze_with_autodetect(image_path_or_url: str) -> ImageContent:\n    return client.chat.completions.create(\n        model=\"gpt-4-vision-preview\",\n        response_model=ImageContent,\n        messages=[\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    \"Describe this image in detail:\",\n                    image_path_or_url  # Will be automatically detected as an image\n                ]\n            }\n        ],\n        autodetect_images=True  # Automatically converts paths/URLs to Image objects\n    )\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 59,
-          "line_range": [
-            59,
-            74
-          ]
-        },
-        {
-          "code": "# Example usage\n",
-          "display_code": "",
-          "annotation": "Example usage",
-          "is_comment": true,
-          "start_line": 75,
-          "line_range": [
-            75,
-            75
-          ],
-          "target_line_range": [
-            76,
-            80
-          ]
-        },
-        {
-          "code": "result = analyze_with_autodetect(\"https://example.com/image.jpg\")\nprint(f\"Description: {result.description}\")\nprint(f\"Objects: {', '.join(result.objects)}\")\nprint(f\"Colors: {', '.join(result.colors)}\")\n\n",
-          "display_code": "result = analyze_with_autodetect(\"https://example.com/image.jpg\")\nprint(f\"Description: {result.description}\")\nprint(f\"Objects: {', '.join(result.objects)}\")\nprint(f\"Colors: {', '.join(result.colors)}\")\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 76,
-          "line_range": [
-            76,
-            80
-          ]
-        }
-      ],
-      "shell_segments": [
-        {
-          "explanation": "First, install Instructor and any dependencies",
-          "command": "pip install instructor pydantic",
-          "output": ""
-        },
-        {
-          "explanation": "Run the Python script",
-          "command": "python vision-inputs.py",
-          "output": ""
-        }
-      ],
-      "image_data": [],
-      "documentation_links": [
-        "https://github.com/jxnl/instructor"
-      ],
-      "section_id": "008-multimodal",
-      "section_title": "Multimodal Inputs"
-    },
-    {
-      "id": "039-image-to-structured-data",
-      "title": "Image Extraction",
-      "description": "",
-      "order": 39,
-      "code_segments": [
-        {
-          "code": "\n",
-          "display_code": "\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 2,
-          "line_range": [
-            2,
-            2
-          ]
-        },
-        {
-          "code": "# Convert image content into structured data with Instructor. Enables integration with downstream processing pipelines for visual data.\n",
-          "display_code": "",
-          "annotation": "Convert image content into structured data with Instructor. Enables integration with downstream processing pipelines for visual data.",
-          "is_comment": true,
-          "start_line": 3,
-          "line_range": [
-            3,
-            3
-          ],
-          "target_line_range": [
-            4,
-            4
-          ]
-        },
-        {
-          "code": "\n",
-          "display_code": "\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 4,
-          "line_range": [
-            4,
-            4
-          ]
-        },
-        {
-          "code": "# Instructor excels at transforming images into structured data, combining vision capabilities with Pydantic models for reliable extraction.\n",
-          "display_code": "",
-          "annotation": "Instructor excels at transforming images into structured data, combining vision capabilities with Pydantic models for reliable extraction.",
-          "is_comment": true,
-          "start_line": 5,
-          "line_range": [
-            5,
-            5
-          ],
-          "target_line_range": [
-            6,
-            10
-          ]
-        },
-        {
-          "code": "import instructor\nfrom openai import OpenAI\nfrom pydantic import BaseModel, Field\nfrom typing import List, Optional\n\n",
-          "display_code": "import instructor\nfrom openai import OpenAI\nfrom pydantic import BaseModel, Field\nfrom typing import List, Optional\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 6,
-          "line_range": [
-            6,
-            10
-          ]
-        },
-        {
-          "code": "# Initialize the client with instructor\n",
-          "display_code": "",
-          "annotation": "Initialize the client with instructor",
-          "is_comment": true,
-          "start_line": 11,
-          "line_range": [
-            11,
-            11
-          ],
-          "target_line_range": [
-            12,
-            13
-          ]
-        },
-        {
-          "code": "client = instructor.from_openai(OpenAI())\n\n",
-          "display_code": "client = instructor.from_openai(OpenAI())\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 12,
-          "line_range": [
-            12,
-            13
-          ]
-        },
-        {
-          "code": "# Define a structured data model for product information\n",
-          "display_code": "",
-          "annotation": "Define a structured data model for product information",
-          "is_comment": true,
-          "start_line": 14,
-          "line_range": [
-            14,
-            14
-          ],
-          "target_line_range": [
-            15,
-            21
-          ]
-        },
-        {
-          "code": "class Product(BaseModel):\n    name: str = Field(description=\"Product name\")\n    price: float = Field(description=\"Product price in USD\")\n    description: str = Field(description=\"Brief product description\")\n    features: List[str] = Field(description=\"Key product features\")\n    brand: Optional[str] = Field(None, description=\"Brand name if visible\")\n\n",
-          "display_code": "class Product(BaseModel):\n    name: str = Field(description=\"Product name\")\n    price: float = Field(description=\"Product price in USD\")\n    description: str = Field(description=\"Brief product description\")\n    features: List[str] = Field(description=\"Key product features\")\n    brand: Optional[str] = Field(None, description=\"Brand name if visible\")\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 15,
-          "line_range": [
-            15,
-            21
-          ]
-        },
-        {
-          "code": "# Extract product information from an image\n",
-          "display_code": "",
-          "annotation": "Extract product information from an image",
-          "is_comment": true,
-          "start_line": 22,
-          "line_range": [
-            22,
-            22
-          ],
-          "target_line_range": [
-            23,
-            38
-          ]
-        },
-        {
-          "code": "def extract_product_info(image_path_or_url: str) -> Product:\n    return client.chat.completions.create(\n        model=\"gpt-4-vision-preview\",\n        response_model=Product,\n        messages=[\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    \"Extract detailed product information from this image:\",\n                    image_path_or_url\n                ]\n            }\n        ],\n        autodetect_images=True  # Automatically handle the image\n    )\n\n",
-          "display_code": "def extract_product_info(image_path_or_url: str) -> Product:\n    return client.chat.completions.create(\n        model=\"gpt-4-vision-preview\",\n        response_model=Product,\n        messages=[\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    \"Extract detailed product information from this image:\",\n                    image_path_or_url\n                ]\n            }\n        ],\n        autodetect_images=True  # Automatically handle the image\n    )\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 23,
-          "line_range": [
-            23,
-            38
-          ]
-        },
-        {
-          "code": "# Example usage\n",
-          "display_code": "",
-          "annotation": "Example usage",
-          "is_comment": true,
-          "start_line": 39,
-          "line_range": [
-            39,
-            39
-          ],
-          "target_line_range": [
-            40,
-            46
-          ]
-        },
-        {
-          "code": "product = extract_product_info(\"path/to/product_image.jpg\")\nprint(f\"Product: {product.name} (${product.price:.2f})\")\nprint(f\"Description: {product.description}\")\nprint(f\"Features: {', '.join(product.features)}\")\nif product.brand:\n    print(f\"Brand: {product.brand}\")\n\n",
-          "display_code": "product = extract_product_info(\"path/to/product_image.jpg\")\nprint(f\"Product: {product.name} (${product.price:.2f})\")\nprint(f\"Description: {product.description}\")\nprint(f\"Features: {', '.join(product.features)}\")\nif product.brand:\n    print(f\"Brand: {product.brand}\")\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 40,
-          "line_range": [
-            40,
-            46
-          ]
-        },
-        {
-          "code": "# You can extract more complex data structures from images:\n",
-          "display_code": "",
-          "annotation": "You can extract more complex data structures from images:",
-          "is_comment": true,
-          "start_line": 47,
-          "line_range": [
-            47,
-            47
-          ],
-          "target_line_range": [
-            48,
-            52
-          ]
-        },
-        {
-          "code": "from typing import List, Optional\nfrom pydantic import BaseModel, Field\nimport instructor\nfrom openai import OpenAI\n\n",
-          "display_code": "from typing import List, Optional\nfrom pydantic import BaseModel, Field\nimport instructor\nfrom openai import OpenAI\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 48,
-          "line_range": [
-            48,
-            52
-          ]
-        },
-        {
-          "code": "# Initialize the client with instructor\n",
-          "display_code": "",
-          "annotation": "Initialize the client with instructor",
-          "is_comment": true,
-          "start_line": 53,
-          "line_range": [
-            53,
-            53
-          ],
-          "target_line_range": [
-            54,
-            55
-          ]
-        },
-        {
-          "code": "client = instructor.from_openai(OpenAI())\n\n",
-          "display_code": "client = instructor.from_openai(OpenAI())\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 54,
-          "line_range": [
-            54,
-            55
-          ]
-        },
-        {
-          "code": "# Define a recipe structure\n",
-          "display_code": "",
-          "annotation": "Define a recipe structure",
-          "is_comment": true,
-          "start_line": 56,
-          "line_range": [
-            56,
-            56
-          ],
-          "target_line_range": [
-            57,
-            74
-          ]
-        },
-        {
-          "code": "class Ingredient(BaseModel):\n    name: str = Field(description=\"Ingredient name\")\n    quantity: str = Field(description=\"Amount needed, including units\")\n    optional: bool = Field(description=\"Whether this ingredient is optional\")\n\nclass Step(BaseModel):\n    instruction: str = Field(description=\"Cooking instruction\")\n    time_minutes: Optional[int] = Field(None, description=\"Time required for this step in minutes\")\n\nclass Recipe(BaseModel):\n    title: str = Field(description=\"Recipe title\")\n    servings: int = Field(description=\"Number of servings\")\n    prep_time_minutes: int = Field(description=\"Preparation time in minutes\")\n    cook_time_minutes: int = Field(description=\"Cooking time in minutes\")\n    ingredients: List[Ingredient] = Field(description=\"List of ingredients\")\n    steps: List[Step] = Field(description=\"Cooking steps in order\")\n    difficulty: str = Field(description=\"Recipe difficulty (easy, medium, hard)\")\n\n",
-          "display_code": "class Ingredient(BaseModel):\n    name: str = Field(description=\"Ingredient name\")\n    quantity: str = Field(description=\"Amount needed, including units\")\n    optional: bool = Field(description=\"Whether this ingredient is optional\")\n\nclass Step(BaseModel):\n    instruction: str = Field(description=\"Cooking instruction\")\n    time_minutes: Optional[int] = Field(None, description=\"Time required for this step in minutes\")\n\nclass Recipe(BaseModel):\n    title: str = Field(description=\"Recipe title\")\n    servings: int = Field(description=\"Number of servings\")\n    prep_time_minutes: int = Field(description=\"Preparation time in minutes\")\n    cook_time_minutes: int = Field(description=\"Cooking time in minutes\")\n    ingredients: List[Ingredient] = Field(description=\"List of ingredients\")\n    steps: List[Step] = Field(description=\"Cooking steps in order\")\n    difficulty: str = Field(description=\"Recipe difficulty (easy, medium, hard)\")\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 57,
-          "line_range": [
-            57,
-            74
-          ]
-        },
-        {
-          "code": "# Extract recipe from an image\n",
-          "display_code": "",
-          "annotation": "Extract recipe from an image",
-          "is_comment": true,
-          "start_line": 75,
-          "line_range": [
-            75,
-            75
-          ],
-          "target_line_range": [
-            76,
-            97
-          ]
-        },
-        {
-          "code": "def extract_recipe(image_path: str) -> Recipe:\n    # Create an Image object\n    image = instructor.Image.from_path(image_path)\n\n    return client.chat.completions.create(\n        model=\"gpt-4-vision-preview\",\n        response_model=Recipe,\n        messages=[\n            {\n                \"role\": \"system\",\n                \"content\": \"Extract complete recipe information from the provided image.\"\n            },\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    \"Please extract the detailed recipe information from this image:\",\n                    image\n                ]\n            }\n        ]\n    )\n\n",
-          "display_code": "def extract_recipe(image_path: str) -> Recipe:\n    # Create an Image object\n    image = instructor.Image.from_path(image_path)\n\n    return client.chat.completions.create(\n        model=\"gpt-4-vision-preview\",\n        response_model=Recipe,\n        messages=[\n            {\n                \"role\": \"system\",\n                \"content\": \"Extract complete recipe information from the provided image.\"\n            },\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    \"Please extract the detailed recipe information from this image:\",\n                    image\n                ]\n            }\n        ]\n    )\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 76,
-          "line_range": [
-            76,
-            97
-          ]
-        },
-        {
-          "code": "# The function would be used like this:\n# recipe = extract_recipe(\"path/to/recipe_card.jpg\")\n",
-          "display_code": "",
-          "annotation": "The function would be used like this:\nrecipe = extract_recipe(\"path/to/recipe_card.jpg\")",
-          "is_comment": true,
-          "start_line": 98,
-          "line_range": [
-            98,
-            99
-          ],
-          "target_line_range": [
-            100,
-            100
-          ]
-        },
-        {
-          "code": "\n",
-          "display_code": "\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 100,
-          "line_range": [
-            100,
-            100
-          ]
-        }
-      ],
-      "shell_segments": [
-        {
-          "explanation": "First, install Instructor and any dependencies",
-          "command": "pip install instructor pydantic",
-          "output": ""
-        },
-        {
-          "explanation": "Run the Python script",
-          "command": "python image-to-structured-data.py",
-          "output": ""
-        }
-      ],
-      "image_data": [],
-      "documentation_links": [
-        "https://github.com/jxnl/instructor"
-      ],
-      "section_id": "008-multimodal",
-      "section_title": "Multimodal Inputs"
-    },
-    {
-      "id": "040-table-extraction",
-      "title": "Table Extraction",
-      "description": "",
-      "order": 40,
-      "code_segments": [
-        {
-          "code": "\n",
-          "display_code": "\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 2,
-          "line_range": [
-            2,
-            2
-          ]
-        },
-        {
-          "code": "# Extract structured tabular data from text using Instructor. Add descriptive metadata like captions to enhance table representation.\n",
-          "display_code": "",
-          "annotation": "Extract structured tabular data from text using Instructor. Add descriptive metadata like captions to enhance table representation.",
-          "is_comment": true,
-          "start_line": 3,
-          "line_range": [
-            3,
-            3
-          ],
-          "target_line_range": [
-            4,
-            4
-          ]
-        },
-        {
-          "code": "\n",
-          "display_code": "\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 4,
-          "line_range": [
-            4,
-            4
-          ]
-        },
-        {
-          "code": "# Instructor makes it easy to extract structured tables from images and convert them to pandas dataframes for analysis.\n",
-          "display_code": "",
-          "annotation": "Instructor makes it easy to extract structured tables from images and convert them to pandas dataframes for analysis.",
-          "is_comment": true,
-          "start_line": 5,
-          "line_range": [
-            5,
-            5
-          ],
-          "target_line_range": [
-            6,
-            19
-          ]
-        },
-        {
-          "code": "import instructor\nfrom openai import OpenAI\nfrom pydantic import BaseModel, Field\nimport pandas as pd\nfrom typing import Annotated, Any\nfrom io import StringIO\nfrom pydantic import (\n    BaseModel,\n    BeforeValidator,\n    PlainSerializer,\n    InstanceOf,\n    WithJsonSchema,\n)\n\n",
-          "display_code": "import instructor\nfrom openai import OpenAI\nfrom pydantic import BaseModel, Field\nimport pandas as pd\nfrom typing import Annotated, Any\nfrom io import StringIO\nfrom pydantic import (\n    BaseModel,\n    BeforeValidator,\n    PlainSerializer,\n    InstanceOf,\n    WithJsonSchema,\n)\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 6,
-          "line_range": [
-            6,
-            19
-          ]
-        },
-        {
-          "code": "# Initialize the client with instructor (MD_JSON mode works well for tables)\n",
-          "display_code": "",
-          "annotation": "Initialize the client with instructor (MD_JSON mode works well for tables)",
-          "is_comment": true,
-          "start_line": 20,
-          "line_range": [
-            20,
-            20
-          ],
-          "target_line_range": [
-            21,
-            23
-          ]
-        },
-        {
-          "code": "client = instructor.from_openai(OpenAI(), mode=instructor.Mode.MD_JSON)\n\n\n",
-          "display_code": "client = instructor.from_openai(OpenAI(), mode=instructor.Mode.MD_JSON)\n\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 21,
-          "line_range": [
-            21,
-            23
-          ]
-        },
-        {
-          "code": "# Define functions to convert between dataframe and markdown\n",
-          "display_code": "",
-          "annotation": "Define functions to convert between dataframe and markdown",
-          "is_comment": true,
-          "start_line": 24,
-          "line_range": [
-            24,
-            24
-          ],
-          "target_line_range": [
-            25,
-            45
-          ]
-        },
-        {
-          "code": "def to_markdown(df: pd.DataFrame) -> str:\n    \"\"\"Convert a dataframe to markdown format.\"\"\"\n    return df.to_markdown()\n\n\ndef md_to_df(data: Any) -> Any:\n    \"\"\"Convert markdown table to a pandas dataframe.\"\"\"\n    if isinstance(data, str):\n        return (\n            pd.read_csv(\n                StringIO(data),\n                sep=\"|\",\n                index_col=1,\n            )\n            .dropna(axis=1, how=\"all\")\n            .iloc[1:]\n            .map(lambda x: x.strip())\n        )\n    return data\n\n\n",
-          "display_code": "def to_markdown(df: pd.DataFrame) -> str:\n    \"\"\"Convert a dataframe to markdown format.\"\"\"\n    return df.to_markdown()\n\n\ndef md_to_df(data: Any) -> Any:\n    \"\"\"Convert markdown table to a pandas dataframe.\"\"\"\n    if isinstance(data, str):\n        return (\n            pd.read_csv(\n                StringIO(data),\n                sep=\"|\",\n                index_col=1,\n            )\n            .dropna(axis=1, how=\"all\")\n            .iloc[1:]\n            .map(lambda x: x.strip())\n        )\n    return data\n\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 25,
-          "line_range": [
-            25,
-            45
-          ]
-        },
-        {
-          "code": "# Define a custom type for markdown dataframes\n",
-          "display_code": "",
-          "annotation": "Define a custom type for markdown dataframes",
-          "is_comment": true,
-          "start_line": 46,
-          "line_range": [
-            46,
-            46
-          ],
-          "target_line_range": [
-            47,
-            59
-          ]
-        },
-        {
-          "code": "MarkdownDataFrame = Annotated[\n    InstanceOf[pd.DataFrame],\n    BeforeValidator(md_to_df),\n    PlainSerializer(to_markdown),\n    WithJsonSchema(\n        {\n            \"type\": \"string\",\n            \"description\": \"The markdown representation of the table\",\n        }\n    ),\n]\n\n\n",
-          "display_code": "MarkdownDataFrame = Annotated[\n    InstanceOf[pd.DataFrame],\n    BeforeValidator(md_to_df),\n    PlainSerializer(to_markdown),\n    WithJsonSchema(\n        {\n            \"type\": \"string\",\n            \"description\": \"The markdown representation of the table\",\n        }\n    ),\n]\n\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 47,
-          "line_range": [
-            47,
-            59
-          ]
-        },
-        {
-          "code": "# Define the table model\n",
-          "display_code": "",
-          "annotation": "Define the table model",
-          "is_comment": true,
-          "start_line": 60,
-          "line_range": [
-            60,
-            60
-          ],
-          "target_line_range": [
-            61,
-            67
-          ]
-        },
-        {
-          "code": "class Table(BaseModel):\n    caption: str = Field(description=\"A descriptive caption for the table\")\n    dataframe: MarkdownDataFrame = Field(\n        description=\"The table data as a markdown table\"\n    )\n\n\n",
-          "display_code": "class Table(BaseModel):\n    caption: str = Field(description=\"A descriptive caption for the table\")\n    dataframe: MarkdownDataFrame = Field(\n        description=\"The table data as a markdown table\"\n    )\n\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 61,
-          "line_range": [
-            61,
-            67
-          ]
-        },
-        {
-          "code": "# Function to extract tables from images\n# Create an image object or use autodetect\n",
-          "display_code": "",
-          "annotation": "Function to extract tables from images\nCreate an image object or use autodetect",
-          "is_comment": true,
-          "start_line": 68,
-          "line_range": [
-            68,
-            69
-          ],
-          "target_line_range": [
-            70,
-            95
-          ]
-        },
-        {
-          "code": "def extract_table_from_image(image_path_or_url: str) -> Table:\n    \"\"\"Extract a table from an image and return it as a structured object.\"\"\"\n    if image_path_or_url.startswith((\"http://\", \"https://\")):\n        image = instructor.Image.from_url(image_path_or_url)\n    else:\n        image = instructor.Image.from_path(image_path_or_url)\n\n    return client.chat.completions.create(\n        model=\"gpt-4-vision-preview\",\n        response_model=Table,\n        max_tokens=1800,\n        messages=[\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    {\n                        \"type\": \"text\",\n                        \"text\": \"Extract the table from this image with a descriptive caption.\",\n                    },\n                    image,\n                ],\n            }\n        ],\n    )\n\n\n",
-          "display_code": "def extract_table_from_image(image_path_or_url: str) -> Table:\n    \"\"\"Extract a table from an image and return it as a structured object.\"\"\"\n    if image_path_or_url.startswith((\"http://\", \"https://\")):\n        image = instructor.Image.from_url(image_path_or_url)\n    else:\n        image = instructor.Image.from_path(image_path_or_url)\n\n    return client.chat.completions.create(\n        model=\"gpt-4-vision-preview\",\n        response_model=Table,\n        max_tokens=1800,\n        messages=[\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    {\n                        \"type\": \"text\",\n                        \"text\": \"Extract the table from this image with a descriptive caption.\",\n                    },\n                    image,\n                ],\n            }\n        ],\n    )\n\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 70,
-          "line_range": [
-            70,
-            95
-          ]
-        },
-        {
-          "code": "# Example usage\n",
-          "display_code": "",
-          "annotation": "Example usage",
-          "is_comment": true,
-          "start_line": 96,
-          "line_range": [
-            96,
-            96
-          ],
-          "target_line_range": [
-            97,
-            125
-          ]
-        },
-        {
-          "code": "def analyze_table_data(image_path: str):\n    \"\"\"Extract and analyze a table from an image.\"\"\"\n    table = extract_table_from_image(image_path)\n\n    print(f\"Table Caption: {table.caption}\")\n    print(\"\\nExtracted Table:\")\n    print(table.dataframe)\n\n    # Perform data analysis if it's a pandas DataFrame\n    if isinstance(table.dataframe, pd.DataFrame):\n        print(\"\\nData Analysis:\")\n        print(f\"- Rows: {len(table.dataframe)}\")\n        print(f\"- Columns: {len(table.dataframe.columns)}\")\n\n        # Basic statistics if numeric columns exist\n        numeric_cols = table.dataframe.select_dtypes(include=[\"number\"]).columns\n        if len(numeric_cols) > 0:\n            print(\"\\nNumeric Column Statistics:\")\n            for col in numeric_cols:\n                col_data = table.dataframe[col]\n                print(\n                    f\"- {col}: Min={col_data.min()}, Max={col_data.max()}, Mean={col_data.mean():.2f}\"\n                )\n\n        return table.dataframe\n\n    return None\n\n\n",
-          "display_code": "def analyze_table_data(image_path: str):\n    \"\"\"Extract and analyze a table from an image.\"\"\"\n    table = extract_table_from_image(image_path)\n\n    print(f\"Table Caption: {table.caption}\")\n    print(\"\\nExtracted Table:\")\n    print(table.dataframe)\n\n    # Perform data analysis if it's a pandas DataFrame\n    if isinstance(table.dataframe, pd.DataFrame):\n        print(\"\\nData Analysis:\")\n        print(f\"- Rows: {len(table.dataframe)}\")\n        print(f\"- Columns: {len(table.dataframe.columns)}\")\n\n        # Basic statistics if numeric columns exist\n        numeric_cols = table.dataframe.select_dtypes(include=[\"number\"]).columns\n        if len(numeric_cols) > 0:\n            print(\"\\nNumeric Column Statistics:\")\n            for col in numeric_cols:\n                col_data = table.dataframe[col]\n                print(\n                    f\"- {col}: Min={col_data.min()}, Max={col_data.max()}, Mean={col_data.mean():.2f}\"\n                )\n\n        return table.dataframe\n\n    return None\n\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 97,
-          "line_range": [
-            97,
-            125
-          ]
-        },
-        {
-          "code": "# This would be called as:# df = analyze_table_data(\"path/to/table_image.jpg\")# After this, you can use pandas operations on the dataframe# For multiple tables in a single image, you can use the iterable response:\n",
-          "display_code": "",
-          "annotation": "This would be called as:# df = analyze_table_data(\"path/to/table_image.jpg\")# After this, you can use pandas operations on the dataframe# For multiple tables in a single image, you can use the iterable response:",
-          "is_comment": true,
-          "start_line": 126,
-          "line_range": [
-            126,
-            126
-          ],
-          "target_line_range": [
-            127,
-            154
-          ]
-        },
-        {
-          "code": "def extract_multiple_tables(image_path_or_url: str) -> list[Table]:\n    \"\"\"Extract all tables from an image.\"\"\"\n    if image_path_or_url.startswith((\"http://\", \"https://\")):\n        image = instructor.Image.from_url(image_path_or_url)\n    else:\n        image = instructor.Image.from_path(image_path_or_url)\n\n    tables = client.chat.completions.create_iterable(\n        model=\"gpt-4-vision-preview\",\n        response_model=Table,\n        max_tokens=1800,\n        messages=[\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    {\n                        \"type\": \"text\",\n                        \"text\": \"Extract all tables from this image. Each table should be separate and have its own caption.\",\n                    },\n                    image,\n                ],\n            }\n        ],\n    )\n\n    return list(tables)\n\n\n",
-          "display_code": "def extract_multiple_tables(image_path_or_url: str) -> list[Table]:\n    \"\"\"Extract all tables from an image.\"\"\"\n    if image_path_or_url.startswith((\"http://\", \"https://\")):\n        image = instructor.Image.from_url(image_path_or_url)\n    else:\n        image = instructor.Image.from_path(image_path_or_url)\n\n    tables = client.chat.completions.create_iterable(\n        model=\"gpt-4-vision-preview\",\n        response_model=Table,\n        max_tokens=1800,\n        messages=[\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    {\n                        \"type\": \"text\",\n                        \"text\": \"Extract all tables from this image. Each table should be separate and have its own caption.\",\n                    },\n                    image,\n                ],\n            }\n        ],\n    )\n\n    return list(tables)\n\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 127,
-          "line_range": [
-            127,
-            154
-          ]
-        },
-        {
-          "code": "# Process multiple tables from one image\n# Convert to dataframe and return list of dataframes\n",
-          "display_code": "",
-          "annotation": "Process multiple tables from one image\nConvert to dataframe and return list of dataframes",
-          "is_comment": true,
-          "start_line": 155,
-          "line_range": [
-            155,
-            156
-          ],
-          "target_line_range": [
-            157,
-            168
-          ]
-        },
-        {
-          "code": "def analyze_multiple_tables(image_path: str):\n    \"\"\"Extract and analyze all tables from an image.\"\"\"\n    tables = extract_multiple_tables(image_path)\n\n    print(f\"Found {len(tables)} tables in the image.\")\n\n    for i, table in enumerate(tables):\n        print(f\"\\n--- Table {i+1}: {table.caption} ---\")\n        print(table.dataframe)\n\n        if isinstance(table.dataframe, pd.DataFrame):\n            yield table.dataframe\n",
-          "display_code": "def analyze_multiple_tables(image_path: str):\n    \"\"\"Extract and analyze all tables from an image.\"\"\"\n    tables = extract_multiple_tables(image_path)\n\n    print(f\"Found {len(tables)} tables in the image.\")\n\n    for i, table in enumerate(tables):\n        print(f\"\\n--- Table {i+1}: {table.caption} ---\")\n        print(table.dataframe)\n\n        if isinstance(table.dataframe, pd.DataFrame):\n            yield table.dataframe\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 157,
-          "line_range": [
-            157,
-            168
-          ]
-        }
-      ],
-      "shell_segments": [
-        {
-          "explanation": "First, install Instructor and any dependencies",
-          "command": "pip install instructor pydantic",
-          "output": ""
-        },
-        {
-          "explanation": "Run the Python script",
-          "command": "python table-extraction.py",
-          "output": ""
-        }
-      ],
-      "image_data": [],
-      "documentation_links": [
-        "https://github.com/jxnl/instructor"
-      ],
-      "section_id": "008-multimodal",
-      "section_title": "Multimodal Inputs"
-    },
-    {
-      "id": "041-audio-extraction",
-      "title": "Audio Extraction",
-      "description": "",
-      "order": 41,
-      "code_segments": [
-        {
-          "code": "\n",
-          "display_code": "\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 2,
-          "line_range": [
-            2,
-            2
-          ]
-        },
-        {
-          "code": "# Extract structured information from audio content using Instructor. Supports handling multilingual audio and transcription data.\n",
-          "display_code": "",
-          "annotation": "Extract structured information from audio content using Instructor. Supports handling multilingual audio and transcription data.",
-          "is_comment": true,
-          "start_line": 3,
-          "line_range": [
-            3,
-            3
-          ],
-          "target_line_range": [
-            4,
-            4
-          ]
-        },
-        {
-          "code": "\n",
-          "display_code": "\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 4,
-          "line_range": [
-            4,
-            4
-          ]
-        },
-        {
-          "code": "# Instructor supports extracting structured data from audio files using the `Audio` class, making it easy to process speech and audio content.\n",
-          "display_code": "",
-          "annotation": "Instructor supports extracting structured data from audio files using the `Audio` class, making it easy to process speech and audio content.",
-          "is_comment": true,
-          "start_line": 5,
-          "line_range": [
-            5,
-            5
-          ],
-          "target_line_range": [
-            6,
-            10
-          ]
-        },
-        {
-          "code": "import instructor\nfrom openai import OpenAI\nfrom pydantic import BaseModel, Field\nfrom instructor.multimodal import Audio\n\n",
-          "display_code": "import instructor\nfrom openai import OpenAI\nfrom pydantic import BaseModel, Field\nfrom instructor.multimodal import Audio\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 6,
-          "line_range": [
-            6,
-            10
-          ]
-        },
-        {
-          "code": "# Initialize the client with instructor\n",
-          "display_code": "",
-          "annotation": "Initialize the client with instructor",
-          "is_comment": true,
-          "start_line": 11,
-          "line_range": [
-            11,
-            11
-          ],
-          "target_line_range": [
-            12,
-            13
-          ]
-        },
-        {
-          "code": "client = instructor.from_openai(OpenAI())\n\n",
-          "display_code": "client = instructor.from_openai(OpenAI())\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 12,
-          "line_range": [
-            12,
-            13
-          ]
-        },
-        {
-          "code": "# Define a model for audio transcription\n",
-          "display_code": "",
-          "annotation": "Define a model for audio transcription",
-          "is_comment": true,
-          "start_line": 14,
-          "line_range": [
-            14,
-            14
-          ],
-          "target_line_range": [
-            15,
-            20
-          ]
-        },
-        {
-          "code": "class AudioTranscription(BaseModel):\n    text: str = Field(description=\"Full transcription of the audio\")\n    speaker: str = Field(description=\"Identity of the speaker if known\")\n    language: str = Field(description=\"Language spoken in the audio\")\n    confidence: float = Field(description=\"Confidence score for the transcription\", ge=0.0, le=1.0)\n\n",
-          "display_code": "class AudioTranscription(BaseModel):\n    text: str = Field(description=\"Full transcription of the audio\")\n    speaker: str = Field(description=\"Identity of the speaker if known\")\n    language: str = Field(description=\"Language spoken in the audio\")\n    confidence: float = Field(description=\"Confidence score for the transcription\", ge=0.0, le=1.0)\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 15,
-          "line_range": [
-            15,
-            20
-          ]
-        },
-        {
-          "code": "# Extract transcription from audio\n",
-          "display_code": "",
-          "annotation": "Extract transcription from audio",
-          "is_comment": true,
-          "start_line": 21,
-          "line_range": [
-            21,
-            21
-          ],
-          "target_line_range": [
-            22,
-            40
-          ]
-        },
-        {
-          "code": "def transcribe_audio(audio_path: str) -> AudioTranscription:\n    \"\"\"Extract structured transcription from an audio file.\"\"\"\n    # Load the audio using Instructor's Audio class\n    audio = Audio.from_path(audio_path)\n\n    return client.chat.completions.create(\n        model=\"gpt-4o-audio-preview\",  # Audio-capable model\n        response_model=AudioTranscription,\n        messages=[\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    \"Transcribe this audio file and identify the speaker and language:\",\n                    audio  # The Audio object is handled automatically\n                ]\n            }\n        ]\n    )\n\n",
-          "display_code": "def transcribe_audio(audio_path: str) -> AudioTranscription:\n    \"\"\"Extract structured transcription from an audio file.\"\"\"\n    # Load the audio using Instructor's Audio class\n    audio = Audio.from_path(audio_path)\n\n    return client.chat.completions.create(\n        model=\"gpt-4o-audio-preview\",  # Audio-capable model\n        response_model=AudioTranscription,\n        messages=[\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    \"Transcribe this audio file and identify the speaker and language:\",\n                    audio  # The Audio object is handled automatically\n                ]\n            }\n        ]\n    )\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 22,
-          "line_range": [
-            22,
-            40
-          ]
-        },
-        {
-          "code": "# Example usage# transcript = transcribe_audio(\"path/to/audio.wav\")# print(f\"Transcript: {transcript.text}\")# print(f\"Speaker: {transcript.speaker}\")# print(f\"Language: {transcript.language}\")# print(f\"Confidence: {transcript.confidence:.2f}\")\n",
-          "display_code": "",
-          "annotation": "Example usage# transcript = transcribe_audio(\"path/to/audio.wav\")# print(f\"Transcript: {transcript.text}\")# print(f\"Speaker: {transcript.speaker}\")# print(f\"Language: {transcript.language}\")# print(f\"Confidence: {transcript.confidence:.2f}\")",
-          "is_comment": true,
-          "start_line": 41,
-          "line_range": [
-            41,
-            41
-          ],
-          "target_line_range": [
-            42,
-            42
-          ]
-        },
-        {
-          "code": "\n",
-          "display_code": "\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 42,
-          "line_range": [
-            42,
-            42
-          ]
-        },
-        {
-          "code": "# For more specific information extraction from audio:\n",
-          "display_code": "",
-          "annotation": "For more specific information extraction from audio:",
-          "is_comment": true,
-          "start_line": 43,
-          "line_range": [
-            43,
-            43
-          ],
-          "target_line_range": [
-            44,
-            49
-          ]
-        },
-        {
-          "code": "from typing import List, Optional\nfrom pydantic import BaseModel, Field\nimport instructor\nfrom openai import OpenAI\nfrom instructor.multimodal import Audio\n\n",
-          "display_code": "from typing import List, Optional\nfrom pydantic import BaseModel, Field\nimport instructor\nfrom openai import OpenAI\nfrom instructor.multimodal import Audio\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 44,
-          "line_range": [
-            44,
-            49
-          ]
-        },
-        {
-          "code": "# Initialize the client with instructor\n",
-          "display_code": "",
-          "annotation": "Initialize the client with instructor",
-          "is_comment": true,
-          "start_line": 50,
-          "line_range": [
-            50,
-            50
-          ],
-          "target_line_range": [
-            51,
-            52
-          ]
-        },
-        {
-          "code": "client = instructor.from_openai(OpenAI())\n\n",
-          "display_code": "client = instructor.from_openai(OpenAI())\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 51,
-          "line_range": [
-            51,
-            52
-          ]
-        },
-        {
-          "code": "# Define a model for person information\n",
-          "display_code": "",
-          "annotation": "Define a model for person information",
-          "is_comment": true,
-          "start_line": 53,
-          "line_range": [
-            53,
-            53
-          ],
-          "target_line_range": [
-            54,
-            58
-          ]
-        },
-        {
-          "code": "class Person(BaseModel):\n    name: str = Field(description=\"Person's full name\")\n    age: int = Field(description=\"Person's age in years\")\n    occupation: Optional[str] = Field(None, description=\"Person's job or profession if mentioned\")\n\n",
-          "display_code": "class Person(BaseModel):\n    name: str = Field(description=\"Person's full name\")\n    age: int = Field(description=\"Person's age in years\")\n    occupation: Optional[str] = Field(None, description=\"Person's job or profession if mentioned\")\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 54,
-          "line_range": [
-            54,
-            58
-          ]
-        },
-        {
-          "code": "# Define a model for meeting information\n",
-          "display_code": "",
-          "annotation": "Define a model for meeting information",
-          "is_comment": true,
-          "start_line": 59,
-          "line_range": [
-            59,
-            59
-          ],
-          "target_line_range": [
-            60,
-            71
-          ]
-        },
-        {
-          "code": "class MeetingPoint(BaseModel):\n    topic: str = Field(description=\"Topic discussed\")\n    decision: Optional[str] = Field(None, description=\"Decision made on this topic\")\n    action_items: List[str] = Field(default_factory=list, description=\"Action items related to this topic\")\n\nclass Meeting(BaseModel):\n    title: str = Field(description=\"Meeting title or purpose\")\n    date: Optional[str] = Field(None, description=\"Meeting date if mentioned\")\n    participants: List[str] = Field(description=\"Names of meeting participants\")\n    key_points: List[MeetingPoint] = Field(description=\"Key discussion points and decisions\")\n    summary: str = Field(description=\"Brief summary of the meeting\")\n\n",
-          "display_code": "class MeetingPoint(BaseModel):\n    topic: str = Field(description=\"Topic discussed\")\n    decision: Optional[str] = Field(None, description=\"Decision made on this topic\")\n    action_items: List[str] = Field(default_factory=list, description=\"Action items related to this topic\")\n\nclass Meeting(BaseModel):\n    title: str = Field(description=\"Meeting title or purpose\")\n    date: Optional[str] = Field(None, description=\"Meeting date if mentioned\")\n    participants: List[str] = Field(description=\"Names of meeting participants\")\n    key_points: List[MeetingPoint] = Field(description=\"Key discussion points and decisions\")\n    summary: str = Field(description=\"Brief summary of the meeting\")\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 60,
-          "line_range": [
-            60,
-            71
-          ]
-        },
-        {
-          "code": "# Extract structured information from audio\n",
-          "display_code": "",
-          "annotation": "Extract structured information from audio",
-          "is_comment": true,
-          "start_line": 72,
-          "line_range": [
-            72,
-            72
-          ],
-          "target_line_range": [
-            73,
-            94
-          ]
-        },
-        {
-          "code": "def extract_meeting_info(audio_path: str) -> Meeting:\n    \"\"\"Extract structured meeting information from audio recording.\"\"\"\n    audio = Audio.from_path(audio_path)\n\n    return client.chat.completions.create(\n        model=\"gpt-4o-audio-preview\",\n        response_model=Meeting,\n        messages=[\n            {\n                \"role\": \"system\",\n                \"content\": \"Extract detailed meeting information from this audio recording.\"\n            },\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    \"Extract the complete meeting details from this recording:\",\n                    audio\n                ]\n            }\n        ]\n    )\n\n",
-          "display_code": "def extract_meeting_info(audio_path: str) -> Meeting:\n    \"\"\"Extract structured meeting information from audio recording.\"\"\"\n    audio = Audio.from_path(audio_path)\n\n    return client.chat.completions.create(\n        model=\"gpt-4o-audio-preview\",\n        response_model=Meeting,\n        messages=[\n            {\n                \"role\": \"system\",\n                \"content\": \"Extract detailed meeting information from this audio recording.\"\n            },\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    \"Extract the complete meeting details from this recording:\",\n                    audio\n                ]\n            }\n        ]\n    )\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 73,
-          "line_range": [
-            73,
-            94
-          ]
-        },
-        {
-          "code": "# Extract person information\n",
-          "display_code": "",
-          "annotation": "Extract person information",
-          "is_comment": true,
-          "start_line": 95,
-          "line_range": [
-            95,
-            95
-          ],
-          "target_line_range": [
-            96,
-            113
-          ]
-        },
-        {
-          "code": "def extract_person_from_audio(audio_path: str) -> Person:\n    \"\"\"Extract structured person information from audio.\"\"\"\n    audio = Audio.from_path(audio_path)\n\n    return client.chat.completions.create(\n        model=\"gpt-4o-audio-preview\",\n        response_model=Person,\n        messages=[\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    \"Extract the person's name, age, and occupation from this audio:\",\n                    audio\n                ]\n            }\n        ]\n    )\n\n",
-          "display_code": "def extract_person_from_audio(audio_path: str) -> Person:\n    \"\"\"Extract structured person information from audio.\"\"\"\n    audio = Audio.from_path(audio_path)\n\n    return client.chat.completions.create(\n        model=\"gpt-4o-audio-preview\",\n        response_model=Person,\n        messages=[\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    \"Extract the person's name, age, and occupation from this audio:\",\n                    audio\n                ]\n            }\n        ]\n    )\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 96,
-          "line_range": [
-            96,
-            113
-          ]
-        },
-        {
-          "code": "# Example usage# person = extract_person_from_audio(\"path/to/introduction.wav\")# print(f\"Name: {person.name}, Age: {person.age}\")# if person.occupation:#     print(f\"Occupation: {person.occupation}\")\n",
-          "display_code": "",
-          "annotation": "Example usage# person = extract_person_from_audio(\"path/to/introduction.wav\")# print(f\"Name: {person.name}, Age: {person.age}\")# if person.occupation:#     print(f\"Occupation: {person.occupation}\")",
-          "is_comment": true,
-          "start_line": 114,
-          "line_range": [
-            114,
-            114
-          ],
-          "target_line_range": [
-            115,
-            115
-          ]
-        },
-        {
-          "code": "\n",
-          "display_code": "\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 115,
-          "line_range": [
-            115,
-            115
-          ]
-        }
-      ],
-      "shell_segments": [
-        {
-          "explanation": "First, install Instructor and any dependencies",
-          "command": "pip install instructor pydantic",
-          "output": ""
-        },
-        {
-          "explanation": "Run the Python script",
-          "command": "python audio-extraction.py",
-          "output": ""
-        }
-      ],
-      "image_data": [],
-      "documentation_links": [
-        "https://github.com/jxnl/instructor"
-      ],
-      "section_id": "008-multimodal",
-      "section_title": "Multimodal Inputs"
-    },
-    {
-      "id": "042-pdf-extraction",
-      "title": "PDF Extraction",
-      "description": "",
-      "order": 42,
-      "code_segments": [
-        {
-          "code": "\n",
-          "display_code": "\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 2,
-          "line_range": [
-            2,
-            2
-          ]
-        },
-        {
-          "code": "# Extract structured data from PDF documents with Instructor. Enables integration of PDF processing into data extraction pipelines.\n",
-          "display_code": "",
-          "annotation": "Extract structured data from PDF documents with Instructor. Enables integration of PDF processing into data extraction pipelines.",
-          "is_comment": true,
-          "start_line": 3,
-          "line_range": [
-            3,
-            3
-          ],
-          "target_line_range": [
-            4,
-            4
-          ]
-        },
-        {
-          "code": "\n",
-          "display_code": "\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 4,
-          "line_range": [
-            4,
-            4
-          ]
-        },
-        {
-          "code": "# Instructor provides support for working with PDF documents through a combination of vision capabilities and structured extraction.\n",
-          "display_code": "",
-          "annotation": "Instructor provides support for working with PDF documents through a combination of vision capabilities and structured extraction.",
-          "is_comment": true,
-          "start_line": 5,
-          "line_range": [
-            5,
-            5
-          ],
-          "target_line_range": [
-            6,
-            12
-          ]
-        },
-        {
-          "code": "import instructor\nfrom openai import OpenAI\nfrom pydantic import BaseModel, Field\nfrom typing import List\nimport tempfile\nfrom pdf2image import convert_from_path\n\n",
-          "display_code": "import instructor\nfrom openai import OpenAI\nfrom pydantic import BaseModel, Field\nfrom typing import List\nimport tempfile\nfrom pdf2image import convert_from_path\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 6,
-          "line_range": [
-            6,
-            12
-          ]
-        },
-        {
-          "code": "# Initialize the client with instructor\n",
-          "display_code": "",
-          "annotation": "Initialize the client with instructor",
-          "is_comment": true,
-          "start_line": 13,
-          "line_range": [
-            13,
-            13
-          ],
-          "target_line_range": [
-            14,
-            15
-          ]
-        },
-        {
-          "code": "client = instructor.from_openai(OpenAI())\n\n",
-          "display_code": "client = instructor.from_openai(OpenAI())\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 14,
-          "line_range": [
-            14,
-            15
-          ]
-        },
-        {
-          "code": "# Define models for document extraction\n",
-          "display_code": "",
-          "annotation": "Define models for document extraction",
-          "is_comment": true,
-          "start_line": 16,
-          "line_range": [
-            16,
-            16
-          ],
-          "target_line_range": [
-            17,
-            26
-          ]
-        },
-        {
-          "code": "class Section(BaseModel):\n    title: str = Field(description=\"Section title\")\n    content: str = Field(description=\"Section content\")\n\nclass Document(BaseModel):\n    title: str = Field(description=\"Document title\")\n    author: str = Field(description=\"Document author\")\n    sections: List[Section] = Field(description=\"Document sections\")\n    summary: str = Field(description=\"Brief document summary\")\n\n",
-          "display_code": "class Section(BaseModel):\n    title: str = Field(description=\"Section title\")\n    content: str = Field(description=\"Section content\")\n\nclass Document(BaseModel):\n    title: str = Field(description=\"Document title\")\n    author: str = Field(description=\"Document author\")\n    sections: List[Section] = Field(description=\"Document sections\")\n    summary: str = Field(description=\"Brief document summary\")\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 17,
-          "line_range": [
-            17,
-            26
-          ]
-        },
-        {
-          "code": "# Extract content from a PDF page as an image\n",
-          "display_code": "",
-          "annotation": "Extract content from a PDF page as an image",
-          "is_comment": true,
-          "start_line": 27,
-          "line_range": [
-            27,
-            27
-          ],
-          "target_line_range": [
-            28,
-            59
-          ]
-        },
-        {
-          "code": "def extract_from_pdf_page(pdf_path: str, page_number: int = 0) -> Document:\n    \"\"\"Extract structured information from a PDF page.\"\"\"\n    # Convert the PDF page to an image\n    images = convert_from_path(pdf_path, first_page=page_number+1, last_page=page_number+1)\n\n    # Save the image to a temporary file\n    with tempfile.NamedTemporaryFile(suffix='.jpg', delete=False) as temp:\n        temp_path = temp.name\n        images[0].save(temp_path, 'JPEG')\n\n    # Create an Image object\n    image = instructor.Image.from_path(temp_path)\n\n    # Extract information using vision capabilities\n    return client.chat.completions.create(\n        model=\"gpt-4-vision-preview\",\n        response_model=Document,\n        messages=[\n            {\n                \"role\": \"system\",\n                \"content\": \"Extract structured information from this document page.\"\n            },\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    \"Extract the complete document structure from this page:\",\n                    image\n                ]\n            }\n        ]\n    )\n\n",
-          "display_code": "def extract_from_pdf_page(pdf_path: str, page_number: int = 0) -> Document:\n    \"\"\"Extract structured information from a PDF page.\"\"\"\n    # Convert the PDF page to an image\n    images = convert_from_path(pdf_path, first_page=page_number+1, last_page=page_number+1)\n\n    # Save the image to a temporary file\n    with tempfile.NamedTemporaryFile(suffix='.jpg', delete=False) as temp:\n        temp_path = temp.name\n        images[0].save(temp_path, 'JPEG')\n\n    # Create an Image object\n    image = instructor.Image.from_path(temp_path)\n\n    # Extract information using vision capabilities\n    return client.chat.completions.create(\n        model=\"gpt-4-vision-preview\",\n        response_model=Document,\n        messages=[\n            {\n                \"role\": \"system\",\n                \"content\": \"Extract structured information from this document page.\"\n            },\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    \"Extract the complete document structure from this page:\",\n                    image\n                ]\n            }\n        ]\n    )\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 28,
-          "line_range": [
-            28,
-            59
-          ]
-        },
-        {
-          "code": "# Process multiple pages\n",
-          "display_code": "",
-          "annotation": "Process multiple pages",
-          "is_comment": true,
-          "start_line": 60,
-          "line_range": [
-            60,
-            60
-          ],
-          "target_line_range": [
-            61,
-            78
-          ]
-        },
-        {
-          "code": "def process_pdf_document(pdf_path: str, max_pages: int = 5) -> List[Document]:\n    \"\"\"Process multiple pages from a PDF document.\"\"\"\n    results = []\n\n    # Get the number of pages\n    from pypdf import PdfReader\n    reader = PdfReader(pdf_path)\n    num_pages = len(reader.pages)\n    actual_pages = min(num_pages, max_pages)\n\n    # Process each page\n    for i in range(actual_pages):\n        page_result = extract_from_pdf_page(pdf_path, i)\n        results.append(page_result)\n        print(f\"Processed page {i+1}/{actual_pages}\")\n\n    return results\n\n",
-          "display_code": "def process_pdf_document(pdf_path: str, max_pages: int = 5) -> List[Document]:\n    \"\"\"Process multiple pages from a PDF document.\"\"\"\n    results = []\n\n    # Get the number of pages\n    from pypdf import PdfReader\n    reader = PdfReader(pdf_path)\n    num_pages = len(reader.pages)\n    actual_pages = min(num_pages, max_pages)\n\n    # Process each page\n    for i in range(actual_pages):\n        page_result = extract_from_pdf_page(pdf_path, i)\n        results.append(page_result)\n        print(f\"Processed page {i+1}/{actual_pages}\")\n\n    return results\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 61,
-          "line_range": [
-            61,
-            78
-          ]
-        },
-        {
-          "code": "# Example usage# documents = process_pdf_document(\"path/to/document.pdf\", max_pages=3)# for i, doc in enumerate(documents):#     print(f\"Page {i+1}: {doc.title} by {doc.author}\")#     print(f\"Summary: {doc.summary}\")#     print(f\"Sections: {len(doc.sections)}\")\n",
-          "display_code": "",
-          "annotation": "Example usage# documents = process_pdf_document(\"path/to/document.pdf\", max_pages=3)# for i, doc in enumerate(documents):#     print(f\"Page {i+1}: {doc.title} by {doc.author}\")#     print(f\"Summary: {doc.summary}\")#     print(f\"Sections: {len(doc.sections)}\")",
-          "is_comment": true,
-          "start_line": 79,
-          "line_range": [
-            79,
-            79
-          ],
-          "target_line_range": [
-            80,
-            80
-          ]
-        },
-        {
-          "code": "\n",
-          "display_code": "\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 80,
-          "line_range": [
-            80,
-            80
-          ]
-        },
-        {
-          "code": "# For more specific document types, you can create specialized models:\n",
-          "display_code": "",
-          "annotation": "For more specific document types, you can create specialized models:",
-          "is_comment": true,
-          "start_line": 81,
-          "line_range": [
-            81,
-            81
-          ],
-          "target_line_range": [
-            82,
-            88
-          ]
-        },
-        {
-          "code": "from typing import List, Optional\nfrom pydantic import BaseModel, Field\nimport instructor\nfrom openai import OpenAI\nfrom pdf2image import convert_from_path\nimport tempfile\n\n",
-          "display_code": "from typing import List, Optional\nfrom pydantic import BaseModel, Field\nimport instructor\nfrom openai import OpenAI\nfrom pdf2image import convert_from_path\nimport tempfile\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 82,
-          "line_range": [
-            82,
-            88
-          ]
-        },
-        {
-          "code": "# Initialize the client\n",
-          "display_code": "",
-          "annotation": "Initialize the client",
-          "is_comment": true,
-          "start_line": 89,
-          "line_range": [
-            89,
-            89
-          ],
-          "target_line_range": [
-            90,
-            91
-          ]
-        },
-        {
-          "code": "client = instructor.from_openai(OpenAI())\n\n",
-          "display_code": "client = instructor.from_openai(OpenAI())\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 90,
-          "line_range": [
-            90,
-            91
-          ]
-        },
-        {
-          "code": "# Define a model for invoice extraction\n",
-          "display_code": "",
-          "annotation": "Define a model for invoice extraction",
-          "is_comment": true,
-          "start_line": 92,
-          "line_range": [
-            92,
-            92
-          ],
-          "target_line_range": [
-            93,
-            108
-          ]
-        },
-        {
-          "code": "class LineItem(BaseModel):\n    description: str = Field(description=\"Description of the item or service\")\n    quantity: float = Field(description=\"Quantity of the item\")\n    unit_price: float = Field(description=\"Price per unit\")\n    amount: float = Field(description=\"Total amount for this line\")\n\nclass Invoice(BaseModel):\n    invoice_number: str = Field(description=\"Invoice identifier\")\n    date: str = Field(description=\"Invoice date\")\n    vendor: str = Field(description=\"Name of the vendor/seller\")\n    customer: str = Field(description=\"Name of the customer/buyer\")\n    items: List[LineItem] = Field(description=\"Line items in the invoice\")\n    subtotal: float = Field(description=\"Sum of all items before tax\")\n    tax: Optional[float] = Field(None, description=\"Tax amount\")\n    total: float = Field(description=\"Total invoice amount\")\n\n",
-          "display_code": "class LineItem(BaseModel):\n    description: str = Field(description=\"Description of the item or service\")\n    quantity: float = Field(description=\"Quantity of the item\")\n    unit_price: float = Field(description=\"Price per unit\")\n    amount: float = Field(description=\"Total amount for this line\")\n\nclass Invoice(BaseModel):\n    invoice_number: str = Field(description=\"Invoice identifier\")\n    date: str = Field(description=\"Invoice date\")\n    vendor: str = Field(description=\"Name of the vendor/seller\")\n    customer: str = Field(description=\"Name of the customer/buyer\")\n    items: List[LineItem] = Field(description=\"Line items in the invoice\")\n    subtotal: float = Field(description=\"Sum of all items before tax\")\n    tax: Optional[float] = Field(None, description=\"Tax amount\")\n    total: float = Field(description=\"Total invoice amount\")\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 93,
-          "line_range": [
-            93,
-            108
-          ]
-        },
-        {
-          "code": "# Extract invoice from PDF\n",
-          "display_code": "",
-          "annotation": "Extract invoice from PDF",
-          "is_comment": true,
-          "start_line": 109,
-          "line_range": [
-            109,
-            109
-          ],
-          "target_line_range": [
-            110,
-            141
-          ]
-        },
-        {
-          "code": "def extract_invoice(pdf_path: str) -> Invoice:\n    \"\"\"Extract structured invoice data from a PDF.\"\"\"\n    # Convert first page to image\n    images = convert_from_path(pdf_path, first_page=1, last_page=1)\n\n    # Save to temp file\n    with tempfile.NamedTemporaryFile(suffix='.jpg', delete=False) as temp:\n        temp_path = temp.name\n        images[0].save(temp_path, 'JPEG')\n\n    # Create image object\n    image = instructor.Image.from_path(temp_path)\n\n    # Extract invoice data\n    return client.chat.completions.create(\n        model=\"gpt-4-vision-preview\",\n        response_model=Invoice,\n        messages=[\n            {\n                \"role\": \"system\",\n                \"content\": \"You are an invoice processing assistant that extracts structured data from invoice images.\"\n            },\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    \"Extract complete invoice details from this document:\",\n                    image\n                ]\n            }\n        ]\n    )\n\n",
-          "display_code": "def extract_invoice(pdf_path: str) -> Invoice:\n    \"\"\"Extract structured invoice data from a PDF.\"\"\"\n    # Convert first page to image\n    images = convert_from_path(pdf_path, first_page=1, last_page=1)\n\n    # Save to temp file\n    with tempfile.NamedTemporaryFile(suffix='.jpg', delete=False) as temp:\n        temp_path = temp.name\n        images[0].save(temp_path, 'JPEG')\n\n    # Create image object\n    image = instructor.Image.from_path(temp_path)\n\n    # Extract invoice data\n    return client.chat.completions.create(\n        model=\"gpt-4-vision-preview\",\n        response_model=Invoice,\n        messages=[\n            {\n                \"role\": \"system\",\n                \"content\": \"You are an invoice processing assistant that extracts structured data from invoice images.\"\n            },\n            {\n                \"role\": \"user\",\n                \"content\": [\n                    \"Extract complete invoice details from this document:\",\n                    image\n                ]\n            }\n        ]\n    )\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 110,
-          "line_range": [
-            110,
-            141
-          ]
-        },
-        {
-          "code": "# Example usage# invoice = extract_invoice(\"path/to/invoice.pdf\")# print(f\"Invoice #{invoice.invoice_number} from {invoice.vendor}\")# print(f\"Date: {invoice.date}\")# print(f\"Total: ${invoice.total:.2f}\")# print(\"Line items:\")# for item in invoice.items:#     print(f\"- {item.description}: {item.quantity} x ${item.unit_price:.2f} = ${item.amount:.2f}\")\n",
-          "display_code": "",
-          "annotation": "Example usage# invoice = extract_invoice(\"path/to/invoice.pdf\")# print(f\"Invoice #{invoice.invoice_number} from {invoice.vendor}\")# print(f\"Date: {invoice.date}\")# print(f\"Total: ${invoice.total:.2f}\")# print(\"Line items:\")# for item in invoice.items:#     print(f\"- {item.description}: {item.quantity} x ${item.unit_price:.2f} = ${item.amount:.2f}\")",
-          "is_comment": true,
-          "start_line": 142,
-          "line_range": [
-            142,
-            142
-          ],
-          "target_line_range": [
-            143,
-            143
-          ]
-        },
-        {
-          "code": "\n",
-          "display_code": "\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 143,
-          "line_range": [
-            143,
-            143
-          ]
-        }
-      ],
-      "shell_segments": [
-        {
-          "explanation": "First, install Instructor and any dependencies",
-          "command": "pip install instructor pydantic",
-          "output": ""
-        },
-        {
-          "explanation": "Run the Python script",
-          "command": "python pdf-extraction.py",
-          "output": ""
-        }
-      ],
-      "image_data": [],
-      "documentation_links": [
-        "https://github.com/jxnl/instructor"
-      ],
-      "section_id": "008-multimodal",
-      "section_title": "Multimodal Inputs"
-    },
-    {
       "id": "043-caching-responses",
       "title": "Caching Responses",
       "description": "",
@@ -13070,6 +13106,18 @@
       ],
       "section_id": "999-misc",
       "section_title": "Miscellaneous Examples"
+    },
+    {
+      "id": "051-llamacpp",
+      "title": "Untitled Example",
+      "description": "",
+      "order": 51,
+      "code_segments": [],
+      "shell_segments": [],
+      "image_data": [],
+      "documentation_links": [],
+      "section_id": "999-misc",
+      "section_title": "Miscellaneous Examples"
     }
   ],
   "sections": [
@@ -13116,10 +13164,23 @@
       ]
     },
     {
+      "id": "008-multimodal",
+      "title": "Multimodal Inputs",
+      "description": "Working with images, audio, and documents",
+      "order": 4,
+      "examples": [
+        "038-vision-inputs",
+        "039-image-to-structured-data",
+        "040-table-extraction",
+        "041-audio-extraction",
+        "042-pdf-extraction"
+      ]
+    },
+    {
       "id": "004-classification",
       "title": "Classification and Analysis",
       "description": "Using structured outputs for classification tasks",
-      "order": 4,
+      "order": 5,
       "examples": [
         "018-simple-classification",
         "019-multi-label-classification"
@@ -13129,7 +13190,7 @@
       "id": "005-streaming",
       "title": "Streaming",
       "description": "Working with streaming responses",
-      "order": 5,
+      "order": 6,
       "examples": [
         "023-streaming-basics",
         "025-streaming-lists"
@@ -13139,7 +13200,7 @@
       "id": "006-advanced-structures",
       "title": "Advanced Structures",
       "description": "Building complex structured outputs",
-      "order": 6,
+      "order": 7,
       "examples": [
         "028-recursive-structures",
         "029-knowledge-graphs",
@@ -13152,26 +13213,13 @@
       "id": "007-validation",
       "title": "Validation",
       "description": "Ensuring data quality with validation",
-      "order": 7,
+      "order": 8,
       "examples": [
         "033-validation-basics",
         "034-custom-validators",
         "035-retry-mechanisms",
         "036-fallback-strategies",
         "037-field-level-validation"
-      ]
-    },
-    {
-      "id": "008-multimodal",
-      "title": "Multimodal Inputs",
-      "description": "Working with images, audio, and documents",
-      "order": 8,
-      "examples": [
-        "038-vision-inputs",
-        "039-image-to-structured-data",
-        "040-table-extraction",
-        "041-audio-extraction",
-        "042-pdf-extraction"
       ]
     },
     {

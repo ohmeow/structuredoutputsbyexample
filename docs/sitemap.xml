@@ -109,6 +109,36 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://structuredoutputsbyexample.com/038-vision-inputs/</loc>
+    <lastmod>2025-04-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://structuredoutputsbyexample.com/039-image-to-structured-data/</loc>
+    <lastmod>2025-04-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://structuredoutputsbyexample.com/040-table-extraction/</loc>
+    <lastmod>2025-04-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://structuredoutputsbyexample.com/041-audio-extraction/</loc>
+    <lastmod>2025-04-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://structuredoutputsbyexample.com/042-pdf-extraction/</loc>
+    <lastmod>2025-04-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://structuredoutputsbyexample.com/018-simple-classification/</loc>
     <lastmod>2025-04-10</lastmod>
     <changefreq>monthly</changefreq>
@@ -193,36 +223,6 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://structuredoutputsbyexample.com/038-vision-inputs/</loc>
-    <lastmod>2025-04-10</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://structuredoutputsbyexample.com/039-image-to-structured-data/</loc>
-    <lastmod>2025-04-10</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://structuredoutputsbyexample.com/040-table-extraction/</loc>
-    <lastmod>2025-04-10</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://structuredoutputsbyexample.com/041-audio-extraction/</loc>
-    <lastmod>2025-04-10</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://structuredoutputsbyexample.com/042-pdf-extraction/</loc>
-    <lastmod>2025-04-10</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://structuredoutputsbyexample.com/043-caching-responses/</loc>
     <lastmod>2025-04-10</lastmod>
     <changefreq>monthly</changefreq>
@@ -260,6 +260,12 @@
   </url>
   <url>
     <loc>https://structuredoutputsbyexample.com/050-resources/</loc>
+    <lastmod>2025-04-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://structuredoutputsbyexample.com/051-llamacpp/</loc>
     <lastmod>2025-04-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>

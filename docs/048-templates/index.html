@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <!-- Primary Meta Tags -->
-    <title>Effective Prompt Templating with Jinja and Pydantic - Structured Outputs by Example</title>
+    <title>Prompt Templates - Structured Outputs by Example</title>
     <meta name="description" content="Learn to dynamically create prompts using Jinja templating and validate them with Pydantic">
     <meta name="author" content="Jason Liu">
     <meta name="keywords" content="structured outputs, LLM, Instructor, Pydantic, data extraction, structured data">
@@ -16,13 +16,13 @@
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://structuredoutputsbyexample.com/048-templates/">
-    <meta property="og:title" content="Effective Prompt Templating with Jinja and Pydantic - Structured Outputs by Example">
+    <meta property="og:title" content="Prompt Templates - Structured Outputs by Example">
     <meta property="og:description" content="Learn to dynamically create prompts using Jinja templating and validate them with Pydantic">
     
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://structuredoutputsbyexample.com/048-templates/">
-    <meta property="twitter:title" content="Effective Prompt Templating with Jinja and Pydantic - Structured Outputs by Example">
+    <meta property="twitter:title" content="Prompt Templates - Structured Outputs by Example">
     <meta property="twitter:description" content="Learn to dynamically create prompts using Jinja templating and validate them with Pydantic">
 
     <!-- Structured Data / JSON-LD -->
@@ -30,7 +30,7 @@
     {
   "@context": "https://schema.org",
   "@type": "TechArticle",
-  "headline": "Effective Prompt Templating with Jinja and Pydantic",
+  "headline": "Prompt Templates",
   "description": "Learn to dynamically create prompts using Jinja templating and validate them with Pydantic",
   "author": {
     "@type": "Person",
@@ -42,8 +42,8 @@
     "url": "https://structuredoutputsbyexample.com"
   },
   "mainEntityOfPage": "https://structuredoutputsbyexample.com/048-templates/",
-  "datePublished": "2025-04-10T18:30:48+00:00",
-  "dateModified": "2025-04-10T18:30:48+00:00",
+  "datePublished": "2025-04-10T18:37:05+00:00",
+  "dateModified": "2025-04-10T18:37:05+00:00",
   "articleSection": "Basic Extraction Patterns",
   "keywords": [
     "structured data",
@@ -280,7 +280,7 @@
                     <div style="margin-bottom: 10px; color: #666; font-size: 0.9em;">
                         <a href="../" style="text-decoration: none; color: #666;">Basic Extraction Patterns</a>
                     </div>
-                    <h1 style="margin: 0; margin-bottom: 10px;">Effective Prompt Templating with Jinja and Pydantic</h1>
+                    <h1 style="margin: 0; margin-bottom: 10px;">Prompt Templates</h1>
                 </div>
                 <div style="position: relative; margin-top: 10px; display: flex; gap: 8px;">
                     <button id="copy-all-python" style="background-color: #f1f8ff; border: 1px solid #c8e1ff; border-radius: 6px; padding: 6px 12px; font-size: 14px; color: #0066CC; cursor: pointer; display: flex; align-items: center; gap: 6px;">
@@ -364,13 +364,15 @@ advanced_response = client.chat.completions.create(
         ]
     }
 )
-print(f&quot;Answer: {advanced_response.answer}&quot;)
-print(&quot;Citations:&quot;)
 for citation in advanced_response.citations:
     print(f&quot;  Source {citation.source_id}: {citation.text}&quot;)
+    # Source 1: Paris is the capital city of France.
+    # Source 2: France is located in Western Europe.
+    # Source 3: Tokyo is the capital city of Japan.
+    # Source 4: Japan is an island country in East Asia.
 </div>
                 </div>            </div>
-            <p style="margin: 20px 0 40px 0; color: #444; line-height: 1.6; font-size: 1.1em;">
+            <p style="margin: 20px 0 40px 0; color: #444; line-height: 1.6; font-size: 1.1em; white-space: pre-line;">
                 Learn to dynamically create prompts using Jinja templating and validate them with Pydantic
             </p>
             <div class="row">
@@ -411,9 +413,7 @@ from typing import List</code></pre>
             <hr>
             <div class="row">
                 <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>BASIC EXAMPLE: Simple template variable
-Extract data using a template with Jinja variables
-The template variable {{ data }} will be replaced with the value from context</div>
+                    <div style='font-size: 0.9em; color: #666;'>BASIC EXAMPLE: Simple template variable<br>Extract data using a template with Jinja variables<br>The template variable {{ data }} will be replaced with the value from context</div>
 
                 </div>
                 <div class="code">
@@ -434,10 +434,7 @@ The template variable {{ data }} will be replaced with the value from context</d
             <hr>
             <div class="row">
                 <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Print the extracted structured data
-Output:
-Name: John Doe
-Age: 30</div>
+                    <div style='font-size: 0.9em; color: #666;'>Print the extracted structured data<br>Output:<br>Name: John Doe<br>Age: 30</div>
 
                 </div>
                 <div class="code">
@@ -448,8 +445,7 @@ print(f&quot;Age: {user.age}&quot;)</code></pre>
             <hr>
             <div class="row">
                 <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>ADVANCED EXAMPLE: Using loops in templates
-Define a model for citations with source references</div>
+                    <div style='font-size: 0.9em; color: #666;'>ADVANCED EXAMPLE: Using loops in templates<br>Define a model for citations with source references</div>
 
                 </div>
                 <div class="code">
@@ -513,21 +509,16 @@ class Answer(BaseModel):
             <hr>
             <div class="row">
                 <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Print the advanced example results
-Output:
-Answer: The capital of France is Paris and the capital of Japan is Tokyo.
-Citations:
-Source 1: Paris is the capital city of France.
-Source 2: France is located in Western Europe.
-Source 3: Tokyo is the capital city of Japan.
-Source 4: Japan is an island country in East Asia.</div>
+                    <div style='font-size: 0.9em; color: #666;'>Print the advanced example results</div>
 
                 </div>
                 <div class="code">
-                    <pre><code class="language-python">print(f&quot;Answer: {advanced_response.answer}&quot;)
-print(&quot;Citations:&quot;)
-for citation in advanced_response.citations:
-    print(f&quot;  Source {citation.source_id}: {citation.text}&quot;)</code></pre>
+                    <pre><code class="language-python">for citation in advanced_response.citations:
+    print(f&quot;  Source {citation.source_id}: {citation.text}&quot;)
+    # Source 1: Paris is the capital city of France.
+    # Source 2: France is located in Western Europe.
+    # Source 3: Tokyo is the capital city of Japan.
+    # Source 4: Japan is an island country in East Asia.</code></pre>
                 </div>
             </div>
             <hr>

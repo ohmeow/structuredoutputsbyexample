@@ -827,9 +827,11 @@ def generate_example_html(
 
         # Description if available
         if example.get("description"):
+            # Replace newlines with <br> tags to preserve formatting
+            formatted_description = example["description"].replace("\n", "<br>")
             f.write(
-                f"""            <p style="margin: 20px 0 40px 0; color: #444; line-height: 1.6; font-size: 1.1em;">
-                {example["description"]}
+                f"""            <p style="margin: 20px 0 40px 0; color: #444; line-height: 1.6; font-size: 1.1em; white-space: pre-line;">
+                {formatted_description}
             </p>
 """
             )
@@ -879,10 +881,14 @@ def generate_example_html(
             for segment in section["segments"]:
                 combined_annotation = ""
                 if section["header"]:
-                    combined_annotation += f"<div style='font-size: 0.9em; color: #666;'>{section['header']}</div>\n"
+                    # Replace newlines with <br> tags in section header
+                    header_with_breaks = section["header"].replace("\n", "<br>")
+                    combined_annotation += f"<div style='font-size: 0.9em; color: #666;'>{header_with_breaks}</div>\n"
 
                 annotation = segment.get("annotation", "")
                 if annotation:
+                    # Replace newlines with <br> tags to preserve formatting
+                    annotation = annotation.replace("\n", "<br>")
                     combined_annotation += annotation
 
                 code_text = segment.get("display_code", "").strip()
@@ -932,6 +938,9 @@ def generate_example_html(
 
             for segment in shell_segments:
                 explanation = segment.get("explanation", "")
+                # Replace newlines with <br> tags to preserve formatting in explanations
+                if explanation:
+                    explanation = explanation.replace("\n", "<br>")
                 command = segment.get("command", "")
                 output = segment.get("output", "")
 
@@ -1224,17 +1233,18 @@ def generate_llms_txt(
             for example in sorted(section_examples, key=lambda e: e["order"]):
                 f.write(f"- {example['title']}")
                 if example.get("description"):
-                    # Clean description - replace newlines with spaces and get first sentence
-                    clean_desc = (
-                        example["description"].replace("\n", " ").replace("\r", " ")
-                    )
-                    while (
-                        "  " in clean_desc
-                    ):  # Remove double spaces that might result from newline replacement
-                        clean_desc = clean_desc.replace("  ", " ")
-                    desc = clean_desc.split(". ")[0] + "."
-                    f.write(f": {desc}")
-                f.write("\n")
+                    # Format multi-line descriptions with proper indentation
+                    desc_lines = example["description"].split("\n")
+                    # Add first line after the title
+                    f.write(f": {desc_lines[0]}")
+                    # Add remaining lines with proper indentation
+                    if len(desc_lines) > 1:
+                        f.write("\n")
+                        for line in desc_lines[1:]:
+                            f.write(f"  {line}\n")
+                    # No need for extra newline since we're already adding them properly
+                else:
+                    f.write("\n")
             f.write("\n")
 
         # Add footer information

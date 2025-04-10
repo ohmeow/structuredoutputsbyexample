@@ -24,7 +24,13 @@ It's organized by sections, with each example's Python code and terminal command
   * Simple Nested Structure
   * Field Validation
   * Optional Fields
-  * Effective Prompt Templating with Jinja and Pydantic
+  * Prompt Templates
+* Multimodal Inputs
+  * Vision
+  * Image Extraction
+  * Table Extraction
+  * Audio Extraction
+  * PDF Extraction
 * Classification and Analysis
   * Simple Classification
   * Multi-label Classification
@@ -43,12 +49,6 @@ It's organized by sections, with each example's Python code and terminal command
   * Retry Mechanisms
   * Fallback Strategies
   * Field-level Validation
-* Multimodal Inputs
-  * Vision
-  * Image Extraction
-  * Table Extraction
-  * Audio Extraction
-  * PDF Extraction
 * Performance and Optimization
   * Caching Responses
   * Parallel Extraction
@@ -58,6 +58,7 @@ It's organized by sections, with each example's Python code and terminal command
 * Miscellaneous Examples
   * Working with Enums
   * Resources
+  * Untitled Example
 
 ## Getting Started
 
@@ -158,6 +159,21 @@ For more information, see the original documentation:
 - https://github.com/jxnl/instructor
 
 ### Installing Instructor
+
+```shell
+$ pip install instructor
+$ pip install instructor
+$ export OPENAI_API_KEY=your_openai_key
+$ pip install "instructor[anthropic]"
+$ export ANTHROPIC_API_KEY=your_anthropic_key
+$ pip install "instructor[google-generativeai]"
+export GOOGLE_API_KEY=your_google_key
+$ pip install "instructor[cohere]"
+$ export COHERE_API_KEY=your_cohere_key
+$ pip install "instructor[mistralai]"
+$ export MISTRAL_API_KEY=your_mistral_key
+$ pip install "instructor[litellm]"
+```
 
 For more information, see the original documentation:
 - https://github.com/jxnl/instructor
@@ -1211,7 +1227,7 @@ $ python optional-fields.py
 For more information, see the original documentation:
 - https://github.com/jxnl/instructor
 
-### Effective Prompt Templating with Jinja and Pydantic
+### Prompt Templates
 
 Learn to dynamically create prompts using Jinja templating and validate them with Pydantic
 
@@ -1285,16 +1301,564 @@ advanced_response = client.chat.completions.create(
         ]
     }
 )
-print(f"Answer: {advanced_response.answer}")
-print("Citations:")
 for citation in advanced_response.citations:
     print(f"  Source {citation.source_id}: {citation.text}")
+    # Source 1: Paris is the capital city of France.
+    # Source 2: France is located in Western Europe.
+    # Source 3: Tokyo is the capital city of Japan.
+    # Source 4: Japan is an island country in East Asia.
 ```
 
 ```shell
 $ pip install instructor pydantic
 $ python templates.py
 ```
+
+## Multimodal Inputs
+
+Working with images, audio, and documents
+
+### Vision
+
+```python
+import instructor
+from openai import OpenAI
+from pydantic import BaseModel, Field
+from typing import List
+client = instructor.from_openai(OpenAI())
+class ImageContent(BaseModel):
+    description: str = Field(description="A detailed description of the image")
+    objects: List[str] = Field(description="List of main objects in the image")
+    colors: List[str] = Field(description="Dominant colors in the image")
+def analyze_image_from_file(file_path: str) -> ImageContent:
+    image = instructor.Image.from_path(file_path)
+
+    return client.chat.completions.create(
+        model="gpt-4-vision-preview",
+        response_model=ImageContent,
+        messages=[
+            {
+                "role": "user",
+                "content": [
+                    "Describe this image in detail:",
+                    image  # The Image object is handled automatically
+                ]
+            }
+        ]
+    )
+def analyze_image_from_url(image_url: str) -> ImageContent:
+    image = instructor.Image.from_url(image_url)
+
+    return client.chat.completions.create(
+        model="gpt-4-vision-preview",
+        response_model=ImageContent,
+        messages=[
+            {
+                "role": "user",
+                "content": [
+                    "Describe this image in detail:",
+                    image
+                ]
+            }
+        ]
+    )
+def analyze_with_autodetect(image_path_or_url: str) -> ImageContent:
+    return client.chat.completions.create(
+        model="gpt-4-vision-preview",
+        response_model=ImageContent,
+        messages=[
+            {
+                "role": "user",
+                "content": [
+                    "Describe this image in detail:",
+                    image_path_or_url  # Will be automatically detected as an image
+                ]
+            }
+        ],
+        autodetect_images=True  # Automatically converts paths/URLs to Image objects
+    )
+result = analyze_with_autodetect("https://example.com/image.jpg")
+print(f"Description: {result.description}")
+print(f"Objects: {', '.join(result.objects)}")
+print(f"Colors: {', '.join(result.colors)}")
+```
+
+```shell
+$ pip install instructor pydantic
+$ python vision-inputs.py
+```
+
+For more information, see the original documentation:
+- https://github.com/jxnl/instructor
+
+### Image Extraction
+
+```python
+import instructor
+from openai import OpenAI
+from pydantic import BaseModel, Field
+from typing import List, Optional
+client = instructor.from_openai(OpenAI())
+class Product(BaseModel):
+    name: str = Field(description="Product name")
+    price: float = Field(description="Product price in USD")
+    description: str = Field(description="Brief product description")
+    features: List[str] = Field(description="Key product features")
+    brand: Optional[str] = Field(None, description="Brand name if visible")
+def extract_product_info(image_path_or_url: str) -> Product:
+    return client.chat.completions.create(
+        model="gpt-4-vision-preview",
+        response_model=Product,
+        messages=[
+            {
+                "role": "user",
+                "content": [
+                    "Extract detailed product information from this image:",
+                    image_path_or_url
+                ]
+            }
+        ],
+        autodetect_images=True  # Automatically handle the image
+    )
+product = extract_product_info("path/to/product_image.jpg")
+print(f"Product: {product.name} (${product.price:.2f})")
+print(f"Description: {product.description}")
+print(f"Features: {', '.join(product.features)}")
+if product.brand:
+    print(f"Brand: {product.brand}")
+from typing import List, Optional
+from pydantic import BaseModel, Field
+import instructor
+from openai import OpenAI
+client = instructor.from_openai(OpenAI())
+class Ingredient(BaseModel):
+    name: str = Field(description="Ingredient name")
+    quantity: str = Field(description="Amount needed, including units")
+    optional: bool = Field(description="Whether this ingredient is optional")
+
+class Step(BaseModel):
+    instruction: str = Field(description="Cooking instruction")
+    time_minutes: Optional[int] = Field(None, description="Time required for this step in minutes")
+
+class Recipe(BaseModel):
+    title: str = Field(description="Recipe title")
+    servings: int = Field(description="Number of servings")
+    prep_time_minutes: int = Field(description="Preparation time in minutes")
+    cook_time_minutes: int = Field(description="Cooking time in minutes")
+    ingredients: List[Ingredient] = Field(description="List of ingredients")
+    steps: List[Step] = Field(description="Cooking steps in order")
+    difficulty: str = Field(description="Recipe difficulty (easy, medium, hard)")
+def extract_recipe(image_path: str) -> Recipe:
+    # Create an Image object
+    image = instructor.Image.from_path(image_path)
+
+    return client.chat.completions.create(
+        model="gpt-4-vision-preview",
+        response_model=Recipe,
+        messages=[
+            {
+                "role": "system",
+                "content": "Extract complete recipe information from the provided image."
+            },
+            {
+                "role": "user",
+                "content": [
+                    "Please extract the detailed recipe information from this image:",
+                    image
+                ]
+            }
+        ]
+    )
+```
+
+```shell
+$ pip install instructor pydantic
+$ python image-to-structured-data.py
+```
+
+For more information, see the original documentation:
+- https://github.com/jxnl/instructor
+
+### Table Extraction
+
+```python
+import instructor
+from openai import OpenAI
+from pydantic import BaseModel, Field
+import pandas as pd
+from typing import Annotated, Any
+from io import StringIO
+from pydantic import (
+    BaseModel,
+    BeforeValidator,
+    PlainSerializer,
+    InstanceOf,
+    WithJsonSchema,
+)
+client = instructor.from_openai(OpenAI(), mode=instructor.Mode.MD_JSON)
+def to_markdown(df: pd.DataFrame) -> str:
+    """Convert a dataframe to markdown format."""
+    return df.to_markdown()
+
+
+def md_to_df(data: Any) -> Any:
+    """Convert markdown table to a pandas dataframe."""
+    if isinstance(data, str):
+        return (
+            pd.read_csv(
+                StringIO(data),
+                sep="|",
+                index_col=1,
+            )
+            .dropna(axis=1, how="all")
+            .iloc[1:]
+            .map(lambda x: x.strip())
+        )
+    return data
+MarkdownDataFrame = Annotated[
+    InstanceOf[pd.DataFrame],
+    BeforeValidator(md_to_df),
+    PlainSerializer(to_markdown),
+    WithJsonSchema(
+        {
+            "type": "string",
+            "description": "The markdown representation of the table",
+        }
+    ),
+]
+class Table(BaseModel):
+    caption: str = Field(description="A descriptive caption for the table")
+    dataframe: MarkdownDataFrame = Field(
+        description="The table data as a markdown table"
+    )
+def extract_table_from_image(image_path_or_url: str) -> Table:
+    """Extract a table from an image and return it as a structured object."""
+    if image_path_or_url.startswith(("http://", "https://")):
+        image = instructor.Image.from_url(image_path_or_url)
+    else:
+        image = instructor.Image.from_path(image_path_or_url)
+
+    return client.chat.completions.create(
+        model="gpt-4-vision-preview",
+        response_model=Table,
+        max_tokens=1800,
+        messages=[
+            {
+                "role": "user",
+                "content": [
+                    {
+                        "type": "text",
+                        "text": "Extract the table from this image with a descriptive caption.",
+                    },
+                    image,
+                ],
+            }
+        ],
+    )
+def analyze_table_data(image_path: str):
+    """Extract and analyze a table from an image."""
+    table = extract_table_from_image(image_path)
+
+    print(f"Table Caption: {table.caption}")
+    print("\nExtracted Table:")
+    print(table.dataframe)
+
+    # Perform data analysis if it's a pandas DataFrame
+    if isinstance(table.dataframe, pd.DataFrame):
+        print("\nData Analysis:")
+        print(f"- Rows: {len(table.dataframe)}")
+        print(f"- Columns: {len(table.dataframe.columns)}")
+
+        # Basic statistics if numeric columns exist
+        numeric_cols = table.dataframe.select_dtypes(include=["number"]).columns
+        if len(numeric_cols) > 0:
+            print("\nNumeric Column Statistics:")
+            for col in numeric_cols:
+                col_data = table.dataframe[col]
+                print(
+                    f"- {col}: Min={col_data.min()}, Max={col_data.max()}, Mean={col_data.mean():.2f}"
+                )
+
+        return table.dataframe
+
+    return None
+def extract_multiple_tables(image_path_or_url: str) -> list[Table]:
+    """Extract all tables from an image."""
+    if image_path_or_url.startswith(("http://", "https://")):
+        image = instructor.Image.from_url(image_path_or_url)
+    else:
+        image = instructor.Image.from_path(image_path_or_url)
+
+    tables = client.chat.completions.create_iterable(
+        model="gpt-4-vision-preview",
+        response_model=Table,
+        max_tokens=1800,
+        messages=[
+            {
+                "role": "user",
+                "content": [
+                    {
+                        "type": "text",
+                        "text": "Extract all tables from this image. Each table should be separate and have its own caption.",
+                    },
+                    image,
+                ],
+            }
+        ],
+    )
+
+    return list(tables)
+def analyze_multiple_tables(image_path: str):
+    """Extract and analyze all tables from an image."""
+    tables = extract_multiple_tables(image_path)
+
+    print(f"Found {len(tables)} tables in the image.")
+
+    for i, table in enumerate(tables):
+        print(f"\n--- Table {i+1}: {table.caption} ---")
+        print(table.dataframe)
+
+        if isinstance(table.dataframe, pd.DataFrame):
+            yield table.dataframe
+```
+
+```shell
+$ pip install instructor pydantic
+$ python table-extraction.py
+```
+
+For more information, see the original documentation:
+- https://github.com/jxnl/instructor
+
+### Audio Extraction
+
+```python
+import instructor
+from openai import OpenAI
+from pydantic import BaseModel, Field
+from instructor.multimodal import Audio
+client = instructor.from_openai(OpenAI())
+class AudioTranscription(BaseModel):
+    text: str = Field(description="Full transcription of the audio")
+    speaker: str = Field(description="Identity of the speaker if known")
+    language: str = Field(description="Language spoken in the audio")
+    confidence: float = Field(description="Confidence score for the transcription", ge=0.0, le=1.0)
+def transcribe_audio(audio_path: str) -> AudioTranscription:
+    """Extract structured transcription from an audio file."""
+    # Load the audio using Instructor's Audio class
+    audio = Audio.from_path(audio_path)
+
+    return client.chat.completions.create(
+        model="gpt-4o-audio-preview",  # Audio-capable model
+        response_model=AudioTranscription,
+        messages=[
+            {
+                "role": "user",
+                "content": [
+                    "Transcribe this audio file and identify the speaker and language:",
+                    audio  # The Audio object is handled automatically
+                ]
+            }
+        ]
+    )
+from typing import List, Optional
+from pydantic import BaseModel, Field
+import instructor
+from openai import OpenAI
+from instructor.multimodal import Audio
+client = instructor.from_openai(OpenAI())
+class Person(BaseModel):
+    name: str = Field(description="Person's full name")
+    age: int = Field(description="Person's age in years")
+    occupation: Optional[str] = Field(None, description="Person's job or profession if mentioned")
+class MeetingPoint(BaseModel):
+    topic: str = Field(description="Topic discussed")
+    decision: Optional[str] = Field(None, description="Decision made on this topic")
+    action_items: List[str] = Field(default_factory=list, description="Action items related to this topic")
+
+class Meeting(BaseModel):
+    title: str = Field(description="Meeting title or purpose")
+    date: Optional[str] = Field(None, description="Meeting date if mentioned")
+    participants: List[str] = Field(description="Names of meeting participants")
+    key_points: List[MeetingPoint] = Field(description="Key discussion points and decisions")
+    summary: str = Field(description="Brief summary of the meeting")
+def extract_meeting_info(audio_path: str) -> Meeting:
+    """Extract structured meeting information from audio recording."""
+    audio = Audio.from_path(audio_path)
+
+    return client.chat.completions.create(
+        model="gpt-4o-audio-preview",
+        response_model=Meeting,
+        messages=[
+            {
+                "role": "system",
+                "content": "Extract detailed meeting information from this audio recording."
+            },
+            {
+                "role": "user",
+                "content": [
+                    "Extract the complete meeting details from this recording:",
+                    audio
+                ]
+            }
+        ]
+    )
+def extract_person_from_audio(audio_path: str) -> Person:
+    """Extract structured person information from audio."""
+    audio = Audio.from_path(audio_path)
+
+    return client.chat.completions.create(
+        model="gpt-4o-audio-preview",
+        response_model=Person,
+        messages=[
+            {
+                "role": "user",
+                "content": [
+                    "Extract the person's name, age, and occupation from this audio:",
+                    audio
+                ]
+            }
+        ]
+    )
+```
+
+```shell
+$ pip install instructor pydantic
+$ python audio-extraction.py
+```
+
+For more information, see the original documentation:
+- https://github.com/jxnl/instructor
+
+### PDF Extraction
+
+```python
+import instructor
+from openai import OpenAI
+from pydantic import BaseModel, Field
+from typing import List
+import tempfile
+from pdf2image import convert_from_path
+client = instructor.from_openai(OpenAI())
+class Section(BaseModel):
+    title: str = Field(description="Section title")
+    content: str = Field(description="Section content")
+
+class Document(BaseModel):
+    title: str = Field(description="Document title")
+    author: str = Field(description="Document author")
+    sections: List[Section] = Field(description="Document sections")
+    summary: str = Field(description="Brief document summary")
+def extract_from_pdf_page(pdf_path: str, page_number: int = 0) -> Document:
+    """Extract structured information from a PDF page."""
+    # Convert the PDF page to an image
+    images = convert_from_path(pdf_path, first_page=page_number+1, last_page=page_number+1)
+
+    # Save the image to a temporary file
+    with tempfile.NamedTemporaryFile(suffix='.jpg', delete=False) as temp:
+        temp_path = temp.name
+        images[0].save(temp_path, 'JPEG')
+
+    # Create an Image object
+    image = instructor.Image.from_path(temp_path)
+
+    # Extract information using vision capabilities
+    return client.chat.completions.create(
+        model="gpt-4-vision-preview",
+        response_model=Document,
+        messages=[
+            {
+                "role": "system",
+                "content": "Extract structured information from this document page."
+            },
+            {
+                "role": "user",
+                "content": [
+                    "Extract the complete document structure from this page:",
+                    image
+                ]
+            }
+        ]
+    )
+def process_pdf_document(pdf_path: str, max_pages: int = 5) -> List[Document]:
+    """Process multiple pages from a PDF document."""
+    results = []
+
+    # Get the number of pages
+    from pypdf import PdfReader
+    reader = PdfReader(pdf_path)
+    num_pages = len(reader.pages)
+    actual_pages = min(num_pages, max_pages)
+
+    # Process each page
+    for i in range(actual_pages):
+        page_result = extract_from_pdf_page(pdf_path, i)
+        results.append(page_result)
+        print(f"Processed page {i+1}/{actual_pages}")
+
+    return results
+from typing import List, Optional
+from pydantic import BaseModel, Field
+import instructor
+from openai import OpenAI
+from pdf2image import convert_from_path
+import tempfile
+client = instructor.from_openai(OpenAI())
+class LineItem(BaseModel):
+    description: str = Field(description="Description of the item or service")
+    quantity: float = Field(description="Quantity of the item")
+    unit_price: float = Field(description="Price per unit")
+    amount: float = Field(description="Total amount for this line")
+
+class Invoice(BaseModel):
+    invoice_number: str = Field(description="Invoice identifier")
+    date: str = Field(description="Invoice date")
+    vendor: str = Field(description="Name of the vendor/seller")
+    customer: str = Field(description="Name of the customer/buyer")
+    items: List[LineItem] = Field(description="Line items in the invoice")
+    subtotal: float = Field(description="Sum of all items before tax")
+    tax: Optional[float] = Field(None, description="Tax amount")
+    total: float = Field(description="Total invoice amount")
+def extract_invoice(pdf_path: str) -> Invoice:
+    """Extract structured invoice data from a PDF."""
+    # Convert first page to image
+    images = convert_from_path(pdf_path, first_page=1, last_page=1)
+
+    # Save to temp file
+    with tempfile.NamedTemporaryFile(suffix='.jpg', delete=False) as temp:
+        temp_path = temp.name
+        images[0].save(temp_path, 'JPEG')
+
+    # Create image object
+    image = instructor.Image.from_path(temp_path)
+
+    # Extract invoice data
+    return client.chat.completions.create(
+        model="gpt-4-vision-preview",
+        response_model=Invoice,
+        messages=[
+            {
+                "role": "system",
+                "content": "You are an invoice processing assistant that extracts structured data from invoice images."
+            },
+            {
+                "role": "user",
+                "content": [
+                    "Extract complete invoice details from this document:",
+                    image
+                ]
+            }
+        ]
+    )
+```
+
+```shell
+$ pip install instructor pydantic
+$ python pdf-extraction.py
+```
+
+For more information, see the original documentation:
+- https://github.com/jxnl/instructor
 
 ## Classification and Analysis
 
@@ -2717,552 +3281,6 @@ $ python field-level-validation.py
 For more information, see the original documentation:
 - https://github.com/jxnl/instructor
 
-## Multimodal Inputs
-
-Working with images, audio, and documents
-
-### Vision
-
-```python
-import instructor
-from openai import OpenAI
-from pydantic import BaseModel, Field
-from typing import List
-client = instructor.from_openai(OpenAI())
-class ImageContent(BaseModel):
-    description: str = Field(description="A detailed description of the image")
-    objects: List[str] = Field(description="List of main objects in the image")
-    colors: List[str] = Field(description="Dominant colors in the image")
-def analyze_image_from_file(file_path: str) -> ImageContent:
-    image = instructor.Image.from_path(file_path)
-
-    return client.chat.completions.create(
-        model="gpt-4-vision-preview",
-        response_model=ImageContent,
-        messages=[
-            {
-                "role": "user",
-                "content": [
-                    "Describe this image in detail:",
-                    image  # The Image object is handled automatically
-                ]
-            }
-        ]
-    )
-def analyze_image_from_url(image_url: str) -> ImageContent:
-    image = instructor.Image.from_url(image_url)
-
-    return client.chat.completions.create(
-        model="gpt-4-vision-preview",
-        response_model=ImageContent,
-        messages=[
-            {
-                "role": "user",
-                "content": [
-                    "Describe this image in detail:",
-                    image
-                ]
-            }
-        ]
-    )
-def analyze_with_autodetect(image_path_or_url: str) -> ImageContent:
-    return client.chat.completions.create(
-        model="gpt-4-vision-preview",
-        response_model=ImageContent,
-        messages=[
-            {
-                "role": "user",
-                "content": [
-                    "Describe this image in detail:",
-                    image_path_or_url  # Will be automatically detected as an image
-                ]
-            }
-        ],
-        autodetect_images=True  # Automatically converts paths/URLs to Image objects
-    )
-result = analyze_with_autodetect("https://example.com/image.jpg")
-print(f"Description: {result.description}")
-print(f"Objects: {', '.join(result.objects)}")
-print(f"Colors: {', '.join(result.colors)}")
-```
-
-```shell
-$ pip install instructor pydantic
-$ python vision-inputs.py
-```
-
-For more information, see the original documentation:
-- https://github.com/jxnl/instructor
-
-### Image Extraction
-
-```python
-import instructor
-from openai import OpenAI
-from pydantic import BaseModel, Field
-from typing import List, Optional
-client = instructor.from_openai(OpenAI())
-class Product(BaseModel):
-    name: str = Field(description="Product name")
-    price: float = Field(description="Product price in USD")
-    description: str = Field(description="Brief product description")
-    features: List[str] = Field(description="Key product features")
-    brand: Optional[str] = Field(None, description="Brand name if visible")
-def extract_product_info(image_path_or_url: str) -> Product:
-    return client.chat.completions.create(
-        model="gpt-4-vision-preview",
-        response_model=Product,
-        messages=[
-            {
-                "role": "user",
-                "content": [
-                    "Extract detailed product information from this image:",
-                    image_path_or_url
-                ]
-            }
-        ],
-        autodetect_images=True  # Automatically handle the image
-    )
-product = extract_product_info("path/to/product_image.jpg")
-print(f"Product: {product.name} (${product.price:.2f})")
-print(f"Description: {product.description}")
-print(f"Features: {', '.join(product.features)}")
-if product.brand:
-    print(f"Brand: {product.brand}")
-from typing import List, Optional
-from pydantic import BaseModel, Field
-import instructor
-from openai import OpenAI
-client = instructor.from_openai(OpenAI())
-class Ingredient(BaseModel):
-    name: str = Field(description="Ingredient name")
-    quantity: str = Field(description="Amount needed, including units")
-    optional: bool = Field(description="Whether this ingredient is optional")
-
-class Step(BaseModel):
-    instruction: str = Field(description="Cooking instruction")
-    time_minutes: Optional[int] = Field(None, description="Time required for this step in minutes")
-
-class Recipe(BaseModel):
-    title: str = Field(description="Recipe title")
-    servings: int = Field(description="Number of servings")
-    prep_time_minutes: int = Field(description="Preparation time in minutes")
-    cook_time_minutes: int = Field(description="Cooking time in minutes")
-    ingredients: List[Ingredient] = Field(description="List of ingredients")
-    steps: List[Step] = Field(description="Cooking steps in order")
-    difficulty: str = Field(description="Recipe difficulty (easy, medium, hard)")
-def extract_recipe(image_path: str) -> Recipe:
-    # Create an Image object
-    image = instructor.Image.from_path(image_path)
-
-    return client.chat.completions.create(
-        model="gpt-4-vision-preview",
-        response_model=Recipe,
-        messages=[
-            {
-                "role": "system",
-                "content": "Extract complete recipe information from the provided image."
-            },
-            {
-                "role": "user",
-                "content": [
-                    "Please extract the detailed recipe information from this image:",
-                    image
-                ]
-            }
-        ]
-    )
-```
-
-```shell
-$ pip install instructor pydantic
-$ python image-to-structured-data.py
-```
-
-For more information, see the original documentation:
-- https://github.com/jxnl/instructor
-
-### Table Extraction
-
-```python
-import instructor
-from openai import OpenAI
-from pydantic import BaseModel, Field
-import pandas as pd
-from typing import Annotated, Any
-from io import StringIO
-from pydantic import (
-    BaseModel,
-    BeforeValidator,
-    PlainSerializer,
-    InstanceOf,
-    WithJsonSchema,
-)
-client = instructor.from_openai(OpenAI(), mode=instructor.Mode.MD_JSON)
-def to_markdown(df: pd.DataFrame) -> str:
-    """Convert a dataframe to markdown format."""
-    return df.to_markdown()
-
-
-def md_to_df(data: Any) -> Any:
-    """Convert markdown table to a pandas dataframe."""
-    if isinstance(data, str):
-        return (
-            pd.read_csv(
-                StringIO(data),
-                sep="|",
-                index_col=1,
-            )
-            .dropna(axis=1, how="all")
-            .iloc[1:]
-            .map(lambda x: x.strip())
-        )
-    return data
-MarkdownDataFrame = Annotated[
-    InstanceOf[pd.DataFrame],
-    BeforeValidator(md_to_df),
-    PlainSerializer(to_markdown),
-    WithJsonSchema(
-        {
-            "type": "string",
-            "description": "The markdown representation of the table",
-        }
-    ),
-]
-class Table(BaseModel):
-    caption: str = Field(description="A descriptive caption for the table")
-    dataframe: MarkdownDataFrame = Field(
-        description="The table data as a markdown table"
-    )
-def extract_table_from_image(image_path_or_url: str) -> Table:
-    """Extract a table from an image and return it as a structured object."""
-    if image_path_or_url.startswith(("http://", "https://")):
-        image = instructor.Image.from_url(image_path_or_url)
-    else:
-        image = instructor.Image.from_path(image_path_or_url)
-
-    return client.chat.completions.create(
-        model="gpt-4-vision-preview",
-        response_model=Table,
-        max_tokens=1800,
-        messages=[
-            {
-                "role": "user",
-                "content": [
-                    {
-                        "type": "text",
-                        "text": "Extract the table from this image with a descriptive caption.",
-                    },
-                    image,
-                ],
-            }
-        ],
-    )
-def analyze_table_data(image_path: str):
-    """Extract and analyze a table from an image."""
-    table = extract_table_from_image(image_path)
-
-    print(f"Table Caption: {table.caption}")
-    print("\nExtracted Table:")
-    print(table.dataframe)
-
-    # Perform data analysis if it's a pandas DataFrame
-    if isinstance(table.dataframe, pd.DataFrame):
-        print("\nData Analysis:")
-        print(f"- Rows: {len(table.dataframe)}")
-        print(f"- Columns: {len(table.dataframe.columns)}")
-
-        # Basic statistics if numeric columns exist
-        numeric_cols = table.dataframe.select_dtypes(include=["number"]).columns
-        if len(numeric_cols) > 0:
-            print("\nNumeric Column Statistics:")
-            for col in numeric_cols:
-                col_data = table.dataframe[col]
-                print(
-                    f"- {col}: Min={col_data.min()}, Max={col_data.max()}, Mean={col_data.mean():.2f}"
-                )
-
-        return table.dataframe
-
-    return None
-def extract_multiple_tables(image_path_or_url: str) -> list[Table]:
-    """Extract all tables from an image."""
-    if image_path_or_url.startswith(("http://", "https://")):
-        image = instructor.Image.from_url(image_path_or_url)
-    else:
-        image = instructor.Image.from_path(image_path_or_url)
-
-    tables = client.chat.completions.create_iterable(
-        model="gpt-4-vision-preview",
-        response_model=Table,
-        max_tokens=1800,
-        messages=[
-            {
-                "role": "user",
-                "content": [
-                    {
-                        "type": "text",
-                        "text": "Extract all tables from this image. Each table should be separate and have its own caption.",
-                    },
-                    image,
-                ],
-            }
-        ],
-    )
-
-    return list(tables)
-def analyze_multiple_tables(image_path: str):
-    """Extract and analyze all tables from an image."""
-    tables = extract_multiple_tables(image_path)
-
-    print(f"Found {len(tables)} tables in the image.")
-
-    for i, table in enumerate(tables):
-        print(f"\n--- Table {i+1}: {table.caption} ---")
-        print(table.dataframe)
-
-        if isinstance(table.dataframe, pd.DataFrame):
-            yield table.dataframe
-```
-
-```shell
-$ pip install instructor pydantic
-$ python table-extraction.py
-```
-
-For more information, see the original documentation:
-- https://github.com/jxnl/instructor
-
-### Audio Extraction
-
-```python
-import instructor
-from openai import OpenAI
-from pydantic import BaseModel, Field
-from instructor.multimodal import Audio
-client = instructor.from_openai(OpenAI())
-class AudioTranscription(BaseModel):
-    text: str = Field(description="Full transcription of the audio")
-    speaker: str = Field(description="Identity of the speaker if known")
-    language: str = Field(description="Language spoken in the audio")
-    confidence: float = Field(description="Confidence score for the transcription", ge=0.0, le=1.0)
-def transcribe_audio(audio_path: str) -> AudioTranscription:
-    """Extract structured transcription from an audio file."""
-    # Load the audio using Instructor's Audio class
-    audio = Audio.from_path(audio_path)
-
-    return client.chat.completions.create(
-        model="gpt-4o-audio-preview",  # Audio-capable model
-        response_model=AudioTranscription,
-        messages=[
-            {
-                "role": "user",
-                "content": [
-                    "Transcribe this audio file and identify the speaker and language:",
-                    audio  # The Audio object is handled automatically
-                ]
-            }
-        ]
-    )
-from typing import List, Optional
-from pydantic import BaseModel, Field
-import instructor
-from openai import OpenAI
-from instructor.multimodal import Audio
-client = instructor.from_openai(OpenAI())
-class Person(BaseModel):
-    name: str = Field(description="Person's full name")
-    age: int = Field(description="Person's age in years")
-    occupation: Optional[str] = Field(None, description="Person's job or profession if mentioned")
-class MeetingPoint(BaseModel):
-    topic: str = Field(description="Topic discussed")
-    decision: Optional[str] = Field(None, description="Decision made on this topic")
-    action_items: List[str] = Field(default_factory=list, description="Action items related to this topic")
-
-class Meeting(BaseModel):
-    title: str = Field(description="Meeting title or purpose")
-    date: Optional[str] = Field(None, description="Meeting date if mentioned")
-    participants: List[str] = Field(description="Names of meeting participants")
-    key_points: List[MeetingPoint] = Field(description="Key discussion points and decisions")
-    summary: str = Field(description="Brief summary of the meeting")
-def extract_meeting_info(audio_path: str) -> Meeting:
-    """Extract structured meeting information from audio recording."""
-    audio = Audio.from_path(audio_path)
-
-    return client.chat.completions.create(
-        model="gpt-4o-audio-preview",
-        response_model=Meeting,
-        messages=[
-            {
-                "role": "system",
-                "content": "Extract detailed meeting information from this audio recording."
-            },
-            {
-                "role": "user",
-                "content": [
-                    "Extract the complete meeting details from this recording:",
-                    audio
-                ]
-            }
-        ]
-    )
-def extract_person_from_audio(audio_path: str) -> Person:
-    """Extract structured person information from audio."""
-    audio = Audio.from_path(audio_path)
-
-    return client.chat.completions.create(
-        model="gpt-4o-audio-preview",
-        response_model=Person,
-        messages=[
-            {
-                "role": "user",
-                "content": [
-                    "Extract the person's name, age, and occupation from this audio:",
-                    audio
-                ]
-            }
-        ]
-    )
-```
-
-```shell
-$ pip install instructor pydantic
-$ python audio-extraction.py
-```
-
-For more information, see the original documentation:
-- https://github.com/jxnl/instructor
-
-### PDF Extraction
-
-```python
-import instructor
-from openai import OpenAI
-from pydantic import BaseModel, Field
-from typing import List
-import tempfile
-from pdf2image import convert_from_path
-client = instructor.from_openai(OpenAI())
-class Section(BaseModel):
-    title: str = Field(description="Section title")
-    content: str = Field(description="Section content")
-
-class Document(BaseModel):
-    title: str = Field(description="Document title")
-    author: str = Field(description="Document author")
-    sections: List[Section] = Field(description="Document sections")
-    summary: str = Field(description="Brief document summary")
-def extract_from_pdf_page(pdf_path: str, page_number: int = 0) -> Document:
-    """Extract structured information from a PDF page."""
-    # Convert the PDF page to an image
-    images = convert_from_path(pdf_path, first_page=page_number+1, last_page=page_number+1)
-
-    # Save the image to a temporary file
-    with tempfile.NamedTemporaryFile(suffix='.jpg', delete=False) as temp:
-        temp_path = temp.name
-        images[0].save(temp_path, 'JPEG')
-
-    # Create an Image object
-    image = instructor.Image.from_path(temp_path)
-
-    # Extract information using vision capabilities
-    return client.chat.completions.create(
-        model="gpt-4-vision-preview",
-        response_model=Document,
-        messages=[
-            {
-                "role": "system",
-                "content": "Extract structured information from this document page."
-            },
-            {
-                "role": "user",
-                "content": [
-                    "Extract the complete document structure from this page:",
-                    image
-                ]
-            }
-        ]
-    )
-def process_pdf_document(pdf_path: str, max_pages: int = 5) -> List[Document]:
-    """Process multiple pages from a PDF document."""
-    results = []
-
-    # Get the number of pages
-    from pypdf import PdfReader
-    reader = PdfReader(pdf_path)
-    num_pages = len(reader.pages)
-    actual_pages = min(num_pages, max_pages)
-
-    # Process each page
-    for i in range(actual_pages):
-        page_result = extract_from_pdf_page(pdf_path, i)
-        results.append(page_result)
-        print(f"Processed page {i+1}/{actual_pages}")
-
-    return results
-from typing import List, Optional
-from pydantic import BaseModel, Field
-import instructor
-from openai import OpenAI
-from pdf2image import convert_from_path
-import tempfile
-client = instructor.from_openai(OpenAI())
-class LineItem(BaseModel):
-    description: str = Field(description="Description of the item or service")
-    quantity: float = Field(description="Quantity of the item")
-    unit_price: float = Field(description="Price per unit")
-    amount: float = Field(description="Total amount for this line")
-
-class Invoice(BaseModel):
-    invoice_number: str = Field(description="Invoice identifier")
-    date: str = Field(description="Invoice date")
-    vendor: str = Field(description="Name of the vendor/seller")
-    customer: str = Field(description="Name of the customer/buyer")
-    items: List[LineItem] = Field(description="Line items in the invoice")
-    subtotal: float = Field(description="Sum of all items before tax")
-    tax: Optional[float] = Field(None, description="Tax amount")
-    total: float = Field(description="Total invoice amount")
-def extract_invoice(pdf_path: str) -> Invoice:
-    """Extract structured invoice data from a PDF."""
-    # Convert first page to image
-    images = convert_from_path(pdf_path, first_page=1, last_page=1)
-
-    # Save to temp file
-    with tempfile.NamedTemporaryFile(suffix='.jpg', delete=False) as temp:
-        temp_path = temp.name
-        images[0].save(temp_path, 'JPEG')
-
-    # Create image object
-    image = instructor.Image.from_path(temp_path)
-
-    # Extract invoice data
-    return client.chat.completions.create(
-        model="gpt-4-vision-preview",
-        response_model=Invoice,
-        messages=[
-            {
-                "role": "system",
-                "content": "You are an invoice processing assistant that extracts structured data from invoice images."
-            },
-            {
-                "role": "user",
-                "content": [
-                    "Extract complete invoice details from this document:",
-                    image
-                ]
-            }
-        ]
-    )
-```
-
-```shell
-$ pip install instructor pydantic
-$ python pdf-extraction.py
-```
-
-For more information, see the original documentation:
-- https://github.com/jxnl/instructor
-
 ## Performance and Optimization
 
 Optimizing performance for production use
@@ -4077,4 +4095,6 @@ For more information, see the original documentation:
 - https://github.com/instructor-ai/instructor/blob/main/CONTRIBUTING.md
 - https://github.com/instructor-ai/instructor/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22
 - https://docs.pydantic.dev/
+
+### Untitled Example
 

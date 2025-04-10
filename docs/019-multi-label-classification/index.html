@@ -45,8 +45,8 @@
     "url": "https://structuredoutputsbyexample.com"
   },
   "mainEntityOfPage": "https://structuredoutputsbyexample.com/019-multi-label-classification/",
-  "datePublished": "2025-04-10T18:30:48+00:00",
-  "dateModified": "2025-04-10T18:30:48+00:00",
+  "datePublished": "2025-04-10T18:37:05+00:00",
+  "dateModified": "2025-04-10T18:37:05+00:00",
   "articleSection": "Classification and Analysis",
   "keywords": [
     "structured data",
@@ -422,14 +422,8 @@ def classify_hierarchical(text: str) -&gt; HierarchicalClassification:
 result = classify_text(&quot;Researchers have developed a new AI algorithm that can detect early signs of Alzheimer&#x27;s disease from brain scans with 94% accuracy. The deep learning software could help doctors diagnose patients years earlier than current methods.&quot;)
 </div>
                 </div>            </div>
-            <p style="margin: 20px 0 40px 0; color: #444; line-height: 1.6; font-size: 1.1em;">
-                This example demonstrates various approaches to multi-label classification using Instructor:
-1. Basic multi-label classification with string labels
-2. Using Enums for predefined categories
-3. Classification with confidence scores
-4. Hierarchical classification with main and subcategories
-
-Each approach shows how to structure your Pydantic models for different classification needs.
+            <p style="margin: 20px 0 40px 0; color: #444; line-height: 1.6; font-size: 1.1em; white-space: pre-line;">
+                This example demonstrates various approaches to multi-label classification using Instructor:<br>1. Basic multi-label classification with string labels<br>2. Using Enums for predefined categories<br>3. Classification with confidence scores<br>4. Hierarchical classification with main and subcategories<br><br>Each approach shows how to structure your Pydantic models for different classification needs.
             </p>
             <div class="row">
                 <div class="docs">
@@ -644,9 +638,7 @@ class HierarchicalClassification(BaseModel):
             <hr>
             <div class="row">
                 <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Test the multi-label classification
-Output:
-Labels: technology, science, health</div>
+                    <div style='font-size: 0.9em; color: #666;'>Test the multi-label classification<br>Output:<br>Labels: technology, science, health</div>
 
                 </div>
                 <div class="code">

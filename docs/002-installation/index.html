@@ -42,8 +42,8 @@
     "url": "https://structuredoutputsbyexample.com"
   },
   "mainEntityOfPage": "https://structuredoutputsbyexample.com/002-installation/",
-  "datePublished": "2025-04-10T18:30:48+00:00",
-  "dateModified": "2025-04-10T18:30:48+00:00",
+  "datePublished": "2025-04-10T18:37:05+00:00",
+  "dateModified": "2025-04-10T18:37:05+00:00",
   "articleSection": "Getting Started",
   "keywords": [
     "structured data",
@@ -281,6 +281,106 @@
                         <a href="../" style="text-decoration: none; color: #666;">Getting Started</a>
                     </div>
                     <h1 style="margin: 0; margin-bottom: 10px;">Installing Instructor</h1>
+                </div>
+            </div>
+            <hr>
+            <h2>Running the Example</h2>
+            <div class="row">
+                <div class="docs" style='font-size: 0.9em; color: #666;'>
+                    Install the base package
+                </div>
+                <div class="code">
+                    <div class="buttons">
+                        <svg class="copy" title="Copy command" onclick="copyCode(this)" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16 1H4C2.9 1 2 1.9 2 3V17H4V3H16V1ZM19 5H8C6.9 5 6 5.9 6 7V21C6 22.1 6.9 23 8 23H19C20.1 23 21 22.1 21 21V7C21 5.9 20.1 5 19 5ZM19 21H8V7H19V21Z" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <pre><code class="language-shell"><span><span class="command-prompt">$ </span><span class="command-text">pip install instructor</span></span>
+</code></pre>
+                </div>
+            </div>
+            <div class="row">
+                <div class="docs" style='font-size: 0.9em; color: #666;'>
+                    OpenAI (included by default)
+                </div>
+                <div class="code">
+                    <div class="buttons">
+                        <svg class="copy" title="Copy command" onclick="copyCode(this)" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16 1H4C2.9 1 2 1.9 2 3V17H4V3H16V1ZM19 5H8C6.9 5 6 5.9 6 7V21C6 22.1 6.9 23 8 23H19C20.1 23 21 22.1 21 21V7C21 5.9 20.1 5 19 5ZM19 21H8V7H19V21Z" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <pre><code class="language-shell"><span><span class="command-prompt">$ </span><span class="command-text">pip install instructor</span></span>
+$ export OPENAI_API_KEY=your_openai_key</code></pre>
+                </div>
+            </div>
+            <div class="row">
+                <div class="docs" style='font-size: 0.9em; color: #666;'>
+                    Anthropic
+                </div>
+                <div class="code">
+                    <div class="buttons">
+                        <svg class="copy" title="Copy command" onclick="copyCode(this)" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16 1H4C2.9 1 2 1.9 2 3V17H4V3H16V1ZM19 5H8C6.9 5 6 5.9 6 7V21C6 22.1 6.9 23 8 23H19C20.1 23 21 22.1 21 21V7C21 5.9 20.1 5 19 5ZM19 21H8V7H19V21Z" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <pre><code class="language-shell"><span><span class="command-prompt">$ </span><span class="command-text">pip install &quot;instructor[anthropic]&quot;</span></span>
+$ export ANTHROPIC_API_KEY=your_anthropic_key</code></pre>
+                </div>
+            </div>
+            <div class="row">
+                <div class="docs" style='font-size: 0.9em; color: #666;'>
+                    Google/Gemini
+                </div>
+                <div class="code">
+                    <div class="buttons">
+                        <svg class="copy" title="Copy command" onclick="copyCode(this)" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16 1H4C2.9 1 2 1.9 2 3V17H4V3H16V1ZM19 5H8C6.9 5 6 5.9 6 7V21C6 22.1 6.9 23 8 23H19C20.1 23 21 22.1 21 21V7C21 5.9 20.1 5 19 5ZM19 21H8V7H19V21Z" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <pre><code class="language-shell"><span><span class="command-prompt">$ </span><span class="command-text">pip install &quot;instructor[google-generativeai]&quot;</span></span>
+export GOOGLE_API_KEY=your_google_key</code></pre>
+                </div>
+            </div>
+            <div class="row">
+                <div class="docs" style='font-size: 0.9em; color: #666;'>
+                    Cohere
+                </div>
+                <div class="code">
+                    <div class="buttons">
+                        <svg class="copy" title="Copy command" onclick="copyCode(this)" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16 1H4C2.9 1 2 1.9 2 3V17H4V3H16V1ZM19 5H8C6.9 5 6 5.9 6 7V21C6 22.1 6.9 23 8 23H19C20.1 23 21 22.1 21 21V7C21 5.9 20.1 5 19 5ZM19 21H8V7H19V21Z" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <pre><code class="language-shell"><span><span class="command-prompt">$ </span><span class="command-text">pip install &quot;instructor[cohere]&quot;</span></span>
+$ export COHERE_API_KEY=your_cohere_key</code></pre>
+                </div>
+            </div>
+            <div class="row">
+                <div class="docs" style='font-size: 0.9em; color: #666;'>
+                    Mistral
+                </div>
+                <div class="code">
+                    <div class="buttons">
+                        <svg class="copy" title="Copy command" onclick="copyCode(this)" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16 1H4C2.9 1 2 1.9 2 3V17H4V3H16V1ZM19 5H8C6.9 5 6 5.9 6 7V21C6 22.1 6.9 23 8 23H19C20.1 23 21 22.1 21 21V7C21 5.9 20.1 5 19 5ZM19 21H8V7H19V21Z" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <pre><code class="language-shell"><span><span class="command-prompt">$ </span><span class="command-text">pip install &quot;instructor[mistralai]&quot;</span></span>
+$ export MISTRAL_API_KEY=your_mistral_key</code></pre>
+                </div>
+            </div>
+            <div class="row">
+                <div class="docs" style='font-size: 0.9em; color: #666;'>
+                    Multiple providers via LiteLLM
+                </div>
+                <div class="code">
+                    <div class="buttons">
+                        <svg class="copy" title="Copy command" onclick="copyCode(this)" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16 1H4C2.9 1 2 1.9 2 3V17H4V3H16V1ZM19 5H8C6.9 5 6 5.9 6 7V21C6 22.1 6.9 23 8 23H19C20.1 23 21 22.1 21 21V7C21 5.9 20.1 5 19 5ZM19 21H8V7H19V21Z" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <pre><code class="language-shell"><span><span class="command-prompt">$ </span><span class="command-text">pip install &quot;instructor[litellm]&quot;</span></span>
+</code></pre>
                 </div>
             </div>
             <hr>

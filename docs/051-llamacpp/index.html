@@ -5,24 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <!-- Primary Meta Tags -->
-    <title>Client Setup - Structured Outputs by Example</title>
+    <title>Untitled Example - Structured Outputs by Example</title>
     <meta name="description" content="Learn to work with structured outputs through annotated examples">
     <meta name="author" content="Jason Liu">
     <meta name="keywords" content="structured outputs, LLM, Instructor, Pydantic, data extraction, structured data">
     
     <!-- Canonical URL -->
-    <link rel="canonical" href="https://structuredoutputsbyexample.com/005-client-setup/">
+    <link rel="canonical" href="https://structuredoutputsbyexample.com/051-llamacpp/">
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="article">
-    <meta property="og:url" content="https://structuredoutputsbyexample.com/005-client-setup/">
-    <meta property="og:title" content="Client Setup - Structured Outputs by Example">
+    <meta property="og:url" content="https://structuredoutputsbyexample.com/051-llamacpp/">
+    <meta property="og:title" content="Untitled Example - Structured Outputs by Example">
     <meta property="og:description" content="Learn to work with structured outputs through annotated examples">
     
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://structuredoutputsbyexample.com/005-client-setup/">
-    <meta property="twitter:title" content="Client Setup - Structured Outputs by Example">
+    <meta property="twitter:url" content="https://structuredoutputsbyexample.com/051-llamacpp/">
+    <meta property="twitter:title" content="Untitled Example - Structured Outputs by Example">
     <meta property="twitter:description" content="Learn to work with structured outputs through annotated examples">
 
     <!-- Structured Data / JSON-LD -->
@@ -30,7 +30,7 @@
     {
   "@context": "https://schema.org",
   "@type": "TechArticle",
-  "headline": "Client Setup",
+  "headline": "Untitled Example",
   "description": "Learn to work with structured outputs through annotated examples",
   "author": {
     "@type": "Person",
@@ -41,16 +41,16 @@
     "name": "Structured Outputs by Example",
     "url": "https://structuredoutputsbyexample.com"
   },
-  "mainEntityOfPage": "https://structuredoutputsbyexample.com/005-client-setup/",
+  "mainEntityOfPage": "https://structuredoutputsbyexample.com/051-llamacpp/",
   "datePublished": "2025-04-10T18:37:05+00:00",
   "dateModified": "2025-04-10T18:37:05+00:00",
-  "articleSection": "Getting Started",
+  "articleSection": "Miscellaneous Examples",
   "keywords": [
     "structured data",
     "LLM",
     "Instructor",
     "Pydantic",
-    "client setup"
+    "llamacpp"
   ]
 }
     </script>
@@ -278,259 +278,14 @@
             <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
                 <div>
                     <div style="margin-bottom: 10px; color: #666; font-size: 0.9em;">
-                        <a href="../" style="text-decoration: none; color: #666;">Getting Started</a>
+                        <a href="../" style="text-decoration: none; color: #666;">Miscellaneous Examples</a>
                     </div>
-                    <h1 style="margin: 0; margin-bottom: 10px;">Client Setup</h1>
-                </div>
-                <div style="position: relative; margin-top: 10px; display: flex; gap: 8px;">
-                    <button id="copy-all-python" style="background-color: #f1f8ff; border: 1px solid #c8e1ff; border-radius: 6px; padding: 6px 12px; font-size: 14px; color: #0066CC; cursor: pointer; display: flex; align-items: center; gap: 6px;">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M16 1H4C2.9 1 2 1.9 2 3V17H4V3H16V1ZM19 5H8C6.9 5 6 5.9 6 7V21C6 22.1 6.9 23 8 23H19C20.1 23 21 22.1 21 21V7C21 5.9 20.1 5 19 5ZM19 21H8V7H19V21Z" fill="currentColor"/>
-                        </svg>
-                        Copy All Python
-                    </button>
-                    <a href="https://github.com/jxnl/structuredoutputsbyexample/edit/main/examples/005-client-setup/client-setup.py" target="_blank" style="background-color: #f6f1ff; border: 1px solid #d8c9f7; border-radius: 6px; padding: 6px 12px; font-size: 14px; color: #6f42c1; text-decoration: none; cursor: pointer; display: flex; align-items: center; gap: 6px;">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="currentColor"/>
-                        </svg>
-                        Edit
-                    </a>
-                    <div id="all-python-code" style="display: none;">import instructor
-from openai import OpenAI
-client = instructor.from_openai(OpenAI())
-client = instructor.from_openai(
-    OpenAI(),
-    mode=instructor.Mode.JSON  # Use JSON mode instead
-)
-
-import instructor
-from anthropic import Anthropic
-client = instructor.from_anthropic(Anthropic())
-client = instructor.from_anthropic(
-    Anthropic(),
-    mode=instructor.Mode.JSON
-)
-
-import instructor
-import google.generativeai as genai
-genai.configure(api_key=&quot;YOUR_API_KEY&quot;)
-model = genai.GenerativeModel(&quot;gemini-1.5-flash&quot;)
-client = instructor.from_gemini(
-    model,
-    mode=instructor.Mode.GEMINI_TOOLS  # or GEMINI_JSON
-)
-
-import instructor
-import cohere
-cohere_client = cohere.Client(&quot;YOUR_API_KEY&quot;)
-client = instructor.from_cohere(cohere_client)
-
-import instructor
-from mistralai.client import MistralClient
-
-mistral_client = MistralClient(api_key=&quot;YOUR_API_KEY&quot;)
-client = instructor.from_mistral(mistral_client)
-from instructor import Mode
-Mode.TOOLS         # OpenAI function calling format (default for OpenAI)
-Mode.JSON          # Plain JSON generation
-Mode.MD_JSON       # Markdown JSON (used by some providers)
-Mode.ANTHROPIC_TOOLS # Claude tools mode (default for Anthropic)
-Mode.GEMINI_TOOLS  # Gemini tools format
-Mode.GEMINI_JSON   # Gemini JSON format
-</div>
-                </div>            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Set up Instructor with different LLM providers. Each provider requires slightly different setup.</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">import instructor
-from openai import OpenAI</code></pre>
+                    <h1 style="margin: 0; margin-bottom: 10px;">Untitled Example</h1>
                 </div>
             </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Default mode for OpenAI is TOOLS (function calling)</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">client = instructor.from_openai(OpenAI())</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>You can also specify a different mode</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">client = instructor.from_openai(
-    OpenAI(),
-    mode=instructor.Mode.JSON  # Use JSON mode instead
-)
-
-import instructor
-from anthropic import Anthropic</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Default mode is TOOLS for Claude 3</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">client = instructor.from_anthropic(Anthropic())</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Use JSON mode if needed</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">client = instructor.from_anthropic(
-    Anthropic(),
-    mode=instructor.Mode.JSON
-)
-
-import instructor
-import google.generativeai as genai</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Configure Gemini</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">genai.configure(api_key=&quot;YOUR_API_KEY&quot;)
-model = genai.GenerativeModel(&quot;gemini-1.5-flash&quot;)</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Gemini needs a specific mode</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">client = instructor.from_gemini(
-    model,
-    mode=instructor.Mode.GEMINI_TOOLS  # or GEMINI_JSON
-)
-
-import instructor
-import cohere</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Create Cohere client</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">cohere_client = cohere.Client(&quot;YOUR_API_KEY&quot;)</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Patch with instructor</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">client = instructor.from_cohere(cohere_client)
-
-import instructor
-from mistralai.client import MistralClient
-
-mistral_client = MistralClient(api_key=&quot;YOUR_API_KEY&quot;)</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Patch with instructor</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">client = instructor.from_mistral(mistral_client)</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Instructor supports different modes for different providers:</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">from instructor import Mode</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Available modes</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">Mode.TOOLS         # OpenAI function calling format (default for OpenAI)
-Mode.JSON          # Plain JSON generation
-Mode.MD_JSON       # Markdown JSON (used by some providers)
-Mode.ANTHROPIC_TOOLS # Claude tools mode (default for Anthropic)
-Mode.GEMINI_TOOLS  # Gemini tools format
-Mode.GEMINI_JSON   # Gemini JSON format</code></pre>
-                </div>
-            </div>
-            <hr>
-            <h2>Running the Example</h2>
-            <div class="row">
-                <div class="docs" style='font-size: 0.9em; color: #666;'>
-                    First, install Instructor and any dependencies
-                </div>
-                <div class="code">
-                    <div class="buttons">
-                        <svg class="copy" title="Copy command" onclick="copyCode(this)" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M16 1H4C2.9 1 2 1.9 2 3V17H4V3H16V1ZM19 5H8C6.9 5 6 5.9 6 7V21C6 22.1 6.9 23 8 23H19C20.1 23 21 22.1 21 21V7C21 5.9 20.1 5 19 5ZM19 21H8V7H19V21Z" fill="currentColor"/>
-                        </svg>
-                    </div>
-                    <pre><code class="language-shell"><span><span class="command-prompt">$ </span><span class="command-text">pip install instructor pydantic</span></span>
-</code></pre>
-                </div>
-            </div>
-            <div class="row">
-                <div class="docs" style='font-size: 0.9em; color: #666;'>
-                    Run the Python script
-                </div>
-                <div class="code">
-                    <div class="buttons">
-                        <svg class="copy" title="Copy command" onclick="copyCode(this)" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M16 1H4C2.9 1 2 1.9 2 3V17H4V3H16V1ZM19 5H8C6.9 5 6 5.9 6 7V21C6 22.1 6.9 23 8 23H19C20.1 23 21 22.1 21 21V7C21 5.9 20.1 5 19 5ZM19 21H8V7H19V21Z" fill="currentColor"/>
-                        </svg>
-                    </div>
-                    <pre><code class="language-shell"><span><span class="command-prompt">$ </span><span class="command-text">python client-setup.py</span></span>
-</code></pre>
-                </div>
-            </div>
-            <hr>
-            <h4>Further Information</h4>
-            <ul style="font-size: 0.9em;">
-                <li><a href="https://github.com/jxnl/instructor"
-                         target="_blank">Documentation link 1</a></li>
-            </ul>
             <div class="navigation">
                 <p class="prev">
-                    <span>← Previous:</span> <a href="../004-response-models/">Understanding Response Models</a>
-                </p>
-                <p class="next">
-                    <span>Next:</span> <a href="../006-openai/">OpenAI Integration</a> →
+                    <span>← Previous:</span> <a href="../050-resources/">Resources</a>
                 </p>
             </div>
         </main>

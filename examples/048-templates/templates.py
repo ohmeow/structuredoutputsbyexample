@@ -1,4 +1,4 @@
-# Effective Prompt Templating with Jinja and Pydantic
+# Prompt Templates 
 # Learn to dynamically create prompts using Jinja templating and validate them with Pydantic
 
 # Import the necessary libraries
@@ -91,15 +91,10 @@ advanced_response = client.chat.completions.create(
 )
 
 # Print the advanced example results
-# Output:
-# Answer: The capital of France is Paris and the capital of Japan is Tokyo.
-# Citations:
-#   Source 1: Paris is the capital city of France.
-#   Source 2: France is located in Western Europe.
-#   Source 3: Tokyo is the capital city of Japan.
-#   Source 4: Japan is an island country in East Asia.
-print(f"Answer: {advanced_response.answer}")
-print("Citations:")
 for citation in advanced_response.citations:
     print(f"  Source {citation.source_id}: {citation.text}")
+    # Source 1: Paris is the capital city of France.
+    # Source 2: France is located in Western Europe.
+    # Source 3: Tokyo is the capital city of Japan.
+    # Source 4: Japan is an island country in East Asia.
 

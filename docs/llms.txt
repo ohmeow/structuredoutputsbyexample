@@ -8,7 +8,9 @@ Note: A more comprehensive version of this file / documentation is available at 
 
 ## Getting Started
 
-- Getting Started with Structured Outputs: Learn the basics of structured LLM outputs with Instructor.
+- Getting Started with Structured Outputs: Learn the basics of structured LLM outputs with Instructor. This guide demonstrates how to extract consistent, validated data from language models.
+  Large language models are powerful, but extracting structured data can be challenging.
+  Structured outputs solve this by having LLMs return data in consistent, machine-readable formats.
 - Installing Instructor
 - Your First Extraction
 - Understanding Response Models
@@ -25,17 +27,31 @@ Note: A more comprehensive version of this file / documentation is available at 
 
 ## Basic Extraction Patterns
 
-- Simple Object Extraction: Here we extract basic objects from text with Instructor.
-- List Extraction: You are also able to extract lists of objects from text with Instructor..
-- Simple Nested Structure: This example shows how to work with nested objects in Instructor..
-- Field Validation
-- Optional Fields: This example demonstrates how to handle optional or missing data in structured extractions: 1.
-- Effective Prompt Templating with Jinja and Pydantic: Learn to dynamically create prompts using Jinja templating and validate them with Pydantic.
+- Simple Object Extraction: Here we extract basic objects from text with Instructor- List Extraction: You are also able to extract lists of objects from text with Instructor.- Simple Nested Structure: This example shows how to work with nested objects in Instructor.- Field Validation
+- Optional Fields: This example demonstrates how to handle optional or missing data in structured extractions:
+  1. Using Optional type annotations for fields that might not be present in the source text
+  2. Using Instructor's Maybe type to explicitly track whether information was present
+  
+  Optional fields allow your models to gracefully handle incomplete information without
+  causing extraction failures when certain data isn't mentioned in the text.
+- Prompt Templates: Learn to dynamically create prompts using Jinja templating and validate them with Pydantic
+## Multimodal Inputs
+
+- Vision
+- Image Extraction
+- Table Extraction
+- Audio Extraction
+- PDF Extraction
 
 ## Classification and Analysis
 
-- Simple Classification: Perform single-label classification with Instructor and structured outputs..
-- Multi-label Classification: This example demonstrates various approaches to multi-label classification using Instructor: 1.
+- Simple Classification: Perform single-label classification with Instructor and structured outputs.- Multi-label Classification: This example demonstrates various approaches to multi-label classification using Instructor:
+  1. Basic multi-label classification with string labels
+  2. Using Enums for predefined categories
+  3. Classification with confidence scores
+  4. Hierarchical classification with main and subcategories
+  
+  Each approach shows how to structure your Pydantic models for different classification needs.
 
 ## Streaming
 
@@ -58,26 +74,26 @@ Note: A more comprehensive version of this file / documentation is available at 
 - Fallback Strategies
 - Field-level Validation
 
-## Multimodal Inputs
-
-- Vision
-- Image Extraction
-- Table Extraction
-- Audio Extraction
-- PDF Extraction
-
 ## Performance and Optimization
 
 - Caching Responses
 - Parallel Extraction: Process multiple extractions in parallel with Instructor for improved efficiency.
+  
+  Problem:
+  Traditional extraction methods process one piece of information at a time, causing increased latency
+  and inefficient use of context window when dealing with multiple related extractions.
+  
+  Solution:
+  Instructor's parallel mode enables simultaneous extraction of multiple structured objects,
+  improving response time and making better use of the model's capabilities.
 - Batch Processing
 - Hooks and Callbacks
 - Type Adapters
 
 ## Miscellaneous Examples
 
-- Working with Enums: Use enumerated types with Instructor for consistent, validated extractions.
-- Resources
+- Working with Enums: Use enumerated types with Instructor for consistent, validated extractions. Enums help enforce a fixed set of allowed values.- Resources
+- Untitled Example
 
 ## Resources
 
