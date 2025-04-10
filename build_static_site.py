@@ -410,6 +410,18 @@ def generate_html_head(
             .docs, .code {
                 width: 100%;
             }
+            .newsletter-banner {
+                flex-direction: column;
+                gap: 10px;
+                align-items: stretch !important;
+            }
+            .newsletter-banner > span {
+                text-align: center;
+                margin-bottom: 5px;
+            }
+            .newsletter-banner > div {
+                width: 100% !important;
+            }
         }
     </style>
 """
@@ -425,6 +437,14 @@ def generate_html_head(
                 Star on GitHub
             </a>
         </header>
+        
+        <div class="newsletter-banner" style="background-color: #f1f8ff; border-radius: 5px; padding: 10px 15px; margin-bottom: 15px; display: flex; align-items: center; justify-content: space-between; font-size: 0.9em;">
+            <span>Stay updated when new content is added and get tips from the Instructor team</span>
+            <div style="width: 40%;">
+                <iframe src="https://embeds.beehiiv.com/2faf420d-8480-4b6e-8d6f-9c5a105f917a?slim=true" data-test-id="beehiiv-embed" height="52" width="100%" frameborder="0" scrolling="no" style="margin: 0; border-radius: 0px !important; background-color: transparent;"></iframe>
+            </div>
+        </div>
+        
         <main>
 """
     return head
