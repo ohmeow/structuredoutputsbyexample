@@ -3,8 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Primary Meta Tags -->
     <title>Parallel Extraction - Structured Outputs by Example</title>
-    <meta name="description" content="Learn to work with structured outputs through annotated examples">
+    <meta name="description" content="Process multiple extractions in parallel with Instructor for improved efficiency.
+
+Problem:
+Traditional extraction methods process one piece of information at a time, causing increased latency
+and inefficient use of context window when dealing with multiple related extractions.
+
+Solution:
+Instructor&#x27;s parallel mode enables simultaneous extraction of multiple structured objects,
+improving response time and making better use of the model&#x27;s capabilities..">
+    <meta name="author" content="Jason Liu">
+    <meta name="keywords" content="structured outputs, LLM, Instructor, Pydantic, data extraction, structured data">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://structuredoutputsbyexample.com/044-parallel-extraction/">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://structuredoutputsbyexample.com/044-parallel-extraction/">
+    <meta property="og:title" content="Parallel Extraction - Structured Outputs by Example">
+    <meta property="og:description" content="Process multiple extractions in parallel with Instructor for improved efficiency.
+
+Problem:
+Traditional extraction methods process one piece of information at a time, causing increased latency
+and inefficient use of context window when dealing with multiple related extractions.
+
+Solution:
+Instructor&#x27;s parallel mode enables simultaneous extraction of multiple structured objects,
+improving response time and making better use of the model&#x27;s capabilities..">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://structuredoutputsbyexample.com/044-parallel-extraction/">
+    <meta property="twitter:title" content="Parallel Extraction - Structured Outputs by Example">
+    <meta property="twitter:description" content="Process multiple extractions in parallel with Instructor for improved efficiency.
+
+Problem:
+Traditional extraction methods process one piece of information at a time, causing increased latency
+and inefficient use of context window when dealing with multiple related extractions.
+
+Solution:
+Instructor&#x27;s parallel mode enables simultaneous extraction of multiple structured objects,
+improving response time and making better use of the model&#x27;s capabilities..">
+
+    <!-- Structured Data / JSON-LD -->
+    <script type="application/ld+json">
+    {
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "Parallel Extraction",
+  "description": "Process multiple extractions in parallel with Instructor for improved efficiency.\n\nProblem:\nTraditional extraction methods process one piece of information at a time, causing increased latency\nand inefficient use of context window when dealing with multiple related extractions.\n\nSolution:\nInstructor's parallel mode enables simultaneous extraction of multiple structured objects,\nimproving response time and making better use of the model's capabilities..",
+  "author": {
+    "@type": "Person",
+    "name": "Jason Liu"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Structured Outputs by Example",
+    "url": "https://structuredoutputsbyexample.com"
+  },
+  "mainEntityOfPage": "https://structuredoutputsbyexample.com/044-parallel-extraction/",
+  "datePublished": "2025-04-10T02:14:01+00:00",
+  "dateModified": "2025-04-10T02:14:01+00:00",
+  "articleSection": "Performance and Optimization",
+  "keywords": [
+    "structured data",
+    "LLM",
+    "Instructor",
+    "Pydantic",
+    "parallel extraction"
+  ]
+}
+    </script>
+
+    <!-- Stylesheets -->
     <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css'>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js'></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/firacode@6.2.0/distr/fira_code.css">
@@ -220,8 +295,8 @@
                     </a>
                     <div id="all-python-code" style="display: none;">import instructor
 from openai import OpenAI
-from typing import Iterable, Literal, Union
-from pydantic import BaseModel
+from typing import Iterable, Literal, Union, List
+from pydantic import BaseModel, Field
 client = instructor.from_openai(OpenAI(), mode=instructor.Mode.PARALLEL_TOOLS)
 class Weather(BaseModel):
     location: str
@@ -230,6 +305,12 @@ class Weather(BaseModel):
 class SearchQuery(BaseModel):
     query: str
 def extract_parallel_info(user_query: str) -&gt; list[Union[Weather, SearchQuery]]:
+    &quot;&quot;&quot;
+    Extract both weather requests and search queries from a single user input.
+    
+    This allows the model to process multiple intents in one go, such as checking
+    weather for multiple locations while also performing searches.
+    &quot;&quot;&quot;
     function_calls = client.chat.completions.create(
         model=&quot;gpt-4o-mini&quot;,
         messages=[
@@ -243,20 +324,16 @@ def extract_parallel_info(user_query: str) -&gt; list[Union[Weather, SearchQuery
     )
 
     return list(function_calls)  # Convert the iterable to a list
-results = extract_parallel_info(
-    &quot;What&#x27;s the weather in New York and Tokyo? Also, find information about renewable energy.&quot;
-)
+def demonstrate_basic_parallel():
+    results = extract_parallel_info(
+        &quot;What&#x27;s the weather in New York and Tokyo? Also, find information about renewable energy.&quot;
+    )
 
-for result in results:
-    if isinstance(result, Weather):
-        print(f&quot;Weather request for {result.location} in {result.units} units&quot;)
-    elif isinstance(result, SearchQuery):
-        print(f&quot;Search query: {result.query}&quot;)
-from typing import Iterable, Union
-from pydantic import BaseModel, Field
-import instructor
-from openai import OpenAI
-client = instructor.from_openai(OpenAI(), mode=instructor.Mode.PARALLEL_TOOLS)
+    for result in results:
+        if isinstance(result, Weather):
+            print(f&quot;Weather request for {result.location} in {result.units} units&quot;)
+        elif isinstance(result, SearchQuery):
+            print(f&quot;Search query: {result.query}&quot;)
 class Person(BaseModel):
     name: str
     age: int
@@ -271,7 +348,13 @@ class Location(BaseModel):
     city: str
     country: str
     population: int = Field(description=&quot;Approximate population&quot;)
-def extract_entities(text: str) -&gt; list[Union[Person, Company, Location]]:
+def extract_entities(text: str) -&gt; List[Union[Person, Company, Location]]:
+    &quot;&quot;&quot;
+    Extract multiple entity types from a text simultaneously.
+    
+    This function identifies and structures information about people,
+    companies, and locations from unstructured text in a single pass.
+    &quot;&quot;&quot;
     results = client.chat.completions.create(
         model=&quot;gpt-4-turbo&quot;,
         messages=[
@@ -282,35 +365,62 @@ def extract_entities(text: str) -&gt; list[Union[Person, Company, Location]]:
     )
 
     return list(results)
+
+def demonstrate_entity_extraction():
 text = &quot;&quot;&quot;
-John Smith is a 35-year-old software engineer living in San Francisco, USA,
-a city with about 815,000 people. He works at TechCorp, a software development
-company founded in 2005 that specializes in AI applications. His colleague
-Maria Rodriguez, 29, is a data scientist who recently moved from Madrid, Spain,
-a city of approximately 3.2 million people.
-&quot;&quot;&quot;
+    John Smith is a 35-year-old software engineer living in San Francisco, USA,
+    a city with about 815,000 people. He works at TechCorp, a software development
+    company founded in 2005 that specializes in AI applications. His colleague
+    Maria Rodriguez, 29, is a data scientist who recently moved from Madrid, Spain,
+    a city of approximately 3.2 million people.
+    &quot;&quot;&quot;
 
-entities = extract_entities(text)
+    entities = extract_entities(text)
 people = [e for e in entities if isinstance(e, Person)]
-companies = [e for e in entities if isinstance(e, Company)]
-locations = [e for e in entities if isinstance(e, Location)]
+    companies = [e for e in entities if isinstance(e, Company)]
+    locations = [e for e in entities if isinstance(e, Location)]
 
-print(f&quot;Found {len(people)} people, {len(companies)} companies, and {len(locations)} locations&quot;)
+    print(f&quot;Found {len(people)} people, {len(companies)} companies, and {len(locations)} locations&quot;)
+for person in people:
+        print(f&quot;Person: {person.name}, {person.age}, {person.occupation}&quot;)
+    
+    for company in companies:
+        print(f&quot;Company: {company.name}, {company.industry}, founded in {company.year_founded}&quot;)
+    
+    for location in locations:
+        print(f&quot;Location: {location.city}, {location.country}, pop. {location.population}&quot;)
+if __name__ == &quot;__main__&quot;:
+    print(&quot;\n--- Basic Parallel Extraction ---&quot;)
+    demonstrate_basic_parallel()
+    
+    print(&quot;\n--- Advanced Entity Extraction ---&quot;)
+    demonstrate_entity_extraction()
 </div>
                 </div>            </div>
-            <hr>
+            <p style="margin: 20px 0 40px 0; color: #444; line-height: 1.6; font-size: 1.1em;">
+                Process multiple extractions in parallel with Instructor for improved efficiency.
+
+Problem:
+Traditional extraction methods process one piece of information at a time, causing increased latency
+and inefficient use of context window when dealing with multiple related extractions.
+
+Solution:
+Instructor's parallel mode enables simultaneous extraction of multiple structured objects,
+improving response time and making better use of the model's capabilities.
+            </p>
             <div class="row">
                 <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Instructor supports parallel function calling, allowing you to extract multiple pieces of information simultaneously. This can significantly reduce latency in your applications.</div>
+                    <div style='font-size: 0.9em; color: #666;'>Import necessary libraries</div>
 
                 </div>
                 <div class="code">
                     <pre><code class="language-python">import instructor
 from openai import OpenAI
-from typing import Iterable, Literal, Union
-from pydantic import BaseModel</code></pre>
+from typing import Iterable, Literal, Union, List
+from pydantic import BaseModel, Field</code></pre>
                 </div>
             </div>
+            <hr>
             <hr>
             <div class="row">
                 <div class="docs">
@@ -344,6 +454,12 @@ class SearchQuery(BaseModel):
                 </div>
                 <div class="code">
                     <pre><code class="language-python">def extract_parallel_info(user_query: str) -&gt; list[Union[Weather, SearchQuery]]:
+    &quot;&quot;&quot;
+    Extract both weather requests and search queries from a single user input.
+    
+    This allows the model to process multiple intents in one go, such as checking
+    weather for multiple locations while also performing searches.
+    &quot;&quot;&quot;
     function_calls = client.chat.completions.create(
         model=&quot;gpt-4o-mini&quot;,
         messages=[
@@ -366,40 +482,19 @@ class SearchQuery(BaseModel):
 
                 </div>
                 <div class="code">
-                    <pre><code class="language-python">results = extract_parallel_info(
-    &quot;What&#x27;s the weather in New York and Tokyo? Also, find information about renewable energy.&quot;
-)
+                    <pre><code class="language-python">def demonstrate_basic_parallel():
+    results = extract_parallel_info(
+        &quot;What&#x27;s the weather in New York and Tokyo? Also, find information about renewable energy.&quot;
+    )
 
-for result in results:
-    if isinstance(result, Weather):
-        print(f&quot;Weather request for {result.location} in {result.units} units&quot;)
-    elif isinstance(result, SearchQuery):
-        print(f&quot;Search query: {result.query}&quot;)</code></pre>
+    for result in results:
+        if isinstance(result, Weather):
+            print(f&quot;Weather request for {result.location} in {result.units} units&quot;)
+        elif isinstance(result, SearchQuery):
+            print(f&quot;Search query: {result.query}&quot;)</code></pre>
                 </div>
             </div>
             <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>You can also define more complex parallel extractions:</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">from typing import Iterable, Union
-from pydantic import BaseModel, Field
-import instructor
-from openai import OpenAI</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Initialize client with parallel mode</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">client = instructor.from_openai(OpenAI(), mode=instructor.Mode.PARALLEL_TOOLS)</code></pre>
-                </div>
-            </div>
             <hr>
             <div class="row">
                 <div class="docs">
@@ -430,7 +525,13 @@ class Location(BaseModel):
 
                 </div>
                 <div class="code">
-                    <pre><code class="language-python">def extract_entities(text: str) -&gt; list[Union[Person, Company, Location]]:
+                    <pre><code class="language-python">def extract_entities(text: str) -&gt; List[Union[Person, Company, Location]]:
+    &quot;&quot;&quot;
+    Extract multiple entity types from a text simultaneously.
+    
+    This function identifies and structures information about people,
+    companies, and locations from unstructured text in a single pass.
+    &quot;&quot;&quot;
     results = client.chat.completions.create(
         model=&quot;gpt-4-turbo&quot;,
         messages=[
@@ -440,25 +541,27 @@ class Location(BaseModel):
         response_model=Iterable[Person | Company | Location]
     )
 
-    return list(results)</code></pre>
+    return list(results)
+
+def demonstrate_entity_extraction():</code></pre>
                 </div>
             </div>
             <hr>
             <div class="row">
                 <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Example usage</div>
+                    <div style='font-size: 0.9em; color: #666;'>Sample text containing multiple entity types</div>
 
                 </div>
                 <div class="code">
                     <pre><code class="language-python">text = &quot;&quot;&quot;
-John Smith is a 35-year-old software engineer living in San Francisco, USA,
-a city with about 815,000 people. He works at TechCorp, a software development
-company founded in 2005 that specializes in AI applications. His colleague
-Maria Rodriguez, 29, is a data scientist who recently moved from Madrid, Spain,
-a city of approximately 3.2 million people.
-&quot;&quot;&quot;
+    John Smith is a 35-year-old software engineer living in San Francisco, USA,
+    a city with about 815,000 people. He works at TechCorp, a software development
+    company founded in 2005 that specializes in AI applications. His colleague
+    Maria Rodriguez, 29, is a data scientist who recently moved from Madrid, Spain,
+    a city of approximately 3.2 million people.
+    &quot;&quot;&quot;
 
-entities = extract_entities(text)</code></pre>
+    entities = extract_entities(text)</code></pre>
                 </div>
             </div>
             <hr>
@@ -469,10 +572,44 @@ entities = extract_entities(text)</code></pre>
                 </div>
                 <div class="code">
                     <pre><code class="language-python">people = [e for e in entities if isinstance(e, Person)]
-companies = [e for e in entities if isinstance(e, Company)]
-locations = [e for e in entities if isinstance(e, Location)]
+    companies = [e for e in entities if isinstance(e, Company)]
+    locations = [e for e in entities if isinstance(e, Location)]
 
-print(f&quot;Found {len(people)} people, {len(companies)} companies, and {len(locations)} locations&quot;)</code></pre>
+    print(f&quot;Found {len(people)} people, {len(companies)} companies, and {len(locations)} locations&quot;)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Display extracted entities</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">for person in people:
+        print(f&quot;Person: {person.name}, {person.age}, {person.occupation}&quot;)
+    
+    for company in companies:
+        print(f&quot;Company: {company.name}, {company.industry}, founded in {company.year_founded}&quot;)
+    
+    for location in locations:
+        print(f&quot;Location: {location.city}, {location.country}, pop. {location.population}&quot;)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>------------------------------
+Main Execution
+------------------------------</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">if __name__ == &quot;__main__&quot;:
+    print(&quot;\n--- Basic Parallel Extraction ---&quot;)
+    demonstrate_basic_parallel()
+    
+    print(&quot;\n--- Advanced Entity Extraction ---&quot;)
+    demonstrate_entity_extraction()</code></pre>
                 </div>
             </div>
             <hr>

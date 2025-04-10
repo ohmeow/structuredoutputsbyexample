@@ -3,8 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Primary Meta Tags -->
     <title>Simple Object Extraction - Structured Outputs by Example</title>
-    <meta name="description" content="Learn to work with structured outputs through annotated examples">
+    <meta name="description" content="Here we extract basic objects from text with Instructor">
+    <meta name="author" content="Jason Liu">
+    <meta name="keywords" content="structured outputs, LLM, Instructor, Pydantic, data extraction, structured data">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://structuredoutputsbyexample.com/012-simple-object/">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://structuredoutputsbyexample.com/012-simple-object/">
+    <meta property="og:title" content="Simple Object Extraction - Structured Outputs by Example">
+    <meta property="og:description" content="Here we extract basic objects from text with Instructor">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://structuredoutputsbyexample.com/012-simple-object/">
+    <meta property="twitter:title" content="Simple Object Extraction - Structured Outputs by Example">
+    <meta property="twitter:description" content="Here we extract basic objects from text with Instructor">
+
+    <!-- Structured Data / JSON-LD -->
+    <script type="application/ld+json">
+    {
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "Simple Object Extraction",
+  "description": "Here we extract basic objects from text with Instructor",
+  "author": {
+    "@type": "Person",
+    "name": "Jason Liu"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Structured Outputs by Example",
+    "url": "https://structuredoutputsbyexample.com"
+  },
+  "mainEntityOfPage": "https://structuredoutputsbyexample.com/012-simple-object/",
+  "datePublished": "2025-04-10T02:14:01+00:00",
+  "dateModified": "2025-04-10T02:14:01+00:00",
+  "articleSection": "Basic Extraction Patterns",
+  "keywords": [
+    "structured data",
+    "LLM",
+    "Instructor",
+    "Pydantic",
+    "simple object"
+  ]
+}
+    </script>
+
+    <!-- Stylesheets -->
     <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css'>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js'></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/firacode@6.2.0/distr/fira_code.css">
@@ -218,15 +269,14 @@
                         </svg>
                         Edit
                     </a>
-                    <div id="all-python-code" style="display: none;">from pydantic import BaseModel
-
-class Person(BaseModel):
-    name: str
-    age: int
-    occupation: str
-
+                    <div id="all-python-code" style="display: none;">from pydantic import BaseModel, Field
 import instructor
 from openai import OpenAI
+class Person(BaseModel):
+    &quot;&quot;&quot;Extract person information from text.&quot;&quot;&quot;
+    name: str = Field(description=&quot;The person&#x27;s full name&quot;)
+    age: int = Field(description=&quot;The person&#x27;s age in years&quot;)
+    occupation: str = Field(description=&quot;The person&#x27;s current job title or role&quot;)
 client = instructor.from_openai(OpenAI())
 person = client.chat.completions.create(
     model=&quot;gpt-3.5-turbo&quot;,
@@ -235,84 +285,21 @@ person = client.chat.completions.create(
         {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;John Doe is a 30-year-old software engineer.&quot;}
     ]
 )
-
 print(f&quot;Name: {person.name}&quot;)
 print(f&quot;Age: {person.age}&quot;)
 print(f&quot;Occupation: {person.occupation}&quot;)
-extracted = client.chat.completions.create(
-    model=&quot;gpt-3.5-turbo&quot;,
-    response_model=Person,
-    messages=[
-        {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;&quot;&quot;
-        In our company blog post, we want to highlight one of our newest team members.
-        John Smith joined us last month. He&#x27;s 34 years old and works as a data scientist.
-        John previously worked at TechCorp for 5 years.
-        &quot;&quot;&quot;}
-    ]
-)
-
-print(f&quot;Name: {extracted.name}&quot;)
-print(f&quot;Age: {extracted.age}&quot;)
-print(f&quot;Occupation: {extracted.occupation}&quot;)
-from pydantic import BaseModel, Field
-
-class Person(BaseModel):
-    name: str = Field(description=&quot;The person&#x27;s full name&quot;)
-    age: int = Field(description=&quot;The person&#x27;s age in years&quot;)
-    occupation: str = Field(description=&quot;The person&#x27;s current job title or role&quot;)
-
-extracted = client.chat.completions.create(
-    model=&quot;gpt-3.5-turbo&quot;,
-    response_model=Person,
-    messages=[
-        {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;&quot;&quot;
-        Meet Sarah Johnson, one of our senior architects.
-        She&#x27;s been with the firm since she was 28, and now at 42,
-        she leads our sustainable design initiatives.
-        &quot;&quot;&quot;}
-    ]
-)
-
-print(f&quot;Name: {extracted.name}&quot;)
-print(f&quot;Age: {extracted.age}&quot;)
-print(f&quot;Occupation: {extracted.occupation}&quot;)
-class Employee(BaseModel):
-    &quot;&quot;&quot;Extract employee information from the provided text.&quot;&quot;&quot;
-
-    name: str
-    age: int
-    department: str
-    years_of_service: int
-
-extracted = client.chat.completions.create(
-    model=&quot;gpt-3.5-turbo&quot;,
-    response_model=Employee,
-    messages=[
-        {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;&quot;&quot;
-        Employee Profile: Michael Chen has been in our Marketing department for 7 years.
-        He&#x27;s 36 years old and has led multiple successful campaigns.
-        &quot;&quot;&quot;}
-    ]
-)
-
-print(f&quot;Name: {extracted.name}&quot;)
-print(f&quot;Department: {extracted.department}&quot;)
-print(f&quot;Years of Service: {extracted.years_of_service}&quot;)
 </div>
                 </div>            </div>
+            <p style="margin: 20px 0 40px 0; color: #444; line-height: 1.6; font-size: 1.1em;">
+                Here we extract basic objects from text with Instructor
+            </p>
             <div class="row">
                 <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Extract basic objects from text with Instructor.</div>
+                    <div style='font-size: 0.9em; color: #666;'>Import the necessary libraries</div>
 
                 </div>
                 <div class="code">
-                    <pre><code class="language-python">from pydantic import BaseModel
-
-class Person(BaseModel):
-    name: str
-    age: int
-    occupation: str
-
+                    <pre><code class="language-python">from pydantic import BaseModel, Field
 import instructor
 from openai import OpenAI</code></pre>
                 </div>
@@ -320,7 +307,21 @@ from openai import OpenAI</code></pre>
             <hr>
             <div class="row">
                 <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Patch the client</div>
+                    <div style='font-size: 0.9em; color: #666;'>Define the Person class with Pydantic</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">class Person(BaseModel):
+    &quot;&quot;&quot;Extract person information from text.&quot;&quot;&quot;
+    name: str = Field(description=&quot;The person&#x27;s full name&quot;)
+    age: int = Field(description=&quot;The person&#x27;s age in years&quot;)
+    occupation: str = Field(description=&quot;The person&#x27;s current job title or role&quot;)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Patch the OpenAI client with Instructor</div>
 
                 </div>
                 <div class="code">
@@ -330,7 +331,7 @@ from openai import OpenAI</code></pre>
             <hr>
             <div class="row">
                 <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Extract the data</div>
+                    <div style='font-size: 0.9em; color: #666;'>Extract the data from text</div>
 
                 </div>
                 <div class="code">
@@ -340,97 +341,23 @@ from openai import OpenAI</code></pre>
     messages=[
         {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;John Doe is a 30-year-old software engineer.&quot;}
     ]
-)
+)</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Print the extracted structured data
+Output:
+Name: John Doe
+Age: 30
+Occupation: software engineer</div>
 
-print(f&quot;Name: {person.name}&quot;)
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">print(f&quot;Name: {person.name}&quot;)
 print(f&quot;Age: {person.age}&quot;)
 print(f&quot;Occupation: {person.occupation}&quot;)</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Output:# Name: John Doe# Age: 30# Occupation: software engineer</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">extracted = client.chat.completions.create(
-    model=&quot;gpt-3.5-turbo&quot;,
-    response_model=Person,
-    messages=[
-        {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;&quot;&quot;
-        In our company blog post, we want to highlight one of our newest team members.
-        John Smith joined us last month. He&#x27;s 34 years old and works as a data scientist.
-        John previously worked at TechCorp for 5 years.
-        &quot;&quot;&quot;}
-    ]
-)
-
-print(f&quot;Name: {extracted.name}&quot;)
-print(f&quot;Age: {extracted.age}&quot;)
-print(f&quot;Occupation: {extracted.occupation}&quot;)</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Output:# Name: John Smith# Age: 34# Occupation: data scientist</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">from pydantic import BaseModel, Field
-
-class Person(BaseModel):
-    name: str = Field(description=&quot;The person&#x27;s full name&quot;)
-    age: int = Field(description=&quot;The person&#x27;s age in years&quot;)
-    occupation: str = Field(description=&quot;The person&#x27;s current job title or role&quot;)
-
-extracted = client.chat.completions.create(
-    model=&quot;gpt-3.5-turbo&quot;,
-    response_model=Person,
-    messages=[
-        {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;&quot;&quot;
-        Meet Sarah Johnson, one of our senior architects.
-        She&#x27;s been with the firm since she was 28, and now at 42,
-        she leads our sustainable design initiatives.
-        &quot;&quot;&quot;}
-    ]
-)
-
-print(f&quot;Name: {extracted.name}&quot;)
-print(f&quot;Age: {extracted.age}&quot;)
-print(f&quot;Occupation: {extracted.occupation}&quot;)</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Output:# Name: Sarah Johnson# Age: 42# Occupation: senior architect</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">class Employee(BaseModel):
-    &quot;&quot;&quot;Extract employee information from the provided text.&quot;&quot;&quot;
-
-    name: str
-    age: int
-    department: str
-    years_of_service: int
-
-extracted = client.chat.completions.create(
-    model=&quot;gpt-3.5-turbo&quot;,
-    response_model=Employee,
-    messages=[
-        {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;&quot;&quot;
-        Employee Profile: Michael Chen has been in our Marketing department for 7 years.
-        He&#x27;s 36 years old and has led multiple successful campaigns.
-        &quot;&quot;&quot;}
-    ]
-)
-
-print(f&quot;Name: {extracted.name}&quot;)
-print(f&quot;Department: {extracted.department}&quot;)
-print(f&quot;Years of Service: {extracted.years_of_service}&quot;)</code></pre>
                 </div>
             </div>
             <hr>

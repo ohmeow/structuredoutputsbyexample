@@ -3,8 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nested Structures - Structured Outputs by Example</title>
-    <meta name="description" content="Learn to work with structured outputs through annotated examples">
+    
+    <!-- Primary Meta Tags -->
+    <title>Simple Nested Structure - Structured Outputs by Example</title>
+    <meta name="description" content="This example shows how to work with nested objects">
+    <meta name="author" content="Jason Liu">
+    <meta name="keywords" content="structured outputs, LLM, Instructor, Pydantic, data extraction, structured data">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://structuredoutputsbyexample.com/014-nested-structures/">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://structuredoutputsbyexample.com/014-nested-structures/">
+    <meta property="og:title" content="Simple Nested Structure - Structured Outputs by Example">
+    <meta property="og:description" content="This example shows how to work with nested objects">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://structuredoutputsbyexample.com/014-nested-structures/">
+    <meta property="twitter:title" content="Simple Nested Structure - Structured Outputs by Example">
+    <meta property="twitter:description" content="This example shows how to work with nested objects">
+
+    <!-- Structured Data / JSON-LD -->
+    <script type="application/ld+json">
+    {
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "Simple Nested Structure",
+  "description": "This example shows how to work with nested objects",
+  "author": {
+    "@type": "Person",
+    "name": "Jason Liu"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Structured Outputs by Example",
+    "url": "https://structuredoutputsbyexample.com"
+  },
+  "mainEntityOfPage": "https://structuredoutputsbyexample.com/014-nested-structures/",
+  "datePublished": "2025-04-10T02:14:01+00:00",
+  "dateModified": "2025-04-10T02:14:01+00:00",
+  "articleSection": "Basic Extraction Patterns",
+  "keywords": [
+    "structured data",
+    "LLM",
+    "Instructor",
+    "Pydantic",
+    "nested structures"
+  ]
+}
+    </script>
+
+    <!-- Stylesheets -->
     <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css'>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js'></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/firacode@6.2.0/distr/fira_code.css">
@@ -203,7 +254,7 @@
                     <div style="margin-bottom: 10px; color: #666; font-size: 0.9em;">
                         <a href="../" style="text-decoration: none; color: #666;">Basic Extraction Patterns</a>
                     </div>
-                    <h1 style="margin: 0; margin-bottom: 10px;">Nested Structures</h1>
+                    <h1 style="margin: 0; margin-bottom: 10px;">Simple Nested Structure</h1>
                 </div>
                 <div style="position: relative; margin-top: 10px; display: flex; gap: 8px;">
                     <button id="copy-all-python" style="background-color: #f1f8ff; border: 1px solid #c8e1ff; border-radius: 6px; padding: 6px 12px; font-size: 14px; color: #0066CC; cursor: pointer; display: flex; align-items: center; gap: 6px;">
@@ -218,237 +269,60 @@
                         </svg>
                         Edit
                     </a>
-                    <div id="all-python-code" style="display: none;">from pydantic import BaseModel, Field
-from typing import List, Optional
-
+                    <div id="all-python-code" style="display: none;">import instructor
+from openai import OpenAI
+from pydantic import BaseModel
 class Address(BaseModel):
     street: str
     city: str
-    state: Optional[str] = None
-    zip_code: Optional[str] = None
-    country: str
-
-class PhoneNumber(BaseModel):
-    number: str
-    type: str  # e.g., &quot;home&quot;, &quot;work&quot;, &quot;mobile&quot;
+    zip_code: str
 
 class Person(BaseModel):
     name: str
     age: int
-    addresses: List[Address]
-    phone_numbers: List[PhoneNumber]
-    email: Optional[str] = None
-
-import instructor
-from openai import OpenAI
+    address: Address  # Nested object
 client = instructor.from_openai(OpenAI())
 person = client.chat.completions.create(
-    model=&quot;gpt-4&quot;,  # Complex extraction works better with more capable models
+    model=&quot;gpt-3.5-turbo&quot;,
     response_model=Person,
     messages=[
         {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;&quot;&quot;
-        John Smith is a 35-year-old professional. He has two addresses:
-        1. Home: 123 Main St, Austin, TX 78701, USA
-        2. Work: 456 Business Ave, Austin, TX 78702, USA
-
-        His phone numbers are:
-        - Mobile: (555) 123-4567
-        - Work: (555) 987-6543
-
-        You can reach him at john.smith@example.com
+        John Smith is 35 years old and lives at
+        123 Main Street, New York, 10001.
         &quot;&quot;&quot;}
     ]
 )
-
-print(f&quot;Name: {person.name}, Age: {person.age}&quot;)
-print(f&quot;Email: {person.email}&quot;)
-
-print(&quot;\nAddresses:&quot;)
-for i, address in enumerate(person.addresses, 1):
-    print(f&quot;  {i}. {address.street}, {address.city}, {address.state} {address.zip_code}, {address.country}&quot;)
-
-print(&quot;\nPhone Numbers:&quot;)
-for phone in person.phone_numbers:
-    print(f&quot;  {phone.type}: {phone.number}&quot;)
-
-from pydantic import BaseModel, Field
-from typing import List, Optional, Dict
-
-class Skill(BaseModel):
-    name: str
-    level: str  # e.g., &quot;beginner&quot;, &quot;intermediate&quot;, &quot;expert&quot;
-    years_of_experience: int
-
-class Education(BaseModel):
-    degree: str
-    institution: str
-    year: int
-
-class WorkExperience(BaseModel):
-    company: str
-    position: str
-    start_year: int
-    end_year: Optional[int] = None
-    is_current: bool
-    responsibilities: List[str]
-
-class Person(BaseModel):
-    name: str
-    age: int
-    skills: List[Skill]
-    education: List[Education]
-    work_experience: List[WorkExperience]
-    contact_info: Dict[str, str]  # e.g., &quot;email&quot;, &quot;phone&quot;, &quot;linkedin&quot;
-person = client.chat.completions.create(
-    model=&quot;gpt-4&quot;,
-    response_model=Person,
-    messages=[
-        {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;&quot;&quot;
-        Resume: Sarah Johnson
-
-        Sarah is a 42-year-old software architect with 15 years in the industry.
-
-        Contact Information:
-        - Email: sarah.j@example.com
-        - Phone: (555) 234-5678
-        - LinkedIn: linkedin.com/in/sarahjohnson
-
-        Skills:
-        - Python (Expert, 12 years)
-        - JavaScript (Intermediate, 8 years)
-        - Cloud Architecture (Expert, 7 years)
-
-        Education:
-        - Master&#x27;s in Computer Science, Stanford University, 2008
-        - Bachelor&#x27;s in Software Engineering, MIT, 2006
-
-        Work Experience:
-        - TechCorp Inc.
-          Senior Software Architect
-          2018-Present
-          Responsibilities:
-          * Lead architecture design for cloud solutions
-          * Manage team of 12 developers
-          * Implement CI/CD pipelines
-
-        - DataSystems LLC
-          Software Developer
-          2012-2018
-          Responsibilities:
-          * Developed backend services in Python
-          * Optimized database performance
-          * Created RESTful APIs
-        &quot;&quot;&quot;}
-    ]
-)
-
-print(f&quot;Name: {person.name}, Age: {person.age}&quot;)
-
-print(&quot;\nContact Info:&quot;)
-for key, value in person.contact_info.items():
-    print(f&quot;  {key}: {value}&quot;)
-
-print(&quot;\nSkills:&quot;)
-for skill in person.skills:
-    print(f&quot;  {skill.name}: {skill.level} ({skill.years_of_experience} years)&quot;)
-
-print(&quot;\nEducation:&quot;)
-for edu in person.education:
-    print(f&quot;  {edu.degree}, {edu.institution}, {edu.year}&quot;)
-
-print(&quot;\nWork Experience:&quot;)
-for job in person.work_experience:
-    current = &quot;(Current)&quot; if job.is_current else f&quot;({job.start_year}-{job.end_year})&quot;
-    print(f&quot;  {job.position} at {job.company} {current}&quot;)
-    print(&quot;  Responsibilities:&quot;)
-    for resp in job.responsibilities:
-        print(f&quot;    - {resp}&quot;)
-
-from pydantic import BaseModel, Field
-from typing import List, Optional
-
-class Comment(BaseModel):
-    text: str
-    author: str
-    replies: List[&#x27;Comment&#x27;] = []
-Comment.model_rebuild()
-
-class Post(BaseModel):
-    title: str
-    content: str
-    author: str
-    comments: List[Comment]
-post = client.chat.completions.create(
-    model=&quot;gpt-4&quot;,
-    response_model=Post,
-    messages=[
-        {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;&quot;&quot;
-        Blog Post: &quot;Python Tips and Tricks&quot;
-        By: JohnDev
-
-        Python has many features that make it a versatile language. Here are some tips to improve your code...
-
-        Comments:
-        1. Comment by Alice: &quot;Great post! I especially liked the section on list comprehensions.&quot;
-          - Reply by JohnDev: &quot;Thanks Alice! Glad you found it useful.&quot;
-            - Reply by Bob: &quot;List comprehensions are my favorite too!&quot;
-               - Reply by Alice: &quot;They&#x27;re so elegant compared to traditional loops.&quot;
-
-        2. Comment by Charlie: &quot;Could you do a follow-up on decorators?&quot;
-          - Reply by JohnDev: &quot;Great idea! I&#x27;ll add it to my list of topics.&quot;
-        &quot;&quot;&quot;}
-    ]
-)
-
-print(f&quot;Post: {post.title} by {post.author}&quot;)
-
-for i, comment in enumerate(post.comments, 1):
-    print(f&quot;\nTop-level Comment {i}: {comment.author} said: &#x27;{comment.text}&#x27;&quot;)
-
-    def print_replies(replies, indent=2):
-        for reply in replies:
-            print(f&quot;{&#x27;  &#x27; * indent}{reply.author} replied: &#x27;{reply.text}&#x27;&quot;)
-            if reply.replies:
-                print_replies(reply.replies, indent + 1)
-
-    print_replies(comment.replies)
+print(f&quot;Name: {person.name}&quot;)
+print(f&quot;Age: {person.age}&quot;)
+print(f&quot;Street: {person.address.street}&quot;)
+print(f&quot;City: {person.address.city}&quot;)
+print(f&quot;ZIP: {person.address.zip_code}&quot;)
 </div>
                 </div>            </div>
+            <p style="margin: 20px 0 40px 0; color: #444; line-height: 1.6; font-size: 1.1em;">
+                This example shows how to work with nested objects
+            </p>
             <div class="row">
                 <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Extract complex nested data structures from text using Instructor.</div>
+                    <div style='font-size: 0.9em; color: #666;'>Define nested data structure</div>
 
                 </div>
                 <div class="code">
-                    <pre><code class="language-python">from pydantic import BaseModel, Field
-from typing import List, Optional
-
-class Address(BaseModel):
+                    <pre><code class="language-python">class Address(BaseModel):
     street: str
     city: str
-    state: Optional[str] = None
-    zip_code: Optional[str] = None
-    country: str
-
-class PhoneNumber(BaseModel):
-    number: str
-    type: str  # e.g., &quot;home&quot;, &quot;work&quot;, &quot;mobile&quot;
+    zip_code: str
 
 class Person(BaseModel):
     name: str
     age: int
-    addresses: List[Address]
-    phone_numbers: List[PhoneNumber]
-    email: Optional[str] = None
-
-import instructor
-from openai import OpenAI</code></pre>
+    address: Address  # Nested object</code></pre>
                 </div>
             </div>
             <hr>
             <div class="row">
                 <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Patch the client</div>
+                    <div style='font-size: 0.9em; color: #666;'>Setup client</div>
 
                 </div>
                 <div class="code">
@@ -463,202 +337,35 @@ from openai import OpenAI</code></pre>
                 </div>
                 <div class="code">
                     <pre><code class="language-python">person = client.chat.completions.create(
-    model=&quot;gpt-4&quot;,  # Complex extraction works better with more capable models
+    model=&quot;gpt-3.5-turbo&quot;,
     response_model=Person,
     messages=[
         {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;&quot;&quot;
-        John Smith is a 35-year-old professional. He has two addresses:
-        1. Home: 123 Main St, Austin, TX 78701, USA
-        2. Work: 456 Business Ave, Austin, TX 78702, USA
-
-        His phone numbers are:
-        - Mobile: (555) 123-4567
-        - Work: (555) 987-6543
-
-        You can reach him at john.smith@example.com
+        John Smith is 35 years old and lives at
+        123 Main Street, New York, 10001.
         &quot;&quot;&quot;}
     ]
-)
-
-print(f&quot;Name: {person.name}, Age: {person.age}&quot;)
-print(f&quot;Email: {person.email}&quot;)
-
-print(&quot;\nAddresses:&quot;)
-for i, address in enumerate(person.addresses, 1):
-    print(f&quot;  {i}. {address.street}, {address.city}, {address.state} {address.zip_code}, {address.country}&quot;)
-
-print(&quot;\nPhone Numbers:&quot;)
-for phone in person.phone_numbers:
-    print(f&quot;  {phone.type}: {phone.number}&quot;)
-
-from pydantic import BaseModel, Field
-from typing import List, Optional, Dict
-
-class Skill(BaseModel):
-    name: str
-    level: str  # e.g., &quot;beginner&quot;, &quot;intermediate&quot;, &quot;expert&quot;
-    years_of_experience: int
-
-class Education(BaseModel):
-    degree: str
-    institution: str
-    year: int
-
-class WorkExperience(BaseModel):
-    company: str
-    position: str
-    start_year: int
-    end_year: Optional[int] = None
-    is_current: bool
-    responsibilities: List[str]
-
-class Person(BaseModel):
-    name: str
-    age: int
-    skills: List[Skill]
-    education: List[Education]
-    work_experience: List[WorkExperience]
-    contact_info: Dict[str, str]  # e.g., &quot;email&quot;, &quot;phone&quot;, &quot;linkedin&quot;</code></pre>
+)</code></pre>
                 </div>
             </div>
             <hr>
             <div class="row">
                 <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Extract with a more capable model</div>
+                    <div style='font-size: 0.9em; color: #666;'>Access nested data
+Output:
+Name: John Smith
+Age: 35
+Street: 123 Main Street
+City: New York
+ZIP: 10001</div>
 
                 </div>
                 <div class="code">
-                    <pre><code class="language-python">person = client.chat.completions.create(
-    model=&quot;gpt-4&quot;,
-    response_model=Person,
-    messages=[
-        {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;&quot;&quot;
-        Resume: Sarah Johnson
-
-        Sarah is a 42-year-old software architect with 15 years in the industry.
-
-        Contact Information:
-        - Email: sarah.j@example.com
-        - Phone: (555) 234-5678
-        - LinkedIn: linkedin.com/in/sarahjohnson
-
-        Skills:
-        - Python (Expert, 12 years)
-        - JavaScript (Intermediate, 8 years)
-        - Cloud Architecture (Expert, 7 years)
-
-        Education:
-        - Master&#x27;s in Computer Science, Stanford University, 2008
-        - Bachelor&#x27;s in Software Engineering, MIT, 2006
-
-        Work Experience:
-        - TechCorp Inc.
-          Senior Software Architect
-          2018-Present
-          Responsibilities:
-          * Lead architecture design for cloud solutions
-          * Manage team of 12 developers
-          * Implement CI/CD pipelines
-
-        - DataSystems LLC
-          Software Developer
-          2012-2018
-          Responsibilities:
-          * Developed backend services in Python
-          * Optimized database performance
-          * Created RESTful APIs
-        &quot;&quot;&quot;}
-    ]
-)
-
-print(f&quot;Name: {person.name}, Age: {person.age}&quot;)
-
-print(&quot;\nContact Info:&quot;)
-for key, value in person.contact_info.items():
-    print(f&quot;  {key}: {value}&quot;)
-
-print(&quot;\nSkills:&quot;)
-for skill in person.skills:
-    print(f&quot;  {skill.name}: {skill.level} ({skill.years_of_experience} years)&quot;)
-
-print(&quot;\nEducation:&quot;)
-for edu in person.education:
-    print(f&quot;  {edu.degree}, {edu.institution}, {edu.year}&quot;)
-
-print(&quot;\nWork Experience:&quot;)
-for job in person.work_experience:
-    current = &quot;(Current)&quot; if job.is_current else f&quot;({job.start_year}-{job.end_year})&quot;
-    print(f&quot;  {job.position} at {job.company} {current}&quot;)
-    print(&quot;  Responsibilities:&quot;)
-    for resp in job.responsibilities:
-        print(f&quot;    - {resp}&quot;)
-
-from pydantic import BaseModel, Field
-from typing import List, Optional
-
-class Comment(BaseModel):
-    text: str
-    author: str
-    replies: List[&#x27;Comment&#x27;] = []</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>This is needed for recursive Pydantic models</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">Comment.model_rebuild()
-
-class Post(BaseModel):
-    title: str
-    content: str
-    author: str
-    comments: List[Comment]</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Extract recursive structure</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">post = client.chat.completions.create(
-    model=&quot;gpt-4&quot;,
-    response_model=Post,
-    messages=[
-        {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;&quot;&quot;
-        Blog Post: &quot;Python Tips and Tricks&quot;
-        By: JohnDev
-
-        Python has many features that make it a versatile language. Here are some tips to improve your code...
-
-        Comments:
-        1. Comment by Alice: &quot;Great post! I especially liked the section on list comprehensions.&quot;
-          - Reply by JohnDev: &quot;Thanks Alice! Glad you found it useful.&quot;
-            - Reply by Bob: &quot;List comprehensions are my favorite too!&quot;
-               - Reply by Alice: &quot;They&#x27;re so elegant compared to traditional loops.&quot;
-
-        2. Comment by Charlie: &quot;Could you do a follow-up on decorators?&quot;
-          - Reply by JohnDev: &quot;Great idea! I&#x27;ll add it to my list of topics.&quot;
-        &quot;&quot;&quot;}
-    ]
-)
-
-print(f&quot;Post: {post.title} by {post.author}&quot;)
-
-for i, comment in enumerate(post.comments, 1):
-    print(f&quot;\nTop-level Comment {i}: {comment.author} said: &#x27;{comment.text}&#x27;&quot;)
-
-    def print_replies(replies, indent=2):
-        for reply in replies:
-            print(f&quot;{&#x27;  &#x27; * indent}{reply.author} replied: &#x27;{reply.text}&#x27;&quot;)
-            if reply.replies:
-                print_replies(reply.replies, indent + 1)
-
-    print_replies(comment.replies)</code></pre>
+                    <pre><code class="language-python">print(f&quot;Name: {person.name}&quot;)
+print(f&quot;Age: {person.age}&quot;)
+print(f&quot;Street: {person.address.street}&quot;)
+print(f&quot;City: {person.address.city}&quot;)
+print(f&quot;ZIP: {person.address.zip_code}&quot;)</code></pre>
                 </div>
             </div>
             <hr>

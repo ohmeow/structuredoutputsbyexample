@@ -25,12 +25,12 @@ Note: A more comprehensive version of this file / documentation is available at 
 
 ## Basic Extraction Patterns
 
-- Simple Object Extraction
-- List Extraction
-- Nested Structures
+- Simple Object Extraction: Here we extract basic objects from text with Instructor.
+- List Extraction: You are also able to extract lists of objects from text with Instructor..
+- Simple Nested Structure: This example shows how to work with nested objects.
 - Field Validation
 - Optional Fields
-- Working with Enums
+- Literals and Enums: This example shows how to use literal types instead of enums for simpler code.
 
 ## Classification and Analysis
 
@@ -69,13 +69,14 @@ Note: A more comprehensive version of this file / documentation is available at 
 ## Performance and Optimization
 
 - Caching Responses
-- Parallel Extraction
+- Parallel Extraction: Process multiple extractions in parallel with Instructor for improved efficiency.
 - Batch Processing
 - Hooks and Callbacks
 - Type Adapters
 
 ## Miscellaneous Examples
 
+- Working with Enums
 - Resources
 
 ## Resources

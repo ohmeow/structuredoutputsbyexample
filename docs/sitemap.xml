@@ -103,7 +103,7 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://structuredoutputsbyexample.com/017-working-with-enums/</loc>
+    <loc>https://structuredoutputsbyexample.com/017-literals-and-enums/</loc>
     <lastmod>2025-04-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -248,6 +248,12 @@
   </url>
   <url>
     <loc>https://structuredoutputsbyexample.com/047-type-adapters/</loc>
+    <lastmod>2025-04-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://structuredoutputsbyexample.com/017-working-with-enums/</loc>
     <lastmod>2025-04-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>

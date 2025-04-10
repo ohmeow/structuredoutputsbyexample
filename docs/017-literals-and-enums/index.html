@@ -5,33 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <!-- Primary Meta Tags -->
-    <title>Knowledge Graphs - Structured Outputs by Example</title>
-    <meta name="description" content="Learn to work with structured outputs through annotated examples">
+    <title>Literals and Enums - Structured Outputs by Example</title>
+    <meta name="description" content="This example shows how to use literal types instead of enums for simpler code">
     <meta name="author" content="Jason Liu">
     <meta name="keywords" content="structured outputs, LLM, Instructor, Pydantic, data extraction, structured data">
     
     <!-- Canonical URL -->
-    <link rel="canonical" href="https://structuredoutputsbyexample.com/029-knowledge-graphs/">
+    <link rel="canonical" href="https://structuredoutputsbyexample.com/017-literals-and-enums/">
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="article">
-    <meta property="og:url" content="https://structuredoutputsbyexample.com/029-knowledge-graphs/">
-    <meta property="og:title" content="Knowledge Graphs - Structured Outputs by Example">
-    <meta property="og:description" content="Learn to work with structured outputs through annotated examples">
+    <meta property="og:url" content="https://structuredoutputsbyexample.com/017-literals-and-enums/">
+    <meta property="og:title" content="Literals and Enums - Structured Outputs by Example">
+    <meta property="og:description" content="This example shows how to use literal types instead of enums for simpler code">
     
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://structuredoutputsbyexample.com/029-knowledge-graphs/">
-    <meta property="twitter:title" content="Knowledge Graphs - Structured Outputs by Example">
-    <meta property="twitter:description" content="Learn to work with structured outputs through annotated examples">
+    <meta property="twitter:url" content="https://structuredoutputsbyexample.com/017-literals-and-enums/">
+    <meta property="twitter:title" content="Literals and Enums - Structured Outputs by Example">
+    <meta property="twitter:description" content="This example shows how to use literal types instead of enums for simpler code">
 
     <!-- Structured Data / JSON-LD -->
     <script type="application/ld+json">
     {
   "@context": "https://schema.org",
   "@type": "TechArticle",
-  "headline": "Knowledge Graphs",
-  "description": "Learn to work with structured outputs through annotated examples",
+  "headline": "Literals and Enums",
+  "description": "This example shows how to use literal types instead of enums for simpler code",
   "author": {
     "@type": "Person",
     "name": "Jason Liu"
@@ -41,16 +41,16 @@
     "name": "Structured Outputs by Example",
     "url": "https://structuredoutputsbyexample.com"
   },
-  "mainEntityOfPage": "https://structuredoutputsbyexample.com/029-knowledge-graphs/",
+  "mainEntityOfPage": "https://structuredoutputsbyexample.com/017-literals-and-enums/",
   "datePublished": "2025-04-10T02:14:01+00:00",
   "dateModified": "2025-04-10T02:14:01+00:00",
-  "articleSection": "Advanced Structures",
+  "articleSection": "Basic Extraction Patterns",
   "keywords": [
     "structured data",
     "LLM",
     "Instructor",
     "Pydantic",
-    "knowledge graphs"
+    "literals and enums"
   ]
 }
     </script>
@@ -252,9 +252,9 @@
             <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
                 <div>
                     <div style="margin-bottom: 10px; color: #666; font-size: 0.9em;">
-                        <a href="../" style="text-decoration: none; color: #666;">Advanced Structures</a>
+                        <a href="../" style="text-decoration: none; color: #666;">Basic Extraction Patterns</a>
                     </div>
-                    <h1 style="margin: 0; margin-bottom: 10px;">Knowledge Graphs</h1>
+                    <h1 style="margin: 0; margin-bottom: 10px;">Literals and Enums</h1>
                 </div>
                 <div style="position: relative; margin-top: 10px; display: flex; gap: 8px;">
                     <button id="copy-all-python" style="background-color: #f1f8ff; border: 1px solid #c8e1ff; border-radius: 6px; padding: 6px 12px; font-size: 14px; color: #0066CC; cursor: pointer; display: flex; align-items: center; gap: 6px;">
@@ -263,7 +263,7 @@
                         </svg>
                         Copy All Python
                     </button>
-                    <a href="https://github.com/jxnl/structuredoutputsbyexample/edit/main/examples/029-knowledge-graphs/knowledge-graphs.py" target="_blank" style="background-color: #f6f1ff; border: 1px solid #d8c9f7; border-radius: 6px; padding: 6px 12px; font-size: 14px; color: #6f42c1; text-decoration: none; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                    <a href="https://github.com/jxnl/structuredoutputsbyexample/edit/main/examples/017-literals-and-enums/literals-and-enums.py" target="_blank" style="background-color: #f6f1ff; border: 1px solid #d8c9f7; border-radius: 6px; padding: 6px 12px; font-size: 14px; color: #6f42c1; text-decoration: none; cursor: pointer; display: flex; align-items: center; gap: 6px;">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="currentColor"/>
                         </svg>
@@ -272,65 +272,87 @@
                     <div id="all-python-code" style="display: none;">import instructor
 from openai import OpenAI
 from pydantic import BaseModel, Field
-client = instructor.from_openai(OpenAI())
-class Node(BaseModel):
-    id: int
-    label: str
-    color: str
-class Edge(BaseModel):
-    source: int
-    target: int
-    label: str
-    color: str = &quot;black&quot;
-class KnowledgeGraph(BaseModel):
-    nodes: list[Node] = Field(..., default_factory=list)
-    edges: list[Edge] = Field(..., default_factory=list)
-def generate_knowledge_graph(input_text: str) -&gt; KnowledgeGraph:
-    return client.chat.completions.create(
-        model=&quot;gpt-3.5-turbo&quot;,
-        messages=[
-            {
-                &quot;role&quot;: &quot;user&quot;,
-                &quot;content&quot;: f&quot;Create a detailed knowledge graph for: {input_text}&quot;
-            }
-        ],
-        response_model=KnowledgeGraph
+from typing import Literal
+class Task(BaseModel):
+    title: str
+priority: Literal[&quot;low&quot;, &quot;medium&quot;, &quot;high&quot;] = Field(
+        description=&quot;Task priority level (low, medium, or high)&quot;
     )
-graph = generate_knowledge_graph(&quot;Quantum mechanics and its applications&quot;)
-for node in graph.nodes:
-    print(f&quot;Node {node.id}: {node.label} ({node.color})&quot;)
+status: Literal[&quot;todo&quot;, &quot;in_progress&quot;, &quot;done&quot;] = Field(
+        description=&quot;Current task status&quot;
+    )
+client = instructor.from_openai(OpenAI())
+task = client.chat.completions.create(
+    model=&quot;gpt-3.5-turbo&quot;,
+    response_model=Task,
+    messages=[
+        {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Fix login page bug - high priority, currently in progress&quot;}
+    ]
+)
+print(f&quot;Task: {task.title}&quot;)
+print(f&quot;Priority: {task.priority}&quot;)  # Will be &quot;high&quot;
+print(f&quot;Status: {task.status}&quot;)      # Will be &quot;in_progress&quot;
+if task.priority == &quot;high&quot;:
+    print(&quot;This task requires immediate attention!&quot;)
+import enum
 
-for edge in graph.edges:
-    print(f&quot;Edge: {edge.source} --({edge.label})--&gt; {edge.target}&quot;)
-from graphviz import Digraph
+class Priority(str, enum.Enum):
+    LOW = &quot;low&quot;
+    MEDIUM = &quot;medium&quot;
+    HIGH = &quot;high&quot;
 
-def visualize_knowledge_graph(kg: KnowledgeGraph):
-    dot = Digraph(comment=&quot;Knowledge Graph&quot;)
-for node in kg.nodes:
-        dot.node(str(node.id), node.label, color=node.color)
-for edge in kg.edges:
-        dot.edge(str(edge.source), str(edge.target),
-                 label=edge.label, color=edge.color)
-dot.render(&quot;knowledge_graph.gv&quot;, view=True)
-visualize_knowledge_graph(graph)
+class Status(str, enum.Enum):
+    TODO = &quot;todo&quot;
+    IN_PROGRESS = &quot;in_progress&quot;
+    DONE = &quot;done&quot;
+
+class TaskWithEnums(BaseModel):
+    title: str
+    priority: Priority
+    status: Status
 </div>
                 </div>            </div>
-            <hr>
+            <p style="margin: 20px 0 40px 0; color: #444; line-height: 1.6; font-size: 1.1em;">
+                This example shows how to use literal types instead of enums for simpler code
+            </p>
             <div class="row">
                 <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Instructor can be used to extract structured knowledge graphs from text. A knowledge graph represents entities and their relationships, making complex information easier to understand and visualize.</div>
+                    <div style='font-size: 0.9em; color: #666;'>Define a model with Literal types (preferred over enums for simplicity)</div>
 
                 </div>
                 <div class="code">
-                    <pre><code class="language-python">import instructor
-from openai import OpenAI
-from pydantic import BaseModel, Field</code></pre>
+                    <pre><code class="language-python">class Task(BaseModel):
+    title: str</code></pre>
                 </div>
             </div>
             <hr>
             <div class="row">
                 <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Initialize the client with instructor</div>
+                    <div style='font-size: 0.9em; color: #666;'>Literal type restricts values to this exact set</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">priority: Literal[&quot;low&quot;, &quot;medium&quot;, &quot;high&quot;] = Field(
+        description=&quot;Task priority level (low, medium, or high)&quot;
+    )</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Another Literal type for status</div>
+
+                </div>
+                <div class="code">
+                    <pre><code class="language-python">status: Literal[&quot;todo&quot;, &quot;in_progress&quot;, &quot;done&quot;] = Field(
+        description=&quot;Current task status&quot;
+    )</code></pre>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="docs">
+                    <div style='font-size: 0.9em; color: #666;'>Setup client</div>
 
                 </div>
                 <div class="code">
@@ -340,184 +362,74 @@ from pydantic import BaseModel, Field</code></pre>
             <hr>
             <div class="row">
                 <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Define the node structure</div>
+                    <div style='font-size: 0.9em; color: #666;'>Extract data with Literal validation</div>
 
                 </div>
                 <div class="code">
-                    <pre><code class="language-python">class Node(BaseModel):
-    id: int
-    label: str
-    color: str</code></pre>
+                    <pre><code class="language-python">task = client.chat.completions.create(
+    model=&quot;gpt-3.5-turbo&quot;,
+    response_model=Task,
+    messages=[
+        {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Fix login page bug - high priority, currently in progress&quot;}
+    ]
+)</code></pre>
                 </div>
             </div>
             <hr>
             <div class="row">
                 <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Define the edge structure</div>
+                    <div style='font-size: 0.9em; color: #666;'>Use the validated data</div>
 
                 </div>
                 <div class="code">
-                    <pre><code class="language-python">class Edge(BaseModel):
-    source: int
-    target: int
-    label: str
-    color: str = &quot;black&quot;</code></pre>
+                    <pre><code class="language-python">print(f&quot;Task: {task.title}&quot;)
+print(f&quot;Priority: {task.priority}&quot;)  # Will be &quot;high&quot;
+print(f&quot;Status: {task.status}&quot;)      # Will be &quot;in_progress&quot;</code></pre>
                 </div>
             </div>
             <hr>
             <div class="row">
                 <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Define the knowledge graph structure</div>
+                    <div style='font-size: 0.9em; color: #666;'>Check values with simple string comparison</div>
 
                 </div>
                 <div class="code">
-                    <pre><code class="language-python">class KnowledgeGraph(BaseModel):
-    nodes: list[Node] = Field(..., default_factory=list)
-    edges: list[Edge] = Field(..., default_factory=list)</code></pre>
+                    <pre><code class="language-python">if task.priority == &quot;high&quot;:
+    print(&quot;This task requires immediate attention!&quot;)</code></pre>
                 </div>
             </div>
             <hr>
             <div class="row">
                 <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Extract a knowledge graph from text</div>
+                    <div style='font-size: 0.9em; color: #666;'>For comparison, here's the enum approach (more verbose)
+======================================================</div>
 
                 </div>
                 <div class="code">
-                    <pre><code class="language-python">def generate_knowledge_graph(input_text: str) -&gt; KnowledgeGraph:
-    return client.chat.completions.create(
-        model=&quot;gpt-3.5-turbo&quot;,
-        messages=[
-            {
-                &quot;role&quot;: &quot;user&quot;,
-                &quot;content&quot;: f&quot;Create a detailed knowledge graph for: {input_text}&quot;
-            }
-        ],
-        response_model=KnowledgeGraph
-    )</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Example usage</div>
+                    <pre><code class="language-python">import enum
 
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">graph = generate_knowledge_graph(&quot;Quantum mechanics and its applications&quot;)</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Print the nodes and edges</div>
+class Priority(str, enum.Enum):
+    LOW = &quot;low&quot;
+    MEDIUM = &quot;medium&quot;
+    HIGH = &quot;high&quot;
 
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">for node in graph.nodes:
-    print(f&quot;Node {node.id}: {node.label} ({node.color})&quot;)
+class Status(str, enum.Enum):
+    TODO = &quot;todo&quot;
+    IN_PROGRESS = &quot;in_progress&quot;
+    DONE = &quot;done&quot;
 
-for edge in graph.edges:
-    print(f&quot;Edge: {edge.source} --({edge.label})--&gt; {edge.target}&quot;)</code></pre>
+class TaskWithEnums(BaseModel):
+    title: str
+    priority: Priority
+    status: Status</code></pre>
                 </div>
             </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>To visualize the knowledge graph, you can use libraries like graphviz:</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">from graphviz import Digraph
-
-def visualize_knowledge_graph(kg: KnowledgeGraph):
-    dot = Digraph(comment=&quot;Knowledge Graph&quot;)</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Add nodes</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">for node in kg.nodes:
-        dot.node(str(node.id), node.label, color=node.color)</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Add edges</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">for edge in kg.edges:
-        dot.edge(str(edge.source), str(edge.target),
-                 label=edge.label, color=edge.color)</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Render the graph</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">dot.render(&quot;knowledge_graph.gv&quot;, view=True)</code></pre>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'>Visualize the graph</div>
-
-                </div>
-                <div class="code">
-                    <pre><code class="language-python">visualize_knowledge_graph(graph)</code></pre>
-                </div>
-            </div>
-            <hr>
-            <h2>Running the Example</h2>
-            <div class="row">
-                <div class="docs" style='font-size: 0.9em; color: #666;'>
-                    First, install Instructor and any dependencies
-                </div>
-                <div class="code">
-                    <div class="buttons">
-                        <svg class="copy" title="Copy command" onclick="copyCode(this)" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M16 1H4C2.9 1 2 1.9 2 3V17H4V3H16V1ZM19 5H8C6.9 5 6 5.9 6 7V21C6 22.1 6.9 23 8 23H19C20.1 23 21 22.1 21 21V7C21 5.9 20.1 5 19 5ZM19 21H8V7H19V21Z" fill="currentColor"/>
-                        </svg>
-                    </div>
-                    <pre><code class="language-shell"><span><span class="command-prompt">$ </span><span class="command-text">pip install instructor pydantic</span></span>
-</code></pre>
-                </div>
-            </div>
-            <div class="row">
-                <div class="docs" style='font-size: 0.9em; color: #666;'>
-                    Run the Python script
-                </div>
-                <div class="code">
-                    <div class="buttons">
-                        <svg class="copy" title="Copy command" onclick="copyCode(this)" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M16 1H4C2.9 1 2 1.9 2 3V17H4V3H16V1ZM19 5H8C6.9 5 6 5.9 6 7V21C6 22.1 6.9 23 8 23H19C20.1 23 21 22.1 21 21V7C21 5.9 20.1 5 19 5ZM19 21H8V7H19V21Z" fill="currentColor"/>
-                        </svg>
-                    </div>
-                    <pre><code class="language-shell"><span><span class="command-prompt">$ </span><span class="command-text">python knowledge-graphs.py</span></span>
-</code></pre>
-                </div>
-            </div>
-            <hr>
-            <h4>Further Information</h4>
-            <ul style="font-size: 0.9em;">
-                <li><a href="https://github.com/jxnl/instructor"
-                         target="_blank">Documentation link 1</a></li>
-            </ul>
             <div class="navigation">
                 <p class="prev">
-                    <span>← Previous:</span> <a href="../028-recursive-structures/">Recursive Structures</a>
+                    <span>← Previous:</span> <a href="../016-optional-fields/">Optional Fields</a>
                 </p>
                 <p class="next">
-                    <span>Next:</span> <a href="../030-dependency-trees/">Dependency Trees</a> →
+                    <span>Next:</span> <a href="../018-simple-classification/">Simple Classification</a> →
                 </p>
             </div>
         </main>

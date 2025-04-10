@@ -21,10 +21,10 @@ It's organized by sections, with each example's Python code and terminal command
 * Basic Extraction Patterns
   * Simple Object Extraction
   * List Extraction
-  * Nested Structures
+  * Simple Nested Structure
   * Field Validation
   * Optional Fields
-  * Working with Enums
+  * Literals and Enums
 * Classification and Analysis
   * Simple Classification
   * Multi-label Classification
@@ -56,6 +56,7 @@ It's organized by sections, with each example's Python code and terminal command
   * Hooks and Callbacks
   * Type Adapters
 * Miscellaneous Examples
+  * Working with Enums
   * Resources
 
 ## Getting Started
@@ -925,16 +926,17 @@ Common patterns for extracting structured data
 
 ### Simple Object Extraction
 
+Here we extract basic objects from text with Instructor
+
 ```python
-from pydantic import BaseModel
-
-class Person(BaseModel):
-    name: str
-    age: int
-    occupation: str
-
+from pydantic import BaseModel, Field
 import instructor
 from openai import OpenAI
+class Person(BaseModel):
+    """Extract person information from text."""
+    name: str = Field(description="The person's full name")
+    age: int = Field(description="The person's age in years")
+    occupation: str = Field(description="The person's current job title or role")
 client = instructor.from_openai(OpenAI())
 person = client.chat.completions.create(
     model="gpt-3.5-turbo",
@@ -943,69 +945,9 @@ person = client.chat.completions.create(
         {"role": "user", "content": "John Doe is a 30-year-old software engineer."}
     ]
 )
-
 print(f"Name: {person.name}")
 print(f"Age: {person.age}")
 print(f"Occupation: {person.occupation}")
-extracted = client.chat.completions.create(
-    model="gpt-3.5-turbo",
-    response_model=Person,
-    messages=[
-        {"role": "user", "content": """
-        In our company blog post, we want to highlight one of our newest team members.
-        John Smith joined us last month. He's 34 years old and works as a data scientist.
-        John previously worked at TechCorp for 5 years.
-        """}
-    ]
-)
-
-print(f"Name: {extracted.name}")
-print(f"Age: {extracted.age}")
-print(f"Occupation: {extracted.occupation}")
-from pydantic import BaseModel, Field
-
-class Person(BaseModel):
-    name: str = Field(description="The person's full name")
-    age: int = Field(description="The person's age in years")
-    occupation: str = Field(description="The person's current job title or role")
-
-extracted = client.chat.completions.create(
-    model="gpt-3.5-turbo",
-    response_model=Person,
-    messages=[
-        {"role": "user", "content": """
-        Meet Sarah Johnson, one of our senior architects.
-        She's been with the firm since she was 28, and now at 42,
-        she leads our sustainable design initiatives.
-        """}
-    ]
-)
-
-print(f"Name: {extracted.name}")
-print(f"Age: {extracted.age}")
-print(f"Occupation: {extracted.occupation}")
-class Employee(BaseModel):
-    """Extract employee information from the provided text."""
-
-    name: str
-    age: int
-    department: str
-    years_of_service: int
-
-extracted = client.chat.completions.create(
-    model="gpt-3.5-turbo",
-    response_model=Employee,
-    messages=[
-        {"role": "user", "content": """
-        Employee Profile: Michael Chen has been in our Marketing department for 7 years.
-        He's 36 years old and has led multiple successful campaigns.
-        """}
-    ]
-)
-
-print(f"Name: {extracted.name}")
-print(f"Department: {extracted.department}")
-print(f"Years of Service: {extracted.years_of_service}")
 ```
 
 ```shell
@@ -1018,16 +960,16 @@ For more information, see the original documentation:
 
 ### List Extraction
 
+You are also able to extract lists of objects from text with Instructor.
+
 ```python
 from pydantic import BaseModel
-
-class Person(BaseModel):
-    name: str
-    age: int
-
 import instructor
 from openai import OpenAI
 from typing import List
+class Person(BaseModel):
+    name: str
+    age: int
 client = instructor.from_openai(OpenAI())
 people = client.chat.completions.create(
     model="gpt-3.5-turbo",
@@ -1043,83 +985,6 @@ people = client.chat.completions.create(
 )
 for person in people:
     print(f"{person.name} is {person.age} years old")
-people = client.chat.completions.create(
-    model="gpt-3.5-turbo",
-    response_model=List[Person],
-    messages=[
-        {"role": "user", "content": """
-        Our team has grown significantly this year. John Smith, who is 32, joined our
-        engineering department. We also welcomed Sarah Johnson, 28, to our design team.
-        The most recent addition is Michael Chen, who is 35 and brings valuable experience.
-        """}
-    ]
-)
-
-for i, person in enumerate(people, 1):
-    print(f"Person {i}: {person.name}, {person.age}")
-from pydantic import BaseModel, Field
-from typing import List, Optional
-
-class Address(BaseModel):
-    street: str
-    city: str
-    state: Optional[str] = None
-    country: str
-
-class Person(BaseModel):
-    name: str
-    age: int
-    occupation: str = Field(description="The person's job or profession")
-    addresses: List[Address] = Field(description="List of addresses associated with this person")
-
-people = client.chat.completions.create(
-    model="gpt-4",  # More complex extraction works better with more capable models
-    response_model=List[Person],
-    messages=[
-        {"role": "user", "content": """
-        Our company employees include:
-
-        1. John Smith is a 34-year-old software developer who lives at 123 Main St, Boston, USA
-           and has a vacation home at 456 Beach Road, Miami, USA.
-
-        2. Maria Garcia is 29 and works as a marketing specialist. She lives at
-           78 Park Avenue, New York, USA.
-
-        3. Ahmed Hassan, 41, is our senior data scientist who recently moved from
-           555 River St, Cairo, Egypt to 890 Tech Blvd, San Francisco, USA.
-        """}
-    ]
-)
-
-for person in people:
-    print(f"{person.name}, {person.age} - {person.occupation}")
-    for i, addr in enumerate(person.addresses, 1):
-        print(f"  Address {i}: {addr.street}, {addr.city}, {addr.country}")
-    print()
-
-import instructor
-from openai import OpenAI
-from typing import List
-from pydantic import BaseModel
-
-class Person(BaseModel):
-    name: str
-    age: int
-client = instructor.from_openai(OpenAI())
-people_stream = client.chat.completions.create_iterable(
-    model="gpt-3.5-turbo",
-    response_model=Person,  # Note: no List wrapper here
-    messages=[
-        {"role": "user", "content": """
-        Extract all people mentioned in this text:
-        - John is 30 years old
-        - Mary is 25 years old
-        - Bob is 45 years old
-        """}
-    ]
-)
-for person in people_stream:
-    print(f"Received: {person.name} is {person.age} years old")
 ```
 
 ```shell
@@ -1130,203 +995,39 @@ $ python list-extraction.py
 For more information, see the original documentation:
 - https://github.com/jxnl/instructor
 
-### Nested Structures
+### Simple Nested Structure
+
+This example shows how to work with nested objects
 
 ```python
-from pydantic import BaseModel, Field
-from typing import List, Optional
-
+import instructor
+from openai import OpenAI
+from pydantic import BaseModel
 class Address(BaseModel):
     street: str
     city: str
-    state: Optional[str] = None
-    zip_code: Optional[str] = None
-    country: str
-
-class PhoneNumber(BaseModel):
-    number: str
-    type: str  # e.g., "home", "work", "mobile"
+    zip_code: str
 
 class Person(BaseModel):
     name: str
     age: int
-    addresses: List[Address]
-    phone_numbers: List[PhoneNumber]
-    email: Optional[str] = None
-
-import instructor
-from openai import OpenAI
+    address: Address  # Nested object
 client = instructor.from_openai(OpenAI())
 person = client.chat.completions.create(
-    model="gpt-4",  # Complex extraction works better with more capable models
+    model="gpt-3.5-turbo",
     response_model=Person,
     messages=[
         {"role": "user", "content": """
-        John Smith is a 35-year-old professional. He has two addresses:
-        1. Home: 123 Main St, Austin, TX 78701, USA
-        2. Work: 456 Business Ave, Austin, TX 78702, USA
-
-        His phone numbers are:
-        - Mobile: (555) 123-4567
-        - Work: (555) 987-6543
-
-        You can reach him at john.smith@example.com
+        John Smith is 35 years old and lives at
+        123 Main Street, New York, 10001.
         """}
     ]
 )
-
-print(f"Name: {person.name}, Age: {person.age}")
-print(f"Email: {person.email}")
-
-print("\nAddresses:")
-for i, address in enumerate(person.addresses, 1):
-    print(f"  {i}. {address.street}, {address.city}, {address.state} {address.zip_code}, {address.country}")
-
-print("\nPhone Numbers:")
-for phone in person.phone_numbers:
-    print(f"  {phone.type}: {phone.number}")
-
-from pydantic import BaseModel, Field
-from typing import List, Optional, Dict
-
-class Skill(BaseModel):
-    name: str
-    level: str  # e.g., "beginner", "intermediate", "expert"
-    years_of_experience: int
-
-class Education(BaseModel):
-    degree: str
-    institution: str
-    year: int
-
-class WorkExperience(BaseModel):
-    company: str
-    position: str
-    start_year: int
-    end_year: Optional[int] = None
-    is_current: bool
-    responsibilities: List[str]
-
-class Person(BaseModel):
-    name: str
-    age: int
-    skills: List[Skill]
-    education: List[Education]
-    work_experience: List[WorkExperience]
-    contact_info: Dict[str, str]  # e.g., "email", "phone", "linkedin"
-person = client.chat.completions.create(
-    model="gpt-4",
-    response_model=Person,
-    messages=[
-        {"role": "user", "content": """
-        Resume: Sarah Johnson
-
-        Sarah is a 42-year-old software architect with 15 years in the industry.
-
-        Contact Information:
-        - Email: sarah.j@example.com
-        - Phone: (555) 234-5678
-        - LinkedIn: linkedin.com/in/sarahjohnson
-
-        Skills:
-        - Python (Expert, 12 years)
-        - JavaScript (Intermediate, 8 years)
-        - Cloud Architecture (Expert, 7 years)
-
-        Education:
-        - Master's in Computer Science, Stanford University, 2008
-        - Bachelor's in Software Engineering, MIT, 2006
-
-        Work Experience:
-        - TechCorp Inc.
-          Senior Software Architect
-          2018-Present
-          Responsibilities:
-          * Lead architecture design for cloud solutions
-          * Manage team of 12 developers
-          * Implement CI/CD pipelines
-
-        - DataSystems LLC
-          Software Developer
-          2012-2018
-          Responsibilities:
-          * Developed backend services in Python
-          * Optimized database performance
-          * Created RESTful APIs
-        """}
-    ]
-)
-
-print(f"Name: {person.name}, Age: {person.age}")
-
-print("\nContact Info:")
-for key, value in person.contact_info.items():
-    print(f"  {key}: {value}")
-
-print("\nSkills:")
-for skill in person.skills:
-    print(f"  {skill.name}: {skill.level} ({skill.years_of_experience} years)")
-
-print("\nEducation:")
-for edu in person.education:
-    print(f"  {edu.degree}, {edu.institution}, {edu.year}")
-
-print("\nWork Experience:")
-for job in person.work_experience:
-    current = "(Current)" if job.is_current else f"({job.start_year}-{job.end_year})"
-    print(f"  {job.position} at {job.company} {current}")
-    print("  Responsibilities:")
-    for resp in job.responsibilities:
-        print(f"    - {resp}")
-
-from pydantic import BaseModel, Field
-from typing import List, Optional
-
-class Comment(BaseModel):
-    text: str
-    author: str
-    replies: List['Comment'] = []
-Comment.model_rebuild()
-
-class Post(BaseModel):
-    title: str
-    content: str
-    author: str
-    comments: List[Comment]
-post = client.chat.completions.create(
-    model="gpt-4",
-    response_model=Post,
-    messages=[
-        {"role": "user", "content": """
-        Blog Post: "Python Tips and Tricks"
-        By: JohnDev
-
-        Python has many features that make it a versatile language. Here are some tips to improve your code...
-
-        Comments:
-        1. Comment by Alice: "Great post! I especially liked the section on list comprehensions."
-          - Reply by JohnDev: "Thanks Alice! Glad you found it useful."
-            - Reply by Bob: "List comprehensions are my favorite too!"
-               - Reply by Alice: "They're so elegant compared to traditional loops."
-
-        2. Comment by Charlie: "Could you do a follow-up on decorators?"
-          - Reply by JohnDev: "Great idea! I'll add it to my list of topics."
-        """}
-    ]
-)
-
-print(f"Post: {post.title} by {post.author}")
-
-for i, comment in enumerate(post.comments, 1):
-    print(f"\nTop-level Comment {i}: {comment.author} said: '{comment.text}'")
-
-    def print_replies(replies, indent=2):
-        for reply in replies:
-            print(f"{'  ' * indent}{reply.author} replied: '{reply.text}'")
-            if reply.replies:
-                print_replies(reply.replies, indent + 1)
-
-    print_replies(comment.replies)
+print(f"Name: {person.name}")
+print(f"Age: {person.age}")
+print(f"Street: {person.address.street}")
+print(f"City: {person.address.city}")
+print(f"ZIP: {person.address.zip_code}")
 ```
 
 ```shell
@@ -1677,219 +1378,53 @@ $ python optional-fields.py
 For more information, see the original documentation:
 - https://github.com/jxnl/instructor
 
-### Working with Enums
+### Literals and Enums
+
+This example shows how to use literal types instead of enums for simpler code
 
 ```python
-from enum import Enum
-from pydantic import BaseModel
 import instructor
 from openai import OpenAI
-class ProductCategory(str, Enum):
-    ELECTRONICS = "electronics"
-    CLOTHING = "clothing"
-    HOME = "home"
-    BOOKS = "books"
-    TOYS = "toys"
-
-class Product(BaseModel):
-    name: str
-    price: float
-    category: ProductCategory
-client = instructor.from_openai(OpenAI())
-product = client.chat.completions.create(
-    model="gpt-3.5-turbo",
-    response_model=Product,
-    messages=[
-        {"role": "user", "content": "Our new wireless headphones cost $79.99 and belong in our electronics department."}
-    ]
-)
-
-print(f"Product: {product.name}")
-print(f"Price: ${product.price}")
-print(f"Category: {product.category}")
-if product.category == ProductCategory.ELECTRONICS:
-    print("This is an electronic product.")
-
-from enum import Enum, auto
-from pydantic import BaseModel
-from typing import List
-class Priority(str, Enum):
-    LOW = "low"
-    MEDIUM = "medium"
-    HIGH = "high"
-    CRITICAL = "critical"
-class Status(str, Enum):
-    TODO = "todo"
-    IN_PROGRESS = "in_progress"
-    REVIEW = "review"
-    DONE = "done"
-
+from pydantic import BaseModel, Field
+from typing import Literal
 class Task(BaseModel):
     title: str
-    description: str
-    priority: Priority
-    status: Status
-    tags: List[str] = []
-
+priority: Literal["low", "medium", "high"] = Field(
+        description="Task priority level (low, medium, or high)"
+    )
+status: Literal["todo", "in_progress", "done"] = Field(
+        description="Current task status"
+    )
+client = instructor.from_openai(OpenAI())
 task = client.chat.completions.create(
     model="gpt-3.5-turbo",
     response_model=Task,
     messages=[
-        {"role": "user", "content": """
-        Task Details:
-        Title: Fix login page bug
-        Description: Users report seeing errors when trying to log in with special characters
-        Priority: High
-        Status: In Progress
-        Tags: bug, authentication, frontend
-        """}
+        {"role": "user", "content": "Fix login page bug - high priority, currently in progress"}
     ]
 )
-
 print(f"Task: {task.title}")
-print(f"Description: {task.description}")
-print(f"Priority: {task.priority}")  # Priority.HIGH
-print(f"Status: {task.status}")  # Status.IN_PROGRESS
-print(f"Tags: {', '.join(task.tags)}")
-if task.priority in [Priority.HIGH, Priority.CRITICAL]:
+print(f"Priority: {task.priority}")  # Will be "high"
+print(f"Status: {task.status}")      # Will be "in_progress"
+if task.priority == "high":
     print("This task requires immediate attention!")
+import enum
 
-if task.status == Status.IN_PROGRESS:
-    print("This task is being worked on.")
+class Priority(str, enum.Enum):
+    LOW = "low"
+    MEDIUM = "medium"
+    HIGH = "high"
 
-from enum import IntEnum
-from pydantic import BaseModel
-class SeverityLevel(IntEnum):
-    LOW = 1
-    MODERATE = 2
-    HIGH = 3
-    SEVERE = 4
-    CRITICAL = 5
+class Status(str, enum.Enum):
+    TODO = "todo"
+    IN_PROGRESS = "in_progress"
+    DONE = "done"
 
-class SecurityIssue(BaseModel):
+class TaskWithEnums(BaseModel):
     title: str
-    description: str
-    severity: SeverityLevel
-    affected_users: int
-
-issue = client.chat.completions.create(
-    model="gpt-3.5-turbo",
-    response_model=SecurityIssue,
-    messages=[
-        {"role": "user", "content": """
-        Security Alert:
-        Issue: Database Exposure
-        Details: Customer database was partially exposed due to misconfigured firewall
-        Severity: 4 (Severe)
-        Affected Users: 5,230
-        """}
-    ]
-)
-
-print(f"Issue: {issue.title}")
-print(f"Description: {issue.description}")
-print(f"Severity: {issue.severity.name} (Level {issue.severity.value})")  # "SEVERE (Level 4)"
-print(f"Affected Users: {issue.affected_users}")
-if issue.severity >= SeverityLevel.HIGH and issue.affected_users > 1000:
-    print("This requires executive notification!")
-
-from enum import Enum
-from pydantic import BaseModel, Field
-
-class TicketType(str, Enum):
-    BUG = "bug"
-    FEATURE = "feature"
-    IMPROVEMENT = "improvement"
-    DOCUMENTATION = "documentation"
-    QUESTION = "question"
-
-class Ticket(BaseModel):
-    title: str
-    description: str
-ticket_type: TicketType = Field(
-        description="""Type of ticket with these options:
-        - bug: Something is not working correctly
-        - feature: A new capability is requested
-        - improvement: Enhancement to an existing feature
-        - documentation: Updates to documentation
-        - question: Question about functionality"""
-    )
-
-ticket = client.chat.completions.create(
-    model="gpt-3.5-turbo",
-    response_model=Ticket,
-    messages=[
-        {"role": "user", "content": """
-        New Ticket:
-        Title: Add dark mode to application
-        Description: Users would like a dark theme option to reduce eye strain when using the app at night
-        """}
-    ]
-)
-
-print(f"Ticket: {ticket.title}")
-print(f"Description: {ticket.description}")
-print(f"Type: {ticket.ticket_type}")  # Should be TicketType.IMPROVEMENT or TicketType.FEATURE
-
-from enum import Flag, auto
-from pydantic import BaseModel, Field
-class Permissions(Flag):
-    NONE = 0
-    READ = auto()       # 1
-    WRITE = auto()      # 2
-    DELETE = auto()     # 4
-    ADMIN = auto()      # 8
-READ_WRITE = READ | WRITE                # 3
-    STANDARD = READ | WRITE | DELETE         # 7
-    ALL = READ | WRITE | DELETE | ADMIN      # 15
-
-class User(BaseModel):
-    name: str
-    role: str
-    permissions: Permissions = Field(
-        description="""User permissions, can be a combination of:
-        - READ: Can view content
-        - WRITE: Can create and edit content
-        - DELETE: Can remove content
-        - ADMIN: Has administrative privileges
-        - Or predefined combinations like READ_WRITE, STANDARD, or ALL"""
-    )
-
-user = client.chat.completions.create(
-    model="gpt-4",  # Better for complex models
-    response_model=User,
-    messages=[
-        {"role": "user", "content": """
-        User Profile:
-        Name: Sarah Johnson
-        Role: Content Manager
-        Permissions: Can read, write, and delete content
-        """}
-    ]
-)
-
-print(f"User: {user.name}")
-print(f"Role: {user.role}")
-print(f"Permissions: {user.permissions.name}")  # Should be "STANDARD"
-if Permissions.READ in user.permissions:
-    print("User can read content")
-
-if Permissions.WRITE in user.permissions:
-    print("User can write content")
-
-if Permissions.ADMIN in user.permissions:
-    print("User has admin privileges")
-else:
-    print("User does not have admin privileges")
+    priority: Priority
+    status: Status
 ```
-
-```shell
-$ pip install instructor pydantic
-$ python working-with-enums.py
-```
-
-For more information, see the original documentation:
-- https://github.com/jxnl/instructor
 
 ## Classification and Analysis
 
@@ -2337,12 +1872,13 @@ asyncio.run(stream_async())
 ```
 
 ```shell
-$ pip install instructor pydantic
+$ pip install instructor pydantic openai
 $ python streaming-basics.py
 ```
 
 For more information, see the original documentation:
 - https://github.com/jxnl/instructor
+- https://instructor-ai.github.io/instructor/concepts/streaming/
 
 ### Streaming Lists
 
@@ -4046,11 +3582,21 @@ For more information, see the original documentation:
 
 ### Parallel Extraction
 
+Process multiple extractions in parallel with Instructor for improved efficiency.
+
+Problem:
+Traditional extraction methods process one piece of information at a time, causing increased latency
+and inefficient use of context window when dealing with multiple related extractions.
+
+Solution:
+Instructor's parallel mode enables simultaneous extraction of multiple structured objects,
+improving response time and making better use of the model's capabilities.
+
 ```python
 import instructor
 from openai import OpenAI
-from typing import Iterable, Literal, Union
-from pydantic import BaseModel
+from typing import Iterable, Literal, Union, List
+from pydantic import BaseModel, Field
 client = instructor.from_openai(OpenAI(), mode=instructor.Mode.PARALLEL_TOOLS)
 class Weather(BaseModel):
     location: str
@@ -4059,6 +3605,12 @@ class Weather(BaseModel):
 class SearchQuery(BaseModel):
     query: str
 def extract_parallel_info(user_query: str) -> list[Union[Weather, SearchQuery]]:
+    """
+    Extract both weather requests and search queries from a single user input.
+    
+    This allows the model to process multiple intents in one go, such as checking
+    weather for multiple locations while also performing searches.
+    """
     function_calls = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[
@@ -4072,20 +3624,16 @@ def extract_parallel_info(user_query: str) -> list[Union[Weather, SearchQuery]]:
     )
 
     return list(function_calls)  # Convert the iterable to a list
-results = extract_parallel_info(
-    "What's the weather in New York and Tokyo? Also, find information about renewable energy."
-)
+def demonstrate_basic_parallel():
+    results = extract_parallel_info(
+        "What's the weather in New York and Tokyo? Also, find information about renewable energy."
+    )
 
-for result in results:
-    if isinstance(result, Weather):
-        print(f"Weather request for {result.location} in {result.units} units")
-    elif isinstance(result, SearchQuery):
-        print(f"Search query: {result.query}")
-from typing import Iterable, Union
-from pydantic import BaseModel, Field
-import instructor
-from openai import OpenAI
-client = instructor.from_openai(OpenAI(), mode=instructor.Mode.PARALLEL_TOOLS)
+    for result in results:
+        if isinstance(result, Weather):
+            print(f"Weather request for {result.location} in {result.units} units")
+        elif isinstance(result, SearchQuery):
+            print(f"Search query: {result.query}")
 class Person(BaseModel):
     name: str
     age: int
@@ -4100,7 +3648,13 @@ class Location(BaseModel):
     city: str
     country: str
     population: int = Field(description="Approximate population")
-def extract_entities(text: str) -> list[Union[Person, Company, Location]]:
+def extract_entities(text: str) -> List[Union[Person, Company, Location]]:
+    """
+    Extract multiple entity types from a text simultaneously.
+    
+    This function identifies and structures information about people,
+    companies, and locations from unstructured text in a single pass.
+    """
     results = client.chat.completions.create(
         model="gpt-4-turbo",
         messages=[
@@ -4111,20 +3665,36 @@ def extract_entities(text: str) -> list[Union[Person, Company, Location]]:
     )
 
     return list(results)
+
+def demonstrate_entity_extraction():
 text = """
-John Smith is a 35-year-old software engineer living in San Francisco, USA,
-a city with about 815,000 people. He works at TechCorp, a software development
-company founded in 2005 that specializes in AI applications. His colleague
-Maria Rodriguez, 29, is a data scientist who recently moved from Madrid, Spain,
-a city of approximately 3.2 million people.
-"""
+    John Smith is a 35-year-old software engineer living in San Francisco, USA,
+    a city with about 815,000 people. He works at TechCorp, a software development
+    company founded in 2005 that specializes in AI applications. His colleague
+    Maria Rodriguez, 29, is a data scientist who recently moved from Madrid, Spain,
+    a city of approximately 3.2 million people.
+    """
 
-entities = extract_entities(text)
+    entities = extract_entities(text)
 people = [e for e in entities if isinstance(e, Person)]
-companies = [e for e in entities if isinstance(e, Company)]
-locations = [e for e in entities if isinstance(e, Location)]
+    companies = [e for e in entities if isinstance(e, Company)]
+    locations = [e for e in entities if isinstance(e, Location)]
 
-print(f"Found {len(people)} people, {len(companies)} companies, and {len(locations)} locations")
+    print(f"Found {len(people)} people, {len(companies)} companies, and {len(locations)} locations")
+for person in people:
+        print(f"Person: {person.name}, {person.age}, {person.occupation}")
+    
+    for company in companies:
+        print(f"Company: {company.name}, {company.industry}, founded in {company.year_founded}")
+    
+    for location in locations:
+        print(f"Location: {location.city}, {location.country}, pop. {location.population}")
+if __name__ == "__main__":
+    print("\n--- Basic Parallel Extraction ---")
+    demonstrate_basic_parallel()
+    
+    print("\n--- Advanced Entity Extraction ---")
+    demonstrate_entity_extraction()
 ```
 
 ```shell
@@ -4608,6 +4178,220 @@ For more information, see the original documentation:
 ## Miscellaneous Examples
 
 Additional examples that don't fit into other categories
+
+### Working with Enums
+
+```python
+from enum import Enum
+from pydantic import BaseModel
+import instructor
+from openai import OpenAI
+class ProductCategory(str, Enum):
+    ELECTRONICS = "electronics"
+    CLOTHING = "clothing"
+    HOME = "home"
+    BOOKS = "books"
+    TOYS = "toys"
+
+class Product(BaseModel):
+    name: str
+    price: float
+    category: ProductCategory
+client = instructor.from_openai(OpenAI())
+product = client.chat.completions.create(
+    model="gpt-3.5-turbo",
+    response_model=Product,
+    messages=[
+        {"role": "user", "content": "Our new wireless headphones cost $79.99 and belong in our electronics department."}
+    ]
+)
+
+print(f"Product: {product.name}")
+print(f"Price: ${product.price}")
+print(f"Category: {product.category}")
+if product.category == ProductCategory.ELECTRONICS:
+    print("This is an electronic product.")
+
+from enum import Enum, auto
+from pydantic import BaseModel
+from typing import List
+class Priority(str, Enum):
+    LOW = "low"
+    MEDIUM = "medium"
+    HIGH = "high"
+    CRITICAL = "critical"
+class Status(str, Enum):
+    TODO = "todo"
+    IN_PROGRESS = "in_progress"
+    REVIEW = "review"
+    DONE = "done"
+
+class Task(BaseModel):
+    title: str
+    description: str
+    priority: Priority
+    status: Status
+    tags: List[str] = []
+
+task = client.chat.completions.create(
+    model="gpt-3.5-turbo",
+    response_model=Task,
+    messages=[
+        {"role": "user", "content": """
+        Task Details:
+        Title: Fix login page bug
+        Description: Users report seeing errors when trying to log in with special characters
+        Priority: High
+        Status: In Progress
+        Tags: bug, authentication, frontend
+        """}
+    ]
+)
+
+print(f"Task: {task.title}")
+print(f"Description: {task.description}")
+print(f"Priority: {task.priority}")  # Priority.HIGH
+print(f"Status: {task.status}")  # Status.IN_PROGRESS
+print(f"Tags: {', '.join(task.tags)}")
+if task.priority in [Priority.HIGH, Priority.CRITICAL]:
+    print("This task requires immediate attention!")
+
+if task.status == Status.IN_PROGRESS:
+    print("This task is being worked on.")
+
+from enum import IntEnum
+from pydantic import BaseModel
+class SeverityLevel(IntEnum):
+    LOW = 1
+    MODERATE = 2
+    HIGH = 3
+    SEVERE = 4
+    CRITICAL = 5
+
+class SecurityIssue(BaseModel):
+    title: str
+    description: str
+    severity: SeverityLevel
+    affected_users: int
+
+issue = client.chat.completions.create(
+    model="gpt-3.5-turbo",
+    response_model=SecurityIssue,
+    messages=[
+        {"role": "user", "content": """
+        Security Alert:
+        Issue: Database Exposure
+        Details: Customer database was partially exposed due to misconfigured firewall
+        Severity: 4 (Severe)
+        Affected Users: 5,230
+        """}
+    ]
+)
+
+print(f"Issue: {issue.title}")
+print(f"Description: {issue.description}")
+print(f"Severity: {issue.severity.name} (Level {issue.severity.value})")  # "SEVERE (Level 4)"
+print(f"Affected Users: {issue.affected_users}")
+if issue.severity >= SeverityLevel.HIGH and issue.affected_users > 1000:
+    print("This requires executive notification!")
+
+from enum import Enum
+from pydantic import BaseModel, Field
+
+class TicketType(str, Enum):
+    BUG = "bug"
+    FEATURE = "feature"
+    IMPROVEMENT = "improvement"
+    DOCUMENTATION = "documentation"
+    QUESTION = "question"
+
+class Ticket(BaseModel):
+    title: str
+    description: str
+ticket_type: TicketType = Field(
+        description="""Type of ticket with these options:
+        - bug: Something is not working correctly
+        - feature: A new capability is requested
+        - improvement: Enhancement to an existing feature
+        - documentation: Updates to documentation
+        - question: Question about functionality"""
+    )
+
+ticket = client.chat.completions.create(
+    model="gpt-3.5-turbo",
+    response_model=Ticket,
+    messages=[
+        {"role": "user", "content": """
+        New Ticket:
+        Title: Add dark mode to application
+        Description: Users would like a dark theme option to reduce eye strain when using the app at night
+        """}
+    ]
+)
+
+print(f"Ticket: {ticket.title}")
+print(f"Description: {ticket.description}")
+print(f"Type: {ticket.ticket_type}")  # Should be TicketType.IMPROVEMENT or TicketType.FEATURE
+
+from enum import Flag, auto
+from pydantic import BaseModel, Field
+class Permissions(Flag):
+    NONE = 0
+    READ = auto()       # 1
+    WRITE = auto()      # 2
+    DELETE = auto()     # 4
+    ADMIN = auto()      # 8
+READ_WRITE = READ | WRITE                # 3
+    STANDARD = READ | WRITE | DELETE         # 7
+    ALL = READ | WRITE | DELETE | ADMIN      # 15
+
+class User(BaseModel):
+    name: str
+    role: str
+    permissions: Permissions = Field(
+        description="""User permissions, can be a combination of:
+        - READ: Can view content
+        - WRITE: Can create and edit content
+        - DELETE: Can remove content
+        - ADMIN: Has administrative privileges
+        - Or predefined combinations like READ_WRITE, STANDARD, or ALL"""
+    )
+
+user = client.chat.completions.create(
+    model="gpt-4",  # Better for complex models
+    response_model=User,
+    messages=[
+        {"role": "user", "content": """
+        User Profile:
+        Name: Sarah Johnson
+        Role: Content Manager
+        Permissions: Can read, write, and delete content
+        """}
+    ]
+)
+
+print(f"User: {user.name}")
+print(f"Role: {user.role}")
+print(f"Permissions: {user.permissions.name}")  # Should be "STANDARD"
+if Permissions.READ in user.permissions:
+    print("User can read content")
+
+if Permissions.WRITE in user.permissions:
+    print("User can write content")
+
+if Permissions.ADMIN in user.permissions:
+    print("User has admin privileges")
+else:
+    print("User does not have admin privileges")
+```
+
+```shell
+$ pip install instructor pydantic
+$ python working-with-enums.py
+```
+
+For more information, see the original documentation:
+- https://github.com/jxnl/instructor
 
 ### Resources
 

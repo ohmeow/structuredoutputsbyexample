@@ -2922,7 +2922,7 @@
     {
       "id": "012-simple-object",
       "title": "Simple Object Extraction",
-      "description": "",
+      "description": "Here we extract basic objects from text with Instructor",
       "order": 12,
       "code_segments": [
         {
@@ -2930,51 +2930,77 @@
           "display_code": "\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 2,
-          "line_range": [
-            2,
-            2
-          ]
-        },
-        {
-          "code": "# Extract basic objects from text with Instructor.\n",
-          "display_code": "",
-          "annotation": "Extract basic objects from text with Instructor.",
-          "is_comment": true,
           "start_line": 3,
           "line_range": [
             3,
             3
-          ],
-          "target_line_range": [
-            4,
-            13
           ]
         },
         {
-          "code": "from pydantic import BaseModel\n\nclass Person(BaseModel):\n    name: str\n    age: int\n    occupation: str\n\nimport instructor\nfrom openai import OpenAI\n\n",
-          "display_code": "from pydantic import BaseModel\n\nclass Person(BaseModel):\n    name: str\n    age: int\n    occupation: str\n\nimport instructor\nfrom openai import OpenAI\n\n",
-          "annotation": "",
-          "is_comment": false,
+          "code": "# Import the necessary libraries\n",
+          "display_code": "",
+          "annotation": "Import the necessary libraries",
+          "is_comment": true,
           "start_line": 4,
           "line_range": [
             4,
-            13
+            4
+          ],
+          "target_line_range": [
+            5,
+            8
           ]
         },
         {
-          "code": "# Patch the client\n",
-          "display_code": "",
-          "annotation": "Patch the client",
-          "is_comment": true,
-          "start_line": 14,
+          "code": "from pydantic import BaseModel, Field\nimport instructor\nfrom openai import OpenAI\n\n",
+          "display_code": "from pydantic import BaseModel, Field\nimport instructor\nfrom openai import OpenAI\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 5,
           "line_range": [
-            14,
-            14
+            5,
+            8
+          ]
+        },
+        {
+          "code": "# Define the Person class with Pydantic\n",
+          "display_code": "",
+          "annotation": "Define the Person class with Pydantic",
+          "is_comment": true,
+          "start_line": 9,
+          "line_range": [
+            9,
+            9
           ],
           "target_line_range": [
-            15,
+            10,
+            15
+          ]
+        },
+        {
+          "code": "class Person(BaseModel):\n    \"\"\"Extract person information from text.\"\"\"\n    name: str = Field(description=\"The person's full name\")\n    age: int = Field(description=\"The person's age in years\")\n    occupation: str = Field(description=\"The person's current job title or role\")\n\n",
+          "display_code": "class Person(BaseModel):\n    \"\"\"Extract person information from text.\"\"\"\n    name: str = Field(description=\"The person's full name\")\n    age: int = Field(description=\"The person's age in years\")\n    occupation: str = Field(description=\"The person's current job title or role\")\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 10,
+          "line_range": [
+            10,
+            15
+          ]
+        },
+        {
+          "code": "# Patch the OpenAI client with Instructor\n",
+          "display_code": "",
+          "annotation": "Patch the OpenAI client with Instructor",
+          "is_comment": true,
+          "start_line": 16,
+          "line_range": [
+            16,
             16
+          ],
+          "target_line_range": [
+            17,
+            18
           ]
         },
         {
@@ -2982,140 +3008,62 @@
           "display_code": "client = instructor.from_openai(OpenAI())\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 15,
-          "line_range": [
-            15,
-            16
-          ]
-        },
-        {
-          "code": "# Extract the data\n",
-          "display_code": "",
-          "annotation": "Extract the data",
-          "is_comment": true,
           "start_line": 17,
           "line_range": [
             17,
-            17
-          ],
-          "target_line_range": [
-            18,
-            29
+            18
           ]
         },
         {
-          "code": "person = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    response_model=Person,\n    messages=[\n        {\"role\": \"user\", \"content\": \"John Doe is a 30-year-old software engineer.\"}\n    ]\n)\n\nprint(f\"Name: {person.name}\")\nprint(f\"Age: {person.age}\")\nprint(f\"Occupation: {person.occupation}\")\n\n",
-          "display_code": "person = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    response_model=Person,\n    messages=[\n        {\"role\": \"user\", \"content\": \"John Doe is a 30-year-old software engineer.\"}\n    ]\n)\n\nprint(f\"Name: {person.name}\")\nprint(f\"Age: {person.age}\")\nprint(f\"Occupation: {person.occupation}\")\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 18,
-          "line_range": [
-            18,
-            29
-          ]
-        },
-        {
-          "code": "# Output:# Name: John Doe# Age: 30# Occupation: software engineer\n",
+          "code": "# Extract the data from text\n",
           "display_code": "",
-          "annotation": "Output:# Name: John Doe# Age: 30# Occupation: software engineer",
+          "annotation": "Extract the data from text",
           "is_comment": true,
-          "start_line": 30,
+          "start_line": 19,
           "line_range": [
-            30,
-            30
+            19,
+            19
           ],
           "target_line_range": [
-            31,
-            47
+            20,
+            27
           ]
         },
         {
-          "code": "\nextracted = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    response_model=Person,\n    messages=[\n        {\"role\": \"user\", \"content\": \"\"\"\n        In our company blog post, we want to highlight one of our newest team members.\n        John Smith joined us last month. He's 34 years old and works as a data scientist.\n        John previously worked at TechCorp for 5 years.\n        \"\"\"}\n    ]\n)\n\nprint(f\"Name: {extracted.name}\")\nprint(f\"Age: {extracted.age}\")\nprint(f\"Occupation: {extracted.occupation}\")\n\n",
-          "display_code": "\nextracted = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    response_model=Person,\n    messages=[\n        {\"role\": \"user\", \"content\": \"\"\"\n        In our company blog post, we want to highlight one of our newest team members.\n        John Smith joined us last month. He's 34 years old and works as a data scientist.\n        John previously worked at TechCorp for 5 years.\n        \"\"\"}\n    ]\n)\n\nprint(f\"Name: {extracted.name}\")\nprint(f\"Age: {extracted.age}\")\nprint(f\"Occupation: {extracted.occupation}\")\n\n",
+          "code": "person = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    response_model=Person,\n    messages=[\n        {\"role\": \"user\", \"content\": \"John Doe is a 30-year-old software engineer.\"}\n    ]\n)\n\n",
+          "display_code": "person = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    response_model=Person,\n    messages=[\n        {\"role\": \"user\", \"content\": \"John Doe is a 30-year-old software engineer.\"}\n    ]\n)\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 31,
+          "start_line": 20,
           "line_range": [
-            31,
-            47
+            20,
+            27
           ]
         },
         {
-          "code": "# Output:# Name: John Smith# Age: 34# Occupation: data scientist\n",
+          "code": "# Print the extracted structured data\n# Output:\n# Name: John Doe\n# Age: 30\n# Occupation: software engineer\n",
           "display_code": "",
-          "annotation": "Output:# Name: John Smith# Age: 34# Occupation: data scientist",
+          "annotation": "Print the extracted structured data\nOutput:\nName: John Doe\nAge: 30\nOccupation: software engineer",
           "is_comment": true,
-          "start_line": 48,
+          "start_line": 28,
           "line_range": [
-            48,
-            48
+            28,
+            32
           ],
           "target_line_range": [
-            49,
-            72
+            33,
+            35
           ]
         },
         {
-          "code": "\nfrom pydantic import BaseModel, Field\n\nclass Person(BaseModel):\n    name: str = Field(description=\"The person's full name\")\n    age: int = Field(description=\"The person's age in years\")\n    occupation: str = Field(description=\"The person's current job title or role\")\n\nextracted = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    response_model=Person,\n    messages=[\n        {\"role\": \"user\", \"content\": \"\"\"\n        Meet Sarah Johnson, one of our senior architects.\n        She's been with the firm since she was 28, and now at 42,\n        she leads our sustainable design initiatives.\n        \"\"\"}\n    ]\n)\n\nprint(f\"Name: {extracted.name}\")\nprint(f\"Age: {extracted.age}\")\nprint(f\"Occupation: {extracted.occupation}\")\n\n",
-          "display_code": "\nfrom pydantic import BaseModel, Field\n\nclass Person(BaseModel):\n    name: str = Field(description=\"The person's full name\")\n    age: int = Field(description=\"The person's age in years\")\n    occupation: str = Field(description=\"The person's current job title or role\")\n\nextracted = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    response_model=Person,\n    messages=[\n        {\"role\": \"user\", \"content\": \"\"\"\n        Meet Sarah Johnson, one of our senior architects.\n        She's been with the firm since she was 28, and now at 42,\n        she leads our sustainable design initiatives.\n        \"\"\"}\n    ]\n)\n\nprint(f\"Name: {extracted.name}\")\nprint(f\"Age: {extracted.age}\")\nprint(f\"Occupation: {extracted.occupation}\")\n\n",
+          "code": "print(f\"Name: {person.name}\")\nprint(f\"Age: {person.age}\")\nprint(f\"Occupation: {person.occupation}\")\n",
+          "display_code": "print(f\"Name: {person.name}\")\nprint(f\"Age: {person.age}\")\nprint(f\"Occupation: {person.occupation}\")\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 49,
+          "start_line": 33,
           "line_range": [
-            49,
-            72
-          ]
-        },
-        {
-          "code": "# Output:# Name: Sarah Johnson# Age: 42# Occupation: senior architect\n",
-          "display_code": "",
-          "annotation": "Output:# Name: Sarah Johnson# Age: 42# Occupation: senior architect",
-          "is_comment": true,
-          "start_line": 73,
-          "line_range": [
-            73,
-            73
-          ],
-          "target_line_range": [
-            74,
-            97
-          ]
-        },
-        {
-          "code": "\nclass Employee(BaseModel):\n    \"\"\"Extract employee information from the provided text.\"\"\"\n\n    name: str\n    age: int\n    department: str\n    years_of_service: int\n\nextracted = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    response_model=Employee,\n    messages=[\n        {\"role\": \"user\", \"content\": \"\"\"\n        Employee Profile: Michael Chen has been in our Marketing department for 7 years.\n        He's 36 years old and has led multiple successful campaigns.\n        \"\"\"}\n    ]\n)\n\nprint(f\"Name: {extracted.name}\")\nprint(f\"Department: {extracted.department}\")\nprint(f\"Years of Service: {extracted.years_of_service}\")\n\n",
-          "display_code": "\nclass Employee(BaseModel):\n    \"\"\"Extract employee information from the provided text.\"\"\"\n\n    name: str\n    age: int\n    department: str\n    years_of_service: int\n\nextracted = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    response_model=Employee,\n    messages=[\n        {\"role\": \"user\", \"content\": \"\"\"\n        Employee Profile: Michael Chen has been in our Marketing department for 7 years.\n        He's 36 years old and has led multiple successful campaigns.\n        \"\"\"}\n    ]\n)\n\nprint(f\"Name: {extracted.name}\")\nprint(f\"Department: {extracted.department}\")\nprint(f\"Years of Service: {extracted.years_of_service}\")\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 74,
-          "line_range": [
-            74,
-            97
-          ]
-        },
-        {
-          "code": "# Output:# Name: Michael Chen# Department: Marketing# Years of Service: 7\n",
-          "display_code": "",
-          "annotation": "Output:# Name: Michael Chen# Department: Marketing# Years of Service: 7",
-          "is_comment": true,
-          "start_line": 98,
-          "line_range": [
-            98,
-            98
-          ],
-          "target_line_range": [
-            99,
-            99
-          ]
-        },
-        {
-          "code": "\n",
-          "display_code": "\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 99,
-          "line_range": [
-            99,
-            99
+            33,
+            35
           ]
         }
       ],
@@ -3141,7 +3089,7 @@
     {
       "id": "013-list-extraction",
       "title": "List Extraction",
-      "description": "",
+      "description": "You are also able to extract lists of objects from text with Instructor.",
       "order": 13,
       "code_segments": [
         {
@@ -3149,10 +3097,10 @@
           "display_code": "\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 2,
+          "start_line": 3,
           "line_range": [
-            2,
-            2
+            3,
+            3
           ]
         },
         {
@@ -3160,25 +3108,51 @@
           "display_code": "",
           "annotation": "Extract multiple items in a list from text with Instructor.",
           "is_comment": true,
-          "start_line": 3,
-          "line_range": [
-            3,
-            3
-          ],
-          "target_line_range": [
-            4,
-            13
-          ]
-        },
-        {
-          "code": "from pydantic import BaseModel\n\nclass Person(BaseModel):\n    name: str\n    age: int\n\nimport instructor\nfrom openai import OpenAI\nfrom typing import List\n\n",
-          "display_code": "from pydantic import BaseModel\n\nclass Person(BaseModel):\n    name: str\n    age: int\n\nimport instructor\nfrom openai import OpenAI\nfrom typing import List\n\n",
-          "annotation": "",
-          "is_comment": false,
           "start_line": 4,
           "line_range": [
             4,
-            13
+            4
+          ],
+          "target_line_range": [
+            5,
+            9
+          ]
+        },
+        {
+          "code": "from pydantic import BaseModel\nimport instructor\nfrom openai import OpenAI\nfrom typing import List\n\n",
+          "display_code": "from pydantic import BaseModel\nimport instructor\nfrom openai import OpenAI\nfrom typing import List\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 5,
+          "line_range": [
+            5,
+            9
+          ]
+        },
+        {
+          "code": "# Define the Person class with Pydantic\n",
+          "display_code": "",
+          "annotation": "Define the Person class with Pydantic",
+          "is_comment": true,
+          "start_line": 10,
+          "line_range": [
+            10,
+            10
+          ],
+          "target_line_range": [
+            11,
+            15
+          ]
+        },
+        {
+          "code": "class Person(BaseModel):\n    name: str\n    age: int\n\n\n",
+          "display_code": "class Person(BaseModel):\n    name: str\n    age: int\n\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 11,
+          "line_range": [
+            11,
+            15
           ]
         },
         {
@@ -3186,14 +3160,14 @@
           "display_code": "",
           "annotation": "Patch the client",
           "is_comment": true,
-          "start_line": 14,
+          "start_line": 16,
           "line_range": [
-            14,
-            14
+            16,
+            16
           ],
           "target_line_range": [
-            15,
-            16
+            17,
+            18
           ]
         },
         {
@@ -3201,10 +3175,10 @@
           "display_code": "client = instructor.from_openai(OpenAI())\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 15,
+          "start_line": 17,
           "line_range": [
-            15,
-            16
+            17,
+            18
           ]
         },
         {
@@ -3212,14 +3186,14 @@
           "display_code": "",
           "annotation": "Extract a list of people",
           "is_comment": true,
-          "start_line": 17,
+          "start_line": 19,
           "line_range": [
-            17,
-            17
+            19,
+            19
           ],
           "target_line_range": [
-            18,
-            30
+            20,
+            32
           ]
         },
         {
@@ -3227,192 +3201,36 @@
           "display_code": "people = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    response_model=List[Person],  # Note the List wrapper\n    messages=[\n        {\"role\": \"user\", \"content\": \"\"\"\n        Extract all people mentioned in this text:\n        - John is 30 years old\n        - Mary is 25 years old\n        - Bob is 45 years old\n        \"\"\"}\n    ]\n)\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 18,
+          "start_line": 20,
           "line_range": [
-            18,
-            30
+            20,
+            32
           ]
         },
         {
-          "code": "# Print each person\n",
+          "code": "# Print each person\n# Expected output:\n# John is 30 years old\n# Mary is 25 years old\n# Bob is 45 years old\n",
           "display_code": "",
-          "annotation": "Print each person",
+          "annotation": "Print each person\nExpected output:\nJohn is 30 years old\nMary is 25 years old\nBob is 45 years old",
           "is_comment": true,
-          "start_line": 31,
+          "start_line": 33,
           "line_range": [
-            31,
-            31
+            33,
+            37
           ],
           "target_line_range": [
-            32,
-            34
+            38,
+            39
           ]
         },
         {
-          "code": "for person in people:\n    print(f\"{person.name} is {person.age} years old\")\n\n",
-          "display_code": "for person in people:\n    print(f\"{person.name} is {person.age} years old\")\n\n",
+          "code": "for person in people:\n    print(f\"{person.name} is {person.age} years old\")",
+          "display_code": "for person in people:\n    print(f\"{person.name} is {person.age} years old\")",
           "annotation": "",
           "is_comment": false,
-          "start_line": 32,
+          "start_line": 38,
           "line_range": [
-            32,
-            34
-          ]
-        },
-        {
-          "code": "# Output:# John is 30 years old# Mary is 25 years old# Bob is 45 years old\n",
-          "display_code": "",
-          "annotation": "Output:# John is 30 years old# Mary is 25 years old# Bob is 45 years old",
-          "is_comment": true,
-          "start_line": 35,
-          "line_range": [
-            35,
-            35
-          ],
-          "target_line_range": [
-            36,
-            51
-          ]
-        },
-        {
-          "code": "\npeople = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    response_model=List[Person],\n    messages=[\n        {\"role\": \"user\", \"content\": \"\"\"\n        Our team has grown significantly this year. John Smith, who is 32, joined our\n        engineering department. We also welcomed Sarah Johnson, 28, to our design team.\n        The most recent addition is Michael Chen, who is 35 and brings valuable experience.\n        \"\"\"}\n    ]\n)\n\nfor i, person in enumerate(people, 1):\n    print(f\"Person {i}: {person.name}, {person.age}\")\n\n",
-          "display_code": "\npeople = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    response_model=List[Person],\n    messages=[\n        {\"role\": \"user\", \"content\": \"\"\"\n        Our team has grown significantly this year. John Smith, who is 32, joined our\n        engineering department. We also welcomed Sarah Johnson, 28, to our design team.\n        The most recent addition is Michael Chen, who is 35 and brings valuable experience.\n        \"\"\"}\n    ]\n)\n\nfor i, person in enumerate(people, 1):\n    print(f\"Person {i}: {person.name}, {person.age}\")\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 36,
-          "line_range": [
-            36,
-            51
-          ]
-        },
-        {
-          "code": "# Output:# Person 1: John Smith, 32# Person 2: Sarah Johnson, 28# Person 3: Michael Chen, 35\n",
-          "display_code": "",
-          "annotation": "Output:# Person 1: John Smith, 32# Person 2: Sarah Johnson, 28# Person 3: Michael Chen, 35",
-          "is_comment": true,
-          "start_line": 52,
-          "line_range": [
-            52,
-            52
-          ],
-          "target_line_range": [
-            53,
-            102
-          ]
-        },
-        {
-          "code": "\nfrom pydantic import BaseModel, Field\nfrom typing import List, Optional\n\nclass Address(BaseModel):\n    street: str\n    city: str\n    state: Optional[str] = None\n    country: str\n\nclass Person(BaseModel):\n    name: str\n    age: int\n    occupation: str = Field(description=\"The person's job or profession\")\n    addresses: List[Address] = Field(description=\"List of addresses associated with this person\")\n\npeople = client.chat.completions.create(\n    model=\"gpt-4\",  # More complex extraction works better with more capable models\n    response_model=List[Person],\n    messages=[\n        {\"role\": \"user\", \"content\": \"\"\"\n        Our company employees include:\n\n        1. John Smith is a 34-year-old software developer who lives at 123 Main St, Boston, USA\n           and has a vacation home at 456 Beach Road, Miami, USA.\n\n        2. Maria Garcia is 29 and works as a marketing specialist. She lives at\n           78 Park Avenue, New York, USA.\n\n        3. Ahmed Hassan, 41, is our senior data scientist who recently moved from\n           555 River St, Cairo, Egypt to 890 Tech Blvd, San Francisco, USA.\n        \"\"\"}\n    ]\n)\n\nfor person in people:\n    print(f\"{person.name}, {person.age} - {person.occupation}\")\n    for i, addr in enumerate(person.addresses, 1):\n        print(f\"  Address {i}: {addr.street}, {addr.city}, {addr.country}\")\n    print()\n\nimport instructor\nfrom openai import OpenAI\nfrom typing import List\nfrom pydantic import BaseModel\n\nclass Person(BaseModel):\n    name: str\n    age: int\n\n",
-          "display_code": "\nfrom pydantic import BaseModel, Field\nfrom typing import List, Optional\n\nclass Address(BaseModel):\n    street: str\n    city: str\n    state: Optional[str] = None\n    country: str\n\nclass Person(BaseModel):\n    name: str\n    age: int\n    occupation: str = Field(description=\"The person's job or profession\")\n    addresses: List[Address] = Field(description=\"List of addresses associated with this person\")\n\npeople = client.chat.completions.create(\n    model=\"gpt-4\",  # More complex extraction works better with more capable models\n    response_model=List[Person],\n    messages=[\n        {\"role\": \"user\", \"content\": \"\"\"\n        Our company employees include:\n\n        1. John Smith is a 34-year-old software developer who lives at 123 Main St, Boston, USA\n           and has a vacation home at 456 Beach Road, Miami, USA.\n\n        2. Maria Garcia is 29 and works as a marketing specialist. She lives at\n           78 Park Avenue, New York, USA.\n\n        3. Ahmed Hassan, 41, is our senior data scientist who recently moved from\n           555 River St, Cairo, Egypt to 890 Tech Blvd, San Francisco, USA.\n        \"\"\"}\n    ]\n)\n\nfor person in people:\n    print(f\"{person.name}, {person.age} - {person.occupation}\")\n    for i, addr in enumerate(person.addresses, 1):\n        print(f\"  Address {i}: {addr.street}, {addr.city}, {addr.country}\")\n    print()\n\nimport instructor\nfrom openai import OpenAI\nfrom typing import List\nfrom pydantic import BaseModel\n\nclass Person(BaseModel):\n    name: str\n    age: int\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 53,
-          "line_range": [
-            53,
-            102
-          ]
-        },
-        {
-          "code": "# Patch the client\n",
-          "display_code": "",
-          "annotation": "Patch the client",
-          "is_comment": true,
-          "start_line": 103,
-          "line_range": [
-            103,
-            103
-          ],
-          "target_line_range": [
-            104,
-            105
-          ]
-        },
-        {
-          "code": "client = instructor.from_openai(OpenAI())\n\n",
-          "display_code": "client = instructor.from_openai(OpenAI())\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 104,
-          "line_range": [
-            104,
-            105
-          ]
-        },
-        {
-          "code": "# Extract with streaming using create_iterable\n",
-          "display_code": "",
-          "annotation": "Extract with streaming using create_iterable",
-          "is_comment": true,
-          "start_line": 106,
-          "line_range": [
-            106,
-            106
-          ],
-          "target_line_range": [
-            107,
-            119
-          ]
-        },
-        {
-          "code": "people_stream = client.chat.completions.create_iterable(\n    model=\"gpt-3.5-turbo\",\n    response_model=Person,  # Note: no List wrapper here\n    messages=[\n        {\"role\": \"user\", \"content\": \"\"\"\n        Extract all people mentioned in this text:\n        - John is 30 years old\n        - Mary is 25 years old\n        - Bob is 45 years old\n        \"\"\"}\n    ]\n)\n\n",
-          "display_code": "people_stream = client.chat.completions.create_iterable(\n    model=\"gpt-3.5-turbo\",\n    response_model=Person,  # Note: no List wrapper here\n    messages=[\n        {\"role\": \"user\", \"content\": \"\"\"\n        Extract all people mentioned in this text:\n        - John is 30 years old\n        - Mary is 25 years old\n        - Bob is 45 years old\n        \"\"\"}\n    ]\n)\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 107,
-          "line_range": [
-            107,
-            119
-          ]
-        },
-        {
-          "code": "# Process each item as it's completed\n",
-          "display_code": "",
-          "annotation": "Process each item as it's completed",
-          "is_comment": true,
-          "start_line": 120,
-          "line_range": [
-            120,
-            120
-          ],
-          "target_line_range": [
-            121,
-            123
-          ]
-        },
-        {
-          "code": "for person in people_stream:\n    print(f\"Received: {person.name} is {person.age} years old\")\n\n",
-          "display_code": "for person in people_stream:\n    print(f\"Received: {person.name} is {person.age} years old\")\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 121,
-          "line_range": [
-            121,
-            123
-          ]
-        },
-        {
-          "code": "# Output will appear one at a time as each is completed:# Received: John is 30 years old# Received: Mary is 25 years old# Received: Bob is 45 years old\n",
-          "display_code": "",
-          "annotation": "Output will appear one at a time as each is completed:# Received: John is 30 years old# Received: Mary is 25 years old# Received: Bob is 45 years old",
-          "is_comment": true,
-          "start_line": 124,
-          "line_range": [
-            124,
-            124
-          ],
-          "target_line_range": [
-            125,
-            125
-          ]
-        },
-        {
-          "code": "\n",
-          "display_code": "\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 125,
-          "line_range": [
-            125,
-            125
+            38,
+            39
           ]
         }
       ],
@@ -3437,60 +3255,60 @@
     },
     {
       "id": "014-nested-structures",
-      "title": "Nested Structures",
-      "description": "",
+      "title": "Simple Nested Structure",
+      "description": "This example shows how to work with nested objects",
       "order": 14,
       "code_segments": [
         {
-          "code": "\n",
-          "display_code": "\n",
+          "code": "\nimport instructor\nfrom openai import OpenAI\nfrom pydantic import BaseModel\n\n",
+          "display_code": "\nimport instructor\nfrom openai import OpenAI\nfrom pydantic import BaseModel\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 2,
-          "line_range": [
-            2,
-            2
-          ]
-        },
-        {
-          "code": "# Extract complex nested data structures from text using Instructor.\n",
-          "display_code": "",
-          "annotation": "Extract complex nested data structures from text using Instructor.",
-          "is_comment": true,
           "start_line": 3,
           "line_range": [
             3,
-            3
-          ],
-          "target_line_range": [
-            4,
-            27
+            7
           ]
         },
         {
-          "code": "from pydantic import BaseModel, Field\nfrom typing import List, Optional\n\nclass Address(BaseModel):\n    street: str\n    city: str\n    state: Optional[str] = None\n    zip_code: Optional[str] = None\n    country: str\n\nclass PhoneNumber(BaseModel):\n    number: str\n    type: str  # e.g., \"home\", \"work\", \"mobile\"\n\nclass Person(BaseModel):\n    name: str\n    age: int\n    addresses: List[Address]\n    phone_numbers: List[PhoneNumber]\n    email: Optional[str] = None\n\nimport instructor\nfrom openai import OpenAI\n\n",
-          "display_code": "from pydantic import BaseModel, Field\nfrom typing import List, Optional\n\nclass Address(BaseModel):\n    street: str\n    city: str\n    state: Optional[str] = None\n    zip_code: Optional[str] = None\n    country: str\n\nclass PhoneNumber(BaseModel):\n    number: str\n    type: str  # e.g., \"home\", \"work\", \"mobile\"\n\nclass Person(BaseModel):\n    name: str\n    age: int\n    addresses: List[Address]\n    phone_numbers: List[PhoneNumber]\n    email: Optional[str] = None\n\nimport instructor\nfrom openai import OpenAI\n\n",
+          "code": "# Define nested data structure\n",
+          "display_code": "",
+          "annotation": "Define nested data structure",
+          "is_comment": true,
+          "start_line": 8,
+          "line_range": [
+            8,
+            8
+          ],
+          "target_line_range": [
+            9,
+            18
+          ]
+        },
+        {
+          "code": "class Address(BaseModel):\n    street: str\n    city: str\n    zip_code: str\n\nclass Person(BaseModel):\n    name: str\n    age: int\n    address: Address  # Nested object\n\n",
+          "display_code": "class Address(BaseModel):\n    street: str\n    city: str\n    zip_code: str\n\nclass Person(BaseModel):\n    name: str\n    age: int\n    address: Address  # Nested object\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 4,
+          "start_line": 9,
           "line_range": [
-            4,
-            27
+            9,
+            18
           ]
         },
         {
-          "code": "# Patch the client\n",
+          "code": "# Setup client\n",
           "display_code": "",
-          "annotation": "Patch the client",
+          "annotation": "Setup client",
           "is_comment": true,
-          "start_line": 28,
+          "start_line": 19,
           "line_range": [
-            28,
-            28
+            19,
+            19
           ],
           "target_line_range": [
-            29,
-            30
+            20,
+            21
           ]
         },
         {
@@ -3498,10 +3316,10 @@
           "display_code": "client = instructor.from_openai(OpenAI())\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 29,
+          "start_line": 20,
           "line_range": [
-            29,
-            30
+            20,
+            21
           ]
         },
         {
@@ -3509,103 +3327,51 @@
           "display_code": "",
           "annotation": "Extract nested data",
           "is_comment": true,
-          "start_line": 31,
+          "start_line": 22,
           "line_range": [
-            31,
-            31
+            22,
+            22
           ],
           "target_line_range": [
-            32,
-            89
+            23,
+            33
           ]
         },
         {
-          "code": "person = client.chat.completions.create(\n    model=\"gpt-4\",  # Complex extraction works better with more capable models\n    response_model=Person,\n    messages=[\n        {\"role\": \"user\", \"content\": \"\"\"\n        John Smith is a 35-year-old professional. He has two addresses:\n        1. Home: 123 Main St, Austin, TX 78701, USA\n        2. Work: 456 Business Ave, Austin, TX 78702, USA\n\n        His phone numbers are:\n        - Mobile: (555) 123-4567\n        - Work: (555) 987-6543\n\n        You can reach him at john.smith@example.com\n        \"\"\"}\n    ]\n)\n\nprint(f\"Name: {person.name}, Age: {person.age}\")\nprint(f\"Email: {person.email}\")\n\nprint(\"\\nAddresses:\")\nfor i, address in enumerate(person.addresses, 1):\n    print(f\"  {i}. {address.street}, {address.city}, {address.state} {address.zip_code}, {address.country}\")\n\nprint(\"\\nPhone Numbers:\")\nfor phone in person.phone_numbers:\n    print(f\"  {phone.type}: {phone.number}\")\n\nfrom pydantic import BaseModel, Field\nfrom typing import List, Optional, Dict\n\nclass Skill(BaseModel):\n    name: str\n    level: str  # e.g., \"beginner\", \"intermediate\", \"expert\"\n    years_of_experience: int\n\nclass Education(BaseModel):\n    degree: str\n    institution: str\n    year: int\n\nclass WorkExperience(BaseModel):\n    company: str\n    position: str\n    start_year: int\n    end_year: Optional[int] = None\n    is_current: bool\n    responsibilities: List[str]\n\nclass Person(BaseModel):\n    name: str\n    age: int\n    skills: List[Skill]\n    education: List[Education]\n    work_experience: List[WorkExperience]\n    contact_info: Dict[str, str]  # e.g., \"email\", \"phone\", \"linkedin\"\n\n",
-          "display_code": "person = client.chat.completions.create(\n    model=\"gpt-4\",  # Complex extraction works better with more capable models\n    response_model=Person,\n    messages=[\n        {\"role\": \"user\", \"content\": \"\"\"\n        John Smith is a 35-year-old professional. He has two addresses:\n        1. Home: 123 Main St, Austin, TX 78701, USA\n        2. Work: 456 Business Ave, Austin, TX 78702, USA\n\n        His phone numbers are:\n        - Mobile: (555) 123-4567\n        - Work: (555) 987-6543\n\n        You can reach him at john.smith@example.com\n        \"\"\"}\n    ]\n)\n\nprint(f\"Name: {person.name}, Age: {person.age}\")\nprint(f\"Email: {person.email}\")\n\nprint(\"\\nAddresses:\")\nfor i, address in enumerate(person.addresses, 1):\n    print(f\"  {i}. {address.street}, {address.city}, {address.state} {address.zip_code}, {address.country}\")\n\nprint(\"\\nPhone Numbers:\")\nfor phone in person.phone_numbers:\n    print(f\"  {phone.type}: {phone.number}\")\n\nfrom pydantic import BaseModel, Field\nfrom typing import List, Optional, Dict\n\nclass Skill(BaseModel):\n    name: str\n    level: str  # e.g., \"beginner\", \"intermediate\", \"expert\"\n    years_of_experience: int\n\nclass Education(BaseModel):\n    degree: str\n    institution: str\n    year: int\n\nclass WorkExperience(BaseModel):\n    company: str\n    position: str\n    start_year: int\n    end_year: Optional[int] = None\n    is_current: bool\n    responsibilities: List[str]\n\nclass Person(BaseModel):\n    name: str\n    age: int\n    skills: List[Skill]\n    education: List[Education]\n    work_experience: List[WorkExperience]\n    contact_info: Dict[str, str]  # e.g., \"email\", \"phone\", \"linkedin\"\n\n",
+          "code": "person = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    response_model=Person,\n    messages=[\n        {\"role\": \"user\", \"content\": \"\"\"\n        John Smith is 35 years old and lives at\n        123 Main Street, New York, 10001.\n        \"\"\"}\n    ]\n)\n\n",
+          "display_code": "person = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    response_model=Person,\n    messages=[\n        {\"role\": \"user\", \"content\": \"\"\"\n        John Smith is 35 years old and lives at\n        123 Main Street, New York, 10001.\n        \"\"\"}\n    ]\n)\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 32,
+          "start_line": 23,
           "line_range": [
-            32,
-            89
+            23,
+            33
           ]
         },
         {
-          "code": "# Extract with a more capable model\n",
+          "code": "# Access nested data\n# Output:\n# Name: John Smith\n# Age: 35\n# Street: 123 Main Street\n# City: New York\n# ZIP: 10001\n",
           "display_code": "",
-          "annotation": "Extract with a more capable model",
+          "annotation": "Access nested data\nOutput:\nName: John Smith\nAge: 35\nStreet: 123 Main Street\nCity: New York\nZIP: 10001",
           "is_comment": true,
-          "start_line": 90,
+          "start_line": 34,
           "line_range": [
-            90,
-            90
+            34,
+            40
           ],
           "target_line_range": [
-            91,
-            163
+            41,
+            45
           ]
         },
         {
-          "code": "person = client.chat.completions.create(\n    model=\"gpt-4\",\n    response_model=Person,\n    messages=[\n        {\"role\": \"user\", \"content\": \"\"\"\n        Resume: Sarah Johnson\n\n        Sarah is a 42-year-old software architect with 15 years in the industry.\n\n        Contact Information:\n        - Email: sarah.j@example.com\n        - Phone: (555) 234-5678\n        - LinkedIn: linkedin.com/in/sarahjohnson\n\n        Skills:\n        - Python (Expert, 12 years)\n        - JavaScript (Intermediate, 8 years)\n        - Cloud Architecture (Expert, 7 years)\n\n        Education:\n        - Master's in Computer Science, Stanford University, 2008\n        - Bachelor's in Software Engineering, MIT, 2006\n\n        Work Experience:\n        - TechCorp Inc.\n          Senior Software Architect\n          2018-Present\n          Responsibilities:\n          * Lead architecture design for cloud solutions\n          * Manage team of 12 developers\n          * Implement CI/CD pipelines\n\n        - DataSystems LLC\n          Software Developer\n          2012-2018\n          Responsibilities:\n          * Developed backend services in Python\n          * Optimized database performance\n          * Created RESTful APIs\n        \"\"\"}\n    ]\n)\n\nprint(f\"Name: {person.name}, Age: {person.age}\")\n\nprint(\"\\nContact Info:\")\nfor key, value in person.contact_info.items():\n    print(f\"  {key}: {value}\")\n\nprint(\"\\nSkills:\")\nfor skill in person.skills:\n    print(f\"  {skill.name}: {skill.level} ({skill.years_of_experience} years)\")\n\nprint(\"\\nEducation:\")\nfor edu in person.education:\n    print(f\"  {edu.degree}, {edu.institution}, {edu.year}\")\n\nprint(\"\\nWork Experience:\")\nfor job in person.work_experience:\n    current = \"(Current)\" if job.is_current else f\"({job.start_year}-{job.end_year})\"\n    print(f\"  {job.position} at {job.company} {current}\")\n    print(\"  Responsibilities:\")\n    for resp in job.responsibilities:\n        print(f\"    - {resp}\")\n\nfrom pydantic import BaseModel, Field\nfrom typing import List, Optional\n\nclass Comment(BaseModel):\n    text: str\n    author: str\n    replies: List['Comment'] = []\n\n",
-          "display_code": "person = client.chat.completions.create(\n    model=\"gpt-4\",\n    response_model=Person,\n    messages=[\n        {\"role\": \"user\", \"content\": \"\"\"\n        Resume: Sarah Johnson\n\n        Sarah is a 42-year-old software architect with 15 years in the industry.\n\n        Contact Information:\n        - Email: sarah.j@example.com\n        - Phone: (555) 234-5678\n        - LinkedIn: linkedin.com/in/sarahjohnson\n\n        Skills:\n        - Python (Expert, 12 years)\n        - JavaScript (Intermediate, 8 years)\n        - Cloud Architecture (Expert, 7 years)\n\n        Education:\n        - Master's in Computer Science, Stanford University, 2008\n        - Bachelor's in Software Engineering, MIT, 2006\n\n        Work Experience:\n        - TechCorp Inc.\n          Senior Software Architect\n          2018-Present\n          Responsibilities:\n          * Lead architecture design for cloud solutions\n          * Manage team of 12 developers\n          * Implement CI/CD pipelines\n\n        - DataSystems LLC\n          Software Developer\n          2012-2018\n          Responsibilities:\n          * Developed backend services in Python\n          * Optimized database performance\n          * Created RESTful APIs\n        \"\"\"}\n    ]\n)\n\nprint(f\"Name: {person.name}, Age: {person.age}\")\n\nprint(\"\\nContact Info:\")\nfor key, value in person.contact_info.items():\n    print(f\"  {key}: {value}\")\n\nprint(\"\\nSkills:\")\nfor skill in person.skills:\n    print(f\"  {skill.name}: {skill.level} ({skill.years_of_experience} years)\")\n\nprint(\"\\nEducation:\")\nfor edu in person.education:\n    print(f\"  {edu.degree}, {edu.institution}, {edu.year}\")\n\nprint(\"\\nWork Experience:\")\nfor job in person.work_experience:\n    current = \"(Current)\" if job.is_current else f\"({job.start_year}-{job.end_year})\"\n    print(f\"  {job.position} at {job.company} {current}\")\n    print(\"  Responsibilities:\")\n    for resp in job.responsibilities:\n        print(f\"    - {resp}\")\n\nfrom pydantic import BaseModel, Field\nfrom typing import List, Optional\n\nclass Comment(BaseModel):\n    text: str\n    author: str\n    replies: List['Comment'] = []\n\n",
+          "code": "print(f\"Name: {person.name}\")\nprint(f\"Age: {person.age}\")\nprint(f\"Street: {person.address.street}\")\nprint(f\"City: {person.address.city}\")\nprint(f\"ZIP: {person.address.zip_code}\")\n",
+          "display_code": "print(f\"Name: {person.name}\")\nprint(f\"Age: {person.age}\")\nprint(f\"Street: {person.address.street}\")\nprint(f\"City: {person.address.city}\")\nprint(f\"ZIP: {person.address.zip_code}\")\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 91,
+          "start_line": 41,
           "line_range": [
-            91,
-            163
-          ]
-        },
-        {
-          "code": "# This is needed for recursive Pydantic models\n",
-          "display_code": "",
-          "annotation": "This is needed for recursive Pydantic models",
-          "is_comment": true,
-          "start_line": 164,
-          "line_range": [
-            164,
-            164
-          ],
-          "target_line_range": [
-            165,
-            172
-          ]
-        },
-        {
-          "code": "Comment.model_rebuild()\n\nclass Post(BaseModel):\n    title: str\n    content: str\n    author: str\n    comments: List[Comment]\n\n",
-          "display_code": "Comment.model_rebuild()\n\nclass Post(BaseModel):\n    title: str\n    content: str\n    author: str\n    comments: List[Comment]\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 165,
-          "line_range": [
-            165,
-            172
-          ]
-        },
-        {
-          "code": "# Extract recursive structure\n",
-          "display_code": "",
-          "annotation": "Extract recursive structure",
-          "is_comment": true,
-          "start_line": 173,
-          "line_range": [
-            173,
-            173
-          ],
-          "target_line_range": [
-            174,
-            208
-          ]
-        },
-        {
-          "code": "post = client.chat.completions.create(\n    model=\"gpt-4\",\n    response_model=Post,\n    messages=[\n        {\"role\": \"user\", \"content\": \"\"\"\n        Blog Post: \"Python Tips and Tricks\"\n        By: JohnDev\n\n        Python has many features that make it a versatile language. Here are some tips to improve your code...\n\n        Comments:\n        1. Comment by Alice: \"Great post! I especially liked the section on list comprehensions.\"\n          - Reply by JohnDev: \"Thanks Alice! Glad you found it useful.\"\n            - Reply by Bob: \"List comprehensions are my favorite too!\"\n               - Reply by Alice: \"They're so elegant compared to traditional loops.\"\n\n        2. Comment by Charlie: \"Could you do a follow-up on decorators?\"\n          - Reply by JohnDev: \"Great idea! I'll add it to my list of topics.\"\n        \"\"\"}\n    ]\n)\n\nprint(f\"Post: {post.title} by {post.author}\")\n\nfor i, comment in enumerate(post.comments, 1):\n    print(f\"\\nTop-level Comment {i}: {comment.author} said: '{comment.text}'\")\n\n    def print_replies(replies, indent=2):\n        for reply in replies:\n            print(f\"{'  ' * indent}{reply.author} replied: '{reply.text}'\")\n            if reply.replies:\n                print_replies(reply.replies, indent + 1)\n\n    print_replies(comment.replies)\n\n",
-          "display_code": "post = client.chat.completions.create(\n    model=\"gpt-4\",\n    response_model=Post,\n    messages=[\n        {\"role\": \"user\", \"content\": \"\"\"\n        Blog Post: \"Python Tips and Tricks\"\n        By: JohnDev\n\n        Python has many features that make it a versatile language. Here are some tips to improve your code...\n\n        Comments:\n        1. Comment by Alice: \"Great post! I especially liked the section on list comprehensions.\"\n          - Reply by JohnDev: \"Thanks Alice! Glad you found it useful.\"\n            - Reply by Bob: \"List comprehensions are my favorite too!\"\n               - Reply by Alice: \"They're so elegant compared to traditional loops.\"\n\n        2. Comment by Charlie: \"Could you do a follow-up on decorators?\"\n          - Reply by JohnDev: \"Great idea! I'll add it to my list of topics.\"\n        \"\"\"}\n    ]\n)\n\nprint(f\"Post: {post.title} by {post.author}\")\n\nfor i, comment in enumerate(post.comments, 1):\n    print(f\"\\nTop-level Comment {i}: {comment.author} said: '{comment.text}'\")\n\n    def print_replies(replies, indent=2):\n        for reply in replies:\n            print(f\"{'  ' * indent}{reply.author} replied: '{reply.text}'\")\n            if reply.replies:\n                print_replies(reply.replies, indent + 1)\n\n    print_replies(comment.replies)\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 174,
-          "line_range": [
-            174,
-            208
+            41,
+            45
           ]
         }
       ],
@@ -4353,52 +4119,26 @@
       "section_title": "Basic Extraction Patterns"
     },
     {
-      "id": "017-working-with-enums",
-      "title": "Working with Enums",
-      "description": "",
+      "id": "017-literals-and-enums",
+      "title": "Literals and Enums",
+      "description": "This example shows how to use literal types instead of enums for simpler code",
       "order": 17,
       "code_segments": [
         {
-          "code": "\n",
-          "display_code": "\n",
+          "code": "\nimport instructor\nfrom openai import OpenAI\nfrom pydantic import BaseModel, Field\nfrom typing import Literal\n\n",
+          "display_code": "\nimport instructor\nfrom openai import OpenAI\nfrom pydantic import BaseModel, Field\nfrom typing import Literal\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 2,
-          "line_range": [
-            2,
-            2
-          ]
-        },
-        {
-          "code": "# Use enumerated types with Instructor for consistent, validated extractions. Enums help enforce a fixed set of allowed values.\n",
-          "display_code": "",
-          "annotation": "Use enumerated types with Instructor for consistent, validated extractions. Enums help enforce a fixed set of allowed values.",
-          "is_comment": true,
           "start_line": 3,
           "line_range": [
             3,
-            3
-          ],
-          "target_line_range": [
-            4,
             8
           ]
         },
         {
-          "code": "from enum import Enum\nfrom pydantic import BaseModel\nimport instructor\nfrom openai import OpenAI\n\n",
-          "display_code": "from enum import Enum\nfrom pydantic import BaseModel\nimport instructor\nfrom openai import OpenAI\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 4,
-          "line_range": [
-            4,
-            8
-          ]
-        },
-        {
-          "code": "# Define an enum for product categories\n",
+          "code": "# Define a model with Literal types (preferred over enums for simplicity)\n",
           "display_code": "",
-          "annotation": "Define an enum for product categories",
+          "annotation": "Define a model with Literal types (preferred over enums for simplicity)",
           "is_comment": true,
           "start_line": 9,
           "line_range": [
@@ -4407,33 +4147,85 @@
           ],
           "target_line_range": [
             10,
-            21
+            11
           ]
         },
         {
-          "code": "class ProductCategory(str, Enum):\n    ELECTRONICS = \"electronics\"\n    CLOTHING = \"clothing\"\n    HOME = \"home\"\n    BOOKS = \"books\"\n    TOYS = \"toys\"\n\nclass Product(BaseModel):\n    name: str\n    price: float\n    category: ProductCategory\n\n",
-          "display_code": "class ProductCategory(str, Enum):\n    ELECTRONICS = \"electronics\"\n    CLOTHING = \"clothing\"\n    HOME = \"home\"\n    BOOKS = \"books\"\n    TOYS = \"toys\"\n\nclass Product(BaseModel):\n    name: str\n    price: float\n    category: ProductCategory\n\n",
+          "code": "class Task(BaseModel):\n    title: str\n",
+          "display_code": "class Task(BaseModel):\n    title: str\n",
           "annotation": "",
           "is_comment": false,
           "start_line": 10,
           "line_range": [
             10,
-            21
+            11
           ]
         },
         {
-          "code": "# Patch the client\n",
+          "code": "    # Literal type restricts values to this exact set\n",
           "display_code": "",
-          "annotation": "Patch the client",
+          "annotation": "Literal type restricts values to this exact set",
           "is_comment": true,
-          "start_line": 22,
+          "start_line": 12,
           "line_range": [
-            22,
-            22
+            12,
+            12
           ],
           "target_line_range": [
-            23,
-            24
+            13,
+            15
+          ]
+        },
+        {
+          "code": "    priority: Literal[\"low\", \"medium\", \"high\"] = Field(\n        description=\"Task priority level (low, medium, or high)\"\n    )\n",
+          "display_code": "    priority: Literal[\"low\", \"medium\", \"high\"] = Field(\n        description=\"Task priority level (low, medium, or high)\"\n    )\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 13,
+          "line_range": [
+            13,
+            15
+          ]
+        },
+        {
+          "code": "    # Another Literal type for status\n",
+          "display_code": "",
+          "annotation": "Another Literal type for status",
+          "is_comment": true,
+          "start_line": 16,
+          "line_range": [
+            16,
+            16
+          ],
+          "target_line_range": [
+            17,
+            20
+          ]
+        },
+        {
+          "code": "    status: Literal[\"todo\", \"in_progress\", \"done\"] = Field(\n        description=\"Current task status\"\n    )\n\n",
+          "display_code": "    status: Literal[\"todo\", \"in_progress\", \"done\"] = Field(\n        description=\"Current task status\"\n    )\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 17,
+          "line_range": [
+            17,
+            20
+          ]
+        },
+        {
+          "code": "# Setup client\n",
+          "display_code": "",
+          "annotation": "Setup client",
+          "is_comment": true,
+          "start_line": 21,
+          "line_range": [
+            21,
+            21
+          ],
+          "target_line_range": [
+            22,
+            23
           ]
         },
         {
@@ -4441,341 +4233,135 @@
           "display_code": "client = instructor.from_openai(OpenAI())\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 23,
+          "start_line": 22,
           "line_range": [
-            23,
-            24
+            22,
+            23
           ]
         },
         {
-          "code": "# Extract with enum validation\n",
+          "code": "# Extract data with Literal validation\n",
           "display_code": "",
-          "annotation": "Extract with enum validation",
+          "annotation": "Extract data with Literal validation",
           "is_comment": true,
+          "start_line": 24,
+          "line_range": [
+            24,
+            24
+          ],
+          "target_line_range": [
+            25,
+            32
+          ]
+        },
+        {
+          "code": "task = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    response_model=Task,\n    messages=[\n        {\"role\": \"user\", \"content\": \"Fix login page bug - high priority, currently in progress\"}\n    ]\n)\n\n",
+          "display_code": "task = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    response_model=Task,\n    messages=[\n        {\"role\": \"user\", \"content\": \"Fix login page bug - high priority, currently in progress\"}\n    ]\n)\n\n",
+          "annotation": "",
+          "is_comment": false,
           "start_line": 25,
           "line_range": [
             25,
-            25
-          ],
-          "target_line_range": [
-            26,
-            36
+            32
           ]
         },
         {
-          "code": "product = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    response_model=Product,\n    messages=[\n        {\"role\": \"user\", \"content\": \"Our new wireless headphones cost $79.99 and belong in our electronics department.\"}\n    ]\n)\n\nprint(f\"Product: {product.name}\")\nprint(f\"Price: ${product.price}\")\nprint(f\"Category: {product.category}\")\n",
-          "display_code": "product = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    response_model=Product,\n    messages=[\n        {\"role\": \"user\", \"content\": \"Our new wireless headphones cost $79.99 and belong in our electronics department.\"}\n    ]\n)\n\nprint(f\"Product: {product.name}\")\nprint(f\"Price: ${product.price}\")\nprint(f\"Category: {product.category}\")\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 26,
-          "line_range": [
-            26,
-            36
-          ]
-        },
-        {
-          "code": "# Will be ProductCategory.ELECTRONICS, not just a string\n",
+          "code": "# Use the validated data\n",
           "display_code": "",
-          "annotation": "Will be ProductCategory.ELECTRONICS, not just a string",
+          "annotation": "Use the validated data",
           "is_comment": true,
-          "start_line": 37,
+          "start_line": 33,
           "line_range": [
-            37,
-            37
+            33,
+            33
           ],
           "target_line_range": [
-            38,
-            38
+            34,
+            37
           ]
         },
         {
-          "code": "\n",
-          "display_code": "\n",
+          "code": "print(f\"Task: {task.title}\")\nprint(f\"Priority: {task.priority}\")  # Will be \"high\"\nprint(f\"Status: {task.status}\")      # Will be \"in_progress\"\n\n",
+          "display_code": "print(f\"Task: {task.title}\")\nprint(f\"Priority: {task.priority}\")  # Will be \"high\"\nprint(f\"Status: {task.status}\")      # Will be \"in_progress\"\n\n",
           "annotation": "",
           "is_comment": false,
+          "start_line": 34,
+          "line_range": [
+            34,
+            37
+          ]
+        },
+        {
+          "code": "# Check values with simple string comparison\n",
+          "display_code": "",
+          "annotation": "Check values with simple string comparison",
+          "is_comment": true,
           "start_line": 38,
           "line_range": [
             38,
             38
+          ],
+          "target_line_range": [
+            39,
+            41
           ]
         },
         {
-          "code": "# You can use the enum for comparisons\n",
-          "display_code": "",
-          "annotation": "You can use the enum for comparisons",
-          "is_comment": true,
+          "code": "if task.priority == \"high\":\n    print(\"This task requires immediate attention!\")\n\n",
+          "display_code": "if task.priority == \"high\":\n    print(\"This task requires immediate attention!\")\n\n",
+          "annotation": "",
+          "is_comment": false,
           "start_line": 39,
           "line_range": [
             39,
-            39
-          ],
-          "target_line_range": [
-            40,
-            46
+            41
           ]
         },
         {
-          "code": "if product.category == ProductCategory.ELECTRONICS:\n    print(\"This is an electronic product.\")\n\nfrom enum import Enum, auto\nfrom pydantic import BaseModel\nfrom typing import List\n\n",
-          "display_code": "if product.category == ProductCategory.ELECTRONICS:\n    print(\"This is an electronic product.\")\n\nfrom enum import Enum, auto\nfrom pydantic import BaseModel\nfrom typing import List\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 40,
-          "line_range": [
-            40,
-            46
-          ]
-        },
-        {
-          "code": "# Define priority enum\n",
+          "code": "# For comparison, here's the enum approach (more verbose)\n# ======================================================\n",
           "display_code": "",
-          "annotation": "Define priority enum",
+          "annotation": "For comparison, here's the enum approach (more verbose)\n======================================================",
           "is_comment": true,
-          "start_line": 47,
+          "start_line": 42,
           "line_range": [
-            47,
-            47
+            42,
+            43
           ],
           "target_line_range": [
-            48,
-            53
+            44,
+            60
           ]
         },
         {
-          "code": "class Priority(str, Enum):\n    LOW = \"low\"\n    MEDIUM = \"medium\"\n    HIGH = \"high\"\n    CRITICAL = \"critical\"\n\n",
-          "display_code": "class Priority(str, Enum):\n    LOW = \"low\"\n    MEDIUM = \"medium\"\n    HIGH = \"high\"\n    CRITICAL = \"critical\"\n\n",
+          "code": "import enum\n\nclass Priority(str, enum.Enum):\n    LOW = \"low\"\n    MEDIUM = \"medium\"\n    HIGH = \"high\"\n\nclass Status(str, enum.Enum):\n    TODO = \"todo\"\n    IN_PROGRESS = \"in_progress\"\n    DONE = \"done\"\n\nclass TaskWithEnums(BaseModel):\n    title: str\n    priority: Priority\n    status: Status\n\n",
+          "display_code": "import enum\n\nclass Priority(str, enum.Enum):\n    LOW = \"low\"\n    MEDIUM = \"medium\"\n    HIGH = \"high\"\n\nclass Status(str, enum.Enum):\n    TODO = \"todo\"\n    IN_PROGRESS = \"in_progress\"\n    DONE = \"done\"\n\nclass TaskWithEnums(BaseModel):\n    title: str\n    priority: Priority\n    status: Status\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 48,
+          "start_line": 44,
           "line_range": [
-            48,
-            53
+            44,
+            60
           ]
         },
         {
-          "code": "# Define status enum\n",
+          "code": "# Using enums requires more code and is harder to understand at a glance",
           "display_code": "",
-          "annotation": "Define status enum",
+          "annotation": "Using enums requires more code and is harder to understand at a glance",
           "is_comment": true,
-          "start_line": 54,
+          "start_line": 61,
           "line_range": [
-            54,
-            54
+            61,
+            61
           ],
           "target_line_range": [
-            55,
-            88
-          ]
-        },
-        {
-          "code": "class Status(str, Enum):\n    TODO = \"todo\"\n    IN_PROGRESS = \"in_progress\"\n    REVIEW = \"review\"\n    DONE = \"done\"\n\nclass Task(BaseModel):\n    title: str\n    description: str\n    priority: Priority\n    status: Status\n    tags: List[str] = []\n\ntask = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    response_model=Task,\n    messages=[\n        {\"role\": \"user\", \"content\": \"\"\"\n        Task Details:\n        Title: Fix login page bug\n        Description: Users report seeing errors when trying to log in with special characters\n        Priority: High\n        Status: In Progress\n        Tags: bug, authentication, frontend\n        \"\"\"}\n    ]\n)\n\nprint(f\"Task: {task.title}\")\nprint(f\"Description: {task.description}\")\nprint(f\"Priority: {task.priority}\")  # Priority.HIGH\nprint(f\"Status: {task.status}\")  # Status.IN_PROGRESS\nprint(f\"Tags: {', '.join(task.tags)}\")\n\n",
-          "display_code": "class Status(str, Enum):\n    TODO = \"todo\"\n    IN_PROGRESS = \"in_progress\"\n    REVIEW = \"review\"\n    DONE = \"done\"\n\nclass Task(BaseModel):\n    title: str\n    description: str\n    priority: Priority\n    status: Status\n    tags: List[str] = []\n\ntask = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    response_model=Task,\n    messages=[\n        {\"role\": \"user\", \"content\": \"\"\"\n        Task Details:\n        Title: Fix login page bug\n        Description: Users report seeing errors when trying to log in with special characters\n        Priority: High\n        Status: In Progress\n        Tags: bug, authentication, frontend\n        \"\"\"}\n    ]\n)\n\nprint(f\"Task: {task.title}\")\nprint(f\"Description: {task.description}\")\nprint(f\"Priority: {task.priority}\")  # Priority.HIGH\nprint(f\"Status: {task.status}\")  # Status.IN_PROGRESS\nprint(f\"Tags: {', '.join(task.tags)}\")\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 55,
-          "line_range": [
-            55,
-            88
-          ]
-        },
-        {
-          "code": "# Use enums for conditional logic\n",
-          "display_code": "",
-          "annotation": "Use enums for conditional logic",
-          "is_comment": true,
-          "start_line": 89,
-          "line_range": [
-            89,
-            89
-          ],
-          "target_line_range": [
-            90,
-            98
-          ]
-        },
-        {
-          "code": "if task.priority in [Priority.HIGH, Priority.CRITICAL]:\n    print(\"This task requires immediate attention!\")\n\nif task.status == Status.IN_PROGRESS:\n    print(\"This task is being worked on.\")\n\nfrom enum import IntEnum\nfrom pydantic import BaseModel\n\n",
-          "display_code": "if task.priority in [Priority.HIGH, Priority.CRITICAL]:\n    print(\"This task requires immediate attention!\")\n\nif task.status == Status.IN_PROGRESS:\n    print(\"This task is being worked on.\")\n\nfrom enum import IntEnum\nfrom pydantic import BaseModel\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 90,
-          "line_range": [
-            90,
-            98
-          ]
-        },
-        {
-          "code": "# Define an integer-based enum\n",
-          "display_code": "",
-          "annotation": "Define an integer-based enum",
-          "is_comment": true,
-          "start_line": 99,
-          "line_range": [
-            99,
-            99
-          ],
-          "target_line_range": [
-            100,
-            131
-          ]
-        },
-        {
-          "code": "class SeverityLevel(IntEnum):\n    LOW = 1\n    MODERATE = 2\n    HIGH = 3\n    SEVERE = 4\n    CRITICAL = 5\n\nclass SecurityIssue(BaseModel):\n    title: str\n    description: str\n    severity: SeverityLevel\n    affected_users: int\n\nissue = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    response_model=SecurityIssue,\n    messages=[\n        {\"role\": \"user\", \"content\": \"\"\"\n        Security Alert:\n        Issue: Database Exposure\n        Details: Customer database was partially exposed due to misconfigured firewall\n        Severity: 4 (Severe)\n        Affected Users: 5,230\n        \"\"\"}\n    ]\n)\n\nprint(f\"Issue: {issue.title}\")\nprint(f\"Description: {issue.description}\")\nprint(f\"Severity: {issue.severity.name} (Level {issue.severity.value})\")  # \"SEVERE (Level 4)\"\nprint(f\"Affected Users: {issue.affected_users}\")\n\n",
-          "display_code": "class SeverityLevel(IntEnum):\n    LOW = 1\n    MODERATE = 2\n    HIGH = 3\n    SEVERE = 4\n    CRITICAL = 5\n\nclass SecurityIssue(BaseModel):\n    title: str\n    description: str\n    severity: SeverityLevel\n    affected_users: int\n\nissue = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    response_model=SecurityIssue,\n    messages=[\n        {\"role\": \"user\", \"content\": \"\"\"\n        Security Alert:\n        Issue: Database Exposure\n        Details: Customer database was partially exposed due to misconfigured firewall\n        Severity: 4 (Severe)\n        Affected Users: 5,230\n        \"\"\"}\n    ]\n)\n\nprint(f\"Issue: {issue.title}\")\nprint(f\"Description: {issue.description}\")\nprint(f\"Severity: {issue.severity.name} (Level {issue.severity.value})\")  # \"SEVERE (Level 4)\"\nprint(f\"Affected Users: {issue.affected_users}\")\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 100,
-          "line_range": [
-            100,
-            131
-          ]
-        },
-        {
-          "code": "# Use integer enum for thresholds\n",
-          "display_code": "",
-          "annotation": "Use integer enum for thresholds",
-          "is_comment": true,
-          "start_line": 132,
-          "line_range": [
-            132,
-            132
-          ],
-          "target_line_range": [
-            133,
-            149
-          ]
-        },
-        {
-          "code": "if issue.severity >= SeverityLevel.HIGH and issue.affected_users > 1000:\n    print(\"This requires executive notification!\")\n\nfrom enum import Enum\nfrom pydantic import BaseModel, Field\n\nclass TicketType(str, Enum):\n    BUG = \"bug\"\n    FEATURE = \"feature\"\n    IMPROVEMENT = \"improvement\"\n    DOCUMENTATION = \"documentation\"\n    QUESTION = \"question\"\n\nclass Ticket(BaseModel):\n    title: str\n    description: str\n\n",
-          "display_code": "if issue.severity >= SeverityLevel.HIGH and issue.affected_users > 1000:\n    print(\"This requires executive notification!\")\n\nfrom enum import Enum\nfrom pydantic import BaseModel, Field\n\nclass TicketType(str, Enum):\n    BUG = \"bug\"\n    FEATURE = \"feature\"\n    IMPROVEMENT = \"improvement\"\n    DOCUMENTATION = \"documentation\"\n    QUESTION = \"question\"\n\nclass Ticket(BaseModel):\n    title: str\n    description: str\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 133,
-          "line_range": [
-            133,
-            149
-          ]
-        },
-        {
-          "code": "    # Add descriptions to help the LLM understand the enum\n",
-          "display_code": "",
-          "annotation": "Add descriptions to help the LLM understand the enum",
-          "is_comment": true,
-          "start_line": 150,
-          "line_range": [
-            150,
-            150
-          ],
-          "target_line_range": [
-            151,
-            178
-          ]
-        },
-        {
-          "code": "    ticket_type: TicketType = Field(\n        description=\"\"\"Type of ticket with these options:\n        - bug: Something is not working correctly\n        - feature: A new capability is requested\n        - improvement: Enhancement to an existing feature\n        - documentation: Updates to documentation\n        - question: Question about functionality\"\"\"\n    )\n\nticket = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    response_model=Ticket,\n    messages=[\n        {\"role\": \"user\", \"content\": \"\"\"\n        New Ticket:\n        Title: Add dark mode to application\n        Description: Users would like a dark theme option to reduce eye strain when using the app at night\n        \"\"\"}\n    ]\n)\n\nprint(f\"Ticket: {ticket.title}\")\nprint(f\"Description: {ticket.description}\")\nprint(f\"Type: {ticket.ticket_type}\")  # Should be TicketType.IMPROVEMENT or TicketType.FEATURE\n\nfrom enum import Flag, auto\nfrom pydantic import BaseModel, Field\n\n",
-          "display_code": "    ticket_type: TicketType = Field(\n        description=\"\"\"Type of ticket with these options:\n        - bug: Something is not working correctly\n        - feature: A new capability is requested\n        - improvement: Enhancement to an existing feature\n        - documentation: Updates to documentation\n        - question: Question about functionality\"\"\"\n    )\n\nticket = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    response_model=Ticket,\n    messages=[\n        {\"role\": \"user\", \"content\": \"\"\"\n        New Ticket:\n        Title: Add dark mode to application\n        Description: Users would like a dark theme option to reduce eye strain when using the app at night\n        \"\"\"}\n    ]\n)\n\nprint(f\"Ticket: {ticket.title}\")\nprint(f\"Description: {ticket.description}\")\nprint(f\"Type: {ticket.ticket_type}\")  # Should be TicketType.IMPROVEMENT or TicketType.FEATURE\n\nfrom enum import Flag, auto\nfrom pydantic import BaseModel, Field\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 151,
-          "line_range": [
-            151,
-            178
-          ]
-        },
-        {
-          "code": "# Define a Flag enum for permissions\n",
-          "display_code": "",
-          "annotation": "Define a Flag enum for permissions",
-          "is_comment": true,
-          "start_line": 179,
-          "line_range": [
-            179,
-            179
-          ],
-          "target_line_range": [
-            180,
-            186
-          ]
-        },
-        {
-          "code": "class Permissions(Flag):\n    NONE = 0\n    READ = auto()       # 1\n    WRITE = auto()      # 2\n    DELETE = auto()     # 4\n    ADMIN = auto()      # 8\n\n",
-          "display_code": "class Permissions(Flag):\n    NONE = 0\n    READ = auto()       # 1\n    WRITE = auto()      # 2\n    DELETE = auto()     # 4\n    ADMIN = auto()      # 8\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 180,
-          "line_range": [
-            180,
-            186
-          ]
-        },
-        {
-          "code": "    # Combinations\n",
-          "display_code": "",
-          "annotation": "Combinations",
-          "is_comment": true,
-          "start_line": 187,
-          "line_range": [
-            187,
-            187
-          ],
-          "target_line_range": [
-            188,
-            220
-          ]
-        },
-        {
-          "code": "    READ_WRITE = READ | WRITE                # 3\n    STANDARD = READ | WRITE | DELETE         # 7\n    ALL = READ | WRITE | DELETE | ADMIN      # 15\n\nclass User(BaseModel):\n    name: str\n    role: str\n    permissions: Permissions = Field(\n        description=\"\"\"User permissions, can be a combination of:\n        - READ: Can view content\n        - WRITE: Can create and edit content\n        - DELETE: Can remove content\n        - ADMIN: Has administrative privileges\n        - Or predefined combinations like READ_WRITE, STANDARD, or ALL\"\"\"\n    )\n\nuser = client.chat.completions.create(\n    model=\"gpt-4\",  # Better for complex models\n    response_model=User,\n    messages=[\n        {\"role\": \"user\", \"content\": \"\"\"\n        User Profile:\n        Name: Sarah Johnson\n        Role: Content Manager\n        Permissions: Can read, write, and delete content\n        \"\"\"}\n    ]\n)\n\nprint(f\"User: {user.name}\")\nprint(f\"Role: {user.role}\")\nprint(f\"Permissions: {user.permissions.name}\")  # Should be \"STANDARD\"\n\n",
-          "display_code": "    READ_WRITE = READ | WRITE                # 3\n    STANDARD = READ | WRITE | DELETE         # 7\n    ALL = READ | WRITE | DELETE | ADMIN      # 15\n\nclass User(BaseModel):\n    name: str\n    role: str\n    permissions: Permissions = Field(\n        description=\"\"\"User permissions, can be a combination of:\n        - READ: Can view content\n        - WRITE: Can create and edit content\n        - DELETE: Can remove content\n        - ADMIN: Has administrative privileges\n        - Or predefined combinations like READ_WRITE, STANDARD, or ALL\"\"\"\n    )\n\nuser = client.chat.completions.create(\n    model=\"gpt-4\",  # Better for complex models\n    response_model=User,\n    messages=[\n        {\"role\": \"user\", \"content\": \"\"\"\n        User Profile:\n        Name: Sarah Johnson\n        Role: Content Manager\n        Permissions: Can read, write, and delete content\n        \"\"\"}\n    ]\n)\n\nprint(f\"User: {user.name}\")\nprint(f\"Role: {user.role}\")\nprint(f\"Permissions: {user.permissions.name}\")  # Should be \"STANDARD\"\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 188,
-          "line_range": [
-            188,
-            220
-          ]
-        },
-        {
-          "code": "# Check individual permissions\n",
-          "display_code": "",
-          "annotation": "Check individual permissions",
-          "is_comment": true,
-          "start_line": 221,
-          "line_range": [
-            221,
-            221
-          ],
-          "target_line_range": [
-            222,
-            232
-          ]
-        },
-        {
-          "code": "if Permissions.READ in user.permissions:\n    print(\"User can read content\")\n\nif Permissions.WRITE in user.permissions:\n    print(\"User can write content\")\n\nif Permissions.ADMIN in user.permissions:\n    print(\"User has admin privileges\")\nelse:\n    print(\"User does not have admin privileges\")\n\n",
-          "display_code": "if Permissions.READ in user.permissions:\n    print(\"User can read content\")\n\nif Permissions.WRITE in user.permissions:\n    print(\"User can write content\")\n\nif Permissions.ADMIN in user.permissions:\n    print(\"User has admin privileges\")\nelse:\n    print(\"User does not have admin privileges\")\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 222,
-          "line_range": [
-            222,
-            232
+            44,
+            60
           ]
         }
       ],
-      "shell_segments": [
-        {
-          "explanation": "First, install Instructor and any dependencies",
-          "command": "pip install instructor pydantic",
-          "output": ""
-        },
-        {
-          "explanation": "Run the Python script",
-          "command": "python working-with-enums.py",
-          "output": ""
-        }
-      ],
+      "shell_segments": [],
       "image_data": [],
-      "documentation_links": [
-        "https://github.com/jxnl/instructor"
-      ],
+      "documentation_links": [],
       "section_id": "003-basic-extraction",
       "section_title": "Basic Extraction Patterns"
     },
@@ -5758,18 +5344,19 @@
       "shell_segments": [
         {
           "explanation": "First, install Instructor and any dependencies",
-          "command": "pip install instructor pydantic",
+          "command": "pip install instructor pydantic openai",
           "output": ""
         },
         {
-          "explanation": "Run the Python script",
+          "explanation": "Run the Python script to see streaming in action",
           "command": "python streaming-basics.py",
           "output": ""
         }
       ],
       "image_data": [],
       "documentation_links": [
-        "https://github.com/jxnl/instructor"
+        "https://github.com/jxnl/instructor",
+        "https://instructor-ai.github.io/instructor/concepts/streaming/"
       ],
       "section_id": "005-streaming",
       "section_title": "Streaming"
@@ -12958,7 +12545,7 @@
     {
       "id": "044-parallel-extraction",
       "title": "Parallel Extraction",
-      "description": "",
+      "description": "Process multiple extractions in parallel with Instructor for improved efficiency.\n\nProblem:\nTraditional extraction methods process one piece of information at a time, causing increased latency\nand inefficient use of context window when dealing with multiple related extractions.\n\nSolution:\nInstructor's parallel mode enables simultaneous extraction of multiple structured objects,\nimproving response time and making better use of the model's capabilities.",
       "order": 44,
       "code_segments": [
         {
@@ -12966,25 +12553,51 @@
           "display_code": "\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 2,
+          "start_line": 11,
           "line_range": [
-            2,
-            2
+            11,
+            11
           ]
         },
         {
-          "code": "# Process multiple extractions in parallel with Instructor. Enables more efficient use of context window for related extractions.\n",
+          "code": "# Import necessary libraries\n",
           "display_code": "",
-          "annotation": "Process multiple extractions in parallel with Instructor. Enables more efficient use of context window for related extractions.",
+          "annotation": "Import necessary libraries",
           "is_comment": true,
-          "start_line": 3,
+          "start_line": 12,
           "line_range": [
-            3,
-            3
+            12,
+            12
           ],
           "target_line_range": [
-            4,
-            4
+            13,
+            17
+          ]
+        },
+        {
+          "code": "import instructor\nfrom openai import OpenAI\nfrom typing import Iterable, Literal, Union, List\nfrom pydantic import BaseModel, Field\n\n",
+          "display_code": "import instructor\nfrom openai import OpenAI\nfrom typing import Iterable, Literal, Union, List\nfrom pydantic import BaseModel, Field\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 13,
+          "line_range": [
+            13,
+            17
+          ]
+        },
+        {
+          "code": "# ------------------------------\n# Basic Parallel Extraction Example\n# ------------------------------\n",
+          "display_code": "",
+          "annotation": "------------------------------\nBasic Parallel Extraction Example\n------------------------------",
+          "is_comment": true,
+          "start_line": 18,
+          "line_range": [
+            18,
+            20
+          ],
+          "target_line_range": [
+            21,
+            21
           ]
         },
         {
@@ -12992,94 +12605,16 @@
           "display_code": "\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 4,
+          "start_line": 21,
           "line_range": [
-            4,
-            4
-          ]
-        },
-        {
-          "code": "# Instructor supports parallel function calling, allowing you to extract multiple pieces of information simultaneously. This can significantly reduce latency in your applications.\n",
-          "display_code": "",
-          "annotation": "Instructor supports parallel function calling, allowing you to extract multiple pieces of information simultaneously. This can significantly reduce latency in your applications.",
-          "is_comment": true,
-          "start_line": 5,
-          "line_range": [
-            5,
-            5
-          ],
-          "target_line_range": [
-            6,
-            10
-          ]
-        },
-        {
-          "code": "import instructor\nfrom openai import OpenAI\nfrom typing import Iterable, Literal, Union\nfrom pydantic import BaseModel\n\n",
-          "display_code": "import instructor\nfrom openai import OpenAI\nfrom typing import Iterable, Literal, Union\nfrom pydantic import BaseModel\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 6,
-          "line_range": [
-            6,
-            10
+            21,
+            21
           ]
         },
         {
           "code": "# Initialize the client with instructor in parallel mode\n",
           "display_code": "",
           "annotation": "Initialize the client with instructor in parallel mode",
-          "is_comment": true,
-          "start_line": 11,
-          "line_range": [
-            11,
-            11
-          ],
-          "target_line_range": [
-            12,
-            13
-          ]
-        },
-        {
-          "code": "client = instructor.from_openai(OpenAI(), mode=instructor.Mode.PARALLEL_TOOLS)\n\n",
-          "display_code": "client = instructor.from_openai(OpenAI(), mode=instructor.Mode.PARALLEL_TOOLS)\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 12,
-          "line_range": [
-            12,
-            13
-          ]
-        },
-        {
-          "code": "# Define multiple response models\n",
-          "display_code": "",
-          "annotation": "Define multiple response models",
-          "is_comment": true,
-          "start_line": 14,
-          "line_range": [
-            14,
-            14
-          ],
-          "target_line_range": [
-            15,
-            21
-          ]
-        },
-        {
-          "code": "class Weather(BaseModel):\n    location: str\n    units: Literal[\"imperial\", \"metric\"]\n\nclass SearchQuery(BaseModel):\n    query: str\n\n",
-          "display_code": "class Weather(BaseModel):\n    location: str\n    units: Literal[\"imperial\", \"metric\"]\n\nclass SearchQuery(BaseModel):\n    query: str\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 15,
-          "line_range": [
-            15,
-            21
-          ]
-        },
-        {
-          "code": "# Extract multiple pieces of information in parallel\n",
-          "display_code": "",
-          "annotation": "Extract multiple pieces of information in parallel",
           "is_comment": true,
           "start_line": 22,
           "line_range": [
@@ -13088,76 +12623,76 @@
           ],
           "target_line_range": [
             23,
-            37
+            24
           ]
         },
         {
-          "code": "def extract_parallel_info(user_query: str) -> list[Union[Weather, SearchQuery]]:\n    function_calls = client.chat.completions.create(\n        model=\"gpt-4o-mini\",\n        messages=[\n            {\"role\": \"system\", \"content\": \"You must always use tools\"},\n            {\n                \"role\": \"user\",\n                \"content\": user_query\n            }\n        ],\n        response_model=Iterable[Weather | SearchQuery]\n    )\n\n    return list(function_calls)  # Convert the iterable to a list\n\n",
-          "display_code": "def extract_parallel_info(user_query: str) -> list[Union[Weather, SearchQuery]]:\n    function_calls = client.chat.completions.create(\n        model=\"gpt-4o-mini\",\n        messages=[\n            {\"role\": \"system\", \"content\": \"You must always use tools\"},\n            {\n                \"role\": \"user\",\n                \"content\": user_query\n            }\n        ],\n        response_model=Iterable[Weather | SearchQuery]\n    )\n\n    return list(function_calls)  # Convert the iterable to a list\n\n",
+          "code": "client = instructor.from_openai(OpenAI(), mode=instructor.Mode.PARALLEL_TOOLS)\n\n",
+          "display_code": "client = instructor.from_openai(OpenAI(), mode=instructor.Mode.PARALLEL_TOOLS)\n\n",
           "annotation": "",
           "is_comment": false,
           "start_line": 23,
           "line_range": [
             23,
-            37
+            24
+          ]
+        },
+        {
+          "code": "# Define multiple response models\n",
+          "display_code": "",
+          "annotation": "Define multiple response models",
+          "is_comment": true,
+          "start_line": 25,
+          "line_range": [
+            25,
+            25
+          ],
+          "target_line_range": [
+            26,
+            32
+          ]
+        },
+        {
+          "code": "class Weather(BaseModel):\n    location: str\n    units: Literal[\"imperial\", \"metric\"]\n\nclass SearchQuery(BaseModel):\n    query: str\n\n",
+          "display_code": "class Weather(BaseModel):\n    location: str\n    units: Literal[\"imperial\", \"metric\"]\n\nclass SearchQuery(BaseModel):\n    query: str\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 26,
+          "line_range": [
+            26,
+            32
+          ]
+        },
+        {
+          "code": "# Extract multiple pieces of information in parallel\n",
+          "display_code": "",
+          "annotation": "Extract multiple pieces of information in parallel",
+          "is_comment": true,
+          "start_line": 33,
+          "line_range": [
+            33,
+            33
+          ],
+          "target_line_range": [
+            34,
+            54
+          ]
+        },
+        {
+          "code": "def extract_parallel_info(user_query: str) -> list[Union[Weather, SearchQuery]]:\n    \"\"\"\n    Extract both weather requests and search queries from a single user input.\n    \n    This allows the model to process multiple intents in one go, such as checking\n    weather for multiple locations while also performing searches.\n    \"\"\"\n    function_calls = client.chat.completions.create(\n        model=\"gpt-4o-mini\",\n        messages=[\n            {\"role\": \"system\", \"content\": \"You must always use tools\"},\n            {\n                \"role\": \"user\",\n                \"content\": user_query\n            }\n        ],\n        response_model=Iterable[Weather | SearchQuery]\n    )\n\n    return list(function_calls)  # Convert the iterable to a list\n\n",
+          "display_code": "def extract_parallel_info(user_query: str) -> list[Union[Weather, SearchQuery]]:\n    \"\"\"\n    Extract both weather requests and search queries from a single user input.\n    \n    This allows the model to process multiple intents in one go, such as checking\n    weather for multiple locations while also performing searches.\n    \"\"\"\n    function_calls = client.chat.completions.create(\n        model=\"gpt-4o-mini\",\n        messages=[\n            {\"role\": \"system\", \"content\": \"You must always use tools\"},\n            {\n                \"role\": \"user\",\n                \"content\": user_query\n            }\n        ],\n        response_model=Iterable[Weather | SearchQuery]\n    )\n\n    return list(function_calls)  # Convert the iterable to a list\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 34,
+          "line_range": [
+            34,
+            54
           ]
         },
         {
           "code": "# Example usage\n",
           "display_code": "",
           "annotation": "Example usage",
-          "is_comment": true,
-          "start_line": 38,
-          "line_range": [
-            38,
-            38
-          ],
-          "target_line_range": [
-            39,
-            48
-          ]
-        },
-        {
-          "code": "results = extract_parallel_info(\n    \"What's the weather in New York and Tokyo? Also, find information about renewable energy.\"\n)\n\nfor result in results:\n    if isinstance(result, Weather):\n        print(f\"Weather request for {result.location} in {result.units} units\")\n    elif isinstance(result, SearchQuery):\n        print(f\"Search query: {result.query}\")\n\n",
-          "display_code": "results = extract_parallel_info(\n    \"What's the weather in New York and Tokyo? Also, find information about renewable energy.\"\n)\n\nfor result in results:\n    if isinstance(result, Weather):\n        print(f\"Weather request for {result.location} in {result.units} units\")\n    elif isinstance(result, SearchQuery):\n        print(f\"Search query: {result.query}\")\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 39,
-          "line_range": [
-            39,
-            48
-          ]
-        },
-        {
-          "code": "# You can also define more complex parallel extractions:\n",
-          "display_code": "",
-          "annotation": "You can also define more complex parallel extractions:",
-          "is_comment": true,
-          "start_line": 49,
-          "line_range": [
-            49,
-            49
-          ],
-          "target_line_range": [
-            50,
-            54
-          ]
-        },
-        {
-          "code": "from typing import Iterable, Union\nfrom pydantic import BaseModel, Field\nimport instructor\nfrom openai import OpenAI\n\n",
-          "display_code": "from typing import Iterable, Union\nfrom pydantic import BaseModel, Field\nimport instructor\nfrom openai import OpenAI\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 50,
-          "line_range": [
-            50,
-            54
-          ]
-        },
-        {
-          "code": "# Initialize client with parallel mode\n",
-          "display_code": "",
-          "annotation": "Initialize client with parallel mode",
           "is_comment": true,
           "start_line": 55,
           "line_range": [
@@ -13166,18 +12701,44 @@
           ],
           "target_line_range": [
             56,
-            57
+            66
           ]
         },
         {
-          "code": "client = instructor.from_openai(OpenAI(), mode=instructor.Mode.PARALLEL_TOOLS)\n\n",
-          "display_code": "client = instructor.from_openai(OpenAI(), mode=instructor.Mode.PARALLEL_TOOLS)\n\n",
+          "code": "def demonstrate_basic_parallel():\n    results = extract_parallel_info(\n        \"What's the weather in New York and Tokyo? Also, find information about renewable energy.\"\n    )\n\n    for result in results:\n        if isinstance(result, Weather):\n            print(f\"Weather request for {result.location} in {result.units} units\")\n        elif isinstance(result, SearchQuery):\n            print(f\"Search query: {result.query}\")\n\n",
+          "display_code": "def demonstrate_basic_parallel():\n    results = extract_parallel_info(\n        \"What's the weather in New York and Tokyo? Also, find information about renewable energy.\"\n    )\n\n    for result in results:\n        if isinstance(result, Weather):\n            print(f\"Weather request for {result.location} in {result.units} units\")\n        elif isinstance(result, SearchQuery):\n            print(f\"Search query: {result.query}\")\n\n",
           "annotation": "",
           "is_comment": false,
           "start_line": 56,
           "line_range": [
             56,
-            57
+            66
+          ]
+        },
+        {
+          "code": "# ------------------------------\n# Advanced Parallel Entity Extraction\n# ------------------------------\n",
+          "display_code": "",
+          "annotation": "------------------------------\nAdvanced Parallel Entity Extraction\n------------------------------",
+          "is_comment": true,
+          "start_line": 67,
+          "line_range": [
+            67,
+            69
+          ],
+          "target_line_range": [
+            70,
+            70
+          ]
+        },
+        {
+          "code": "\n",
+          "display_code": "\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 70,
+          "line_range": [
+            70,
+            70
           ]
         },
         {
@@ -13185,14 +12746,14 @@
           "display_code": "",
           "annotation": "Define extraction models",
           "is_comment": true,
-          "start_line": 58,
+          "start_line": 71,
           "line_range": [
-            58,
-            58
+            71,
+            71
           ],
           "target_line_range": [
-            59,
-            73
+            72,
+            86
           ]
         },
         {
@@ -13200,42 +12761,16 @@
           "display_code": "class Person(BaseModel):\n    name: str\n    age: int\n    occupation: str\n\nclass Company(BaseModel):\n    name: str\n    industry: str\n    year_founded: int\n\nclass Location(BaseModel):\n    city: str\n    country: str\n    population: int = Field(description=\"Approximate population\")\n\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 59,
+          "start_line": 72,
           "line_range": [
-            59,
-            73
+            72,
+            86
           ]
         },
         {
           "code": "# Extract multiple entity types from text\n",
           "display_code": "",
           "annotation": "Extract multiple entity types from text",
-          "is_comment": true,
-          "start_line": 74,
-          "line_range": [
-            74,
-            74
-          ],
-          "target_line_range": [
-            75,
-            86
-          ]
-        },
-        {
-          "code": "def extract_entities(text: str) -> list[Union[Person, Company, Location]]:\n    results = client.chat.completions.create(\n        model=\"gpt-4-turbo\",\n        messages=[\n            {\"role\": \"system\", \"content\": \"Extract all relevant entities from the text.\"},\n            {\"role\": \"user\", \"content\": text}\n        ],\n        response_model=Iterable[Person | Company | Location]\n    )\n\n    return list(results)\n\n",
-          "display_code": "def extract_entities(text: str) -> list[Union[Person, Company, Location]]:\n    results = client.chat.completions.create(\n        model=\"gpt-4-turbo\",\n        messages=[\n            {\"role\": \"system\", \"content\": \"Extract all relevant entities from the text.\"},\n            {\"role\": \"user\", \"content\": text}\n        ],\n        response_model=Iterable[Person | Company | Location]\n    )\n\n    return list(results)\n\n",
-          "annotation": "",
-          "is_comment": false,
-          "start_line": 75,
-          "line_range": [
-            75,
-            86
-          ]
-        },
-        {
-          "code": "# Example usage\n",
-          "display_code": "",
-          "annotation": "Example usage",
           "is_comment": true,
           "start_line": 87,
           "line_range": [
@@ -13244,44 +12779,122 @@
           ],
           "target_line_range": [
             88,
-            97
+            106
           ]
         },
         {
-          "code": "text = \"\"\"\nJohn Smith is a 35-year-old software engineer living in San Francisco, USA,\na city with about 815,000 people. He works at TechCorp, a software development\ncompany founded in 2005 that specializes in AI applications. His colleague\nMaria Rodriguez, 29, is a data scientist who recently moved from Madrid, Spain,\na city of approximately 3.2 million people.\n\"\"\"\n\nentities = extract_entities(text)\n\n",
-          "display_code": "text = \"\"\"\nJohn Smith is a 35-year-old software engineer living in San Francisco, USA,\na city with about 815,000 people. He works at TechCorp, a software development\ncompany founded in 2005 that specializes in AI applications. His colleague\nMaria Rodriguez, 29, is a data scientist who recently moved from Madrid, Spain,\na city of approximately 3.2 million people.\n\"\"\"\n\nentities = extract_entities(text)\n\n",
+          "code": "def extract_entities(text: str) -> List[Union[Person, Company, Location]]:\n    \"\"\"\n    Extract multiple entity types from a text simultaneously.\n    \n    This function identifies and structures information about people,\n    companies, and locations from unstructured text in a single pass.\n    \"\"\"\n    results = client.chat.completions.create(\n        model=\"gpt-4-turbo\",\n        messages=[\n            {\"role\": \"system\", \"content\": \"Extract all relevant entities from the text.\"},\n            {\"role\": \"user\", \"content\": text}\n        ],\n        response_model=Iterable[Person | Company | Location]\n    )\n\n    return list(results)\n\ndef demonstrate_entity_extraction():\n",
+          "display_code": "def extract_entities(text: str) -> List[Union[Person, Company, Location]]:\n    \"\"\"\n    Extract multiple entity types from a text simultaneously.\n    \n    This function identifies and structures information about people,\n    companies, and locations from unstructured text in a single pass.\n    \"\"\"\n    results = client.chat.completions.create(\n        model=\"gpt-4-turbo\",\n        messages=[\n            {\"role\": \"system\", \"content\": \"Extract all relevant entities from the text.\"},\n            {\"role\": \"user\", \"content\": text}\n        ],\n        response_model=Iterable[Person | Company | Location]\n    )\n\n    return list(results)\n\ndef demonstrate_entity_extraction():\n",
           "annotation": "",
           "is_comment": false,
           "start_line": 88,
           "line_range": [
             88,
-            97
+            106
           ]
         },
         {
-          "code": "# Process different entity types\n",
+          "code": "    # Sample text containing multiple entity types\n",
+          "display_code": "",
+          "annotation": "Sample text containing multiple entity types",
+          "is_comment": true,
+          "start_line": 107,
+          "line_range": [
+            107,
+            107
+          ],
+          "target_line_range": [
+            108,
+            117
+          ]
+        },
+        {
+          "code": "    text = \"\"\"\n    John Smith is a 35-year-old software engineer living in San Francisco, USA,\n    a city with about 815,000 people. He works at TechCorp, a software development\n    company founded in 2005 that specializes in AI applications. His colleague\n    Maria Rodriguez, 29, is a data scientist who recently moved from Madrid, Spain,\n    a city of approximately 3.2 million people.\n    \"\"\"\n\n    entities = extract_entities(text)\n\n",
+          "display_code": "    text = \"\"\"\n    John Smith is a 35-year-old software engineer living in San Francisco, USA,\n    a city with about 815,000 people. He works at TechCorp, a software development\n    company founded in 2005 that specializes in AI applications. His colleague\n    Maria Rodriguez, 29, is a data scientist who recently moved from Madrid, Spain,\n    a city of approximately 3.2 million people.\n    \"\"\"\n\n    entities = extract_entities(text)\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 108,
+          "line_range": [
+            108,
+            117
+          ]
+        },
+        {
+          "code": "    # Process different entity types\n",
           "display_code": "",
           "annotation": "Process different entity types",
           "is_comment": true,
-          "start_line": 98,
+          "start_line": 118,
           "line_range": [
-            98,
-            98
+            118,
+            118
           ],
           "target_line_range": [
-            99,
-            104
+            119,
+            124
           ]
         },
         {
-          "code": "people = [e for e in entities if isinstance(e, Person)]\ncompanies = [e for e in entities if isinstance(e, Company)]\nlocations = [e for e in entities if isinstance(e, Location)]\n\nprint(f\"Found {len(people)} people, {len(companies)} companies, and {len(locations)} locations\")\n\n",
-          "display_code": "people = [e for e in entities if isinstance(e, Person)]\ncompanies = [e for e in entities if isinstance(e, Company)]\nlocations = [e for e in entities if isinstance(e, Location)]\n\nprint(f\"Found {len(people)} people, {len(companies)} companies, and {len(locations)} locations\")\n\n",
+          "code": "    people = [e for e in entities if isinstance(e, Person)]\n    companies = [e for e in entities if isinstance(e, Company)]\n    locations = [e for e in entities if isinstance(e, Location)]\n\n    print(f\"Found {len(people)} people, {len(companies)} companies, and {len(locations)} locations\")\n    \n",
+          "display_code": "    people = [e for e in entities if isinstance(e, Person)]\n    companies = [e for e in entities if isinstance(e, Company)]\n    locations = [e for e in entities if isinstance(e, Location)]\n\n    print(f\"Found {len(people)} people, {len(companies)} companies, and {len(locations)} locations\")\n    \n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 99,
+          "start_line": 119,
           "line_range": [
-            99,
-            104
+            119,
+            124
+          ]
+        },
+        {
+          "code": "    # Display extracted entities\n",
+          "display_code": "",
+          "annotation": "Display extracted entities",
+          "is_comment": true,
+          "start_line": 125,
+          "line_range": [
+            125,
+            125
+          ],
+          "target_line_range": [
+            126,
+            134
+          ]
+        },
+        {
+          "code": "    for person in people:\n        print(f\"Person: {person.name}, {person.age}, {person.occupation}\")\n    \n    for company in companies:\n        print(f\"Company: {company.name}, {company.industry}, founded in {company.year_founded}\")\n    \n    for location in locations:\n        print(f\"Location: {location.city}, {location.country}, pop. {location.population}\")\n\n",
+          "display_code": "    for person in people:\n        print(f\"Person: {person.name}, {person.age}, {person.occupation}\")\n    \n    for company in companies:\n        print(f\"Company: {company.name}, {company.industry}, founded in {company.year_founded}\")\n    \n    for location in locations:\n        print(f\"Location: {location.city}, {location.country}, pop. {location.population}\")\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 126,
+          "line_range": [
+            126,
+            134
+          ]
+        },
+        {
+          "code": "# ------------------------------\n# Main Execution\n# ------------------------------\n",
+          "display_code": "",
+          "annotation": "------------------------------\nMain Execution\n------------------------------",
+          "is_comment": true,
+          "start_line": 135,
+          "line_range": [
+            135,
+            137
+          ],
+          "target_line_range": [
+            138,
+            145
+          ]
+        },
+        {
+          "code": "\nif __name__ == \"__main__\":\n    print(\"\\n--- Basic Parallel Extraction ---\")\n    demonstrate_basic_parallel()\n    \n    print(\"\\n--- Advanced Entity Extraction ---\")\n    demonstrate_entity_extraction()\n\n",
+          "display_code": "\nif __name__ == \"__main__\":\n    print(\"\\n--- Basic Parallel Extraction ---\")\n    demonstrate_basic_parallel()\n    \n    print(\"\\n--- Advanced Entity Extraction ---\")\n    demonstrate_entity_extraction()\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 138,
+          "line_range": [
+            138,
+            145
           ]
         }
       ],
@@ -15132,6 +14745,433 @@
       "section_title": "Performance and Optimization"
     },
     {
+      "id": "017-working-with-enums",
+      "title": "Working with Enums",
+      "description": "",
+      "order": 17,
+      "code_segments": [
+        {
+          "code": "\n",
+          "display_code": "\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 2,
+          "line_range": [
+            2,
+            2
+          ]
+        },
+        {
+          "code": "# Use enumerated types with Instructor for consistent, validated extractions. Enums help enforce a fixed set of allowed values.\n",
+          "display_code": "",
+          "annotation": "Use enumerated types with Instructor for consistent, validated extractions. Enums help enforce a fixed set of allowed values.",
+          "is_comment": true,
+          "start_line": 3,
+          "line_range": [
+            3,
+            3
+          ],
+          "target_line_range": [
+            4,
+            8
+          ]
+        },
+        {
+          "code": "from enum import Enum\nfrom pydantic import BaseModel\nimport instructor\nfrom openai import OpenAI\n\n",
+          "display_code": "from enum import Enum\nfrom pydantic import BaseModel\nimport instructor\nfrom openai import OpenAI\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 4,
+          "line_range": [
+            4,
+            8
+          ]
+        },
+        {
+          "code": "# Define an enum for product categories\n",
+          "display_code": "",
+          "annotation": "Define an enum for product categories",
+          "is_comment": true,
+          "start_line": 9,
+          "line_range": [
+            9,
+            9
+          ],
+          "target_line_range": [
+            10,
+            21
+          ]
+        },
+        {
+          "code": "class ProductCategory(str, Enum):\n    ELECTRONICS = \"electronics\"\n    CLOTHING = \"clothing\"\n    HOME = \"home\"\n    BOOKS = \"books\"\n    TOYS = \"toys\"\n\nclass Product(BaseModel):\n    name: str\n    price: float\n    category: ProductCategory\n\n",
+          "display_code": "class ProductCategory(str, Enum):\n    ELECTRONICS = \"electronics\"\n    CLOTHING = \"clothing\"\n    HOME = \"home\"\n    BOOKS = \"books\"\n    TOYS = \"toys\"\n\nclass Product(BaseModel):\n    name: str\n    price: float\n    category: ProductCategory\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 10,
+          "line_range": [
+            10,
+            21
+          ]
+        },
+        {
+          "code": "# Patch the client\n",
+          "display_code": "",
+          "annotation": "Patch the client",
+          "is_comment": true,
+          "start_line": 22,
+          "line_range": [
+            22,
+            22
+          ],
+          "target_line_range": [
+            23,
+            24
+          ]
+        },
+        {
+          "code": "client = instructor.from_openai(OpenAI())\n\n",
+          "display_code": "client = instructor.from_openai(OpenAI())\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 23,
+          "line_range": [
+            23,
+            24
+          ]
+        },
+        {
+          "code": "# Extract with enum validation\n",
+          "display_code": "",
+          "annotation": "Extract with enum validation",
+          "is_comment": true,
+          "start_line": 25,
+          "line_range": [
+            25,
+            25
+          ],
+          "target_line_range": [
+            26,
+            36
+          ]
+        },
+        {
+          "code": "product = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    response_model=Product,\n    messages=[\n        {\"role\": \"user\", \"content\": \"Our new wireless headphones cost $79.99 and belong in our electronics department.\"}\n    ]\n)\n\nprint(f\"Product: {product.name}\")\nprint(f\"Price: ${product.price}\")\nprint(f\"Category: {product.category}\")\n",
+          "display_code": "product = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    response_model=Product,\n    messages=[\n        {\"role\": \"user\", \"content\": \"Our new wireless headphones cost $79.99 and belong in our electronics department.\"}\n    ]\n)\n\nprint(f\"Product: {product.name}\")\nprint(f\"Price: ${product.price}\")\nprint(f\"Category: {product.category}\")\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 26,
+          "line_range": [
+            26,
+            36
+          ]
+        },
+        {
+          "code": "# Will be ProductCategory.ELECTRONICS, not just a string\n",
+          "display_code": "",
+          "annotation": "Will be ProductCategory.ELECTRONICS, not just a string",
+          "is_comment": true,
+          "start_line": 37,
+          "line_range": [
+            37,
+            37
+          ],
+          "target_line_range": [
+            38,
+            38
+          ]
+        },
+        {
+          "code": "\n",
+          "display_code": "\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 38,
+          "line_range": [
+            38,
+            38
+          ]
+        },
+        {
+          "code": "# You can use the enum for comparisons\n",
+          "display_code": "",
+          "annotation": "You can use the enum for comparisons",
+          "is_comment": true,
+          "start_line": 39,
+          "line_range": [
+            39,
+            39
+          ],
+          "target_line_range": [
+            40,
+            46
+          ]
+        },
+        {
+          "code": "if product.category == ProductCategory.ELECTRONICS:\n    print(\"This is an electronic product.\")\n\nfrom enum import Enum, auto\nfrom pydantic import BaseModel\nfrom typing import List\n\n",
+          "display_code": "if product.category == ProductCategory.ELECTRONICS:\n    print(\"This is an electronic product.\")\n\nfrom enum import Enum, auto\nfrom pydantic import BaseModel\nfrom typing import List\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 40,
+          "line_range": [
+            40,
+            46
+          ]
+        },
+        {
+          "code": "# Define priority enum\n",
+          "display_code": "",
+          "annotation": "Define priority enum",
+          "is_comment": true,
+          "start_line": 47,
+          "line_range": [
+            47,
+            47
+          ],
+          "target_line_range": [
+            48,
+            53
+          ]
+        },
+        {
+          "code": "class Priority(str, Enum):\n    LOW = \"low\"\n    MEDIUM = \"medium\"\n    HIGH = \"high\"\n    CRITICAL = \"critical\"\n\n",
+          "display_code": "class Priority(str, Enum):\n    LOW = \"low\"\n    MEDIUM = \"medium\"\n    HIGH = \"high\"\n    CRITICAL = \"critical\"\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 48,
+          "line_range": [
+            48,
+            53
+          ]
+        },
+        {
+          "code": "# Define status enum\n",
+          "display_code": "",
+          "annotation": "Define status enum",
+          "is_comment": true,
+          "start_line": 54,
+          "line_range": [
+            54,
+            54
+          ],
+          "target_line_range": [
+            55,
+            88
+          ]
+        },
+        {
+          "code": "class Status(str, Enum):\n    TODO = \"todo\"\n    IN_PROGRESS = \"in_progress\"\n    REVIEW = \"review\"\n    DONE = \"done\"\n\nclass Task(BaseModel):\n    title: str\n    description: str\n    priority: Priority\n    status: Status\n    tags: List[str] = []\n\ntask = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    response_model=Task,\n    messages=[\n        {\"role\": \"user\", \"content\": \"\"\"\n        Task Details:\n        Title: Fix login page bug\n        Description: Users report seeing errors when trying to log in with special characters\n        Priority: High\n        Status: In Progress\n        Tags: bug, authentication, frontend\n        \"\"\"}\n    ]\n)\n\nprint(f\"Task: {task.title}\")\nprint(f\"Description: {task.description}\")\nprint(f\"Priority: {task.priority}\")  # Priority.HIGH\nprint(f\"Status: {task.status}\")  # Status.IN_PROGRESS\nprint(f\"Tags: {', '.join(task.tags)}\")\n\n",
+          "display_code": "class Status(str, Enum):\n    TODO = \"todo\"\n    IN_PROGRESS = \"in_progress\"\n    REVIEW = \"review\"\n    DONE = \"done\"\n\nclass Task(BaseModel):\n    title: str\n    description: str\n    priority: Priority\n    status: Status\n    tags: List[str] = []\n\ntask = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    response_model=Task,\n    messages=[\n        {\"role\": \"user\", \"content\": \"\"\"\n        Task Details:\n        Title: Fix login page bug\n        Description: Users report seeing errors when trying to log in with special characters\n        Priority: High\n        Status: In Progress\n        Tags: bug, authentication, frontend\n        \"\"\"}\n    ]\n)\n\nprint(f\"Task: {task.title}\")\nprint(f\"Description: {task.description}\")\nprint(f\"Priority: {task.priority}\")  # Priority.HIGH\nprint(f\"Status: {task.status}\")  # Status.IN_PROGRESS\nprint(f\"Tags: {', '.join(task.tags)}\")\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 55,
+          "line_range": [
+            55,
+            88
+          ]
+        },
+        {
+          "code": "# Use enums for conditional logic\n",
+          "display_code": "",
+          "annotation": "Use enums for conditional logic",
+          "is_comment": true,
+          "start_line": 89,
+          "line_range": [
+            89,
+            89
+          ],
+          "target_line_range": [
+            90,
+            98
+          ]
+        },
+        {
+          "code": "if task.priority in [Priority.HIGH, Priority.CRITICAL]:\n    print(\"This task requires immediate attention!\")\n\nif task.status == Status.IN_PROGRESS:\n    print(\"This task is being worked on.\")\n\nfrom enum import IntEnum\nfrom pydantic import BaseModel\n\n",
+          "display_code": "if task.priority in [Priority.HIGH, Priority.CRITICAL]:\n    print(\"This task requires immediate attention!\")\n\nif task.status == Status.IN_PROGRESS:\n    print(\"This task is being worked on.\")\n\nfrom enum import IntEnum\nfrom pydantic import BaseModel\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 90,
+          "line_range": [
+            90,
+            98
+          ]
+        },
+        {
+          "code": "# Define an integer-based enum\n",
+          "display_code": "",
+          "annotation": "Define an integer-based enum",
+          "is_comment": true,
+          "start_line": 99,
+          "line_range": [
+            99,
+            99
+          ],
+          "target_line_range": [
+            100,
+            131
+          ]
+        },
+        {
+          "code": "class SeverityLevel(IntEnum):\n    LOW = 1\n    MODERATE = 2\n    HIGH = 3\n    SEVERE = 4\n    CRITICAL = 5\n\nclass SecurityIssue(BaseModel):\n    title: str\n    description: str\n    severity: SeverityLevel\n    affected_users: int\n\nissue = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    response_model=SecurityIssue,\n    messages=[\n        {\"role\": \"user\", \"content\": \"\"\"\n        Security Alert:\n        Issue: Database Exposure\n        Details: Customer database was partially exposed due to misconfigured firewall\n        Severity: 4 (Severe)\n        Affected Users: 5,230\n        \"\"\"}\n    ]\n)\n\nprint(f\"Issue: {issue.title}\")\nprint(f\"Description: {issue.description}\")\nprint(f\"Severity: {issue.severity.name} (Level {issue.severity.value})\")  # \"SEVERE (Level 4)\"\nprint(f\"Affected Users: {issue.affected_users}\")\n\n",
+          "display_code": "class SeverityLevel(IntEnum):\n    LOW = 1\n    MODERATE = 2\n    HIGH = 3\n    SEVERE = 4\n    CRITICAL = 5\n\nclass SecurityIssue(BaseModel):\n    title: str\n    description: str\n    severity: SeverityLevel\n    affected_users: int\n\nissue = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    response_model=SecurityIssue,\n    messages=[\n        {\"role\": \"user\", \"content\": \"\"\"\n        Security Alert:\n        Issue: Database Exposure\n        Details: Customer database was partially exposed due to misconfigured firewall\n        Severity: 4 (Severe)\n        Affected Users: 5,230\n        \"\"\"}\n    ]\n)\n\nprint(f\"Issue: {issue.title}\")\nprint(f\"Description: {issue.description}\")\nprint(f\"Severity: {issue.severity.name} (Level {issue.severity.value})\")  # \"SEVERE (Level 4)\"\nprint(f\"Affected Users: {issue.affected_users}\")\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 100,
+          "line_range": [
+            100,
+            131
+          ]
+        },
+        {
+          "code": "# Use integer enum for thresholds\n",
+          "display_code": "",
+          "annotation": "Use integer enum for thresholds",
+          "is_comment": true,
+          "start_line": 132,
+          "line_range": [
+            132,
+            132
+          ],
+          "target_line_range": [
+            133,
+            149
+          ]
+        },
+        {
+          "code": "if issue.severity >= SeverityLevel.HIGH and issue.affected_users > 1000:\n    print(\"This requires executive notification!\")\n\nfrom enum import Enum\nfrom pydantic import BaseModel, Field\n\nclass TicketType(str, Enum):\n    BUG = \"bug\"\n    FEATURE = \"feature\"\n    IMPROVEMENT = \"improvement\"\n    DOCUMENTATION = \"documentation\"\n    QUESTION = \"question\"\n\nclass Ticket(BaseModel):\n    title: str\n    description: str\n\n",
+          "display_code": "if issue.severity >= SeverityLevel.HIGH and issue.affected_users > 1000:\n    print(\"This requires executive notification!\")\n\nfrom enum import Enum\nfrom pydantic import BaseModel, Field\n\nclass TicketType(str, Enum):\n    BUG = \"bug\"\n    FEATURE = \"feature\"\n    IMPROVEMENT = \"improvement\"\n    DOCUMENTATION = \"documentation\"\n    QUESTION = \"question\"\n\nclass Ticket(BaseModel):\n    title: str\n    description: str\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 133,
+          "line_range": [
+            133,
+            149
+          ]
+        },
+        {
+          "code": "    # Add descriptions to help the LLM understand the enum\n",
+          "display_code": "",
+          "annotation": "Add descriptions to help the LLM understand the enum",
+          "is_comment": true,
+          "start_line": 150,
+          "line_range": [
+            150,
+            150
+          ],
+          "target_line_range": [
+            151,
+            178
+          ]
+        },
+        {
+          "code": "    ticket_type: TicketType = Field(\n        description=\"\"\"Type of ticket with these options:\n        - bug: Something is not working correctly\n        - feature: A new capability is requested\n        - improvement: Enhancement to an existing feature\n        - documentation: Updates to documentation\n        - question: Question about functionality\"\"\"\n    )\n\nticket = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    response_model=Ticket,\n    messages=[\n        {\"role\": \"user\", \"content\": \"\"\"\n        New Ticket:\n        Title: Add dark mode to application\n        Description: Users would like a dark theme option to reduce eye strain when using the app at night\n        \"\"\"}\n    ]\n)\n\nprint(f\"Ticket: {ticket.title}\")\nprint(f\"Description: {ticket.description}\")\nprint(f\"Type: {ticket.ticket_type}\")  # Should be TicketType.IMPROVEMENT or TicketType.FEATURE\n\nfrom enum import Flag, auto\nfrom pydantic import BaseModel, Field\n\n",
+          "display_code": "    ticket_type: TicketType = Field(\n        description=\"\"\"Type of ticket with these options:\n        - bug: Something is not working correctly\n        - feature: A new capability is requested\n        - improvement: Enhancement to an existing feature\n        - documentation: Updates to documentation\n        - question: Question about functionality\"\"\"\n    )\n\nticket = client.chat.completions.create(\n    model=\"gpt-3.5-turbo\",\n    response_model=Ticket,\n    messages=[\n        {\"role\": \"user\", \"content\": \"\"\"\n        New Ticket:\n        Title: Add dark mode to application\n        Description: Users would like a dark theme option to reduce eye strain when using the app at night\n        \"\"\"}\n    ]\n)\n\nprint(f\"Ticket: {ticket.title}\")\nprint(f\"Description: {ticket.description}\")\nprint(f\"Type: {ticket.ticket_type}\")  # Should be TicketType.IMPROVEMENT or TicketType.FEATURE\n\nfrom enum import Flag, auto\nfrom pydantic import BaseModel, Field\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 151,
+          "line_range": [
+            151,
+            178
+          ]
+        },
+        {
+          "code": "# Define a Flag enum for permissions\n",
+          "display_code": "",
+          "annotation": "Define a Flag enum for permissions",
+          "is_comment": true,
+          "start_line": 179,
+          "line_range": [
+            179,
+            179
+          ],
+          "target_line_range": [
+            180,
+            186
+          ]
+        },
+        {
+          "code": "class Permissions(Flag):\n    NONE = 0\n    READ = auto()       # 1\n    WRITE = auto()      # 2\n    DELETE = auto()     # 4\n    ADMIN = auto()      # 8\n\n",
+          "display_code": "class Permissions(Flag):\n    NONE = 0\n    READ = auto()       # 1\n    WRITE = auto()      # 2\n    DELETE = auto()     # 4\n    ADMIN = auto()      # 8\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 180,
+          "line_range": [
+            180,
+            186
+          ]
+        },
+        {
+          "code": "    # Combinations\n",
+          "display_code": "",
+          "annotation": "Combinations",
+          "is_comment": true,
+          "start_line": 187,
+          "line_range": [
+            187,
+            187
+          ],
+          "target_line_range": [
+            188,
+            220
+          ]
+        },
+        {
+          "code": "    READ_WRITE = READ | WRITE                # 3\n    STANDARD = READ | WRITE | DELETE         # 7\n    ALL = READ | WRITE | DELETE | ADMIN      # 15\n\nclass User(BaseModel):\n    name: str\n    role: str\n    permissions: Permissions = Field(\n        description=\"\"\"User permissions, can be a combination of:\n        - READ: Can view content\n        - WRITE: Can create and edit content\n        - DELETE: Can remove content\n        - ADMIN: Has administrative privileges\n        - Or predefined combinations like READ_WRITE, STANDARD, or ALL\"\"\"\n    )\n\nuser = client.chat.completions.create(\n    model=\"gpt-4\",  # Better for complex models\n    response_model=User,\n    messages=[\n        {\"role\": \"user\", \"content\": \"\"\"\n        User Profile:\n        Name: Sarah Johnson\n        Role: Content Manager\n        Permissions: Can read, write, and delete content\n        \"\"\"}\n    ]\n)\n\nprint(f\"User: {user.name}\")\nprint(f\"Role: {user.role}\")\nprint(f\"Permissions: {user.permissions.name}\")  # Should be \"STANDARD\"\n\n",
+          "display_code": "    READ_WRITE = READ | WRITE                # 3\n    STANDARD = READ | WRITE | DELETE         # 7\n    ALL = READ | WRITE | DELETE | ADMIN      # 15\n\nclass User(BaseModel):\n    name: str\n    role: str\n    permissions: Permissions = Field(\n        description=\"\"\"User permissions, can be a combination of:\n        - READ: Can view content\n        - WRITE: Can create and edit content\n        - DELETE: Can remove content\n        - ADMIN: Has administrative privileges\n        - Or predefined combinations like READ_WRITE, STANDARD, or ALL\"\"\"\n    )\n\nuser = client.chat.completions.create(\n    model=\"gpt-4\",  # Better for complex models\n    response_model=User,\n    messages=[\n        {\"role\": \"user\", \"content\": \"\"\"\n        User Profile:\n        Name: Sarah Johnson\n        Role: Content Manager\n        Permissions: Can read, write, and delete content\n        \"\"\"}\n    ]\n)\n\nprint(f\"User: {user.name}\")\nprint(f\"Role: {user.role}\")\nprint(f\"Permissions: {user.permissions.name}\")  # Should be \"STANDARD\"\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 188,
+          "line_range": [
+            188,
+            220
+          ]
+        },
+        {
+          "code": "# Check individual permissions\n",
+          "display_code": "",
+          "annotation": "Check individual permissions",
+          "is_comment": true,
+          "start_line": 221,
+          "line_range": [
+            221,
+            221
+          ],
+          "target_line_range": [
+            222,
+            232
+          ]
+        },
+        {
+          "code": "if Permissions.READ in user.permissions:\n    print(\"User can read content\")\n\nif Permissions.WRITE in user.permissions:\n    print(\"User can write content\")\n\nif Permissions.ADMIN in user.permissions:\n    print(\"User has admin privileges\")\nelse:\n    print(\"User does not have admin privileges\")\n\n",
+          "display_code": "if Permissions.READ in user.permissions:\n    print(\"User can read content\")\n\nif Permissions.WRITE in user.permissions:\n    print(\"User can write content\")\n\nif Permissions.ADMIN in user.permissions:\n    print(\"User has admin privileges\")\nelse:\n    print(\"User does not have admin privileges\")\n\n",
+          "annotation": "",
+          "is_comment": false,
+          "start_line": 222,
+          "line_range": [
+            222,
+            232
+          ]
+        }
+      ],
+      "shell_segments": [
+        {
+          "explanation": "First, install Instructor and any dependencies",
+          "command": "pip install instructor pydantic",
+          "output": ""
+        },
+        {
+          "explanation": "Run the Python script",
+          "command": "python working-with-enums.py",
+          "output": ""
+        }
+      ],
+      "image_data": [],
+      "documentation_links": [
+        "https://github.com/jxnl/instructor"
+      ],
+      "section_id": "999-misc",
+      "section_title": "Miscellaneous Examples"
+    },
+    {
       "id": "050-resources",
       "title": "Resources",
       "description": "",
@@ -15249,7 +15289,7 @@
         "014-nested-structures",
         "015-field-validation",
         "016-optional-fields",
-        "017-working-with-enums"
+        "017-literals-and-enums"
       ]
     },
     {
