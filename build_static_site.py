@@ -125,43 +125,126 @@ def find_prev_example(
 
 
 def generate_html_head(
-    title: str, include_main_css: bool = True, base_url: str = "."
+    title: str, include_main_css: bool = True, base_url: str = ".", 
+    description: str = None, page_type: str = "article", 
+    canonical_path: str = "", example_data: Dict[str, Any] = None
 ) -> str:
-    """Generate HTML head section.
+    """Generate HTML head section with enhanced SEO elements.
 
     Args:
         title: The page title
         include_main_css: Whether to include CSS styles
         base_url: The base URL for relative links (default: "." for current directory)
+        description: Page-specific description (falls back to site description)
+        page_type: Schema.org type for the page ("article", "website", etc.)
+        canonical_path: Path for canonical URL (if empty, no canonical URL is added)
+        example_data: Example data for structured data generation
     """
+    # Use provided description or fall back to site description
+    page_description = description if description else SITE_DESCRIPTION
+    
+    # Base site URL
+    site_url = "https://structuredoutputsbyexample.com"
+    
+    # Canonical URL
+    canonical_url = f"{site_url}/{canonical_path}" if canonical_path else site_url
+    
     head = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Primary Meta Tags -->
     <title>{escape(title)}</title>
-    <meta name="description" content="{escape(SITE_DESCRIPTION)}">
+    <meta name="description" content="{escape(page_description)}">
+    <meta name="author" content="Jason Liu">
+    <meta name="keywords" content="structured outputs, LLM, Instructor, Pydantic, data extraction, structured data">
+    
+    <!-- Canonical URL -->
+    {f'<link rel="canonical" href="{canonical_url}">' if canonical_path else ''}
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="{page_type}">
+    <meta property="og:url" content="{canonical_url if canonical_path else site_url}">
+    <meta property="og:title" content="{escape(title)}">
+    <meta property="og:description" content="{escape(page_description)}">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="{canonical_url if canonical_path else site_url}">
+    <meta property="twitter:title" content="{escape(title)}">
+    <meta property="twitter:description" content="{escape(page_description)}">
+"""
+
+    # Add structured data JSON-LD if we have example data
+    if example_data and page_type == "article":
+        # Import json here to avoid circular imports
+        import json
+        from datetime import datetime
+        
+        # Extract section title if available
+        section_title = example_data.get("section_title", "")
+        
+        # Extract code keywords (use the example ID as a fallback)
+        keywords = ["structured data", "LLM", "Instructor", "Pydantic"]
+        if example_data.get("id"):
+            # Convert "001-example-name" to "example name" for keywords
+            example_keyword = "-".join(example_data["id"].split("-")[1:])
+            keywords.append(example_keyword.replace("-", " "))
+        
+        # Generate JSON-LD for TechArticle
+        json_ld = {
+            "@context": "https://schema.org",
+            "@type": "TechArticle",
+            "headline": example_data.get("title", title),
+            "description": page_description,
+            "author": {
+                "@type": "Person",
+                "name": "Jason Liu"
+            },
+            "publisher": {
+                "@type": "Organization",
+                "name": "Structured Outputs by Example",
+                "url": site_url
+            },
+            "mainEntityOfPage": canonical_url if canonical_path else site_url,
+            "datePublished": datetime.now().strftime("%Y-%m-%dT%H:%M:%S+00:00"),
+            "dateModified": datetime.now().strftime("%Y-%m-%dT%H:%M:%S+00:00"),
+            "articleSection": section_title,
+            "keywords": keywords
+        }
+        
+        head += f"""
+    <!-- Structured Data / JSON-LD -->
+    <script type="application/ld+json">
+    {json.dumps(json_ld, indent=2)}
+    </script>
+"""
+    
+    head += """
+    <!-- Stylesheets -->
     <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css'>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js'></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/firacode@6.2.0/distr/fira_code.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap');
         
-        code, pre code, .hljs {{
+        code, pre code, .hljs {
             font-family: 'Fira Code', 'JetBrains Mono', monospace;
             font-feature-settings: "liga" 1;
-        }}
+        }
         
-        @supports (font-variation-settings: normal) {{
-            code, pre code, .hljs {{
+        @supports (font-variation-settings: normal) {
+            code, pre code, .hljs {
                 font-family: 'Fira Code VF', 'JetBrains Mono', monospace;
-            }}
-        }}
+            }
+        }
     </style>
     <script>
-        document.addEventListener('DOMContentLoaded', (event) => {{
+        document.addEventListener('DOMContentLoaded', (event) => {
             hljs.highlightAll();
-        }});
+        });
     </script>
 """
     if include_main_css:
@@ -477,7 +560,12 @@ def generate_index_html(
 
     output_file = output_dir / "index.html"
     with open(output_file, "w") as f:
-        f.write(generate_html_head(SITE_TITLE, base_url="."))
+        f.write(generate_html_head(
+            SITE_TITLE, 
+            base_url=".", 
+            page_type="website", 
+            canonical_path=""
+        ))
 
         # Page content
         f.write(
@@ -617,9 +705,27 @@ def generate_example_html(
     # Find the next and previous examples
     next_example = find_next_example(examples, example)
     prev_example = find_prev_example(examples, example)
+    
+    # Extract description from example
+    page_description = example.get("description", SITE_DESCRIPTION)
+    
+    # Only use first sentence of description if it's too long
+    if len(page_description) > 160:
+        first_sentence = page_description.split(". ")[0] + "."
+        page_description = first_sentence
+        
+    # Build canonical path
+    canonical_path = f"{example['id']}/"
 
     with open(output_file, "w") as f:
-        f.write(generate_html_head(f"{example['title']} - {SITE_TITLE}", base_url=".."))
+        f.write(generate_html_head(
+            f"{example['title']} - {SITE_TITLE}", 
+            base_url="..",
+            description=page_description,
+            page_type="article",
+            canonical_path=canonical_path,
+            example_data=example
+        ))
 
         # Collect all Python code for the "Copy All" button first
         all_python_code = ""
@@ -1167,6 +1273,71 @@ def clean_docs_directory(output_dir: Path) -> None:
                 logger.info("Removed directory %s" % item)
 
 
+def generate_sitemap(
+    examples: List[Dict[str, Any]], sections: List[Dict[str, Any]], output_dir: Path
+) -> None:
+    """Generate sitemap.xml file for search engines.
+    
+    Args:
+        examples: List of examples data
+        sections: List of sections data
+        output_dir: Output directory for the site
+    """
+    from datetime import datetime
+    
+    logger.info("Generating sitemap.xml")
+    
+    site_url = "https://structuredoutputsbyexample.com"
+    today = datetime.now().strftime("%Y-%m-%d")
+    
+    output_file = output_dir / "sitemap.xml"
+    
+    with open(output_file, "w") as f:
+        # XML header
+        f.write('<?xml version="1.0" encoding="UTF-8"?>\n')
+        f.write('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n')
+        
+        # Homepage
+        f.write('  <url>\n')
+        f.write(f'    <loc>{site_url}</loc>\n')
+        f.write(f'    <lastmod>{today}</lastmod>\n')
+        f.write('    <changefreq>weekly</changefreq>\n')
+        f.write('    <priority>1.0</priority>\n')
+        f.write('  </url>\n')
+        
+        # Example pages
+        for example in examples:
+            f.write('  <url>\n')
+            f.write(f'    <loc>{site_url}/{example["id"]}/</loc>\n')
+            f.write(f'    <lastmod>{today}</lastmod>\n')
+            f.write('    <changefreq>monthly</changefreq>\n')
+            f.write('    <priority>0.8</priority>\n')
+            f.write('  </url>\n')
+        
+        # Close urlset
+        f.write('</urlset>\n')
+    
+    logger.info(f"Generated sitemap at {output_file}")
+
+
+def generate_robots_txt(output_dir: Path) -> None:
+    """Generate robots.txt file for search engines.
+    
+    Args:
+        output_dir: Output directory for the site
+    """
+    logger.info("Generating robots.txt")
+    
+    output_file = output_dir / "robots.txt"
+    
+    with open(output_file, "w") as f:
+        f.write("User-agent: *\n")
+        f.write("Allow: /\n\n")
+        f.write("Sitemap: https://structuredoutputsbyexample.com/sitemap.xml\n")
+    
+    logger.info(f"Generated robots.txt at {output_file}")
+
+
 def generate_static_site() -> None:
     """Generate the complete static site."""
     data = load_examples_data()
@@ -1203,6 +1374,10 @@ def generate_static_site() -> None:
     # Generate example pages
     for example in examples:
         generate_example_html(example, examples, output_dir)
+    
+    # Generate SEO files
+    generate_sitemap(examples, sections, output_dir)
+    generate_robots_txt(output_dir)
 
     logger.info(
         "Static site generation complete! The site is available at %s" % output_dir
