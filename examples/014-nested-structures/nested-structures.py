@@ -1,15 +1,9 @@
 # Nested Structures
-# Learn how to extract complex nested data structures from text using Instructor. This guide demonstrates working with hierarchical and recursive models.
-# Real-world data often contains complex relationships between different entities and attributes.
-# Instructor enables extraction of deeply nested structures while maintaining proper typing and validation.
 
-# Import necessary libraries
-import instructor
-from openai import OpenAI
+# Extract complex nested data structures from text using Instructor.
 from pydantic import BaseModel, Field
-from typing import List, Optional, Dict
+from typing import List, Optional
 
-# Basic nested structure example
 class Address(BaseModel):
     street: str
     city: str
@@ -27,6 +21,9 @@ class Person(BaseModel):
     addresses: List[Address]
     phone_numbers: List[PhoneNumber]
     email: Optional[str] = None
+
+import instructor
+from openai import OpenAI
 
 # Patch the client
 client = instructor.from_openai(OpenAI())
@@ -61,7 +58,9 @@ print("\nPhone Numbers:")
 for phone in person.phone_numbers:
     print(f"  {phone.type}: {phone.number}")
 
-# More complex nested structure example
+from pydantic import BaseModel, Field
+from typing import List, Optional, Dict
+
 class Skill(BaseModel):
     name: str
     level: str  # e.g., "beginner", "intermediate", "expert"
@@ -80,7 +79,7 @@ class WorkExperience(BaseModel):
     is_current: bool
     responsibilities: List[str]
 
-class Resume(BaseModel):
+class Person(BaseModel):
     name: str
     age: int
     skills: List[Skill]
@@ -89,9 +88,9 @@ class Resume(BaseModel):
     contact_info: Dict[str, str]  # e.g., "email", "phone", "linkedin"
 
 # Extract with a more capable model
-resume = client.chat.completions.create(
+person = client.chat.completions.create(
     model="gpt-4",
-    response_model=Resume,
+    response_model=Person,
     messages=[
         {"role": "user", "content": """
         Resume: Sarah Johnson
@@ -132,29 +131,31 @@ resume = client.chat.completions.create(
     ]
 )
 
-print(f"Name: {resume.name}, Age: {resume.age}")
+print(f"Name: {person.name}, Age: {person.age}")
 
 print("\nContact Info:")
-for key, value in resume.contact_info.items():
+for key, value in person.contact_info.items():
     print(f"  {key}: {value}")
 
 print("\nSkills:")
-for skill in resume.skills:
+for skill in person.skills:
     print(f"  {skill.name}: {skill.level} ({skill.years_of_experience} years)")
 
 print("\nEducation:")
-for edu in resume.education:
+for edu in person.education:
     print(f"  {edu.degree}, {edu.institution}, {edu.year}")
 
 print("\nWork Experience:")
-for job in resume.work_experience:
+for job in person.work_experience:
     current = "(Current)" if job.is_current else f"({job.start_year}-{job.end_year})"
     print(f"  {job.position} at {job.company} {current}")
     print("  Responsibilities:")
     for resp in job.responsibilities:
         print(f"    - {resp}")
 
-# Recursive structure example
+from pydantic import BaseModel, Field
+from typing import List, Optional
+
 class Comment(BaseModel):
     text: str
     author: str

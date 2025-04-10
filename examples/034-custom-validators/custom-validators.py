@@ -1,19 +1,16 @@
 # Custom Validators
-# Learn how to implement custom validators for domain-specific validation rules with Instructor. This guide covers field validators, annotated validators, and LLM-based validation.
-# Standard validation can address basic type checking and simple constraints, but many applications require more complex validation logic.
-# Custom validators enable enforcing domain-specific rules, business logic, and contextual validation for more reliable data extraction.
 
-# Import necessary libraries
+# Implement custom validators for domain-specific validation rules with Instructor. Enables context-dependent validation for complex business logic.
+
+# Instructor allows you to create custom validators to enforce specific rules on LLM outputs. These can range from simple format checks to complex business logic.
 import instructor
 from openai import OpenAI
-from pydantic import BaseModel, Field, field_validator, BeforeValidator, AfterValidator
-from typing_extensions import Annotated
-from instructor import llm_validator
+from pydantic import BaseModel, Field, field_validator
 
 # Initialize the client with instructor
 client = instructor.from_openai(OpenAI())
 
-# Basic custom field validators example
+# Define a model with a custom validator
 class Contact(BaseModel):
     name: str = Field(description="Person's full name")
     email: str = Field(description="Person's email address")
@@ -46,10 +43,12 @@ contact = client.chat.completions.create(
     max_retries=2
 )
 
-print("Custom validator example:")
 print(contact.model_dump_json(indent=2))
 
-# Annotated validation example
+# You can also use validation with annotated types:
+from typing_extensions import Annotated
+from pydantic import AfterValidator
+
 # Define a validation function
 def validate_uppercase(v: str) -> str:
     if v != v.upper():
@@ -67,23 +66,17 @@ class Document(BaseModel):
             raise ValueError("Content must be at least 5 words long")
         return v
 
-# Test document with annotated validation
-document = client.chat.completions.create(
-    model="gpt-3.5-turbo",
-    messages=[
-        {
-            "role": "user",
-            "content": "Extract: title: document title, content: This is too short."
-        }
-    ],
-    response_model=Document,
-    max_retries=2
-)
+# For even more advanced validation, you can use LLM-based validators:
+import instructor
+from openai import OpenAI
+from pydantic import BaseModel, BeforeValidator
+from typing_extensions import Annotated
+from instructor import llm_validator
 
-print("\nAnnotated validator example:")
-print(document.model_dump_json(indent=2))
+# Initialize the client with instructor
+client = instructor.from_openai(OpenAI())
 
-# LLM-based validation example
+# Define a model with LLM-based validation
 class Review(BaseModel):
     product: str
     content: Annotated[
@@ -92,7 +85,7 @@ class Review(BaseModel):
     ]
     rating: int
 
-# Example usage with LLM-based validator
+# Example usage
 review = client.chat.completions.create(
     model="gpt-3.5-turbo",
     messages=[
@@ -104,12 +97,4 @@ review = client.chat.completions.create(
     response_model=Review,
     max_retries=2
 )
-
-print("\nLLM-based validator example:")
-print(review.model_dump_json(indent=2))
-
-# Note: The LLM validator will transform the negative review into a more positive and respectful one
-print("\nLLM-based validators can intelligently transform invalid data to make it valid.")
-print("This is powerful for complex validation where simple rules aren't sufficient.")
-print("Examples include ensuring content is professional, factual, or meets specific guidelines.")
 

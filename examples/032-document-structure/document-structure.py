@@ -1,9 +1,8 @@
 # Document Structure
-# Learn how to extract document structure and organization using Instructor. This guide demonstrates document parsing techniques for section analysis, content organization, and metadata extraction.
-# Documents often contain rich structure, such as sections, subsections, and metadata, that is implicit in their formatting.
-# Converting this implicit structure into explicit structured data enables better analysis, search, and information retrieval.
 
-# Import necessary libraries
+# Extract document structure and organization using Instructor. Helps with document classification, section analysis, and content organization.
+
+# Instructor can extract structured representations of documents, such as articles, papers, or reports. This approach helps convert unstructured text into structured data that can be analyzed and processed.
 import instructor
 from openai import OpenAI
 from pydantic import BaseModel, Field
@@ -92,20 +91,4 @@ for section in doc_structure.sections:
     print(f"- {section.heading}")
     for subsection in section.subsections:
         print(f"  - {subsection.heading}")
-
-# Function to get section content by heading
-def find_section(document: Document, heading: str) -> Optional[Section]:
-    """Search for a section by heading in the document."""
-    for section in document.sections:
-        if section.heading.lower() == heading.lower():
-            return section
-        for subsection in section.subsections:
-            if subsection.heading.lower() == heading.lower():
-                return subsection
-    return None
-
-# Example of accessing specific sections
-conclusion = find_section(doc_structure, "Conclusion")
-if conclusion:
-    print(f"\nConclusion content: {conclusion.content}")
 

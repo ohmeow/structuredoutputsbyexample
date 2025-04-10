@@ -1,20 +1,17 @@
 # Field-level Validation
-# Learn how to apply field-level validation rules to enforce domain-specific business logic with Instructor. This guide covers constraint enforcement and detailed validation techniques.
-# Data quality is essential for downstream applications, and different fields often have domain-specific validation needs.
-# Field-level validation provides fine-grained control over extracted data, ensuring each component meets specific requirements.
 
-# Import necessary libraries
+# Apply field-level validation rules to enforce domain-specific business logic. Instructor allows fine-grained control over data validation.
+
+# Instructor supports detailed field-level validation to ensure that specific parts of the LLM output meet your requirements. This allows for fine-grained control over the extracted data.
 import instructor
-import re
 from openai import OpenAI
-from pydantic import BaseModel, Field, field_validator, AfterValidator
-from typing import List
-from typing_extensions import Annotated
+from pydantic import BaseModel, Field, field_validator
+import re
 
 # Initialize the client with instructor
 client = instructor.from_openai(OpenAI())
 
-# Approach 1: Custom field validators with decorators
+# Define a model with field-level validation
 class UserProfile(BaseModel):
     username: str = Field(
         description="Username (lowercase, no spaces)",
@@ -56,10 +53,18 @@ profile = client.chat.completions.create(
     max_retries=2
 )
 
-print("Approach 1: Custom field validators")
 print(profile.model_dump_json(indent=2))
 
-# Approach 2: Using Pydantic's Field parameters for constraints
+# You can also use Pydantic's Field parameters for basic constraints:
+import instructor
+from openai import OpenAI
+from pydantic import BaseModel, Field
+from typing import List
+
+# Initialize the client with instructor
+client = instructor.from_openai(OpenAI())
+
+# Define a model with Field constraints
 class Product(BaseModel):
     name: str = Field(
         description="Product name",
@@ -93,10 +98,13 @@ product = client.chat.completions.create(
     response_model=Product
 )
 
-print("\nApproach 2: Field parameters for constraints")
 print(product.model_dump_json(indent=2))
 
-# Approach 3: Annotated types with validation functions
+# For more complex validation, you can use annotated types:
+from typing_extensions import Annotated
+from pydantic import AfterValidator
+import re
+
 def validate_phone_number(v: str) -> str:
     """Validate phone number format."""
     # Remove all non-numeric characters
@@ -118,33 +126,4 @@ class Address(BaseModel):
     state: str
     zip_code: Annotated[str, AfterValidator(validate_zip_code)]
     phone: Annotated[str, AfterValidator(validate_phone_number)]
-
-# Extract address with annotated validation
-address = client.chat.completions.create(
-    model="gpt-3.5-turbo",
-    messages=[
-        {
-            "role": "user",
-            "content": "Extract address: 123 Main St, Springfield, IL, 62704, phone: 555-123-4567"
-        }
-    ],
-    response_model=Address,
-    max_retries=2
-)
-
-print("\nApproach 3: Annotated types with validation functions")
-print(address.model_dump_json(indent=2))
-
-# Summary of validation approaches
-print("\nField-level Validation Approaches:")
-print("1. Field validators: Use @field_validator decorator for custom field validation")
-print("2. Field parameters: Use Field parameters for simple constraints")
-print("3. Annotated types: Use Annotated with validator functions for reusable validation")
-print("4. Combined approach: Mix all three methods for comprehensive validation")
-
-print("\nValidation Best Practices:")
-print("- Provide clear error messages that explain exactly what went wrong")
-print("- Use domain-specific validation for business logic enforcement")
-print("- Consider formatting standardization (e.g., phone numbers, capitalization)")
-print("- Balance strictness with usability - overly strict validation can cause unnecessary failures")
 

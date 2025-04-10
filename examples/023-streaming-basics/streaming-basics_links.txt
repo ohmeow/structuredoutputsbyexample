@@ -1,1 +1,2 @@
 https://github.com/jxnl/instructor
+https://instructor-ai.github.io/instructor/concepts/streaming/

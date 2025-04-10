@@ -1,6 +1,7 @@
-# Run the example
+# Run the Streaming Basics Example
+# ----------------------------
 # First, install Instructor and any dependencies
-$ pip install instructor pydantic
+$ pip install instructor pydantic openai
 
-# Run the Python script
+# Run the Python script to see streaming in action
 $ python streaming-basics.py

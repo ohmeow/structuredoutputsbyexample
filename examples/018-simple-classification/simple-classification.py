@@ -1,24 +1,20 @@
 # Simple Classification
-# Learn how to perform single-label classification with Instructor and structured outputs. This guide covers basic classification, confidence scores, and detailed explanation models.
-# Classification is a common task that traditionally requires dedicated ML models and training pipelines.
-# Instructor enables you to create robust classifiers using structured outputs from large language models.
 
-# Import necessary libraries
+# Perform single-label classification with Instructor and structured outputs.
+from pydantic import BaseModel, Field
+from typing import Literal
 import instructor
 from openai import OpenAI
-from pydantic import BaseModel, Field
-from typing import Literal, List
 
-# Patch the client
-client = instructor.from_openai(OpenAI())
-
-# Basic classification model
 class Classification(BaseModel):
     """A single-label classification for text as SPAM or NOT_SPAM"""
 
     label: Literal["SPAM", "NOT_SPAM"] = Field(
         description="The classification label, either SPAM or NOT_SPAM"
     )
+
+# Patch the client
+client = instructor.from_openai(OpenAI())
 
 def classify_text(text: str) -> Classification:
     return client.chat.completions.create(
@@ -60,7 +56,9 @@ print(f"\nText: '{legit_text}'")
 print(f"Classification: {legit_result.label}")
 # Output: Classification: NOT_SPAM
 
-# Classification with confidence score
+from pydantic import BaseModel, Field
+from typing import Literal
+
 class ClassificationWithConfidence(BaseModel):
     label: Literal["SPAM", "NOT_SPAM"]
     confidence: float = Field(
@@ -91,7 +89,9 @@ print(f"Confidence: {result.confidence:.2f}")
 # Classification: SPAM
 # Confidence: 0.75
 
-# Classification with detailed explanation
+from pydantic import BaseModel, Field
+from typing import Literal
+
 class DetailedClassification(BaseModel):
     label: Literal["SPAM", "NOT_SPAM"]
     explanation: str = Field(
@@ -122,7 +122,8 @@ print("Spam indicators:")
 for indicator in result.spam_indicators:
     print(f"- {indicator}")
 
-# Batch classification
+from typing import List
+
 def classify_batch(texts: List[str]) -> List[Classification]:
     # Use a batch prompt to classify multiple texts at once
     formatted_texts = "\n\n".join([f"Text {i+1}: {text}" for i, text in enumerate(texts)])
@@ -149,13 +150,5 @@ for i, (text, result) in enumerate(zip(texts, results)):
     print(f"Text {i+1}: '{text}'")
     print(f"Classification: {result.label}\n")
 
-# Output:
-# Text 1: 'Your application has been approved. Sign the documents at your earliest convenience.'
-# Classification: NOT_SPAM
-#
-# Text 2: 'WINNER! You've been selected to receive $1000! Send your bank details now!'
-# Classification: SPAM
-#
-# Text 3: 'Meeting rescheduled to 3PM tomorrow. Same Zoom link.'
-# Classification: NOT_SPAM
+# Output:# Text 1: 'Your application has been approved. Sign the documents at your earliest convenience.'# Classification: NOT_SPAM## Text 2: 'WINNER! You've been selected to receive $1000! Send your bank details now!'# Classification: SPAM## Text 3: 'Meeting rescheduled to 3PM tomorrow. Same Zoom link.'# Classification: NOT_SPAM
 

@@ -1,25 +1,20 @@
 # Multi-label Classification
-# Learn how to extract multiple labels from text using Instructor. This guide covers basic multi-label classification, enum-based categories, confidence scores, and hierarchical classifications.
-# Many real-world classification problems require assigning multiple labels to a single piece of content.
-# Instructor makes multi-label classification straightforward with structured outputs and flexible validation options.
 
-# Import necessary libraries
+# Extract multiple labels from text using Instructor.
+from pydantic import BaseModel, Field
+from typing import List
 import instructor
 from openai import OpenAI
-from pydantic import BaseModel, Field
-from typing import List, Dict, Optional
-from enum import Enum
 
-# Patch the client
-client = instructor.from_openai(OpenAI())
-
-# Basic multi-label classification
 class MultiLabelClassification(BaseModel):
     """Multi-label classification of text content"""
 
     labels: List[str] = Field(
         description="List of applicable category labels for the text"
     )
+
+# Patch the client
+client = instructor.from_openai(OpenAI())
 
 def classify_text(text: str) -> MultiLabelClassification:
     return client.chat.completions.create(
@@ -59,7 +54,10 @@ print(f"Text: '{article}'")
 print(f"Labels: {', '.join(result.labels)}")
 # Example Output: Labels: Technology, Finance, Health
 
-# Enum-based classification for type safety
+from enum import Enum
+from pydantic import BaseModel, Field
+from typing import List
+
 # Define fixed categories as an enum
 class Category(str, Enum):
     BUSINESS = "business"
@@ -99,7 +97,9 @@ print(f"Text: '{article}'")
 print(f"Categories: {', '.join([c.value for c in result.categories])}")
 # Example Output: Categories: technology, education
 
-# Classification with confidence scores
+from pydantic import BaseModel, Field
+from typing import List, Dict
+
 class LabelWithConfidence(BaseModel):
     label: str
     confidence: float = Field(gt=0, le=1)  # Between 0 and 1
@@ -141,13 +141,12 @@ print(f"Text: '{article}'")
 print("Labels with confidence:")
 for label in result.labels:
     print(f"- {label.label}: {label.confidence:.2f}")
-# Example Output:
-# Labels with confidence:
-# - Technology: 0.95
-# - Health: 0.85
-# - Sports: 0.62
 
-# Hierarchical classification
+# Example Output:# Labels with confidence:# - Technology: 0.95# - Health: 0.85# - Sports: 0.62
+
+from pydantic import BaseModel, Field
+from typing import List, Optional
+
 class SubCategory(BaseModel):
     name: str
     confidence: float = Field(gt=0, le=1)
@@ -198,13 +197,6 @@ for category in result.categories:
     print(f"- {category.name} ({category.confidence:.2f})")
     for subcategory in category.subcategories:
         print(f"  - {subcategory.name} ({subcategory.confidence:.2f})")
-# Example Output:
-# Classification:
-# - Technology (0.90)
-#   - AI (0.95)
-#   - Software (0.80)
-# - Health (0.85)
-#   - Medical (0.90)
-# - Science (0.75)
-#   - Biology (0.70)
+
+# Example Output:# Classification:# - Technology (0.90)#   - AI (0.95)#   - Software (0.80)# - Health (0.85)#   - Medical (0.90)# - Science (0.75)#   - Biology (0.70)
 

@@ -1,23 +1,20 @@
 # Simple Object Extraction
-# Learn how to extract basic structured objects from text using Instructor. This guide demonstrates the fundamentals of structured data extraction from natural language.
-# Extracting structured information from free-form text is a common challenge in many applications.
-# Instructor makes it simple to extract well-defined objects with proper types and validation.
 
-# Import necessary libraries
-import instructor
-from openai import OpenAI
-from pydantic import BaseModel, Field
+# Extract basic objects from text with Instructor.
+from pydantic import BaseModel
 
-# Define a simple model for extraction
 class Person(BaseModel):
     name: str
     age: int
     occupation: str
 
+import instructor
+from openai import OpenAI
+
 # Patch the client
 client = instructor.from_openai(OpenAI())
 
-# Basic extraction example
+# Extract the data
 person = client.chat.completions.create(
     model="gpt-3.5-turbo",
     response_model=Person,
@@ -29,12 +26,9 @@ person = client.chat.completions.create(
 print(f"Name: {person.name}")
 print(f"Age: {person.age}")
 print(f"Occupation: {person.occupation}")
-# Output:
-# Name: John Doe
-# Age: 30
-# Occupation: software engineer
 
-# Extraction from longer, more complex text
+# Output:# Name: John Doe# Age: 30# Occupation: software engineer
+
 extracted = client.chat.completions.create(
     model="gpt-3.5-turbo",
     response_model=Person,
@@ -50,20 +44,19 @@ extracted = client.chat.completions.create(
 print(f"Name: {extracted.name}")
 print(f"Age: {extracted.age}")
 print(f"Occupation: {extracted.occupation}")
-# Output:
-# Name: John Smith
-# Age: 34
-# Occupation: data scientist
 
-# Adding field descriptions for better extraction
-class PersonWithDescriptions(BaseModel):
+# Output:# Name: John Smith# Age: 34# Occupation: data scientist
+
+from pydantic import BaseModel, Field
+
+class Person(BaseModel):
     name: str = Field(description="The person's full name")
     age: int = Field(description="The person's age in years")
     occupation: str = Field(description="The person's current job title or role")
 
 extracted = client.chat.completions.create(
     model="gpt-3.5-turbo",
-    response_model=PersonWithDescriptions,
+    response_model=Person,
     messages=[
         {"role": "user", "content": """
         Meet Sarah Johnson, one of our senior architects.
@@ -76,12 +69,9 @@ extracted = client.chat.completions.create(
 print(f"Name: {extracted.name}")
 print(f"Age: {extracted.age}")
 print(f"Occupation: {extracted.occupation}")
-# Output:
-# Name: Sarah Johnson
-# Age: 42
-# Occupation: senior architect
 
-# Using class-level docstrings for extraction guidance
+# Output:# Name: Sarah Johnson# Age: 42# Occupation: senior architect
+
 class Employee(BaseModel):
     """Extract employee information from the provided text."""
 
@@ -104,8 +94,6 @@ extracted = client.chat.completions.create(
 print(f"Name: {extracted.name}")
 print(f"Department: {extracted.department}")
 print(f"Years of Service: {extracted.years_of_service}")
-# Output:
-# Name: Michael Chen
-# Department: Marketing
-# Years of Service: 7
+
+# Output:# Name: Michael Chen# Department: Marketing# Years of Service: 7
 
