@@ -65,6 +65,10 @@ To add a new example:
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for details on adding new examples and [DEVELOPMENT.md](DEVELOPMENT.md) for technical details about the site generation process.
 
+## TODO
+
+I have not improved and verified the documents beyond 025, And I want to re-evaluate how to simplify these docs at some point in the future  
+
 ## License
 
 MIT
