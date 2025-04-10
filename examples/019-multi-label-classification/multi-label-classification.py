@@ -1,21 +1,32 @@
-# Multi-label Classification
+# Multi-label Classification Example
+#
+# This example demonstrates various approaches to multi-label classification using Instructor:
+# 1. Basic multi-label classification with string labels
+# 2. Using Enums for predefined categories
+# 3. Classification with confidence scores
+# 4. Hierarchical classification with main and subcategories
+#
+# Each approach shows how to structure your Pydantic models for different classification needs.
 
-# Extract multiple labels from text using Instructor.
+
+# Import the necessary libraries
 from pydantic import BaseModel, Field
-from typing import List
+from typing import List, Optional
+from enum import Enum
 import instructor
 from openai import OpenAI
 
+# Initialize the instructor-enhanced OpenAI client
+client = instructor.from_openai(OpenAI())
+
+# Define a MultiLabelClassification model with Pydantic
 class MultiLabelClassification(BaseModel):
     """Multi-label classification of text content"""
-
     labels: List[str] = Field(
         description="List of applicable category labels for the text"
     )
 
-# Patch the client
-client = instructor.from_openai(OpenAI())
-
+# Define a function to classify text
 def classify_text(text: str) -> MultiLabelClassification:
     return client.chat.completions.create(
         model="gpt-3.5-turbo",
@@ -41,24 +52,7 @@ def classify_text(text: str) -> MultiLabelClassification:
         ]
     )
 
-# Test with an example
-article = """
-    Bitcoin prices surged to a new all-time high today as several tech companies announced
-    plans to add the cryptocurrency to their balance sheets. Health officials warned that
-    the excitement might cause stress for some investors.
-"""
-
-result = classify_text(article)
-
-print(f"Text: '{article}'")
-print(f"Labels: {', '.join(result.labels)}")
-# Example Output: Labels: Technology, Finance, Health
-
-from enum import Enum
-from pydantic import BaseModel, Field
-from typing import List
-
-# Define fixed categories as an enum
+# Define a Category enum for predefined categories
 class Category(str, Enum):
     BUSINESS = "business"
     TECHNOLOGY = "technology"
@@ -69,13 +63,14 @@ class Category(str, Enum):
     SCIENCE = "science"
     EDUCATION = "education"
 
+# Define a function to classify text with enums
 class EnumMultiLabelClassification(BaseModel):
     """Multi-label classification using predefined categories"""
-
     categories: List[Category] = Field(
         description="List of applicable categories from the predefined set"
     )
 
+# Define a function to classify text with enums
 def classify_with_enums(text: str) -> EnumMultiLabelClassification:
     return client.chat.completions.create(
         model="gpt-3.5-turbo",
@@ -86,20 +81,7 @@ def classify_with_enums(text: str) -> EnumMultiLabelClassification:
         ]
     )
 
-article = """
-    New educational technology is transforming classrooms across the country.
-    Students are using AI-powered tools to enhance their learning experiences.
-"""
-
-result = classify_with_enums(article)
-
-print(f"Text: '{article}'")
-print(f"Categories: {', '.join([c.value for c in result.categories])}")
-# Example Output: Categories: technology, education
-
-from pydantic import BaseModel, Field
-from typing import List, Dict
-
+# Define a function to classify text with confidence scores
 class LabelWithConfidence(BaseModel):
     label: str
     confidence: float = Field(gt=0, le=1)  # Between 0 and 1
@@ -130,23 +112,7 @@ def classify_with_confidence(text: str) -> ConfidenceClassification:
         ]
     )
 
-article = """
-    The new smartphone features a built-in heart rate monitor that can alert users
-    about potential cardiac issues while they exercise.
-"""
-
-result = classify_with_confidence(article)
-
-print(f"Text: '{article}'")
-print("Labels with confidence:")
-for label in result.labels:
-    print(f"- {label.label}: {label.confidence:.2f}")
-
-# Example Output:# Labels with confidence:# - Technology: 0.95# - Health: 0.85# - Sports: 0.62
-
-from pydantic import BaseModel, Field
-from typing import List, Optional
-
+# Define a function to classify text hierarchically
 class SubCategory(BaseModel):
     name: str
     confidence: float = Field(gt=0, le=1)
@@ -161,6 +127,7 @@ class HierarchicalClassification(BaseModel):
         description="Hierarchical categories with confidence scores"
     )
 
+# Define a function to classify text hierarchically
 def classify_hierarchical(text: str) -> HierarchicalClassification:
     return client.chat.completions.create(
         model="gpt-4",  # More complex tasks work better with GPT-4
@@ -183,20 +150,7 @@ def classify_hierarchical(text: str) -> HierarchicalClassification:
         ]
     )
 
-article = """
-    Researchers have developed a new AI algorithm that can detect early signs of
-    Alzheimer's disease from brain scans with 94% accuracy. The deep learning software
-    could help doctors diagnose patients years earlier than current methods.
-"""
-
-result = classify_hierarchical(article)
-
-print(f"Text: '{article}'")
-print("Classification:")
-for category in result.categories:
-    print(f"- {category.name} ({category.confidence:.2f})")
-    for subcategory in category.subcategories:
-        print(f"  - {subcategory.name} ({subcategory.confidence:.2f})")
-
-# Example Output:# Classification:# - Technology (0.90)#   - AI (0.95)#   - Software (0.80)# - Health (0.85)#   - Medical (0.90)# - Science (0.75)#   - Biology (0.70)
-
+# Test the multi-label classification
+# Output:
+# Labels: technology, science, health
+result = classify_text("Researchers have developed a new AI algorithm that can detect early signs of Alzheimer's disease from brain scans with 94% accuracy. The deep learning software could help doctors diagnose patients years earlier than current methods.")
