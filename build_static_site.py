@@ -597,28 +597,16 @@ def generate_index_html(
         f.write(
             f"""
             <p style="margin: 20px 0; color: #444; line-height: 1.6;">
-                Structured Outputs by Example is a hands-on introduction to working with structured data extraction from LLMs.
-                The site showcases how to use libraries like <a href="https://github.com/jxnl/instructor" target="_blank">Instructor</a> 
-                and <a href="https://docs.pydantic.dev/" target="_blank">Pydantic</a> to reliably extract structured information from LLM outputs.
+                A hands-on guide to structured data extraction from LLMs using <a href="https://github.com/jxnl/instructor" target="_blank">Instructor</a> 
+                and <a href="https://docs.pydantic.dev/" target="_blank">Pydantic</a>.
             </p>
             <p style="margin: 20px 0; color: #444; line-height: 1.6;">
-                Check out the <a href="{examples[0]["id"]}/">first example</a> 
-                or browse the full list of sections below. You may use arrow keys to navigate between examples.
+                Start with the <a href="{examples[0]["id"]}/">first example</a> 
+                or browse below. Use arrow keys to navigate.
             </p>
             <p style="margin: 20px 0; color: #444; line-height: 1.6;">
-                Examples here assume Python <code>&gt;=3.9</code> and
-                the latest versions of Instructor and Pydantic.
-                Try to upgrade to the latest versions if something isn't working.
+                Requires Python <code>&gt;=3.9</code> and latest versions of Instructor and Pydantic.
             </p>
-            
-            <div style="margin: 20px 0; padding: 15px; background-color: #f8f9fa; border-radius: 5px; border-left: 4px solid #0066CC;">
-                <p style="margin: 0; color: #444; line-height: 1.6;">
-                    <strong>Created by:</strong> Jason Liu | <strong>Based on:</strong> <a href="https://geminibyexample.com/" target="_blank">Gemini by Example</a> (<a href="https://github.com/strickvl/geminibyexample" target="_blank">GitHub</a>)
-                </p>
-                <p style="margin: 5px 0 0 0; color: #666; font-size: 0.9em;">
-                    This site uses the codebase from Gemini by Example with content focused on structured data extraction. Full credit to the original authors.
-                </p>
-            </div>
             <div style="margin-top: 20px;">
 """
         )
