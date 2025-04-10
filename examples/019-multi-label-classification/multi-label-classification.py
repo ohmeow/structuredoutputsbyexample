@@ -1,4 +1,4 @@
-# Multi-label Classification Example
+# Multi-label Classification
 #
 # This example demonstrates various approaches to multi-label classification using Instructor:
 # 1. Basic multi-label classification with string labels
