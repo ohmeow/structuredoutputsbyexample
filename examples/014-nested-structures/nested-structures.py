@@ -1,5 +1,5 @@
 # Simple Nested Structure
-# This example shows how to work with nested objects
+# This example shows how to work with nested objects in Instructor.
 
 import instructor
 from openai import OpenAI
