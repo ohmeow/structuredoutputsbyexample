@@ -1565,8 +1565,8 @@
           ]
         },
         {
-          "code": "import instructor\nfrom google import genai\nfrom pydantic import BaseModel\n\n\n",
-          "display_code": "import instructor\nfrom google import genai\nfrom pydantic import BaseModel\n\n\n",
+          "code": "import instructor\nfrom google import genai\nfrom pydantic import BaseModel, ConfigDict\n\n\n",
+          "display_code": "import instructor\nfrom google import genai\nfrom pydantic import BaseModel, ConfigDict\n\n\n",
           "annotation": "",
           "is_comment": false,
           "start_line": 6,
@@ -1654,9 +1654,9 @@
           ]
         },
         {
-          "code": "# <b>Ensure property ordering</b>\n# By default, the API orders properties alphabetically which may be a problem if, for \"example\", you want to include an `examples` attribute and ensure it appears first.\n# #\n# In that case, you can add a `Config` class with a `propertyOrdering` attribute and explicitly list the properties in the order they should appear.\n",
+          "code": "# <b>Ensure property ordering</b>\n# By default, the API orders properties alphabetically which may be a problem if, for \"example\", you want to include an `examples` attribute and ensure it appears first.\n# #\n# See <a href=\"https://ai.google.dev/gemini-api/docs/structured-output?lang=python#property-ordering\" target=\"_blank\">Property Ordering</a> for more information.\n",
           "display_code": "",
-          "annotation": "<b>Ensure property ordering</b>\nBy default, the API orders properties alphabetically which may be a problem if, for \"example\", you want to include an `examples` attribute and ensure it appears first.\n\nIn that case, you can add a `Config` class with a `propertyOrdering` attribute and explicitly list the properties in the order they should appear.",
+          "annotation": "<b>Ensure property ordering</b>\nBy default, the API orders properties alphabetically which may be a problem if, for \"example\", you want to include an `examples` attribute and ensure it appears first.\n\nSee <a href=\"https://ai.google.dev/gemini-api/docs/structured-output?lang=python#property-ordering\" target=\"_blank\">Property Ordering</a> for more information.",
           "is_comment": true,
           "start_line": 43,
           "line_range": [
@@ -1665,18 +1665,18 @@
           ],
           "target_line_range": [
             47,
-            63
+            70
           ]
         },
         {
-          "code": "class User(BaseModel):\n    name: str\n    age: int\n\n    class Config:\n        propertyOrdering = [\"name\", \"age\"]\n\n\nresponse = client.chat.completions.create(\n    model=\"gemini-2.0-flash-001\",\n    messages=[{\"role\": \"user\", \"content\": \"Extract: Jason is 25 years old\"}],\n    response_model=User,\n)\nprint(response)  # User(name='Jason', age=25)\nprint(f\"Name: {response.name}, Age: {response.age}\")  # Name: Jason, Age: 25\n\n\n",
-          "display_code": "class User(BaseModel):\n    name: str\n    age: int\n\n    class Config:\n        propertyOrdering = [\"name\", \"age\"]\n\n\nresponse = client.chat.completions.create(\n    model=\"gemini-2.0-flash-001\",\n    messages=[{\"role\": \"user\", \"content\": \"Extract: Jason is 25 years old\"}],\n    response_model=User,\n)\nprint(response)  # User(name='Jason', age=25)\nprint(f\"Name: {response.name}, Age: {response.age}\")  # Name: Jason, Age: 25\n\n\n",
+          "code": "class User(BaseModel):\n    name: str\n    age: int\n\n    model_config = ConfigDict(\n        json_schema_extra={\n            \"propertyOrdering\": [\"name\", \"age\"],\n        },\n    )\n\n\nresponse = client.chat.completions.create(\n    model=\"gemini-2.0-flash-001\",\n    messages=[{\"role\": \"user\", \"content\": \"Extract: Jason is 25 years old\"}],\n    response_model=User,\n)\n\nprint(\n    User.model_json_schema()\n)  # To verify the addition of the propertyOrdering attribute to the JSON schema\nprint(response)  # User(name='Jason', age=25)\nprint(f\"Name: {response.name}, Age: {response.age}\")  # Name: Jason, Age: 25\n\n\n",
+          "display_code": "class User(BaseModel):\n    name: str\n    age: int\n\n    model_config = ConfigDict(\n        json_schema_extra={\n            \"propertyOrdering\": [\"name\", \"age\"],\n        },\n    )\n\n\nresponse = client.chat.completions.create(\n    model=\"gemini-2.0-flash-001\",\n    messages=[{\"role\": \"user\", \"content\": \"Extract: Jason is 25 years old\"}],\n    response_model=User,\n)\n\nprint(\n    User.model_json_schema()\n)  # To verify the addition of the propertyOrdering attribute to the JSON schema\nprint(response)  # User(name='Jason', age=25)\nprint(f\"Name: {response.name}, Age: {response.age}\")  # Name: Jason, Age: 25\n\n\n",
           "annotation": "",
           "is_comment": false,
           "start_line": 47,
           "line_range": [
             47,
-            63
+            70
           ]
         },
         {
@@ -1684,14 +1684,14 @@
           "display_code": "",
           "annotation": "<b>Including a system instruction</b>\n\nUse either the `system` parameter or add a system message",
           "is_comment": true,
-          "start_line": 64,
+          "start_line": 71,
           "line_range": [
-            64,
-            66
+            71,
+            73
           ],
           "target_line_range": [
-            67,
-            83
+            74,
+            90
           ]
         },
         {
@@ -1699,10 +1699,10 @@
           "display_code": "response = client.chat.completions.create(\n    model=\"gemini-2.0-flash-001\",\n    # system=\"Make everyone 10 years younger you find!\",\n    messages=[\n        {\n            \"role\": \"system\",\n            \"content\": \"Make everyone 10 years younger you find!\",\n        },\n        {\n            \"role\": \"user\",\n            \"content\": \"Extract: Jason is 25 years old\",\n        },\n    ],\n    response_model=User,\n)\nprint(response)  # User(name='Jason', age=15)\nprint(f\"Name: {response.name}, Age: {response.age}\")  # Name: Jason, Age: 15\n",
           "annotation": "",
           "is_comment": false,
-          "start_line": 67,
+          "start_line": 74,
           "line_range": [
-            67,
-            83
+            74,
+            90
           ]
         }
       ],
@@ -1715,7 +1715,8 @@
       ],
       "image_data": [],
       "documentation_links": [
-        "https://github.com/jxnl/instructor"
+        "https://github.com/jxnl/instructor",
+        "https://ai.google.dev/gemini-api/docs/structured-output?lang=python#property-ordering"
       ],
       "section_id": "002-providers",
       "section_title": "LLM Providers"

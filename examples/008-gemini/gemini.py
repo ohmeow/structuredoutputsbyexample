@@ -5,7 +5,7 @@
 # <b>pip install "instructor[google-genai]"</b>
 import instructor
 from google import genai
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 # <b>Initialize and patch the client</b>
@@ -43,13 +43,16 @@ print(f"Name: {response.name}, Age: {response.age}")  # Name: Jason , Age: 25
 # <b>Ensure property ordering</b>
 # By default, the API orders properties alphabetically which may be a problem if, for "example", you want to include an `examples` attribute and ensure it appears first.
 # #
-# In that case, you can add a `Config` class with a `propertyOrdering` attribute and explicitly list the properties in the order they should appear.
+# See <a href="https://ai.google.dev/gemini-api/docs/structured-output?lang=python#property-ordering" target="_blank">Property Ordering</a> for more information.
 class User(BaseModel):
     name: str
     age: int
 
-    class Config:
-        propertyOrdering = ["name", "age"]
+    model_config = ConfigDict(
+        json_schema_extra={
+            "propertyOrdering": ["name", "age"],
+        },
+    )
 
 
 response = client.chat.completions.create(
@@ -57,6 +60,10 @@ response = client.chat.completions.create(
     messages=[{"role": "user", "content": "Extract: Jason is 25 years old"}],
     response_model=User,
 )
+
+print(
+    User.model_json_schema()
+)  # To verify the addition of the propertyOrdering attribute to the JSON schema
 print(response)  # User(name='Jason', age=25)
 print(f"Name: {response.name}, Age: {response.age}")  # Name: Jason, Age: 25
 

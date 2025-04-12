@@ -42,8 +42,8 @@
     "url": "https://structuredoutputsbyexample.com"
   },
   "mainEntityOfPage": "https://structuredoutputsbyexample.com/008-gemini/",
-  "datePublished": "2025-04-10T13:51:18+00:00",
-  "dateModified": "2025-04-10T13:51:18+00:00",
+  "datePublished": "2025-04-11T20:42:56+00:00",
+  "dateModified": "2025-04-11T20:42:56+00:00",
   "articleSection": "LLM Providers",
   "keywords": [
     "structured data",
@@ -297,7 +297,7 @@
                     </a>
                     <div id="all-python-code" style="display: none;">import instructor
 from google import genai
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 API_KEY = &quot;YOUR_API_KEY&quot;
 client = genai.Client(api_key=API_KEY)
 client = instructor.from_genai(client, mode=instructor.Mode.GENAI_TOOLS)
@@ -319,8 +319,11 @@ class User(BaseModel):
     name: str
     age: int
 
-    class Config:
-        propertyOrdering = [&quot;name&quot;, &quot;age&quot;]
+    model_config = ConfigDict(
+        json_schema_extra={
+            &quot;propertyOrdering&quot;: [&quot;name&quot;, &quot;age&quot;],
+        },
+    )
 
 
 response = client.chat.completions.create(
@@ -328,6 +331,10 @@ response = client.chat.completions.create(
     messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Extract: Jason is 25 years old&quot;}],
     response_model=User,
 )
+
+print(
+    User.model_json_schema()
+)  # To verify the addition of the propertyOrdering attribute to the JSON schema
 print(response)  # User(name=&#x27;Jason&#x27;, age=25)
 print(f&quot;Name: {response.name}, Age: {response.age}&quot;)  # Name: Jason, Age: 25
 response = client.chat.completions.create(
@@ -357,7 +364,7 @@ print(f&quot;Name: {response.name}, Age: {response.age}&quot;)  # Name: Jason, A
                 <div class="code">
                     <pre><code class="language-python">import instructor
 from google import genai
-from pydantic import BaseModel</code></pre>
+from pydantic import BaseModel, ConfigDict</code></pre>
                 </div>
             </div>
             <hr>
@@ -407,7 +414,7 @@ print(f&quot;Name: {response.name}, Age: {response.age}&quot;)  # Name: Jason , 
             <hr>
             <div class="row">
                 <div class="docs">
-                    <div style='font-size: 0.9em; color: #666;'><b>Ensure property ordering</b><br>By default, the API orders properties alphabetically which may be a problem if, for "example", you want to include an `examples` attribute and ensure it appears first.<br><br>In that case, you can add a `Config` class with a `propertyOrdering` attribute and explicitly list the properties in the order they should appear.</div>
+                    <div style='font-size: 0.9em; color: #666;'><b>Ensure property ordering</b><br>By default, the API orders properties alphabetically which may be a problem if, for "example", you want to include an `examples` attribute and ensure it appears first.<br><br>See <a href="https://ai.google.dev/gemini-api/docs/structured-output?lang=python#property-ordering" target="_blank">Property Ordering</a> for more information.</div>
 
                 </div>
                 <div class="code">
@@ -415,8 +422,11 @@ print(f&quot;Name: {response.name}, Age: {response.age}&quot;)  # Name: Jason , 
     name: str
     age: int
 
-    class Config:
-        propertyOrdering = [&quot;name&quot;, &quot;age&quot;]
+    model_config = ConfigDict(
+        json_schema_extra={
+            &quot;propertyOrdering&quot;: [&quot;name&quot;, &quot;age&quot;],
+        },
+    )
 
 
 response = client.chat.completions.create(
@@ -424,6 +434,10 @@ response = client.chat.completions.create(
     messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Extract: Jason is 25 years old&quot;}],
     response_model=User,
 )
+
+print(
+    User.model_json_schema()
+)  # To verify the addition of the propertyOrdering attribute to the JSON schema
 print(response)  # User(name=&#x27;Jason&#x27;, age=25)
 print(f&quot;Name: {response.name}, Age: {response.age}&quot;)  # Name: Jason, Age: 25</code></pre>
                 </div>
@@ -475,6 +489,8 @@ $ pip install &quot;instructor[google-genai]&quot;</code></pre>
             <ul style="font-size: 0.9em;">
                 <li><a href="https://github.com/jxnl/instructor"
                          target="_blank">Documentation link 1</a></li>
+                <li><a href="https://ai.google.dev/gemini-api/docs/structured-output?lang=python#property-ordering"
+                         target="_blank">Documentation link 2</a></li>
             </ul>
             <div class="navigation">
                 <p class="prev">
@@ -486,7 +502,7 @@ $ pip install &quot;instructor[google-genai]&quot;</code></pre>
             </div>
         </main>
         <footer>
-            <p>by <a href="https://github.com/jxnl/instructor">Instructor</a> | <a href="https://github.com/jxnl/instructor">GitHub</a> | <span style="color: #888; font-size: 0.9em;">Last updated: April 10, 2025</span></p>
+            <p>by <a href="https://github.com/jxnl/instructor">Instructor</a> | <a href="https://github.com/jxnl/instructor">GitHub</a> | <span style="color: #888; font-size: 0.9em;">Last updated: April 11, 2025</span></p>
         </footer>
     </div>
     <script>
